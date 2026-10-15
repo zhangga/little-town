@@ -1,0 +1,62 @@
+<!--pages/login/login.wxml-->
+<view class="login-page">
+  <!-- 招牌：一块立在草地上的木牌 -->
+  <view class="signboard block">
+    <text class="signboard-sub">LITTLE TOWN</text>
+    <text class="signboard-title">小小镇</text>
+    <text class="signboard-tag">学会一个单词，就多一块砖</text>
+  </view>
+
+  <!-- 门前草地 -->
+  <view class="grass-row">
+    <text class="grass-emoji">🌱</text>
+    <text class="grass-emoji">🌿</text>
+    <text class="grass-emoji">🌱</text>
+  </view>
+
+  <view class="form block">
+    <view class="field">
+      <text class="field-label">我的名字</text>
+      <input
+        class="field-input"
+        type="nickname"
+        placeholder="写在镇口的木牌上"
+        placeholder-class="field-placeholder"
+        value="{{nickname}}"
+        bindinput="onNicknameInput"
+        maxlength="12"
+      />
+    </view>
+
+    <view class="field">
+      <text class="field-label">我的头像</text>
+      <button class="avatar-picker" open-type="chooseAvatar" bindchooseavatar="onChooseAvatar">
+        <image wx:if="{{avatarUrl}}" class="avatar-image" src="{{avatarUrl}}" mode="aspectFill"></image>
+        <view wx:else class="avatar-empty">
+          <text class="avatar-plus">+</text>
+          <text class="avatar-hint">选头像</text>
+        </view>
+      </button>
+    </view>
+
+    <view class="field">
+      <text class="field-label">我在读</text>
+      <view class="grade-row">
+        <view
+          wx:for="{{grades}}"
+          wx:key="value"
+          class="grade-chip {{gradeIndex === index ? 'grade-chip-on' : ''}}"
+          data-index="{{index}}"
+          bindtap="onGradeTap"
+        >{{item.label}}</view>
+      </view>
+    </view>
+  </view>
+
+  <view class="submit-wrap">
+    <button class="btn btn-primary btn-block" bindtap="onStart" disabled="{{submitting}}">
+      {{submitting ? '正在进镇…' : '开始建镇'}}
+    </button>
+    <text class="footnote">首次进入会自动创建你的小镇</text>
+  </view>
+</view>

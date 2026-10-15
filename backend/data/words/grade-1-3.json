@@ -1,0 +1,177 @@
+[
+  {
+    "word": "apple",
+    "translation": "苹果",
+    "grade": 1,
+    "difficulty": 1,
+    "image_url": "/images/words/apple.png"
+  },
+  {
+    "word": "book",
+    "translation": "书",
+    "grade": 1,
+    "difficulty": 1,
+    "image_url": "/images/words/book.png"
+  },
+  {
+    "word": "cat",
+    "translation": "猫",
+    "grade": 1,
+    "difficulty": 1,
+    "image_url": "/images/words/cat.png"
+  },
+  {
+    "word": "dog",
+    "translation": "狗",
+    "grade": 1,
+    "difficulty": 1,
+    "image_url": "/images/words/dog.png"
+  },
+  {
+    "word": "elephant",
+    "translation": "大象",
+    "grade": 1,
+    "difficulty": 2,
+    "image_url": "/images/words/elephant.png"
+  },
+  {
+    "word": "fish",
+    "translation": "鱼",
+    "grade": 1,
+    "difficulty": 1,
+    "image_url": "/images/words/fish.png"
+  },
+  {
+    "word": "girl",
+    "translation": "女孩",
+    "grade": 1,
+    "difficulty": 1,
+    "image_url": "/images/words/girl.png"
+  },
+  {
+    "word": "hand",
+    "translation": "手",
+    "grade": 1,
+    "difficulty": 1,
+    "image_url": "/images/words/hand.png"
+  },
+  {
+    "word": "ice cream",
+    "translation": "冰淇淋",
+    "grade": 1,
+    "difficulty": 2,
+    "image_url": "/images/words/ice_cream.png"
+  },
+  {
+    "word": "juice",
+    "translation": "果汁",
+    "grade": 1,
+    "difficulty": 1,
+    "image_url": "/images/words/juice.png"
+  },
+  {
+    "word": "king",
+    "translation": "国王",
+    "grade": 2,
+    "difficulty": 2,
+    "image_url": "/images/words/king.png"
+  },
+  {
+    "word": "lion",
+    "translation": "狮子",
+    "grade": 2,
+    "difficulty": 2,
+    "image_url": "/images/words/lion.png"
+  },
+  {
+    "word": "monkey",
+    "translation": "猴子",
+    "grade": 2,
+    "difficulty": 2,
+    "image_url": "/images/words/monkey.png"
+  },
+  {
+    "word": "nose",
+    "translation": "鼻子",
+    "grade": 2,
+    "difficulty": 1,
+    "image_url": "/images/words/nose.png"
+  },
+  {
+    "word": "orange",
+    "translation": "橙子",
+    "grade": 2,
+    "difficulty": 1,
+    "image_url": "/images/words/orange.png"
+  },
+  {
+    "word": "pencil",
+    "translation": "铅笔",
+    "grade": 2,
+    "difficulty": 1,
+    "image_url": "/images/words/pencil.png"
+  },
+  {
+    "word": "queen",
+    "translation": "女王",
+    "grade": 2,
+    "difficulty": 2,
+    "image_url": "/images/words/queen.png"
+  },
+  {
+    "word": "rabbit",
+    "translation": "兔子",
+    "grade": 2,
+    "difficulty": 1,
+    "image_url": "/images/words/rabbit.png"
+  },
+  {
+    "word": "sun",
+    "translation": "太阳",
+    "grade": 2,
+    "difficulty": 1,
+    "image_url": "/images/words/sun.png"
+  },
+  {
+    "word": "tiger",
+    "translation": "老虎",
+    "grade": 2,
+    "difficulty": 2,
+    "image_url": "/images/words/tiger.png"
+  },
+  {
+    "word": "umbrella",
+    "translation": "雨伞",
+    "grade": 3,
+    "difficulty": 2,
+    "image_url": "/images/words/umbrella.png"
+  },
+  {
+    "word": "violin",
+    "translation": "小提琴",
+    "grade": 3,
+    "difficulty": 3,
+    "image_url": "/images/words/violin.png"
+  },
+  {
+    "word": "window",
+    "translation": "窗户",
+    "grade": 3,
+    "difficulty": 2,
+    "image_url": "/images/words/window.png"
+  },
+  {
+    "word": "yellow",
+    "translation": "黄色",
+    "grade": 3,
+    "difficulty": 1,
+    "image_url": "/images/words/yellow.png"
+  },
+  {
+    "word": "zebra",
+    "translation": "斑马",
+    "grade": 3,
+    "difficulty": 2,
+    "image_url": "/images/words/zebra.png"
+  }
+]

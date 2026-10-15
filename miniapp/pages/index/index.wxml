@@ -1,0 +1,101 @@
+<!--pages/index/index.wxml-->
+<view class="town-page">
+  <!-- 资源栏：金币与砖块 -->
+  <view class="topbar">
+    <view class="row gap-16">
+      <view class="chip">
+        <text class="chip-icon">🪙</text>
+        <text class="chip-num tnum">{{town.coins}}</text>
+      </view>
+      <view class="chip">
+        <text class="chip-icon">🧱</text>
+        <text class="chip-num tnum">{{town.bricks}}</text>
+      </view>
+    </view>
+    <view class="chip">
+      <text class="chip-icon">⭐</text>
+      <text class="chip-num tnum">Lv.{{town.level}}</text>
+    </view>
+  </view>
+
+  <!-- 加载中 -->
+  <view wx:if="{{loading}}" class="loading">
+    <text class="loading-emoji">🏗️</text>
+    <text class="loading-text">正在查看小镇…</text>
+  </view>
+
+  <!-- 加载失败 -->
+  <view wx:elif="{{failed}}" class="panel">
+    <view class="empty">
+      <text class="empty-emoji">📡</text>
+      <text class="empty-text">没能连上小镇。检查一下网络，然后再试一次。</text>
+      <button class="btn btn-primary" bindtap="loadTown">重新加载</button>
+    </view>
+  </view>
+
+  <!-- 小镇地图 -->
+  <scroll-view wx:else class="map-scroll" scroll-y>
+    <view class="map" style="height: {{mapHeight}}rpx;">
+      <view class="grass-grid"></view>
+
+      <!-- 建筑：直接落在草地上，不用卡片包裹 -->
+      <view
+        wx:for="{{buildings}}"
+        wx:key="id"
+        class="plot"
+        style="left: {{item.left}}rpx; top: {{item.top}}rpx; animation-delay: {{item.delay}}ms;"
+        data-index="{{index}}"
+        bindtap="onBuildingTap"
+      >
+        <view class="plot-shadow"></view>
+        <image
+          wx:if="{{item.image_url}}"
+          class="plot-image"
+          src="{{item.image_url}}"
+          mode="aspectFit"
+        ></image>
+        <text wx:else class="plot-emoji">{{item.emoji}}</text>
+        <view class="plot-label">{{item.name}}</view>
+      </view>
+
+      <!-- 空地：引导去学习 -->
+      <view wx:if="{{buildings.length === 0}}" class="vacant">
+        <text class="vacant-emoji">🚧</text>
+        <text class="vacant-title">这里还是一块空地</text>
+        <text class="vacant-text">学几个单词，就能换来第一批砖块</text>
+        <button class="btn btn-primary" bindtap="onGoLearn">去学单词</button>
+      </view>
+    </view>
+  </scroll-view>
+
+  <!-- 操作条：固定在地图下方，不遮挡建筑 -->
+  <view wx:if="{{!loading && !failed}}" class="dock">
+    <view class="dock-btn" bindtap="onGoLearn">
+      <text class="dock-icon">📖</text>
+      <text class="dock-text">学单词</text>
+    </view>
+    <view class="dock-btn dock-btn-main" bindtap="onGoBuild">
+      <text class="dock-icon">🔨</text>
+      <text class="dock-text">去建造</text>
+    </view>
+  </view>
+
+  <!-- 建筑详情 -->
+  <view wx:if="{{selected}}" class="mask" bindtap="onCloseDetail">
+    <view class="detail block" catchtap="onNoop">
+      <view class="detail-head">
+        <text class="detail-emoji">{{selected.emoji}}</text>
+        <view class="col">
+          <text class="detail-name">{{selected.name}}</text>
+          <text class="caption">{{selected.built_at}} 建成</text>
+        </view>
+      </view>
+      <text class="detail-desc">{{selected.description}}</text>
+      <view class="detail-stat">
+        <text class="detail-stat-num tnum">{{selected.word_count}}</text>
+        <text class="detail-stat-label">个单词在这里被记住</text>
+      </view>
+      <button class="btn btn-block" bindtap="onCloseDetail">知道了</button>
+    </view>
+  </view>
+</view>

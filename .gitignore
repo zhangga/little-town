@@ -1,0 +1,62 @@
+# Binaries
+*.exe
+*.dll
+*.so
+*.dylib
+/server
+/import
+
+# Test binary
+*.test
+
+# Output of go coverage tool
+*.out
+
+# Dependency directories
+vendor/
+
+# Go workspace file
+go.work
+
+# Environment variables
+.env
+.env.local
+.env.*.local
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
+.DS_Store
+
+# Logs
+*.log
+logs/
+
+# Database
+*.db
+*.sqlite
+
+# Uploads
+uploads/
+*.dump
+
+# Backend specific
+backend/server
+backend/import
+backend/tmp/
+
+# Miniapp specific
+miniapp/project.private.config.json
+miniapp/node_modules/
+miniapp/dist/
+miniapp/miniprogram_npm/
+miniapp/.tea/
+
+# Documentation
+docs/node_modules/
+
+# OS
+Thumbs.db

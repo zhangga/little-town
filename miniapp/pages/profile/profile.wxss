@@ -1,0 +1,164 @@
+/* pages/profile/profile.wxss */
+.profile-page {
+  min-height: 100vh;
+  background: #7FBF4D;
+  padding: 32rpx 24rpx calc(48rpx + env(safe-area-inset-bottom));
+  box-sizing: border-box;
+}
+
+/* 身份牌 */
+.id-card {
+  display: flex;
+  align-items: center;
+  gap: 28rpx;
+  border-radius: 20rpx;
+  padding: 36rpx;
+}
+
+.id-avatar {
+  width: 140rpx;
+  height: 140rpx;
+  border-radius: 20rpx;
+  border: 4rpx solid #33291D;
+}
+
+.id-avatar-empty {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 72rpx;
+  background: #FFF3D0;
+}
+
+.id-body {
+  display: flex;
+  flex-direction: column;
+  gap: 8rpx;
+}
+
+.id-name {
+  font-size: 44rpx;
+  font-weight: 800;
+  color: #33291D;
+}
+
+.id-meta {
+  font-size: 26rpx;
+  font-weight: 700;
+  color: #8A8172;
+}
+
+/* 资源卡 */
+.res-row {
+  display: flex;
+  gap: 20rpx;
+  margin-top: 24rpx;
+}
+
+.res-card {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4rpx;
+  padding: 28rpx 12rpx;
+  border-radius: 16rpx;
+}
+
+.res-icon {
+  font-size: 40rpx;
+  line-height: 1;
+}
+
+.res-num {
+  font-size: 44rpx;
+  font-weight: 800;
+  color: #33291D;
+}
+
+.res-label {
+  font-size: 22rpx;
+  font-weight: 700;
+  color: #8A8172;
+}
+
+/* 学习小结 */
+.stat-line {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 18rpx 0;
+  border-bottom: 2rpx dashed #E0DACC;
+}
+
+.stat-line:last-child {
+  border-bottom: none;
+}
+
+.stat-line-label {
+  font-size: 26rpx;
+  font-weight: 600;
+  color: #8A8172;
+}
+
+.stat-line-value {
+  font-size: 30rpx;
+  font-weight: 800;
+  color: #33291D;
+}
+
+/* 菜单 */
+.menu {
+  display: flex;
+  flex-direction: column;
+  gap: 20rpx;
+  margin-top: 32rpx;
+}
+
+.menu-item {
+  display: flex;
+  align-items: center;
+  gap: 24rpx;
+  padding: 28rpx 32rpx;
+  border-radius: 16rpx;
+}
+
+.menu-item:active {
+  transform: translate(3rpx, 3rpx);
+  box-shadow: 3rpx 3rpx 0 #33291D;
+}
+
+.menu-icon {
+  font-size: 48rpx;
+  line-height: 1;
+}
+
+.menu-body {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 4rpx;
+}
+
+.menu-title {
+  font-size: 32rpx;
+  font-weight: 800;
+  color: #33291D;
+}
+
+.menu-sub {
+  font-size: 23rpx;
+  font-weight: 600;
+  color: #8A8172;
+}
+
+.menu-arrow {
+  font-size: 44rpx;
+  font-weight: 800;
+  color: #E0553A;
+  line-height: 1;
+}
+
+.logout-wrap {
+  margin-top: 48rpx;
+}

@@ -1,0 +1,20 @@
+server:
+  host: 0.0.0.0
+  port: 8080
+  mode: debug  # debug, release
+
+database:
+  host: localhost
+  port: 5432
+  user: postgres
+  password: your_password_here
+  dbname: little_town
+  sslmode: disable
+
+wechat:
+  app_id: your_wechat_appid_here
+  app_secret: your_wechat_secret_here
+
+jwt:
+  secret: change_this_to_random_string_in_production
+  expire_hour: 720  # 30 days

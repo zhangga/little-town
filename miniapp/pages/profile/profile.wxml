@@ -1,0 +1,88 @@
+<!--pages/profile/profile.wxml-->
+<view class="profile-page">
+  <!-- 镇长的木牌 -->
+  <view class="id-card block">
+    <image
+      wx:if="{{userInfo.avatar}}"
+      class="id-avatar"
+      src="{{userInfo.avatar}}"
+      mode="aspectFill"
+    ></image>
+    <view wx:else class="id-avatar id-avatar-empty">🧑‍🌾</view>
+
+    <view class="id-body">
+      <text class="id-name">{{userInfo.nickname || '小镇长'}}</text>
+      <text class="id-meta">{{gradeLabel}}{{gradeLabel ? ' · ' : ''}}Lv.{{userInfo.level || 1}}</text>
+    </view>
+  </view>
+
+  <!-- 资源 -->
+  <view class="res-row">
+    <view class="res-card block-sm">
+      <text class="res-icon">🪙</text>
+      <text class="res-num tnum">{{userInfo.coins || 0}}</text>
+      <text class="res-label">金币</text>
+    </view>
+    <view class="res-card block-sm">
+      <text class="res-icon">🧱</text>
+      <text class="res-num tnum">{{userInfo.bricks || 0}}</text>
+      <text class="res-label">砖块</text>
+    </view>
+    <view class="res-card block-sm">
+      <text class="res-icon">📚</text>
+      <text class="res-num tnum">{{stats.total_words || 0}}</text>
+      <text class="res-label">学过的词</text>
+    </view>
+  </view>
+
+  <!-- 学习小结 -->
+  <view wx:if="{{stats}}" class="panel">
+    <text class="section-title">我的学习</text>
+    <view class="stat-line">
+      <text class="stat-line-label">已经能牢牢记住</text>
+      <text class="stat-line-value tnum">{{stats.mastered_words || 0}} 个词</text>
+    </view>
+    <view class="stat-line">
+      <text class="stat-line-label">今天学过</text>
+      <text class="stat-line-value tnum">{{stats.today_learned || 0}} 个词</text>
+    </view>
+    <view class="stat-line">
+      <text class="stat-line-label">今天还要复习</text>
+      <text class="stat-line-value tnum">{{stats.due_today || 0}} 个词</text>
+    </view>
+  </view>
+
+  <!-- 入口 -->
+  <view class="menu">
+    <view class="menu-item block-sm" bindtap="onGoParent">
+      <text class="menu-icon">📋</text>
+      <view class="menu-body">
+        <text class="menu-title">家长报告</text>
+        <text class="menu-sub">查看学习数据，补充课本单词</text>
+      </view>
+      <text class="menu-arrow">›</text>
+    </view>
+
+    <view class="menu-item block-sm" bindtap="onGoTown">
+      <text class="menu-icon">🏘️</text>
+      <view class="menu-body">
+        <text class="menu-title">我的小镇</text>
+        <text class="menu-sub">看看已经盖好的建筑</text>
+      </view>
+      <text class="menu-arrow">›</text>
+    </view>
+
+    <view class="menu-item block-sm" bindtap="onGoBuild">
+      <text class="menu-icon">🔨</text>
+      <view class="menu-body">
+        <text class="menu-title">继续建造</text>
+        <text class="menu-sub">用砖块盖新房子</text>
+      </view>
+      <text class="menu-arrow">›</text>
+    </view>
+  </view>
+
+  <view class="logout-wrap">
+    <button class="btn btn-block" bindtap="onLogout">退出登录</button>
+  </view>
+</view>

@@ -1,0 +1,75 @@
+<!--pages/build/build.wxml-->
+<view class="build-page">
+  <!-- 仓库 -->
+  <view class="store-bar">
+    <view class="chip">
+      <text class="chip-icon">🧱</text>
+      <text class="chip-num tnum">{{user.bricks}}</text>
+    </view>
+    <text class="store-hint">每答对一个单词得 1 块砖</text>
+  </view>
+
+  <!-- 加载中 -->
+  <view wx:if="{{loading}}" class="loading">
+    <text class="loading-emoji">🧱</text>
+    <text class="loading-text">正在清点建材…</text>
+  </view>
+
+  <!-- 加载失败 -->
+  <view wx:elif="{{failed}}" class="panel">
+    <view class="empty">
+      <text class="empty-emoji">📡</text>
+      <text class="empty-text">没能拿到建筑清单。检查一下网络，然后再试一次。</text>
+      <button class="btn btn-primary" bindtap="loadBuildings">重新加载</button>
+    </view>
+  </view>
+
+  <block wx:else>
+    <!-- 已有建筑的主入口 -->
+    <view wx:if="{{builtCount > 0}}" class="back-town" bindtap="onGoTown">
+      <text class="back-town-emoji">🏘️</text>
+      <text class="back-town-text">小镇里已经有 {{builtCount}} 栋建筑</text>
+      <text class="back-town-arrow">去看看</text>
+    </view>
+
+    <!-- 建筑清单 -->
+    <view class="list">
+      <view
+        wx:for="{{buildings}}"
+        wx:key="id"
+        class="card {{item.is_built ? 'card-built' : ''}} {{!item.is_built && !item.can_build ? 'card-locked' : ''}}"
+        data-index="{{index}}"
+        bindtap="onBuildTap"
+      >
+        <view class="card-graphic">
+          <text class="card-emoji">{{item.emoji}}</text>
+        </view>
+
+        <view class="card-body">
+          <view class="card-head">
+            <text class="card-name">{{item.name}}</text>
+            <view wx:if="{{item.is_built}}" class="tag tag-done">已建成</view>
+            <view wx:elif="{{item.can_build}}" class="tag tag-ready">可以建</view>
+            <view wx:else class="tag tag-need">缺 {{item.cost_bricks - user.bricks}} 块砖</view>
+          </view>
+
+          <text class="card-desc">{{item.description}}</text>
+
+          <view class="card-foot">
+            <view class="cost">
+              <text class="cost-icon">🧱</text>
+              <text class="cost-num tnum">{{item.cost_bricks}}</text>
+            </view>
+            <text wx:if="{{item.unlock_level > 1}}" class="card-lv caption">Lv.{{item.unlock_level}} 解锁</text>
+          </view>
+        </view>
+      </view>
+    </view>
+
+    <!-- 砖块不够时的引导 -->
+    <view wx:if="{{user.bricks === 0 && builtCount === 0}}" class="tip panel">
+      <text class="tip-text">还没有砖块。先去学单词，答对一题就有 1 块砖。</text>
+      <button class="btn btn-primary btn-block" bindtap="onGoLearn">去学单词</button>
+    </view>
+  </block>
+</view>

@@ -1,0 +1,170 @@
+/* pages/login/login.wxss */
+.login-page {
+  min-height: 100vh;
+  background: #7FBF4D;
+  padding: 48rpx 0 64rpx;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+/* 木牌稍稍歪一点，像真的插在地里 */
+.signboard {
+  border-radius: 24rpx;
+  padding: 40rpx 56rpx;
+  margin: 24rpx;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  transform: rotate(-1.5deg);
+}
+
+.signboard-sub {
+  font-size: 20rpx;
+  font-weight: 800;
+  letter-spacing: 6rpx;
+  color: #8A8172;
+}
+
+.signboard-title {
+  font-size: 88rpx;
+  font-weight: 800;
+  letter-spacing: 8rpx;
+  color: #33291D;
+  margin: 8rpx 0 12rpx;
+}
+
+.signboard-tag {
+  font-size: 26rpx;
+  font-weight: 600;
+  color: #E0553A;
+}
+
+.grass-row {
+  display: flex;
+  gap: 80rpx;
+  margin: 8rpx 0 24rpx;
+}
+
+.grass-emoji {
+  font-size: 44rpx;
+}
+
+.form {
+  width: 640rpx;
+  border-radius: 20rpx;
+  padding: 40rpx;
+}
+
+.field + .field {
+  margin-top: 36rpx;
+}
+
+.field-label {
+  display: block;
+  font-size: 24rpx;
+  font-weight: 800;
+  letter-spacing: 2rpx;
+  color: #8A8172;
+  margin-bottom: 12rpx;
+}
+
+.field-input {
+  width: 100%;
+  box-sizing: border-box;
+  background: #FFFCF2;
+  border: 4rpx solid #33291D;
+  border-radius: 12rpx;
+  padding: 20rpx 24rpx;
+  font-size: 32rpx;
+  font-weight: 700;
+  color: #33291D;
+}
+
+.field-placeholder {
+  color: #B5AC9C;
+  font-weight: 600;
+}
+
+/* 头像选择 */
+.avatar-picker {
+  width: 140rpx;
+  height: 140rpx;
+  padding: 0;
+  background: #FFFCF2;
+  border: 4rpx solid #33291D;
+  border-radius: 16rpx;
+  box-shadow: 6rpx 6rpx 0 #33291D;
+  overflow: hidden;
+  line-height: 1;
+}
+
+.avatar-picker::after {
+  border: none;
+}
+
+.avatar-image {
+  width: 100%;
+  height: 100%;
+}
+
+.avatar-empty {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 4rpx;
+}
+
+.avatar-plus {
+  font-size: 48rpx;
+  font-weight: 800;
+  color: #E0553A;
+  line-height: 1;
+}
+
+.avatar-hint {
+  font-size: 20rpx;
+  font-weight: 700;
+  color: #8A8172;
+}
+
+/* 年级选择 */
+.grade-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16rpx;
+}
+
+.grade-chip {
+  padding: 12rpx 28rpx;
+  border: 4rpx solid #33291D;
+  border-radius: 999rpx;
+  background: #FFFCF2;
+  font-size: 26rpx;
+  font-weight: 700;
+  color: #33291D;
+}
+
+.grade-chip-on {
+  background: #FFC93C;
+  box-shadow: 4rpx 4rpx 0 #33291D;
+}
+
+.submit-wrap {
+  width: 640rpx;
+  margin-top: 48rpx;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 20rpx;
+}
+
+.footnote {
+  font-size: 22rpx;
+  font-weight: 600;
+  color: #33291D;
+  opacity: 0.7;
+}

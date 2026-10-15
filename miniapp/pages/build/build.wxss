@@ -1,0 +1,222 @@
+/* pages/build/build.wxss */
+.build-page {
+  min-height: 100vh;
+  background: #7FBF4D;
+  padding-bottom: calc(32rpx + env(safe-area-inset-bottom));
+}
+
+/* 仓库条 */
+.store-bar {
+  display: flex;
+  align-items: center;
+  gap: 16rpx;
+  padding: 20rpx 24rpx;
+  background: #4E7A2E;
+  border-bottom: 4rpx solid #33291D;
+}
+
+.store-hint {
+  font-size: 22rpx;
+  font-weight: 700;
+  color: #FFFCF2;
+  opacity: 0.85;
+}
+
+/* 返回小镇入口 */
+.back-town {
+  display: flex;
+  align-items: center;
+  gap: 16rpx;
+  margin: 24rpx;
+  padding: 24rpx 28rpx;
+  background: #FFFCF2;
+  border: 4rpx solid #33291D;
+  border-radius: 16rpx;
+  box-shadow: 6rpx 6rpx 0 #33291D;
+}
+
+.back-town:active {
+  transform: translate(3rpx, 3rpx);
+  box-shadow: 3rpx 3rpx 0 #33291D;
+}
+
+.back-town-emoji {
+  font-size: 40rpx;
+  line-height: 1;
+}
+
+.back-town-text {
+  font-size: 28rpx;
+  font-weight: 800;
+  color: #33291D;
+}
+
+.back-town-arrow {
+  margin-left: auto;
+  font-size: 24rpx;
+  font-weight: 800;
+  color: #E0553A;
+}
+
+/* 建筑清单 */
+.list {
+  padding: 0 24rpx;
+  display: flex;
+  flex-direction: column;
+  gap: 24rpx;
+}
+
+.card {
+  display: flex;
+  gap: 24rpx;
+  padding: 28rpx;
+  background: #FFFCF2;
+  border: 4rpx solid #33291D;
+  border-radius: 20rpx;
+  box-shadow: 8rpx 8rpx 0 #33291D;
+}
+
+.card:active {
+  transform: translate(4rpx, 4rpx);
+  box-shadow: 4rpx 4rpx 0 #33291D;
+}
+
+/* 已建成：压低存在感，避免和待建项抢注意力 */
+.card-built {
+  background: #EDEAE0;
+  box-shadow: 4rpx 4rpx 0 #8A8172;
+  border-color: #8A8172;
+}
+
+.card-built:active {
+  transform: none;
+  box-shadow: 4rpx 4rpx 0 #8A8172;
+}
+
+/* 砖块不够：可读但仍明显不可操作 */
+.card-locked {
+  opacity: 0.7;
+}
+
+.card-graphic {
+  width: 120rpx;
+  height: 120rpx;
+  flex: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #FFF3D0;
+  border: 4rpx solid #33291D;
+  border-radius: 16rpx;
+}
+
+.card-emoji {
+  font-size: 72rpx;
+  line-height: 1;
+}
+
+.card-body {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 8rpx;
+}
+
+.card-head {
+  display: flex;
+  align-items: center;
+  gap: 12rpx;
+}
+
+.card-name {
+  font-size: 34rpx;
+  font-weight: 800;
+  color: #33291D;
+}
+
+.tag {
+  padding: 4rpx 16rpx;
+  border: 4rpx solid #33291D;
+  border-radius: 999rpx;
+  font-size: 20rpx;
+  font-weight: 800;
+}
+
+.tag-done {
+  background: #CFEBA8;
+}
+
+.tag-ready {
+  background: #E0553A;
+  color: #FFFCF2;
+}
+
+.tag-need {
+  background: #FFF3D0;
+  color: #8A8172;
+  border-color: #8A8172;
+}
+
+.card-desc {
+  font-size: 24rpx;
+  font-weight: 600;
+  color: #8A8172;
+}
+
+.card-foot {
+  display: flex;
+  align-items: center;
+  gap: 16rpx;
+  margin-top: 4rpx;
+}
+
+.cost {
+  display: flex;
+  align-items: center;
+  gap: 6rpx;
+  padding: 4rpx 18rpx;
+  background: #FFC93C;
+  border: 4rpx solid #33291D;
+  border-radius: 999rpx;
+}
+
+.cost-icon {
+  font-size: 24rpx;
+  line-height: 1;
+}
+
+.cost-num {
+  font-size: 26rpx;
+  font-weight: 800;
+  color: #33291D;
+}
+
+.card-lv {
+  margin-left: auto;
+}
+
+/* 空砖块引导 */
+.tip {
+  display: flex;
+  flex-direction: column;
+  gap: 20rpx;
+  margin-top: 24rpx;
+}
+
+.tip-text {
+  font-size: 26rpx;
+  font-weight: 600;
+  color: #33291D;
+}
+
+.loading-emoji {
+  font-size: 96rpx;
+  line-height: 1;
+  animation: bob 1.4s ease-in-out infinite;
+}
+
+@keyframes bob {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-16rpx); }
+}

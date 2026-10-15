@@ -1,0 +1,50 @@
+# 本地开发用 PostgreSQL
+#
+# 启动：docker compose up -d
+# 停止：docker compose down
+# 清空数据重来：docker compose down -v
+#
+# 启动后无需手动建表——后端首次运行会通过 GORM AutoMigrate 自动建表。
+# 这个文件只负责把「库」准备好。
+
+services:
+  postgres:
+    image: postgres:16-alpine
+    container_name: little-town-db
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: littletown_dev_pw
+      POSTGRES_DB: littletown_db
+      # 中文排序与编码。建库时指定，后期改动需要重建
+      POSTGRES_INITDB_ARGS: "--encoding=UTF8"
+      TZ: Asia/Shanghai
+    ports:
+      # 只监听本机，避免局域网内其他机器连上开发库
+      - "127.0.0.1:5432:5432"
+    volumes:
+      - little-town-pgdata:/var/lib/postgresql/data
+    healthcheck:
+      # 后端启动依赖这个检查，避免「容器起来了但数据库还没就绪」
+      test: ["CMD-SHELL", "pg_isready -U postgres -d littletown_db"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+      start_period: 10s
+
+  # 可选：浏览器里查看数据，访问 http://localhost:8081
+  # 不需要就直接删掉这段
+  adminer:
+    image: adminer:latest
+    container_name: little-town-adminer
+    restart: unless-stopped
+    ports:
+      - "127.0.0.1:8081:8080"
+    environment:
+      ADMINER_DEFAULT_SERVER: postgres
+    depends_on:
+      postgres:
+        condition: service_healthy
+
+volumes:
+  little-town-pgdata:

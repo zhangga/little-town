@@ -1,0 +1,279 @@
+/* pages/index/index.wxss */
+.town-page {
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  background: #7FBF4D;
+}
+
+/* 资源栏 */
+.topbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 20rpx 24rpx;
+  background: #4E7A2E;
+  border-bottom: 4rpx solid #33291D;
+}
+
+/* 地图滚动区 */
+.map-scroll {
+  flex: 1;
+  min-height: 0;
+}
+
+.map {
+  position: relative;
+  width: 100%;
+  background: #7FBF4D;
+  overflow: hidden;
+}
+
+/* 草地纹理：横竖细线做出地块，不用图片 */
+.grass-grid {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-image:
+    linear-gradient(to right, rgba(51, 41, 29, 0.07) 2rpx, transparent 2rpx),
+    linear-gradient(to bottom, rgba(51, 41, 29, 0.07) 2rpx, transparent 2rpx);
+  background-size: 172rpx 105rpx;
+  pointer-events: none;
+}
+
+/* 建筑地块 */
+.plot {
+  position: absolute;
+  width: 172rpx;
+  height: 210rpx;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  padding-top: 16rpx;
+  box-sizing: border-box;
+  animation: drop 460ms cubic-bezier(0.34, 1.56, 0.64, 1) backwards;
+}
+
+/* 落砖动画：这是全镇唯一一个编排过的动效 */
+@keyframes drop {
+  0% {
+    opacity: 0;
+    transform: translateY(-48rpx) scale(0.7);
+  }
+  70% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+/* 建筑脚下的椭圆投影，让建筑"站"在草地上 */
+.plot-shadow {
+  position: absolute;
+  bottom: 44rpx;
+  width: 104rpx;
+  height: 24rpx;
+  background: rgba(51, 41, 29, 0.22);
+  border-radius: 50%;
+}
+
+.plot-emoji {
+  font-size: 104rpx;
+  line-height: 1;
+  margin-top: 12rpx;
+}
+
+.plot-image {
+  width: 116rpx;
+  height: 116rpx;
+  margin-top: 12rpx;
+}
+
+.plot-label {
+  margin-top: 12rpx;
+  background: #FFFCF2;
+  border: 4rpx solid #33291D;
+  border-radius: 999rpx;
+  padding: 4rpx 20rpx;
+  font-size: 22rpx;
+  font-weight: 800;
+  color: #33291D;
+}
+
+/* 空地引导 */
+.vacant {
+  position: absolute;
+  top: 140rpx;
+  left: 48rpx;
+  right: 48rpx;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 20rpx;
+  padding: 56rpx 40rpx;
+  background: #FFFCF2;
+  border: 4rpx solid #33291D;
+  border-radius: 20rpx;
+  box-shadow: 8rpx 8rpx 0 #33291D;
+}
+
+.vacant-emoji {
+  font-size: 96rpx;
+  line-height: 1;
+}
+
+.vacant-title {
+  font-size: 36rpx;
+  font-weight: 800;
+  color: #33291D;
+}
+
+.vacant-text {
+  font-size: 26rpx;
+  font-weight: 600;
+  color: #8A8172;
+  text-align: center;
+}
+
+/* 底部操作条 */
+.dock {
+  display: flex;
+  gap: 20rpx;
+  padding: 20rpx 24rpx calc(20rpx + env(safe-area-inset-bottom));
+  background: #4E7A2E;
+  border-top: 4rpx solid #33291D;
+}
+
+.dock-btn {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12rpx;
+  padding: 24rpx;
+  background: #FFFCF2;
+  border: 4rpx solid #33291D;
+  border-radius: 16rpx;
+  box-shadow: 6rpx 6rpx 0 #33291D;
+}
+
+.dock-btn-main {
+  background: #E0553A;
+}
+
+.dock-btn-main .dock-text {
+  color: #FFFCF2;
+}
+
+.dock-btn:active {
+  transform: translate(4rpx, 4rpx);
+  box-shadow: 2rpx 2rpx 0 #33291D;
+}
+
+.dock-icon {
+  font-size: 34rpx;
+  line-height: 1;
+}
+
+.dock-text {
+  font-size: 30rpx;
+  font-weight: 800;
+  color: #33291D;
+}
+
+/* 建筑详情 */
+.mask {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(51, 41, 29, 0.55);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 100;
+}
+
+.detail {
+  width: 600rpx;
+  border-radius: 20rpx;
+  padding: 40rpx;
+  animation: pop 240ms ease-out;
+}
+
+@keyframes pop {
+  from {
+    transform: scale(0.9);
+    opacity: 0;
+  }
+  to {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+.detail-head {
+  display: flex;
+  align-items: center;
+  gap: 24rpx;
+}
+
+.detail-emoji {
+  font-size: 88rpx;
+  line-height: 1;
+}
+
+.detail-name {
+  font-size: 40rpx;
+  font-weight: 800;
+  color: #33291D;
+}
+
+.detail-desc {
+  display: block;
+  margin: 28rpx 0;
+  font-size: 28rpx;
+  font-weight: 600;
+  color: #33291D;
+}
+
+.detail-stat {
+  display: flex;
+  align-items: baseline;
+  gap: 12rpx;
+  padding: 24rpx;
+  background: #FFF3D0;
+  border: 4rpx solid #33291D;
+  border-radius: 12rpx;
+  margin-bottom: 32rpx;
+}
+
+.detail-stat-num {
+  font-size: 56rpx;
+  font-weight: 800;
+  color: #E0553A;
+}
+
+.detail-stat-label {
+  font-size: 26rpx;
+  font-weight: 700;
+  color: #33291D;
+}
+
+/* 加载态 */
+.loading-emoji {
+  font-size: 96rpx;
+  line-height: 1;
+  animation: bob 1.4s ease-in-out infinite;
+}
+
+@keyframes bob {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-16rpx); }
+}

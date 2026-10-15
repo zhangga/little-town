@@ -1,0 +1,43 @@
+{
+  "pages": [
+    "pages/index/index",
+    "pages/learn/learn",
+    "pages/build/build",
+    "pages/profile/profile",
+    "pages/parent/parent",
+    "pages/login/login"
+  ],
+  "window": {
+    "backgroundTextStyle": "dark",
+    "backgroundColor": "#7FBF4D",
+    "navigationBarBackgroundColor": "#4E7A2E",
+    "navigationBarTitleText": "小小镇",
+    "navigationBarTextStyle": "white"
+  },
+  "tabBar": {
+    "color": "#8A8172",
+    "selectedColor": "#33291D",
+    "backgroundColor": "#FFFCF2",
+    "borderStyle": "black",
+    "list": [
+      {
+        "pagePath": "pages/index/index",
+        "text": "小镇"
+      },
+      {
+        "pagePath": "pages/learn/learn",
+        "text": "学单词"
+      },
+      {
+        "pagePath": "pages/build/build",
+        "text": "建造"
+      },
+      {
+        "pagePath": "pages/profile/profile",
+        "text": "我的"
+      }
+    ]
+  },
+  "style": "v2",
+  "sitemapLocation": "sitemap.json"
+}

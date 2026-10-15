@@ -1,0 +1,82 @@
+[
+  {
+    "name": "学校",
+    "description": "孩子们学习的地方",
+    "subject": "english",
+    "cost_bricks": 10,
+    "unlock_level": 1,
+    "image_url": "/images/buildings/school.png"
+  },
+  {
+    "name": "商店",
+    "description": "买东西的地方",
+    "subject": "english",
+    "cost_bricks": 8,
+    "unlock_level": 1,
+    "image_url": "/images/buildings/shop.png"
+  },
+  {
+    "name": "医院",
+    "description": "看病的地方",
+    "subject": "english",
+    "cost_bricks": 12,
+    "unlock_level": 1,
+    "image_url": "/images/buildings/hospital.png"
+  },
+  {
+    "name": "公园",
+    "description": "玩耍的地方",
+    "subject": "english",
+    "cost_bricks": 15,
+    "unlock_level": 2,
+    "image_url": "/images/buildings/park.png"
+  },
+  {
+    "name": "餐厅",
+    "description": "吃饭的地方",
+    "subject": "english",
+    "cost_bricks": 10,
+    "unlock_level": 2,
+    "image_url": "/images/buildings/restaurant.png"
+  },
+  {
+    "name": "电影院",
+    "description": "看电影的地方",
+    "subject": "english",
+    "cost_bricks": 18,
+    "unlock_level": 3,
+    "image_url": "/images/buildings/cinema.png"
+  },
+  {
+    "name": "图书馆",
+    "description": "读书的地方",
+    "subject": "english",
+    "cost_bricks": 20,
+    "unlock_level": 3,
+    "image_url": "/images/buildings/library.png"
+  },
+  {
+    "name": "警察局",
+    "description": "保护大家的地方",
+    "subject": "english",
+    "cost_bricks": 15,
+    "unlock_level": 2,
+    "image_url": "/images/buildings/police.png"
+  },
+  {
+    "name": "消防站",
+    "description": "消防员工作的地方",
+    "subject": "english",
+    "cost_bricks": 15,
+    "unlock_level": 2,
+    "image_url": "/images/buildings/fire_station.png"
+  },
+  {
+    "name": "体育馆",
+    "description": "运动的地方",
+    "subject": "english",
+    "cost_bricks": 25,
+    "unlock_level": 4,
+    "image_url": "/images/buildings/stadium.png"
+  }
+]

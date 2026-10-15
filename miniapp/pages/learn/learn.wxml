@@ -1,0 +1,110 @@
+<!--pages/learn/learn.wxml-->
+<view class="learn-page">
+  <!-- 加载中 -->
+  <view wx:if="{{loading}}" class="loading">
+    <text class="loading-emoji">📖</text>
+    <text class="loading-text">正在准备今天的单词…</text>
+  </view>
+
+  <!-- 加载失败 -->
+  <view wx:elif="{{failed}}" class="panel">
+    <view class="empty">
+      <text class="empty-emoji">📡</text>
+      <text class="empty-text">没能拿到今天的单词。检查一下网络，然后再试一次。</text>
+      <button class="btn btn-primary" bindtap="onRetry">重新加载</button>
+    </view>
+  </view>
+
+  <!-- 答题 -->
+  <block wx:elif="{{question}}">
+    <!-- 进度 -->
+    <view class="progress-row">
+      <view class="progress-track">
+        <view class="progress-fill" style="width: {{(index / words.length) * 100}}%;"></view>
+      </view>
+      <text class="progress-count tnum">{{index + 1}} / {{words.length}}</text>
+    </view>
+
+    <!-- 收益累计 -->
+    <view class="earned-row">
+      <view class="chip">
+        <text class="chip-icon">🪙</text>
+        <text class="chip-num tnum">{{earned.coins}}</text>
+      </view>
+      <view class="chip">
+        <text class="chip-icon">🧱</text>
+        <text class="chip-num tnum">{{earned.bricks}}</text>
+      </view>
+      <view wx:if="{{question.is_review}}" class="review-flag">复习</view>
+    </view>
+
+    <!-- 题干 -->
+    <view class="prompt block">
+      <text wx:if="{{question.type === 'pic'}}" class="prompt-emoji">{{question.promptEmoji}}</text>
+
+      <view wx:else class="prompt-word-wrap">
+        <text class="prompt-word">{{question.promptWord}}</text>
+        <view class="speaker" bindtap="onPlayAudio">🔊</view>
+      </view>
+
+      <text class="prompt-hint">{{question.hint}}</text>
+    </view>
+
+    <!-- 选项 -->
+    <view class="options">
+      <view
+        wx:for="{{question.options}}"
+        wx:key="key"
+        class="option {{answered && item.correct ? 'option-correct' : ''}} {{answered && !item.correct && picked === index ? 'option-wrong' : ''}} {{answered && !item.correct && picked !== index ? 'option-dim' : ''}}"
+        data-index="{{index}}"
+        bindtap="onPick"
+      >
+        <text class="option-label">{{item.label}}</text>
+        <text wx:if="{{answered && item.correct}}" class="option-mark">✓</text>
+        <text wx:elif="{{answered && !item.correct && picked === index}}" class="option-mark">✕</text>
+      </view>
+    </view>
+
+    <!-- 判定与继续 -->
+    <view class="footer">
+      <view wx:if="{{answered}}" class="verdict {{isCorrect ? 'verdict-ok' : 'verdict-no'}}">
+        <text class="verdict-title">{{isCorrect ? '答对了' : '答案是 ' + question.promptWord}}</text>
+        <text class="verdict-sub">{{isCorrect ? '砖块 +1，金币 +5' : '没关系，这个词等会儿还会再见到你'}}</text>
+      </view>
+
+      <button
+        class="btn btn-primary btn-block"
+        wx:if="{{answered}}"
+        bindtap="onNext"
+      >{{index + 1 >= words.length ? '看看今天赚了多少' : '下一个'}}</button>
+    </view>
+  </block>
+
+  <!-- 今日完成 -->
+  <view wx:else class="done-wrap">
+    <view class="done-card block">
+      <text class="done-emoji">🎉</text>
+      <text class="done-title">今天的单词学完了</text>
+
+      <view class="done-stats">
+        <view class="done-stat">
+          <text class="done-num tnum">{{stats.right}}</text>
+          <text class="done-label">答对</text>
+        </view>
+        <view class="done-stat">
+          <text class="done-num tnum">{{stats.wrong}}</text>
+          <text class="done-label">答错</text>
+        </view>
+        <view class="done-stat">
+          <text class="done-num tnum">{{earned.bricks}}</text>
+          <text class="done-label">砖块</text>
+        </view>
+      </view>
+
+      <text class="done-note">{{earned.bricks > 0 ? '砖块已经存进仓库，去建造里用掉它吧' : '明天再来，会有新单词等着你'}}</text>
+
+      <button class="btn btn-sun btn-block" bindtap="onBackToTown">回到小镇</button>
+      <button class="btn btn-block mt-16" bindtap="onRetry">再练一轮</button>
+    </view>
+  </view>
+</view>

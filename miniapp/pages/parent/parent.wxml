@@ -1,0 +1,155 @@
+<!--pages/parent/parent.wxml-->
+<!-- 家长端：视觉上刻意区别于孩子端。这里是一份成绩单，不是游戏界面。 -->
+<view class="report">
+  <!-- 家长验证 -->
+  <view wx:if="{{!verified}}" class="gate">
+    <view class="gate-card">
+      <text class="gate-title">家长验证</text>
+      <text class="gate-sub">为保护孩子的使用时间，这道题只有家长能答</text>
+
+      <view class="gate-question">
+        <text class="gate-num">{{gate.a}} × {{gate.b}} =</text>
+        <input
+          class="gate-input"
+          type="number"
+          value="{{gateInput}}"
+          bindinput="onGateInput"
+          bindconfirm="onGateSubmit"
+          confirm-type="done"
+          placeholder="?"
+          placeholder-class="gate-placeholder"
+          focus="{{true}}"
+        />
+      </view>
+
+      <text wx:if="{{gateWrong}}" class="gate-error">答案不对，换了一道题</text>
+
+      <button class="gate-btn" bindtap="onGateSubmit">进入</button>
+      <text class="gate-refresh" bindtap="onGateRefresh">换一道题</text>
+    </view>
+  </view>
+
+  <!-- 报告 -->
+  <block wx:else>
+    <!-- 孩子 -->
+    <view class="head">
+      <image
+        wx:if="{{child.avatar}}"
+        class="head-avatar"
+        src="{{child.avatar}}"
+        mode="aspectFill"
+      ></image>
+      <view wx:else class="head-avatar head-avatar-empty">👦</view>
+      <view class="col">
+        <text class="head-name">{{child.nickname || '我的孩子'}}</text>
+        <text class="head-meta">{{child.grade}} 年级 · 小小镇</text>
+      </view>
+    </view>
+
+    <view wx:if="{{loading}}" class="report-loading">
+      <text>正在汇总…</text>
+    </view>
+
+    <view wx:elif="{{failed}}" class="report-card">
+      <text class="report-empty">没能取到学习数据。检查一下网络，然后再试一次。</text>
+      <button class="gate-btn" bindtap="loadStats">重新加载</button>
+    </view>
+
+    <block wx:else>
+      <!-- 关键数字 -->
+      <view class="report-card">
+        <text class="report-label">累计掌握单词</text>
+        <view class="big-row">
+          <text class="big-num">{{stats.total_words}}</text>
+          <text class="big-unit">个</text>
+        </view>
+        <view class="split">
+          <view class="split-item">
+            <text class="split-num">{{stats.streak_days}}</text>
+            <text class="split-label">连续学习天数</text>
+          </view>
+          <view class="split-item">
+            <text class="split-num">{{stats.accuracy}}%</text>
+            <text class="split-label">答题正确率</text>
+          </view>
+        </view>
+      </view>
+
+      <!-- 最近七天 -->
+      <view class="report-card">
+        <view class="report-head">
+          <text class="report-label">最近七天</text>
+          <text class="report-note">单位：答题次数</text>
+        </view>
+
+        <view class="chart">
+          <view wx:for="{{recentDays}}" wx:key="date" class="chart-col">
+            <text class="chart-value">{{item.count}}</text>
+            <view class="chart-track">
+              <view class="chart-bar" style="height: {{item.height}}%;"></view>
+            </view>
+            <text class="chart-date">{{item.date}}</text>
+          </view>
+        </view>
+
+        <text wx:if="{{stats.today_words === 0}}" class="report-warn">今天还没有学习记录</text>
+      </view>
+
+      <!-- 今天 -->
+      <view class="report-card">
+        <text class="report-label">今天</text>
+        <view class="today-row">
+          <text class="today-num">{{stats.today_words}}</text>
+          <text class="today-unit">次答题</text>
+        </view>
+      </view>
+
+      <!-- 补充单词 -->
+      <view class="report-card">
+        <view class="report-head">
+          <text class="report-label">补充课本单词</text>
+          <text class="report-note">学校今天教了新词？加进来</text>
+        </view>
+
+        <view wx:if="{{!showAdd}}" class="add-trigger" bindtap="onToggleAdd">
+          <text class="add-trigger-plus">＋</text>
+          <text class="add-trigger-text">添加一个单词</text>
+        </view>
+
+        <view wx:else class="add-form">
+          <view class="add-field">
+            <text class="add-label">英文</text>
+            <input
+              class="add-input"
+              value="{{newWord}}"
+              bindinput="onWordInput"
+              placeholder="apple"
+              placeholder-class="add-placeholder"
+            />
+          </view>
+          <view class="add-field">
+            <text class="add-label">中文</text>
+            <input
+              class="add-input"
+              value="{{newTranslation}}"
+              bindinput="onTranslationInput"
+              placeholder="苹果"
+              placeholder-class="add-placeholder"
+            />
+          </view>
+          <view class="add-actions">
+            <button class="gate-btn ghost" bindtap="onToggleAdd">取消</button>
+            <button class="gate-btn" bindtap="onAddWord" disabled="{{adding}}">
+              {{adding ? '添加中…' : '加入学习计划'}}
+            </button>
+          </view>
+        </view>
+      </view>
+
+      <!-- 说明 -->
+      <view class="foot">
+        <text class="foot-text">数据来自孩子的答题记录，每天更新。复习时间由记忆曲线自动安排。</text>
+      </view>
+    </block>
+  </block>
+</view>
