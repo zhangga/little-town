@@ -1,0 +1,33 @@
+{
+  // 建议：打开这个工作区时限制 Go 工具扫描范围，避免同时索引 miniapp 下的大量文件
+  "go.goroot": "",
+  "go.toolsManagement.autoUpdate": true,
+
+  // 小程序文件用 WXML/WXSS 语法高亮（需安装 minapp 插件，未装也不影响）
+  "files.associations": {
+    "*.wxml": "html",
+    "*.wxss": "css"
+  },
+
+  // 排除目录，让搜索和文件树更干净
+  "files.exclude": {
+    "**/node_modules": true,
+    "**/miniprogram_npm": true
+  },
+  "search.exclude": {
+    "**/node_modules": true,
+    "**/miniprogram_npm": true
+  },
+
+  // 后端 Go 代码格式化
+  "[go]": {
+    "editor.formatOnSave": true,
+    "editor.insertSpaces": false,
+    "editor.codeActionsOnSave": {
+      "source.organizeImports": "explicit"
+    }
+  },
+
+  // 行尾符统一，避免 Windows/Linux 混用产生大量无意义 diff
+  "files.eol": "\n"
+}

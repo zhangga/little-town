@@ -4,7 +4,7 @@ import (
 	"net/http"
 
 	"github.com/gin-gonic/gin"
-	"github.com/yourusername/little-town-backend/internal/models"
+	"github.com/zhangga/little-town/backend/internal/models"
 	"gorm.io/gorm"
 )
 

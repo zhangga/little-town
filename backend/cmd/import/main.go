@@ -7,9 +7,9 @@ import (
 	"log"
 
 	"github.com/joho/godotenv"
-	"github.com/yourusername/little-town-backend/internal/config"
-	"github.com/yourusername/little-town-backend/internal/database"
-	"github.com/yourusername/little-town-backend/internal/models"
+	"github.com/zhangga/little-town/backend/internal/config"
+	"github.com/zhangga/little-town/backend/internal/database"
+	"github.com/zhangga/little-town/backend/internal/models"
 	"gorm.io/gorm"
 )
 

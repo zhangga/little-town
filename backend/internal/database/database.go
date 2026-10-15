@@ -2,8 +2,8 @@ package database
 
 import (
 	"fmt"
-	"github.com/yourusername/little-town-backend/internal/config"
-	"github.com/yourusername/little-town-backend/internal/models"
+	"github.com/zhangga/little-town/backend/internal/config"
+	"github.com/zhangga/little-town/backend/internal/models"
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
 	"gorm.io/gorm/logger"

@@ -4,9 +4,9 @@ import (
 	"log"
 	"github.com/gin-gonic/gin"
 	"github.com/joho/godotenv"
-	"github.com/yourusername/little-town-backend/internal/config"
-	"github.com/yourusername/little-town-backend/internal/database"
-	"github.com/yourusername/little-town-backend/internal/router"
+	"github.com/zhangga/little-town/backend/internal/config"
+	"github.com/zhangga/little-town/backend/internal/database"
+	"github.com/zhangga/little-town/backend/internal/router"
 )
 
 func main() {

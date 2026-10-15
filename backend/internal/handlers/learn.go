@@ -4,9 +4,9 @@ import (
 	"net/http"
 
 	"github.com/gin-gonic/gin"
-	"github.com/yourusername/little-town-backend/internal/config"
-	"github.com/yourusername/little-town-backend/internal/models"
-	"github.com/yourusername/little-town-backend/internal/services"
+	"github.com/zhangga/little-town/backend/internal/config"
+	"github.com/zhangga/little-town/backend/internal/models"
+	"github.com/zhangga/little-town/backend/internal/services"
 	"gorm.io/gorm"
 )
 

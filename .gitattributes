@@ -1,0 +1,36 @@
+# 统一行尾符，避免 Windows/Linux 协作时产生大量无意义 diff
+
+# 默认：交由 git 按内容自动判断，检出时转成本平台行尾
+* text=auto
+
+# Windows 批处理必须是 CRLF —— LF 行尾会导致 goto / 括号块解析异常
+*.bat text eol=crlf
+*.cmd text eol=crlf
+
+# Shell 脚本必须是 LF —— CRLF 会导致 `bash: $'\r': command not found`
+*.sh text eol=lf
+
+# Go / 前端源码统一 LF
+*.go   text eol=lf
+*.js   text eol=lf
+*.json text eol=lf
+*.wxml text eol=lf
+*.wxss text eol=lf
+*.md   text eol=lf
+*.yml  text eol=lf
+
+# 二进制文件不做行尾转换
+*.png  binary
+*.jpg  binary
+*.jpeg binary
+*.gif  binary
+*.ico  binary
+*.pdf  binary
+*.ttf  binary
+*.woff binary
+*.woff2 binary
+
+# Git 统计时把生成物排除，避免污染语言占比
+go.sum    linguist-generated
+go.mod    linguist-generated
+package-lock.json linguist-generated

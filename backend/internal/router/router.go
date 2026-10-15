@@ -2,9 +2,9 @@ package router
 
 import (
 	"github.com/gin-gonic/gin"
-	"github.com/yourusername/little-town-backend/internal/config"
-	"github.com/yourusername/little-town-backend/internal/handlers"
-	"github.com/yourusername/little-town-backend/internal/middleware"
+	"github.com/zhangga/little-town/backend/internal/config"
+	"github.com/zhangga/little-town/backend/internal/handlers"
+	"github.com/zhangga/little-town/backend/internal/middleware"
 	"gorm.io/gorm"
 )
 
