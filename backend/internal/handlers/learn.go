@@ -11,9 +11,10 @@ import (
 )
 
 type LearnHandler struct {
-	db                *gorm.DB
-	cfg               *config.Config
-	reviewService     *services.SpacedRepetitionService
+	db            *gorm.DB
+	cfg           *config.Config
+	reviewService *services.SpacedRepetitionService
+	rewardService *services.RewardService
 }
 
 func NewLearnHandler(db *gorm.DB, cfg *config.Config) *LearnHandler {
@@ -21,6 +22,7 @@ func NewLearnHandler(db *gorm.DB, cfg *config.Config) *LearnHandler {
 		db:            db,
 		cfg:           cfg,
 		reviewService: services.NewSpacedRepetitionService(db),
+		rewardService: services.NewRewardService(db),
 	}
 }
 
@@ -89,6 +91,11 @@ func (h *LearnHandler) GetDailyWords(c *gin.Context) {
 	c.JSON(http.StatusOK, gin.H{
 		"words": items,
 		"count": len(items),
+		// 让前端知道今天是否已经达标，用于展示"还差几个词"
+		"daily_goal": h.cfg.DailyWordCount,
+		"bonus_bricks":     services.DailyCompletionBonus,
+		"daily_brick_cap":  services.DailyBrickCap,
+		"bonus_claimed":    user.DailyBonusDate == todayString(),
 	})
 }
 
@@ -98,6 +105,9 @@ type SubmitAnswerRequest struct {
 }
 
 // SubmitAnswer 提交答案
+//
+// 奖励发放交给 RewardService，它负责每日上限。
+// 若答完这一题后今天的学习量已达标，会顺带发放完成奖励。
 func (h *LearnHandler) SubmitAnswer(c *gin.Context) {
 	userID := getCurrentUserID(c)
 
@@ -107,7 +117,7 @@ func (h *LearnHandler) SubmitAnswer(c *gin.Context) {
 		return
 	}
 
-	// 更新学习记录
+	// 记录学习情况
 	var record models.LearningRecord
 	result := h.db.Where("user_id = ? AND word_id = ?", userID, req.WordID).First(&record)
 
@@ -145,37 +155,42 @@ func (h *LearnHandler) SubmitAnswer(c *gin.Context) {
 		return
 	}
 
-	// 答对奖励砖块
-	coinsEarned := 0
-	bricksEarned := 0
-	if req.IsCorrect {
-		coinsEarned = 5
-		bricksEarned = 1
+	// 发奖
+	reward, err := h.rewardService.GrantForAnswer(userID, req.IsCorrect)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "failed to grant reward"})
+		return
+	}
 
-		// 更新用户金币和砖块
-		var user models.User
-		if err := h.db.First(&user, userID).Error; err == nil {
-			user.Coins += coinsEarned
-			user.Bricks += bricksEarned
-			h.db.Save(&user)
-
-			c.JSON(http.StatusOK, gin.H{
-				"message":       "answer submitted",
-				"is_correct":    req.IsCorrect,
-				"coins_earned":  coinsEarned,
-				"bricks_earned": bricksEarned,
-				"total_coins":   user.Coins,
-				"total_bricks":  user.Bricks,
-			})
-			return
+	// 检查是否刚好完成当日学习量，是则发放完成奖励
+	bonusGranted := false
+	bonusBricks := 0
+	complete, err := h.rewardService.IsDayComplete(userID, h.cfg.DailyWordCount)
+	if err == nil && complete {
+		granted, bonusResult, bonusErr := h.rewardService.GrantCompletionBonus(userID)
+		if bonusErr == nil && granted {
+			bonusGranted = true
+			bonusBricks = bonusResult.BricksEarned
+			// 完成奖励叠加到本次返回
+			reward.BricksEarned += bonusResult.BricksEarned
+			reward.CoinsEarned += bonusResult.CoinsEarned
+			reward.TotalCoins = bonusResult.TotalCoins
+			reward.TotalBricks = bonusResult.TotalBricks
 		}
 	}
 
 	c.JSON(http.StatusOK, gin.H{
-		"message":       "answer submitted",
-		"is_correct":    req.IsCorrect,
-		"coins_earned":  coinsEarned,
-		"bricks_earned": bricksEarned,
+		"message":        "answer submitted",
+		"is_correct":     req.IsCorrect,
+		"coins_earned":   reward.CoinsEarned,
+		"bricks_earned":  reward.BricksEarned,
+		"total_coins":    reward.TotalCoins,
+		"total_bricks":   reward.TotalBricks,
+		"capped":         reward.Capped,
+		"bricks_today":   reward.BricksToday,
+		"daily_cap":      reward.DailyCap,
+		"bonus_granted":  bonusGranted,
+		"bonus_bricks":   bonusBricks,
 	})
 }
 

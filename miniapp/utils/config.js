@@ -12,7 +12,7 @@ const ENV = {
   develop: 'http://localhost:8080/api/v1',
 
   // 体验版：填内网穿透地址或测试服地址
-  trial: 'http://localhost:8080/api/v1',
+  trial: 'http://172.29.64.1:8080/api/v1',
 
   // 正式版：必须是已备案的 HTTPS 域名，且已在微信后台配置为 request 合法域名
   release: ''

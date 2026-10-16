@@ -33,15 +33,28 @@
     "minifyWXSS": true,
     "disableUseStrict": false,
     "showES6CompileOption": false,
-    "useCompilerPlugins": false
+    "useCompilerPlugins": false,
+    "compileWorklet": false,
+    "minifyWXML": true,
+    "localPlugins": false,
+    "condition": false,
+    "swc": false,
+    "disableSWC": true,
+    "babelSetting": {
+      "ignore": [],
+      "disablePlugins": [],
+      "outputPath": ""
+    }
   },
   "compileType": "miniprogram",
   "libVersion": "3.5.5",
-  "appid": "wx85cc3ad84b25adda",
+  "appid": "wxbd8f4a305320e623",
   "projectname": "little-town",
   "condition": {},
   "editorSetting": {
     "tabIndent": "insertSpaces",
     "tabSize": 2
-  }
+  },
+  "simulatorPluginLibVersion": {},
+  "isGameTourist": false
 }

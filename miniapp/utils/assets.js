@@ -47,12 +47,13 @@ const DEFAULT_BUILDING = '🏠'
 const DEFAULT_WORD = '🧩'
 
 function buildingEmoji(name) {
-  return BUILDING_EMOJI[name] || DEFAULT_BUILDING
+  return Object.prototype.hasOwnProperty.call(BUILDING_EMOJI, name) ? BUILDING_EMOJI[name] : DEFAULT_BUILDING
 }
 
 function wordEmoji(word) {
   if (!word) return DEFAULT_WORD
-  return WORD_EMOJI[String(word).toLowerCase()] || DEFAULT_WORD
+  const key = String(word).trim().toLowerCase()
+  return Object.prototype.hasOwnProperty.call(WORD_EMOJI, key) ? WORD_EMOJI[key] : DEFAULT_WORD
 }
 
 // 年级选项，登录与个人中心共用

@@ -5,6 +5,7 @@ import (
 	"encoding/hex"
 	"log"
 	"net/http"
+	"strings"
 	"sync"
 	"time"
 
@@ -15,6 +16,10 @@ import (
 	"github.com/zhangga/little-town/backend/internal/services"
 	"gorm.io/gorm"
 )
+
+// devPrefix 是开发模式下用于指定独立账号的 code 前缀。
+// 见 devOpenID 的说明。
+const devPrefix = "dev:"
 
 // sessionKeyCache 暂存 session_key，供后续解密敏感数据（如手机号）使用。
 // 进程内缓存，重启即失效——当前没有依赖它的功能，够用。
@@ -148,12 +153,28 @@ func (h *AuthHandler) resolveOpenID(code string) (openID string, sessionKey stri
 	return "", "", err
 }
 
-// devOpenID 由 code 生成固定的开发用 openid。
-// wx.login() 每次返回新的 code，直接拼接会导致每次都建新账号，
-// 因此这里对固定的开发标识做散列，得到稳定值。
+// devOpenID 生成开发模式下的 openid。
+//
+// 默认使用固定种子，目的是让同一台设备反复登录命中同一账号：
+// wx.login() 每次返回的 code 都不同，若直接拿 code 拼 openid，
+// 每次登录都会建新账号，之前盖的小镇会全部消失。
+//
+// 但固定种子也意味着所有登录都落在同一个账号上，无法并行测试多用户。
+// 因此约定：code 以 "dev:" 开头时，取冒号后的内容作为隔离键，
+// 这样可以显式构造互不干扰的开发账号，例如 "dev:user-a"、"dev:user-b"。
+// 该约定只在未配置 AppSecret 的开发模式下生效。
 func devOpenID(code string) string {
 	const devSeed = "little-town-dev-user"
-	sum := sha256.Sum256([]byte(devSeed))
+
+	seed := devSeed
+	if strings.HasPrefix(code, devPrefix) {
+		seed = code[len(devPrefix):]
+		if seed == "" {
+			seed = devSeed
+		}
+	}
+
+	sum := sha256.Sum256([]byte(seed))
 	return "dev_" + hex.EncodeToString(sum[:8])
 }
 

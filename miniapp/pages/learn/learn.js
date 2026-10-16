@@ -1,219 +1,246 @@
-// pages/learn/learn.js
 const api = require('../../utils/api')
-const { wordEmoji } = require('../../utils/assets')
 const { showError } = require('../../utils/util')
-
-// 干扰项池：当今日单词不足以凑够 4 个选项时，从这里补
-const DISTRACTORS = [
-  { word: 'banana', translation: '香蕉' },
-  { word: 'bird', translation: '小鸟' },
-  { word: 'cake', translation: '蛋糕' },
-  { word: 'car', translation: '汽车' },
-  { word: 'chair', translation: '椅子' },
-  { word: 'clock', translation: '钟表' },
-  { word: 'cow', translation: '奶牛' },
-  { word: 'duck', translation: '鸭子' },
-  { word: 'egg', translation: '鸡蛋' },
-  { word: 'flower', translation: '花' },
-  { word: 'hat', translation: '帽子' },
-  { word: 'house', translation: '房子' },
-  { word: 'milk', translation: '牛奶' },
-  { word: 'moon', translation: '月亮' },
-  { word: 'panda', translation: '熊猫' },
-  { word: 'pig', translation: '猪' },
-  { word: 'rain', translation: '雨' },
-  { word: 'rice', translation: '米饭' },
-  { word: 'ship', translation: '轮船' },
-  { word: 'shoe', translation: '鞋子' },
-  { word: 'star', translation: '星星' },
-  { word: 'table', translation: '桌子' },
-  { word: 'tree', translation: '树' },
-  { word: 'water', translation: '水' }
-]
-
-function shuffle(list) {
-  const arr = list.slice()
-  for (let i = arr.length - 1; i > 0; i--) {
-    const j = Math.floor(Math.random() * (i + 1))
-    const tmp = arr[i]
-    arr[i] = arr[j]
-    arr[j] = tmp
-  }
-  return arr
-}
+const { enrichWord, normalize, makePlan, makeQuestion, makePairs } = require('../../utils/learning')
+const { createPronunciation } = require('../../utils/pronunciation')
 
 Page({
   data: {
-    loading: true,
-    failed: false,
-    words: [],
-    index: 0,
-    question: null,
-    picked: -1,
-    answered: false,
-    isCorrect: false,
-    earned: { coins: 0, bricks: 0 },
-    stats: { right: 0, wrong: 0 },
-    finished: false,
-    saving: false
+    loading: true, failed: false, phase: 'ready', words: [], index: 0,
+    question: null, picked: -1, answered: false, isCorrect: false,
+    earned: { coins: 0, bricks: 0 }, stats: { right: 0, wrong: 0 },
+    bonus: { granted: false, bricks: 0 }, saving: false, saveError: false,
+    lastReward: { coins: 0, bricks: 0 }, capped: false, unsaved: 0,
+    mode: 'mixed', listening: true, audioCount: 0, newCount: 0,
+    audioState: 'idle', heardAudio: false, flipped: false,
+    spellReady: false, reviewCount: 0, reviewIndex: 0, recovered: 0,
+    pairs: { left: [], right: [] }, pairLeft: -1, pairRight: -1,
+    pairCount: 0, matchWrong: false, matchMessage: '', matchDone: false,
+    pairBatch: 0, pairBatches: 0, finished: false, autoAdvancePaused: false
   },
 
   onLoad() {
-    if (!this.checkAuth()) return
-    this.loadDaily()
+    this._alive = true
+    this._visible = true
+    this._loadID = 0
+    this._advanceGeneration = 0
+    this._audio = createPronunciation(wx, (patch) => {
+      if (this._alive) this.setData(patch)
+    })
+    if (this.checkAuth()) this.loadDaily()
   },
-
-  onShow() {
-    // 从其他页返回时，如果今天还没开始，重新拉取
-    if (this.data.finished) {
-      this.loadDaily()
-    }
+  onShow() { this._visible = true },
+  onHide() {
+    this._visible = false
+    this.clearAutoAdvance()
+    if (this.data.answered) this.setData({ autoAdvancePaused: true })
+    if (this._audio) this._audio.stop()
   },
-
+  onUnload() {
+    this._alive = false
+    this._loadID++
+    this.clearAutoAdvance()
+    clearTimeout(this._matchTimer)
+    if (this._audio) this._audio.stop()
+  },
   checkAuth() {
-    if (!wx.getStorageSync('token')) {
-      wx.redirectTo({ url: '/pages/login/login' })
-      return false
+    if (wx.getStorageSync('token')) return true
+    wx.redirectTo({ url: '/pages/login/login' })
+    return false
+  },
+  scrollToTop() {
+    if (this._visible && wx.pageScrollTo) wx.pageScrollTo({ scrollTop: 0, duration: 0 })
+  },
+
+  clearAutoAdvance() {
+    clearTimeout(this._advanceTimer)
+    this._advanceTimer = null
+    // 即使旧计时回调已经进入队列，也不能影响下一道已答完的题。
+    this._advanceGeneration++
+  },
+  canAutoAdvance() {
+    return this._alive && this._visible && this.data.answered &&
+      !this.data.saving && !this.data.saveError && !this.data.autoAdvancePaused &&
+      ['practice', 'review'].includes(this.data.phase)
+  },
+  scheduleAutoAdvance() {
+    this.clearAutoAdvance()
+    if (!this.canAutoAdvance()) return
+    const generation = this._advanceGeneration
+    let audioWait = 0
+    const advance = () => {
+      if (generation !== this._advanceGeneration || !this.canAutoAdvance()) return
+      // 给正常读音留足时间；播放事件丢失时也不会让用户卡在这一题。
+      if (['loading', 'playing'].includes(this.data.audioState) && audioWait < 6000) {
+        audioWait += 250
+        this._advanceTimer = setTimeout(advance, 250)
+        return
+      }
+      this.onNext()
     }
-    return true
+    this._advanceTimer = setTimeout(advance, this.data.isCorrect ? 1600 : 3500)
+  },
+  onToggleAutoAdvance() {
+    if (!this.data.answered || this.data.saving || this.data.saveError) return
+    this.setData({ autoAdvancePaused: !this.data.autoAdvancePaused })
+    if (this.data.autoAdvancePaused) this.clearAutoAdvance()
+    else this.scheduleAutoAdvance()
   },
 
   async loadDaily() {
-    this.setData({ loading: true, failed: false, finished: false })
+    if (!this.checkAuth()) return
+    const loadID = ++this._loadID
+    this.clearAutoAdvance()
+    this._audio.stop()
+    clearTimeout(this._matchTimer)
+    this.setData({ loading: true, failed: false })
     try {
       const res = await api.get('/learn/daily-words')
-      const words = (res && res.words) || []
-
-      if (words.length === 0) {
-        this.setData({ loading: false, words: [], index: 0, question: null, finished: true })
-        return
-      }
-
+      if (!this._alive || loadID !== this._loadID) return
+      const words = ((res && res.words) || []).map(enrichWord)
+      this._mistakes = []
       this.setData({
-        loading: false,
-        words,
-        index: 0,
-        earned: { coins: 0, bricks: 0 },
-        stats: { right: 0, wrong: 0 }
+        loading: false, phase: words.length ? 'ready' : 'done', words, index: 0,
+        question: null, finished: !words.length, answered: false,
+        audioCount: words.filter((word) => word.audio).length,
+        newCount: words.filter((word) => !word.is_review).length,
+        earned: { coins: 0, bricks: 0 }, stats: { right: 0, wrong: 0 },
+        bonus: { granted: false, bricks: 0 }, capped: false,
+        saving: false, saveError: false, unsaved: 0, reviewCount: 0, recovered: 0,
+        autoAdvancePaused: false
       })
-      this.buildQuestion(0)
+      this.scrollToTop()
     } catch (err) {
+      if (!this._alive || loadID !== this._loadID) return
       this.setData({ loading: false, failed: true })
       showError(err.message || '今天的学习内容加载失败')
     }
   },
 
-  // 生成一道题：偶数题看图选词，奇数题看词选义
-  buildQuestion(index) {
-    const { words } = this.data
-    const current = words[index]
-    if (!current) return
-
-    const isPicRound = index % 2 === 0
-
-    // 干扰项：优先用今日其他单词，不够再从池子里补
-    const others = words.filter((w) => w.id !== current.id)
-    const pool = shuffle(others).slice(0, 3)
-
-    if (isPicRound) {
-      const fallback = shuffle(DISTRACTORS.filter(
-        (d) => d.word !== current.word && !pool.some((p) => p.word === d.word)
-      )).slice(0, 3 - pool.length)
-
-      const options = shuffle(
-        [
-          { key: 'w' + current.id, label: current.word, correct: true }
-        ].concat(
-          pool.map((p) => ({ key: 'w' + p.id, label: p.word, correct: false })),
-          fallback.map((f) => ({ key: 'd' + f.word, label: f.word, correct: false }))
-        )
-      )
-
-      this.setData({
-        question: {
-          id: current.id,
-          type: 'pic',
-          is_review: current.is_review,
-          promptEmoji: wordEmoji(current.word),
-          promptWord: current.word,
-          hint: current.is_review ? '这个词你学过，还认得吗？' : '看图片，选出正确的单词',
-          options
-        },
-        picked: -1,
-        answered: false,
-        isCorrect: false
-      })
-    } else {
-      const fallback = shuffle(DISTRACTORS.filter(
-        (d) => d.translation !== current.translation && !pool.some((p) => p.translation === d.translation)
-      )).slice(0, 3 - pool.length)
-
-      const options = shuffle(
-        [
-          { key: 'w' + current.id, label: current.translation, correct: true }
-        ].concat(
-          pool.map((p) => ({ key: 'w' + p.id, label: p.translation, correct: false })),
-          fallback.map((f) => ({ key: 'd' + f.word, label: f.translation, correct: false }))
-        )
-      )
-
-      this.setData({
-        question: {
-          id: current.id,
-          type: 'meaning',
-          is_review: current.is_review,
-          promptEmoji: '',
-          promptWord: current.word,
-          hint: current.is_review ? '这个词你学过，还认得吗？' : '选出正确的意思',
-          options
-        },
-        picked: -1,
-        answered: false,
-        isCorrect: false
-      })
-    }
+  onMode(e) {
+    if (this.data.phase !== 'ready') return
+    const mode = e.currentTarget.dataset.mode
+    if (!['mixed', 'listen', 'spell'].includes(mode)) return
+    if (mode === 'listen' && (!this.data.audioCount || !this.data.listening)) return
+    this.setData({ mode })
+  },
+  onToggleListening(e) {
+    const listening = !!e.detail.value
+    this.setData({ listening, mode: !listening && this.data.mode === 'listen' ? 'mixed' : this.data.mode })
+  },
+  onStart() {
+    if (this.data.phase !== 'ready' || !this.data.words.length) return
+    this._plan = makePlan(this.data.words, this.data.mode, this.data.listening)
+    this._mistakes = []
+    this.showStep(0)
+  },
+  showStep(index) {
+    this.clearAutoAdvance()
+    this._audio.stop()
+    const question = this._plan[index]
+    const card = !question.word.is_review && this.data.mode === 'mixed'
+    this.setData({
+      index, question, phase: card ? 'card' : 'practice', flipped: false,
+      picked: -1, answered: false, isCorrect: false, spellReady: false,
+      heardAudio: false, saveError: false, lastReward: { coins: 0, bricks: 0 },
+      autoAdvancePaused: false
+    })
+    this.scrollToTop()
+  },
+  onFlip() {
+    if (this.data.phase === 'card') this.setData({ flipped: true })
+  },
+  onCardContinue() {
+    if (this.data.phase !== 'card' || !this.data.flipped) return
+    this._audio.stop()
+    this.setData({ phase: 'practice', heardAudio: false })
+    this.scrollToTop()
   },
 
   onPick(e) {
-    if (this.data.answered) return
-    const { index } = e.currentTarget.dataset
+    if (!['practice', 'review'].includes(this.data.phase) || this.data.answered || this.data.saving) return
+    if (this.data.question.type === 'listen' && !this.data.heardAudio) return
+    const index = Number(e.currentTarget.dataset.index)
     const option = this.data.question.options[index]
-    const isCorrect = !!option.correct
-
+    if (!option) return
+    this.setData({ picked: index })
+    return this.answer(!!option.correct)
+  },
+  onTile(e) {
+    if (this.data.answered || this.data.question.type !== 'spell') return
+    const index = Number(e.currentTarget.dataset.index)
+    const tiles = this.data.question.tiles.map((tile) => Object.assign({}, tile))
+    const slots = this.data.question.slots.map((slot) => Object.assign({}, slot))
+    const tile = tiles[index]
+    const empty = slots.find((slot) => !slot.fixed && slot.tile < 0)
+    if (!tile || tile.used || !empty) return
+    tile.used = true
+    empty.letter = tile.letter
+    empty.tile = index
+    this.updateSpelling(slots, tiles)
+  },
+  onRemoveLetter(e) {
+    if (this.data.answered || this.data.question.type !== 'spell') return
+    const index = Number(e.currentTarget.dataset.index)
+    const tiles = this.data.question.tiles.map((tile) => Object.assign({}, tile))
+    const slots = this.data.question.slots.map((slot) => Object.assign({}, slot))
+    const slot = slots[index]
+    if (!slot || slot.fixed || slot.tile < 0) return
+    tiles[slot.tile].used = false
+    slot.letter = ''
+    slot.tile = -1
+    this.updateSpelling(slots, tiles)
+  },
+  onClearSpelling() {
+    if (this.data.answered || this.data.question.type !== 'spell') return
+    const slots = this.data.question.slots.map((slot) => Object.assign({}, slot, {
+      letter: slot.fixed ? slot.letter : '', tile: -1
+    }))
+    const tiles = this.data.question.tiles.map((tile) => Object.assign({}, tile, { used: false }))
+    this.updateSpelling(slots, tiles)
+  },
+  updateSpelling(slots, tiles) {
     this.setData({
-      picked: index,
-      answered: true,
-      isCorrect,
+      'question.slots': slots, 'question.tiles': tiles,
+      spellReady: slots.every((slot) => slot.fixed || slot.tile >= 0)
+    })
+  },
+  onCheckSpelling() {
+    if (!this.data.spellReady || this.data.answered) return
+    const value = this.data.question.slots.map((slot) => slot.letter).join('')
+    return this.answer(normalize(value) === normalize(this.data.question.word.word))
+  },
+
+  async answer(isCorrect) {
+    if (this.data.answered || this.data.saving) return
+    this.clearAutoAdvance()
+    this._audio.stop()
+    this.setData({ answered: true, isCorrect })
+    const word = this.data.question.word
+    if (this.data.listening && word.audio && this._visible) this._audio.play(word, false)
+    // 巩固练习不再次发奖，也不再次推进同一个词的复习等级。
+    if (this.data.phase === 'review') {
+      if (isCorrect) this.setData({ recovered: this.data.recovered + 1 })
+      this.scheduleAutoAdvance()
+      return
+    }
+    if (!isCorrect) this._mistakes.push(word)
+    this.setData({
       stats: {
         right: this.data.stats.right + (isCorrect ? 1 : 0),
         wrong: this.data.stats.wrong + (isCorrect ? 0 : 1)
-      }
+      }, saving: true
     })
-
-    this.submit(this.data.question.id, isCorrect)
-  },
-
-  // 提交结果，记录奖励
-  async submit(wordId, isCorrect) {
-    if (this.data.saving) return
-    this.setData({ saving: true })
     try {
-      const res = await api.post('/learn/submit-answer', {
-        word_id: wordId,
-        is_correct: isCorrect
-      })
-
-      const coins = (res && res.coins_earned) || 0
-      const bricks = (res && res.bricks_earned) || 0
-
-      this.setData({
-        earned: {
-          coins: this.data.earned.coins + coins,
-          bricks: this.data.earned.bricks + bricks
-        }
-      })
-
-      // 同步本地用户资源，让小镇页数字不滞后
+      const res = await api.post('/learn/submit-answer', { word_id: word.id, is_correct: isCorrect })
+      if (!this._alive) return
+      const coins = Number(res.coins_earned) || 0
+      const bricks = Number(res.bricks_earned) || 0
+      const patch = {
+        earned: { coins: this.data.earned.coins + coins, bricks: this.data.earned.bricks + bricks },
+        lastReward: { coins, bricks }, capped: !!res.capped
+      }
+      if (res.bonus_granted) patch.bonus = { granted: true, bricks: res.bonus_bricks || 0 }
+      this.setData(patch)
       const userInfo = wx.getStorageSync('userInfo')
       if (userInfo && typeof res.total_coins === 'number') {
         userInfo.coins = res.total_coins
@@ -221,48 +248,139 @@ Page({
         wx.setStorageSync('userInfo', userInfo)
       }
     } catch (err) {
-      // 答错或网络失败都不打断学习流程，只提示
-      console.warn('提交答案失败', err)
+      // 超时可能已到账，当前接口不支持幂等重试，不能自动重发。
+      if (this._alive) this.setData({ saveError: true, unsaved: this.data.unsaved + 1 })
     } finally {
-      this.setData({ saving: false })
+      if (this._alive) {
+        this.setData({ saving: false })
+        this.scheduleAutoAdvance()
+      }
     }
   },
-
-  // 下一题
   onNext() {
+    if (!this.data.answered || this.data.saving) return
+    this.clearAutoAdvance()
+    if (this.data.phase === 'review') {
+      const next = this.data.reviewIndex + 1
+      if (next < this._mistakes.length) this.showReview(next)
+      else this.startMatching()
+      return
+    }
+    if (this.data.phase !== 'practice') return
     const next = this.data.index + 1
-    if (next >= this.data.words.length) {
-      this.setData({ finished: true, question: null })
+    if (next < this._plan.length) this.showStep(next)
+    else if (this._mistakes.length) this.showReview(0)
+    else this.startMatching()
+  },
+  showReview(index) {
+    this.clearAutoAdvance()
+    this._audio.stop()
+    const word = this._mistakes[index]
+    this.setData({
+      phase: 'review', reviewIndex: index, reviewCount: this._mistakes.length,
+      question: makeQuestion(word, this.data.words, 'spell', this.data.listening),
+      picked: -1, answered: false, isCorrect: false, spellReady: false,
+      heardAudio: false, saveError: false, autoAdvancePaused: false
+    })
+    this.scrollToTop()
+  },
+
+  startMatching() {
+    this.clearAutoAdvance()
+    this._audio.stop()
+    this._pairBatch = 0
+    this.showPairBatch()
+  },
+  showPairBatch() {
+    const batch = this._pairBatch
+    const words = this.data.words.slice(batch * 5, batch * 5 + 5)
+    if (!words.length) return this.finish()
+    this.setData({
+      phase: 'match', question: null, pairs: makePairs(words),
+      pairLeft: -1, pairRight: -1, pairCount: 0, matchWrong: false,
+      matchMessage: '点一个英文，再找到它的中文朋友', matchDone: false,
+      pairBatch: batch + 1, pairBatches: Math.ceil(this.data.words.length / 5)
+    })
+    this.scrollToTop()
+  },
+  onMatchPick(e) {
+    if (this.data.phase !== 'match' || this.data.matchWrong || this.data.matchDone) return
+    const side = e.currentTarget.dataset.side
+    const index = Number(e.currentTarget.dataset.index)
+    if (!['left', 'right'].includes(side)) return
+    const item = this.data.pairs[side][index]
+    if (!item || item.matched) return
+    this.setData({ [side === 'left' ? 'pairLeft' : 'pairRight']: index })
+    const { pairLeft, pairRight, pairs } = this.data
+    if (pairLeft < 0 || pairRight < 0) return
+    if (pairs.left[pairLeft].pair !== pairs.right[pairRight].pair) {
+      this.setData({ matchWrong: true, matchMessage: '这两个不是一对，再试试' })
+      this._matchTimer = setTimeout(() => {
+        if (this._alive) this.setData({ pairLeft: -1, pairRight: -1, matchWrong: false })
+      }, 650)
       return
     }
-    this.setData({ index: next })
-    this.buildQuestion(next)
+    const count = this.data.pairCount + 1
+    this.setData({
+      ['pairs.left[' + pairLeft + '].matched']: true,
+      ['pairs.right[' + pairRight + '].matched']: true,
+      pairLeft: -1, pairRight: -1, pairCount: count,
+      matchDone: count === pairs.left.length,
+      matchMessage: count === pairs.left.length ? '都找到朋友了！' : '配对成功，继续找下一对'
+    })
+  },
+  onMatchNext() {
+    if (!this.data.matchDone) return
+    this._pairBatch++
+    this.showPairBatch()
+  },
+  finish() {
+    this.clearAutoAdvance()
+    this._audio.stop()
+    this.setData({ phase: 'done', finished: true, question: null })
+    this.scrollToTop()
+    this.maybeRequestSubscribe()
   },
 
-  onPlayAudio() {
-    const current = this.data.words[this.data.index]
-    const url = current && current.audio_url
-    if (url) {
-      const inner = wx.createInnerAudioContext()
-      inner.src = url
-      inner.play()
-      return
+  onPlayAudio(e) {
+    if (!this.data.question) return
+    if (this.data.answered) {
+      this.clearAutoAdvance()
+      this.setData({ autoAdvancePaused: true })
     }
-    wx.showToast({ title: '发音马上就来', icon: 'none' })
+    const slow = !!(e && e.currentTarget.dataset.slow)
+    this._audio.play(this.data.question.word, slow)
+  },
+  onSkipListening() {
+    if (!this.data.question || this.data.question.type !== 'listen' || this.data.answered) return
+    this._audio.stop()
+    this.setData({
+      question: makeQuestion(this.data.question.word, this.data.words, 'meaning', false),
+      heardAudio: false, picked: -1
+    })
   },
 
-  onRetry() {
-    this.loadDaily()
+  async maybeRequestSubscribe() {
+    try {
+      const info = await api.subscription.info()
+      if (!this._alive || !this._visible || !info || !info.configured || !info.should_request || !info.template_id) return
+      if (!wx.requestSubscribeMessage) return
+      wx.requestSubscribeMessage({
+        tmplIds: [info.template_id],
+        success: async (res) => {
+          const accepted = res[info.template_id] === 'accept'
+          try { await api.subscription.grant(accepted) } catch (err) { console.warn('记录订阅结果失败', err) }
+          if (accepted) wx.showToast({ title: '明天会提醒你复习', icon: 'none', duration: 2000 })
+        },
+        fail: () => { api.subscription.grant(false).catch(() => {}) }
+      })
+    } catch (err) {
+      console.warn('获取订阅状态失败', err)
+    }
   },
-
-  onBackToTown() {
-    wx.switchTab({ url: '/pages/index/index' })
-  },
-
+  onRetry() { this.loadDaily() },
+  onBackToTown() { wx.switchTab({ url: '/pages/index/index' }) },
   onShareAppMessage() {
-    return {
-      title: '我在小小镇学单词，今天又赚了砖块',
-      path: '/pages/index/index'
-    }
+    return { title: '听一听、拼一拼，我在小小镇学单词', path: '/pages/index/index' }
   }
 })

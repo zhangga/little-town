@@ -140,14 +140,14 @@ func (s *SpacedRepetitionService) GetUserStats(userID uint) (map[string]interfac
 		Where("user_id = ? AND review_level >= ?", userID, 6).
 		Count(&masteredWords)
 
-	// 今天需要复习的数量
-	todayEnd := time.Now().Truncate(24 * time.Hour).Add(24 * time.Hour)
+	// 今天需要复习的数量（截止到本地次日零点）
+	todayEnd := DayEnd(time.Now())
 	s.db.Model(&models.ReviewSchedule{}).
 		Where("user_id = ? AND next_review_at < ?", userID, todayEnd).
 		Count(&dueToday)
 
 	// 今天学习的数量
-	todayStart := time.Now().Truncate(24 * time.Hour)
+	todayStart := DayStart(time.Now())
 	s.db.Model(&models.LearningRecord{}).
 		Where("user_id = ? AND created_at >= ?", userID, todayStart).
 		Count(&todayLearned)
@@ -177,8 +177,8 @@ func (s *SpacedRepetitionService) GetUpcomingReviews(userID uint, days int) ([]m
 	result := make([]map[string]interface{}, 0, days)
 
 	for i := 0; i < days; i++ {
-		dayStart := time.Now().Truncate(24 * time.Hour).AddDate(0, 0, i)
-		dayEnd := dayStart.Add(24 * time.Hour)
+		dayStart := DayStartOffset(time.Now(), i)
+		dayEnd := dayStart.AddDate(0, 0, 1)
 
 		var count int64
 		s.db.Model(&models.ReviewSchedule{}).

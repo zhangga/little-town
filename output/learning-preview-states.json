@@ -1,0 +1,2709 @@
+{
+  "ready": {
+    "loading": false,
+    "failed": false,
+    "phase": "ready",
+    "words": [
+      {
+        "word": "apple",
+        "translation": "苹果",
+        "grade": 1,
+        "difficulty": 1,
+        "image_url": "/images/words/apple.png",
+        "id": 1,
+        "is_review": false,
+        "emoji": "🍎",
+        "sentence": "I eat an ___.",
+        "sentenceMeaning": "我吃一个苹果。",
+        "fullSentence": "I eat an apple.",
+        "audio": "/audio/words/apple.mp3",
+        "slowAudio": "/audio/words/apple-slow.mp3"
+      },
+      {
+        "word": "book",
+        "translation": "书",
+        "grade": 1,
+        "difficulty": 1,
+        "image_url": "/images/words/book.png",
+        "id": 2,
+        "is_review": false,
+        "emoji": "📕",
+        "sentence": "I read a ___.",
+        "sentenceMeaning": "我读一本书。",
+        "fullSentence": "I read a book.",
+        "audio": "/audio/words/book.mp3",
+        "slowAudio": "/audio/words/book-slow.mp3"
+      },
+      {
+        "word": "cat",
+        "translation": "猫",
+        "grade": 1,
+        "difficulty": 1,
+        "image_url": "/images/words/cat.png",
+        "id": 3,
+        "is_review": false,
+        "emoji": "🐱",
+        "sentence": "The ___ says meow.",
+        "sentenceMeaning": "小猫喵喵叫。",
+        "fullSentence": "The cat says meow.",
+        "audio": "/audio/words/cat.mp3",
+        "slowAudio": "/audio/words/cat-slow.mp3"
+      },
+      {
+        "word": "dog",
+        "translation": "狗",
+        "grade": 1,
+        "difficulty": 1,
+        "image_url": "/images/words/dog.png",
+        "id": 4,
+        "is_review": false,
+        "emoji": "🐶",
+        "sentence": "The ___ says woof.",
+        "sentenceMeaning": "小狗汪汪叫。",
+        "fullSentence": "The dog says woof.",
+        "audio": "/audio/words/dog.mp3",
+        "slowAudio": "/audio/words/dog-slow.mp3"
+      },
+      {
+        "word": "elephant",
+        "translation": "大象",
+        "grade": 1,
+        "difficulty": 2,
+        "image_url": "/images/words/elephant.png",
+        "id": 5,
+        "is_review": false,
+        "emoji": "🐘",
+        "sentence": "The ___ has a long nose.",
+        "sentenceMeaning": "大象有长长的鼻子。",
+        "fullSentence": "The elephant has a long nose.",
+        "audio": "/audio/words/elephant.mp3",
+        "slowAudio": "/audio/words/elephant-slow.mp3"
+      }
+    ],
+    "index": 0,
+    "question": null,
+    "picked": -1,
+    "answered": false,
+    "isCorrect": false,
+    "earned": {
+      "coins": 0,
+      "bricks": 0
+    },
+    "stats": {
+      "right": 0,
+      "wrong": 0
+    },
+    "bonus": {
+      "granted": false,
+      "bricks": 0
+    },
+    "saving": false,
+    "saveError": false,
+    "lastReward": {
+      "coins": 0,
+      "bricks": 0
+    },
+    "capped": false,
+    "unsaved": 0,
+    "mode": "mixed",
+    "listening": true,
+    "audioCount": 5,
+    "newCount": 5,
+    "audioState": "idle",
+    "heardAudio": false,
+    "flipped": false,
+    "spellReady": false,
+    "reviewCount": 0,
+    "reviewIndex": 0,
+    "recovered": 0,
+    "pairs": {
+      "left": [],
+      "right": []
+    },
+    "pairLeft": -1,
+    "pairRight": -1,
+    "pairCount": 0,
+    "matchWrong": false,
+    "matchMessage": "",
+    "matchDone": false,
+    "pairBatch": 0,
+    "pairBatches": 0,
+    "finished": false,
+    "autoAdvancePaused": false
+  },
+  "card": {
+    "loading": false,
+    "failed": false,
+    "phase": "card",
+    "words": [
+      {
+        "word": "apple",
+        "translation": "苹果",
+        "grade": 1,
+        "difficulty": 1,
+        "image_url": "/images/words/apple.png",
+        "id": 1,
+        "is_review": false,
+        "emoji": "🍎",
+        "sentence": "I eat an ___.",
+        "sentenceMeaning": "我吃一个苹果。",
+        "fullSentence": "I eat an apple.",
+        "audio": "/audio/words/apple.mp3",
+        "slowAudio": "/audio/words/apple-slow.mp3"
+      },
+      {
+        "word": "book",
+        "translation": "书",
+        "grade": 1,
+        "difficulty": 1,
+        "image_url": "/images/words/book.png",
+        "id": 2,
+        "is_review": false,
+        "emoji": "📕",
+        "sentence": "I read a ___.",
+        "sentenceMeaning": "我读一本书。",
+        "fullSentence": "I read a book.",
+        "audio": "/audio/words/book.mp3",
+        "slowAudio": "/audio/words/book-slow.mp3"
+      },
+      {
+        "word": "cat",
+        "translation": "猫",
+        "grade": 1,
+        "difficulty": 1,
+        "image_url": "/images/words/cat.png",
+        "id": 3,
+        "is_review": false,
+        "emoji": "🐱",
+        "sentence": "The ___ says meow.",
+        "sentenceMeaning": "小猫喵喵叫。",
+        "fullSentence": "The cat says meow.",
+        "audio": "/audio/words/cat.mp3",
+        "slowAudio": "/audio/words/cat-slow.mp3"
+      },
+      {
+        "word": "dog",
+        "translation": "狗",
+        "grade": 1,
+        "difficulty": 1,
+        "image_url": "/images/words/dog.png",
+        "id": 4,
+        "is_review": false,
+        "emoji": "🐶",
+        "sentence": "The ___ says woof.",
+        "sentenceMeaning": "小狗汪汪叫。",
+        "fullSentence": "The dog says woof.",
+        "audio": "/audio/words/dog.mp3",
+        "slowAudio": "/audio/words/dog-slow.mp3"
+      },
+      {
+        "word": "elephant",
+        "translation": "大象",
+        "grade": 1,
+        "difficulty": 2,
+        "image_url": "/images/words/elephant.png",
+        "id": 5,
+        "is_review": false,
+        "emoji": "🐘",
+        "sentence": "The ___ has a long nose.",
+        "sentenceMeaning": "大象有长长的鼻子。",
+        "fullSentence": "The elephant has a long nose.",
+        "audio": "/audio/words/elephant.mp3",
+        "slowAudio": "/audio/words/elephant-slow.mp3"
+      }
+    ],
+    "index": 0,
+    "question": {
+      "title": "例句填空",
+      "hint": "选一个单词，把句子补完整",
+      "icon": "✏️",
+      "type": "cloze",
+      "word": {
+        "word": "apple",
+        "translation": "苹果",
+        "grade": 1,
+        "difficulty": 1,
+        "image_url": "/images/words/apple.png",
+        "id": 1,
+        "is_review": false,
+        "emoji": "🍎",
+        "sentence": "I eat an ___.",
+        "sentenceMeaning": "我吃一个苹果。",
+        "fullSentence": "I eat an apple.",
+        "audio": "/audio/words/apple.mp3",
+        "slowAudio": "/audio/words/apple-slow.mp3"
+      },
+      "options": [
+        {
+          "key": "option-0",
+          "label": "apple",
+          "correct": true
+        },
+        {
+          "key": "option-1",
+          "label": "elephant",
+          "correct": false
+        },
+        {
+          "key": "option-2",
+          "label": "cat",
+          "correct": false
+        },
+        {
+          "key": "option-3",
+          "label": "duck",
+          "correct": false
+        }
+      ],
+      "slots": [
+        {
+          "key": "slot-0",
+          "fixed": false,
+          "letter": "",
+          "tile": -1
+        },
+        {
+          "key": "slot-1",
+          "fixed": false,
+          "letter": "",
+          "tile": -1
+        },
+        {
+          "key": "slot-2",
+          "fixed": false,
+          "letter": "",
+          "tile": -1
+        },
+        {
+          "key": "slot-3",
+          "fixed": false,
+          "letter": "",
+          "tile": -1
+        },
+        {
+          "key": "slot-4",
+          "fixed": false,
+          "letter": "",
+          "tile": -1
+        }
+      ],
+      "tiles": [
+        {
+          "key": "tile-0",
+          "letter": "p",
+          "used": false
+        },
+        {
+          "key": "tile-1",
+          "letter": "a",
+          "used": false
+        },
+        {
+          "key": "tile-2",
+          "letter": "l",
+          "used": false
+        },
+        {
+          "key": "tile-3",
+          "letter": "e",
+          "used": false
+        },
+        {
+          "key": "tile-4",
+          "letter": "p",
+          "used": false
+        }
+      ],
+      "sentenceBefore": "I eat an ",
+      "sentenceAfter": "."
+    },
+    "picked": -1,
+    "answered": false,
+    "isCorrect": false,
+    "earned": {
+      "coins": 0,
+      "bricks": 0
+    },
+    "stats": {
+      "right": 0,
+      "wrong": 0
+    },
+    "bonus": {
+      "granted": false,
+      "bricks": 0
+    },
+    "saving": false,
+    "saveError": false,
+    "lastReward": {
+      "coins": 0,
+      "bricks": 0
+    },
+    "capped": false,
+    "unsaved": 0,
+    "mode": "mixed",
+    "listening": true,
+    "audioCount": 5,
+    "newCount": 5,
+    "audioState": "idle",
+    "heardAudio": false,
+    "flipped": false,
+    "spellReady": false,
+    "reviewCount": 0,
+    "reviewIndex": 0,
+    "recovered": 0,
+    "pairs": {
+      "left": [],
+      "right": []
+    },
+    "pairLeft": -1,
+    "pairRight": -1,
+    "pairCount": 0,
+    "matchWrong": false,
+    "matchMessage": "",
+    "matchDone": false,
+    "pairBatch": 0,
+    "pairBatches": 0,
+    "finished": false,
+    "autoAdvancePaused": false
+  },
+  "card-flipped": {
+    "loading": false,
+    "failed": false,
+    "phase": "card",
+    "words": [
+      {
+        "word": "apple",
+        "translation": "苹果",
+        "grade": 1,
+        "difficulty": 1,
+        "image_url": "/images/words/apple.png",
+        "id": 1,
+        "is_review": false,
+        "emoji": "🍎",
+        "sentence": "I eat an ___.",
+        "sentenceMeaning": "我吃一个苹果。",
+        "fullSentence": "I eat an apple.",
+        "audio": "/audio/words/apple.mp3",
+        "slowAudio": "/audio/words/apple-slow.mp3"
+      },
+      {
+        "word": "book",
+        "translation": "书",
+        "grade": 1,
+        "difficulty": 1,
+        "image_url": "/images/words/book.png",
+        "id": 2,
+        "is_review": false,
+        "emoji": "📕",
+        "sentence": "I read a ___.",
+        "sentenceMeaning": "我读一本书。",
+        "fullSentence": "I read a book.",
+        "audio": "/audio/words/book.mp3",
+        "slowAudio": "/audio/words/book-slow.mp3"
+      },
+      {
+        "word": "cat",
+        "translation": "猫",
+        "grade": 1,
+        "difficulty": 1,
+        "image_url": "/images/words/cat.png",
+        "id": 3,
+        "is_review": false,
+        "emoji": "🐱",
+        "sentence": "The ___ says meow.",
+        "sentenceMeaning": "小猫喵喵叫。",
+        "fullSentence": "The cat says meow.",
+        "audio": "/audio/words/cat.mp3",
+        "slowAudio": "/audio/words/cat-slow.mp3"
+      },
+      {
+        "word": "dog",
+        "translation": "狗",
+        "grade": 1,
+        "difficulty": 1,
+        "image_url": "/images/words/dog.png",
+        "id": 4,
+        "is_review": false,
+        "emoji": "🐶",
+        "sentence": "The ___ says woof.",
+        "sentenceMeaning": "小狗汪汪叫。",
+        "fullSentence": "The dog says woof.",
+        "audio": "/audio/words/dog.mp3",
+        "slowAudio": "/audio/words/dog-slow.mp3"
+      },
+      {
+        "word": "elephant",
+        "translation": "大象",
+        "grade": 1,
+        "difficulty": 2,
+        "image_url": "/images/words/elephant.png",
+        "id": 5,
+        "is_review": false,
+        "emoji": "🐘",
+        "sentence": "The ___ has a long nose.",
+        "sentenceMeaning": "大象有长长的鼻子。",
+        "fullSentence": "The elephant has a long nose.",
+        "audio": "/audio/words/elephant.mp3",
+        "slowAudio": "/audio/words/elephant-slow.mp3"
+      }
+    ],
+    "index": 0,
+    "question": {
+      "title": "例句填空",
+      "hint": "选一个单词，把句子补完整",
+      "icon": "✏️",
+      "type": "cloze",
+      "word": {
+        "word": "apple",
+        "translation": "苹果",
+        "grade": 1,
+        "difficulty": 1,
+        "image_url": "/images/words/apple.png",
+        "id": 1,
+        "is_review": false,
+        "emoji": "🍎",
+        "sentence": "I eat an ___.",
+        "sentenceMeaning": "我吃一个苹果。",
+        "fullSentence": "I eat an apple.",
+        "audio": "/audio/words/apple.mp3",
+        "slowAudio": "/audio/words/apple-slow.mp3"
+      },
+      "options": [
+        {
+          "key": "option-0",
+          "label": "apple",
+          "correct": true
+        },
+        {
+          "key": "option-1",
+          "label": "elephant",
+          "correct": false
+        },
+        {
+          "key": "option-2",
+          "label": "cat",
+          "correct": false
+        },
+        {
+          "key": "option-3",
+          "label": "duck",
+          "correct": false
+        }
+      ],
+      "slots": [
+        {
+          "key": "slot-0",
+          "fixed": false,
+          "letter": "",
+          "tile": -1
+        },
+        {
+          "key": "slot-1",
+          "fixed": false,
+          "letter": "",
+          "tile": -1
+        },
+        {
+          "key": "slot-2",
+          "fixed": false,
+          "letter": "",
+          "tile": -1
+        },
+        {
+          "key": "slot-3",
+          "fixed": false,
+          "letter": "",
+          "tile": -1
+        },
+        {
+          "key": "slot-4",
+          "fixed": false,
+          "letter": "",
+          "tile": -1
+        }
+      ],
+      "tiles": [
+        {
+          "key": "tile-0",
+          "letter": "p",
+          "used": false
+        },
+        {
+          "key": "tile-1",
+          "letter": "a",
+          "used": false
+        },
+        {
+          "key": "tile-2",
+          "letter": "l",
+          "used": false
+        },
+        {
+          "key": "tile-3",
+          "letter": "e",
+          "used": false
+        },
+        {
+          "key": "tile-4",
+          "letter": "p",
+          "used": false
+        }
+      ],
+      "sentenceBefore": "I eat an ",
+      "sentenceAfter": "."
+    },
+    "picked": -1,
+    "answered": false,
+    "isCorrect": false,
+    "earned": {
+      "coins": 0,
+      "bricks": 0
+    },
+    "stats": {
+      "right": 0,
+      "wrong": 0
+    },
+    "bonus": {
+      "granted": false,
+      "bricks": 0
+    },
+    "saving": false,
+    "saveError": false,
+    "lastReward": {
+      "coins": 0,
+      "bricks": 0
+    },
+    "capped": false,
+    "unsaved": 0,
+    "mode": "mixed",
+    "listening": true,
+    "audioCount": 5,
+    "newCount": 5,
+    "audioState": "idle",
+    "heardAudio": false,
+    "flipped": true,
+    "spellReady": false,
+    "reviewCount": 0,
+    "reviewIndex": 0,
+    "recovered": 0,
+    "pairs": {
+      "left": [],
+      "right": []
+    },
+    "pairLeft": -1,
+    "pairRight": -1,
+    "pairCount": 0,
+    "matchWrong": false,
+    "matchMessage": "",
+    "matchDone": false,
+    "pairBatch": 0,
+    "pairBatches": 0,
+    "finished": false,
+    "autoAdvancePaused": false
+  },
+  "pic": {
+    "loading": false,
+    "failed": false,
+    "phase": "practice",
+    "words": [
+      {
+        "word": "apple",
+        "translation": "苹果",
+        "grade": 1,
+        "difficulty": 1,
+        "image_url": "/images/words/apple.png",
+        "id": 1,
+        "is_review": false,
+        "emoji": "🍎",
+        "sentence": "I eat an ___.",
+        "sentenceMeaning": "我吃一个苹果。",
+        "fullSentence": "I eat an apple.",
+        "audio": "/audio/words/apple.mp3",
+        "slowAudio": "/audio/words/apple-slow.mp3"
+      },
+      {
+        "word": "book",
+        "translation": "书",
+        "grade": 1,
+        "difficulty": 1,
+        "image_url": "/images/words/book.png",
+        "id": 2,
+        "is_review": false,
+        "emoji": "📕",
+        "sentence": "I read a ___.",
+        "sentenceMeaning": "我读一本书。",
+        "fullSentence": "I read a book.",
+        "audio": "/audio/words/book.mp3",
+        "slowAudio": "/audio/words/book-slow.mp3"
+      },
+      {
+        "word": "cat",
+        "translation": "猫",
+        "grade": 1,
+        "difficulty": 1,
+        "image_url": "/images/words/cat.png",
+        "id": 3,
+        "is_review": false,
+        "emoji": "🐱",
+        "sentence": "The ___ says meow.",
+        "sentenceMeaning": "小猫喵喵叫。",
+        "fullSentence": "The cat says meow.",
+        "audio": "/audio/words/cat.mp3",
+        "slowAudio": "/audio/words/cat-slow.mp3"
+      },
+      {
+        "word": "dog",
+        "translation": "狗",
+        "grade": 1,
+        "difficulty": 1,
+        "image_url": "/images/words/dog.png",
+        "id": 4,
+        "is_review": false,
+        "emoji": "🐶",
+        "sentence": "The ___ says woof.",
+        "sentenceMeaning": "小狗汪汪叫。",
+        "fullSentence": "The dog says woof.",
+        "audio": "/audio/words/dog.mp3",
+        "slowAudio": "/audio/words/dog-slow.mp3"
+      },
+      {
+        "word": "elephant",
+        "translation": "大象",
+        "grade": 1,
+        "difficulty": 2,
+        "image_url": "/images/words/elephant.png",
+        "id": 5,
+        "is_review": false,
+        "emoji": "🐘",
+        "sentence": "The ___ has a long nose.",
+        "sentenceMeaning": "大象有长长的鼻子。",
+        "fullSentence": "The elephant has a long nose.",
+        "audio": "/audio/words/elephant.mp3",
+        "slowAudio": "/audio/words/elephant-slow.mp3"
+      }
+    ],
+    "index": 0,
+    "question": {
+      "title": "看图选词",
+      "hint": "看看图片，找到它的英文名字",
+      "icon": "🖼️",
+      "type": "pic",
+      "word": {
+        "word": "apple",
+        "translation": "苹果",
+        "grade": 1,
+        "difficulty": 1,
+        "image_url": "/images/words/apple.png",
+        "id": 1,
+        "is_review": false,
+        "emoji": "🍎",
+        "sentence": "I eat an ___.",
+        "sentenceMeaning": "我吃一个苹果。",
+        "fullSentence": "I eat an apple.",
+        "audio": "/audio/words/apple.mp3",
+        "slowAudio": "/audio/words/apple-slow.mp3"
+      },
+      "options": [
+        {
+          "key": "option-0",
+          "label": "bird",
+          "correct": false
+        },
+        {
+          "key": "option-1",
+          "label": "egg",
+          "correct": false
+        },
+        {
+          "key": "option-2",
+          "label": "apple",
+          "correct": true
+        },
+        {
+          "key": "option-3",
+          "label": "cake",
+          "correct": false
+        }
+      ],
+      "slots": [
+        {
+          "key": "slot-0",
+          "fixed": false,
+          "letter": "",
+          "tile": -1
+        },
+        {
+          "key": "slot-1",
+          "fixed": false,
+          "letter": "",
+          "tile": -1
+        },
+        {
+          "key": "slot-2",
+          "fixed": false,
+          "letter": "",
+          "tile": -1
+        },
+        {
+          "key": "slot-3",
+          "fixed": false,
+          "letter": "",
+          "tile": -1
+        },
+        {
+          "key": "slot-4",
+          "fixed": false,
+          "letter": "",
+          "tile": -1
+        }
+      ],
+      "tiles": [
+        {
+          "key": "tile-0",
+          "letter": "e",
+          "used": false
+        },
+        {
+          "key": "tile-1",
+          "letter": "l",
+          "used": false
+        },
+        {
+          "key": "tile-2",
+          "letter": "p",
+          "used": false
+        },
+        {
+          "key": "tile-3",
+          "letter": "p",
+          "used": false
+        },
+        {
+          "key": "tile-4",
+          "letter": "a",
+          "used": false
+        }
+      ],
+      "sentenceBefore": "I eat an ",
+      "sentenceAfter": "."
+    },
+    "picked": -1,
+    "answered": false,
+    "isCorrect": false,
+    "earned": {
+      "coins": 0,
+      "bricks": 0
+    },
+    "stats": {
+      "right": 0,
+      "wrong": 0
+    },
+    "bonus": {
+      "granted": false,
+      "bricks": 0
+    },
+    "saving": false,
+    "saveError": false,
+    "lastReward": {
+      "coins": 0,
+      "bricks": 0
+    },
+    "capped": false,
+    "unsaved": 0,
+    "mode": "mixed",
+    "listening": true,
+    "audioCount": 5,
+    "newCount": 5,
+    "audioState": "idle",
+    "heardAudio": false,
+    "flipped": true,
+    "spellReady": false,
+    "reviewCount": 0,
+    "reviewIndex": 0,
+    "recovered": 0,
+    "pairs": {
+      "left": [],
+      "right": []
+    },
+    "pairLeft": -1,
+    "pairRight": -1,
+    "pairCount": 0,
+    "matchWrong": false,
+    "matchMessage": "",
+    "matchDone": false,
+    "pairBatch": 0,
+    "pairBatches": 0,
+    "finished": false,
+    "autoAdvancePaused": false
+  },
+  "meaning": {
+    "loading": false,
+    "failed": false,
+    "phase": "practice",
+    "words": [
+      {
+        "word": "apple",
+        "translation": "苹果",
+        "grade": 1,
+        "difficulty": 1,
+        "image_url": "/images/words/apple.png",
+        "id": 1,
+        "is_review": false,
+        "emoji": "🍎",
+        "sentence": "I eat an ___.",
+        "sentenceMeaning": "我吃一个苹果。",
+        "fullSentence": "I eat an apple.",
+        "audio": "/audio/words/apple.mp3",
+        "slowAudio": "/audio/words/apple-slow.mp3"
+      },
+      {
+        "word": "book",
+        "translation": "书",
+        "grade": 1,
+        "difficulty": 1,
+        "image_url": "/images/words/book.png",
+        "id": 2,
+        "is_review": false,
+        "emoji": "📕",
+        "sentence": "I read a ___.",
+        "sentenceMeaning": "我读一本书。",
+        "fullSentence": "I read a book.",
+        "audio": "/audio/words/book.mp3",
+        "slowAudio": "/audio/words/book-slow.mp3"
+      },
+      {
+        "word": "cat",
+        "translation": "猫",
+        "grade": 1,
+        "difficulty": 1,
+        "image_url": "/images/words/cat.png",
+        "id": 3,
+        "is_review": false,
+        "emoji": "🐱",
+        "sentence": "The ___ says meow.",
+        "sentenceMeaning": "小猫喵喵叫。",
+        "fullSentence": "The cat says meow.",
+        "audio": "/audio/words/cat.mp3",
+        "slowAudio": "/audio/words/cat-slow.mp3"
+      },
+      {
+        "word": "dog",
+        "translation": "狗",
+        "grade": 1,
+        "difficulty": 1,
+        "image_url": "/images/words/dog.png",
+        "id": 4,
+        "is_review": false,
+        "emoji": "🐶",
+        "sentence": "The ___ says woof.",
+        "sentenceMeaning": "小狗汪汪叫。",
+        "fullSentence": "The dog says woof.",
+        "audio": "/audio/words/dog.mp3",
+        "slowAudio": "/audio/words/dog-slow.mp3"
+      },
+      {
+        "word": "elephant",
+        "translation": "大象",
+        "grade": 1,
+        "difficulty": 2,
+        "image_url": "/images/words/elephant.png",
+        "id": 5,
+        "is_review": false,
+        "emoji": "🐘",
+        "sentence": "The ___ has a long nose.",
+        "sentenceMeaning": "大象有长长的鼻子。",
+        "fullSentence": "The elephant has a long nose.",
+        "audio": "/audio/words/elephant.mp3",
+        "slowAudio": "/audio/words/elephant-slow.mp3"
+      }
+    ],
+    "index": 0,
+    "question": {
+      "title": "看词选义",
+      "hint": "这个单词是什么意思？",
+      "icon": "📖",
+      "type": "meaning",
+      "word": {
+        "word": "apple",
+        "translation": "苹果",
+        "grade": 1,
+        "difficulty": 1,
+        "image_url": "/images/words/apple.png",
+        "id": 1,
+        "is_review": false,
+        "emoji": "🍎",
+        "sentence": "I eat an ___.",
+        "sentenceMeaning": "我吃一个苹果。",
+        "fullSentence": "I eat an apple.",
+        "audio": "/audio/words/apple.mp3",
+        "slowAudio": "/audio/words/apple-slow.mp3"
+      },
+      "options": [
+        {
+          "key": "option-0",
+          "label": "水",
+          "correct": false
+        },
+        {
+          "key": "option-1",
+          "label": "椅子",
+          "correct": false
+        },
+        {
+          "key": "option-2",
+          "label": "苹果",
+          "correct": true
+        },
+        {
+          "key": "option-3",
+          "label": "香蕉",
+          "correct": false
+        }
+      ],
+      "slots": [
+        {
+          "key": "slot-0",
+          "fixed": false,
+          "letter": "",
+          "tile": -1
+        },
+        {
+          "key": "slot-1",
+          "fixed": false,
+          "letter": "",
+          "tile": -1
+        },
+        {
+          "key": "slot-2",
+          "fixed": false,
+          "letter": "",
+          "tile": -1
+        },
+        {
+          "key": "slot-3",
+          "fixed": false,
+          "letter": "",
+          "tile": -1
+        },
+        {
+          "key": "slot-4",
+          "fixed": false,
+          "letter": "",
+          "tile": -1
+        }
+      ],
+      "tiles": [
+        {
+          "key": "tile-0",
+          "letter": "e",
+          "used": false
+        },
+        {
+          "key": "tile-1",
+          "letter": "p",
+          "used": false
+        },
+        {
+          "key": "tile-2",
+          "letter": "l",
+          "used": false
+        },
+        {
+          "key": "tile-3",
+          "letter": "p",
+          "used": false
+        },
+        {
+          "key": "tile-4",
+          "letter": "a",
+          "used": false
+        }
+      ],
+      "sentenceBefore": "I eat an ",
+      "sentenceAfter": "."
+    },
+    "picked": -1,
+    "answered": false,
+    "isCorrect": false,
+    "earned": {
+      "coins": 0,
+      "bricks": 0
+    },
+    "stats": {
+      "right": 0,
+      "wrong": 0
+    },
+    "bonus": {
+      "granted": false,
+      "bricks": 0
+    },
+    "saving": false,
+    "saveError": false,
+    "lastReward": {
+      "coins": 0,
+      "bricks": 0
+    },
+    "capped": false,
+    "unsaved": 0,
+    "mode": "mixed",
+    "listening": true,
+    "audioCount": 5,
+    "newCount": 5,
+    "audioState": "idle",
+    "heardAudio": false,
+    "flipped": true,
+    "spellReady": false,
+    "reviewCount": 0,
+    "reviewIndex": 0,
+    "recovered": 0,
+    "pairs": {
+      "left": [],
+      "right": []
+    },
+    "pairLeft": -1,
+    "pairRight": -1,
+    "pairCount": 0,
+    "matchWrong": false,
+    "matchMessage": "",
+    "matchDone": false,
+    "pairBatch": 0,
+    "pairBatches": 0,
+    "finished": false,
+    "autoAdvancePaused": false
+  },
+  "listen": {
+    "loading": false,
+    "failed": false,
+    "phase": "practice",
+    "words": [
+      {
+        "word": "apple",
+        "translation": "苹果",
+        "grade": 1,
+        "difficulty": 1,
+        "image_url": "/images/words/apple.png",
+        "id": 1,
+        "is_review": false,
+        "emoji": "🍎",
+        "sentence": "I eat an ___.",
+        "sentenceMeaning": "我吃一个苹果。",
+        "fullSentence": "I eat an apple.",
+        "audio": "/audio/words/apple.mp3",
+        "slowAudio": "/audio/words/apple-slow.mp3"
+      },
+      {
+        "word": "book",
+        "translation": "书",
+        "grade": 1,
+        "difficulty": 1,
+        "image_url": "/images/words/book.png",
+        "id": 2,
+        "is_review": false,
+        "emoji": "📕",
+        "sentence": "I read a ___.",
+        "sentenceMeaning": "我读一本书。",
+        "fullSentence": "I read a book.",
+        "audio": "/audio/words/book.mp3",
+        "slowAudio": "/audio/words/book-slow.mp3"
+      },
+      {
+        "word": "cat",
+        "translation": "猫",
+        "grade": 1,
+        "difficulty": 1,
+        "image_url": "/images/words/cat.png",
+        "id": 3,
+        "is_review": false,
+        "emoji": "🐱",
+        "sentence": "The ___ says meow.",
+        "sentenceMeaning": "小猫喵喵叫。",
+        "fullSentence": "The cat says meow.",
+        "audio": "/audio/words/cat.mp3",
+        "slowAudio": "/audio/words/cat-slow.mp3"
+      },
+      {
+        "word": "dog",
+        "translation": "狗",
+        "grade": 1,
+        "difficulty": 1,
+        "image_url": "/images/words/dog.png",
+        "id": 4,
+        "is_review": false,
+        "emoji": "🐶",
+        "sentence": "The ___ says woof.",
+        "sentenceMeaning": "小狗汪汪叫。",
+        "fullSentence": "The dog says woof.",
+        "audio": "/audio/words/dog.mp3",
+        "slowAudio": "/audio/words/dog-slow.mp3"
+      },
+      {
+        "word": "elephant",
+        "translation": "大象",
+        "grade": 1,
+        "difficulty": 2,
+        "image_url": "/images/words/elephant.png",
+        "id": 5,
+        "is_review": false,
+        "emoji": "🐘",
+        "sentence": "The ___ has a long nose.",
+        "sentenceMeaning": "大象有长长的鼻子。",
+        "fullSentence": "The elephant has a long nose.",
+        "audio": "/audio/words/elephant.mp3",
+        "slowAudio": "/audio/words/elephant-slow.mp3"
+      }
+    ],
+    "index": 0,
+    "question": {
+      "title": "听音辨词",
+      "hint": "先听一听，再选出你听到的单词",
+      "icon": "🎧",
+      "type": "listen",
+      "word": {
+        "word": "apple",
+        "translation": "苹果",
+        "grade": 1,
+        "difficulty": 1,
+        "image_url": "/images/words/apple.png",
+        "id": 1,
+        "is_review": false,
+        "emoji": "🍎",
+        "sentence": "I eat an ___.",
+        "sentenceMeaning": "我吃一个苹果。",
+        "fullSentence": "I eat an apple.",
+        "audio": "/audio/words/apple.mp3",
+        "slowAudio": "/audio/words/apple-slow.mp3"
+      },
+      "options": [
+        {
+          "key": "option-0",
+          "label": "dog",
+          "correct": false
+        },
+        {
+          "key": "option-1",
+          "label": "apple",
+          "correct": true
+        },
+        {
+          "key": "option-2",
+          "label": "bird",
+          "correct": false
+        },
+        {
+          "key": "option-3",
+          "label": "water",
+          "correct": false
+        }
+      ],
+      "slots": [
+        {
+          "key": "slot-0",
+          "fixed": false,
+          "letter": "",
+          "tile": -1
+        },
+        {
+          "key": "slot-1",
+          "fixed": false,
+          "letter": "",
+          "tile": -1
+        },
+        {
+          "key": "slot-2",
+          "fixed": false,
+          "letter": "",
+          "tile": -1
+        },
+        {
+          "key": "slot-3",
+          "fixed": false,
+          "letter": "",
+          "tile": -1
+        },
+        {
+          "key": "slot-4",
+          "fixed": false,
+          "letter": "",
+          "tile": -1
+        }
+      ],
+      "tiles": [
+        {
+          "key": "tile-0",
+          "letter": "l",
+          "used": false
+        },
+        {
+          "key": "tile-1",
+          "letter": "a",
+          "used": false
+        },
+        {
+          "key": "tile-2",
+          "letter": "p",
+          "used": false
+        },
+        {
+          "key": "tile-3",
+          "letter": "e",
+          "used": false
+        },
+        {
+          "key": "tile-4",
+          "letter": "p",
+          "used": false
+        }
+      ],
+      "sentenceBefore": "I eat an ",
+      "sentenceAfter": "."
+    },
+    "picked": -1,
+    "answered": false,
+    "isCorrect": false,
+    "earned": {
+      "coins": 0,
+      "bricks": 0
+    },
+    "stats": {
+      "right": 0,
+      "wrong": 0
+    },
+    "bonus": {
+      "granted": false,
+      "bricks": 0
+    },
+    "saving": false,
+    "saveError": false,
+    "lastReward": {
+      "coins": 0,
+      "bricks": 0
+    },
+    "capped": false,
+    "unsaved": 0,
+    "mode": "mixed",
+    "listening": true,
+    "audioCount": 5,
+    "newCount": 5,
+    "audioState": "idle",
+    "heardAudio": false,
+    "flipped": true,
+    "spellReady": false,
+    "reviewCount": 0,
+    "reviewIndex": 0,
+    "recovered": 0,
+    "pairs": {
+      "left": [],
+      "right": []
+    },
+    "pairLeft": -1,
+    "pairRight": -1,
+    "pairCount": 0,
+    "matchWrong": false,
+    "matchMessage": "",
+    "matchDone": false,
+    "pairBatch": 0,
+    "pairBatches": 0,
+    "finished": false,
+    "autoAdvancePaused": false
+  },
+  "spell": {
+    "loading": false,
+    "failed": false,
+    "phase": "practice",
+    "words": [
+      {
+        "word": "apple",
+        "translation": "苹果",
+        "grade": 1,
+        "difficulty": 1,
+        "image_url": "/images/words/apple.png",
+        "id": 1,
+        "is_review": false,
+        "emoji": "🍎",
+        "sentence": "I eat an ___.",
+        "sentenceMeaning": "我吃一个苹果。",
+        "fullSentence": "I eat an apple.",
+        "audio": "/audio/words/apple.mp3",
+        "slowAudio": "/audio/words/apple-slow.mp3"
+      },
+      {
+        "word": "book",
+        "translation": "书",
+        "grade": 1,
+        "difficulty": 1,
+        "image_url": "/images/words/book.png",
+        "id": 2,
+        "is_review": false,
+        "emoji": "📕",
+        "sentence": "I read a ___.",
+        "sentenceMeaning": "我读一本书。",
+        "fullSentence": "I read a book.",
+        "audio": "/audio/words/book.mp3",
+        "slowAudio": "/audio/words/book-slow.mp3"
+      },
+      {
+        "word": "cat",
+        "translation": "猫",
+        "grade": 1,
+        "difficulty": 1,
+        "image_url": "/images/words/cat.png",
+        "id": 3,
+        "is_review": false,
+        "emoji": "🐱",
+        "sentence": "The ___ says meow.",
+        "sentenceMeaning": "小猫喵喵叫。",
+        "fullSentence": "The cat says meow.",
+        "audio": "/audio/words/cat.mp3",
+        "slowAudio": "/audio/words/cat-slow.mp3"
+      },
+      {
+        "word": "dog",
+        "translation": "狗",
+        "grade": 1,
+        "difficulty": 1,
+        "image_url": "/images/words/dog.png",
+        "id": 4,
+        "is_review": false,
+        "emoji": "🐶",
+        "sentence": "The ___ says woof.",
+        "sentenceMeaning": "小狗汪汪叫。",
+        "fullSentence": "The dog says woof.",
+        "audio": "/audio/words/dog.mp3",
+        "slowAudio": "/audio/words/dog-slow.mp3"
+      },
+      {
+        "word": "elephant",
+        "translation": "大象",
+        "grade": 1,
+        "difficulty": 2,
+        "image_url": "/images/words/elephant.png",
+        "id": 5,
+        "is_review": false,
+        "emoji": "🐘",
+        "sentence": "The ___ has a long nose.",
+        "sentenceMeaning": "大象有长长的鼻子。",
+        "fullSentence": "The elephant has a long nose.",
+        "audio": "/audio/words/elephant.mp3",
+        "slowAudio": "/audio/words/elephant-slow.mp3"
+      }
+    ],
+    "index": 0,
+    "question": {
+      "title": "字母拼词",
+      "hint": "按顺序点字母，拼出它的英文名字",
+      "icon": "🧩",
+      "type": "spell",
+      "word": {
+        "word": "ice cream",
+        "translation": "冰淇淋",
+        "grade": 1,
+        "difficulty": 2,
+        "image_url": "/images/words/ice_cream.png",
+        "id": 9,
+        "is_review": false,
+        "emoji": "🍦",
+        "sentence": "The ___ is cold and sweet.",
+        "sentenceMeaning": "冰淇淋又凉又甜。",
+        "fullSentence": "The ice cream is cold and sweet.",
+        "audio": "/audio/words/ice-cream.mp3",
+        "slowAudio": "/audio/words/ice-cream-slow.mp3"
+      },
+      "options": [
+        {
+          "key": "option-0",
+          "label": "cat",
+          "correct": false
+        },
+        {
+          "key": "option-1",
+          "label": "bird",
+          "correct": false
+        },
+        {
+          "key": "option-2",
+          "label": "ice cream",
+          "correct": true
+        },
+        {
+          "key": "option-3",
+          "label": "banana",
+          "correct": false
+        }
+      ],
+      "slots": [
+        {
+          "key": "slot-0",
+          "fixed": false,
+          "letter": "",
+          "tile": -1
+        },
+        {
+          "key": "slot-1",
+          "fixed": false,
+          "letter": "",
+          "tile": -1
+        },
+        {
+          "key": "slot-2",
+          "fixed": false,
+          "letter": "",
+          "tile": -1
+        },
+        {
+          "key": "slot-3",
+          "fixed": true,
+          "letter": " ",
+          "tile": -1
+        },
+        {
+          "key": "slot-4",
+          "fixed": false,
+          "letter": "",
+          "tile": -1
+        },
+        {
+          "key": "slot-5",
+          "fixed": false,
+          "letter": "",
+          "tile": -1
+        },
+        {
+          "key": "slot-6",
+          "fixed": false,
+          "letter": "",
+          "tile": -1
+        },
+        {
+          "key": "slot-7",
+          "fixed": false,
+          "letter": "",
+          "tile": -1
+        },
+        {
+          "key": "slot-8",
+          "fixed": false,
+          "letter": "",
+          "tile": -1
+        }
+      ],
+      "tiles": [
+        {
+          "key": "tile-0",
+          "letter": "r",
+          "used": false
+        },
+        {
+          "key": "tile-1",
+          "letter": "i",
+          "used": false
+        },
+        {
+          "key": "tile-2",
+          "letter": "c",
+          "used": false
+        },
+        {
+          "key": "tile-3",
+          "letter": "m",
+          "used": false
+        },
+        {
+          "key": "tile-4",
+          "letter": "a",
+          "used": false
+        },
+        {
+          "key": "tile-5",
+          "letter": "e",
+          "used": false
+        },
+        {
+          "key": "tile-6",
+          "letter": "e",
+          "used": false
+        },
+        {
+          "key": "tile-7",
+          "letter": "c",
+          "used": false
+        }
+      ],
+      "sentenceBefore": "The ",
+      "sentenceAfter": " is cold and sweet."
+    },
+    "picked": -1,
+    "answered": false,
+    "isCorrect": false,
+    "earned": {
+      "coins": 0,
+      "bricks": 0
+    },
+    "stats": {
+      "right": 0,
+      "wrong": 0
+    },
+    "bonus": {
+      "granted": false,
+      "bricks": 0
+    },
+    "saving": false,
+    "saveError": false,
+    "lastReward": {
+      "coins": 0,
+      "bricks": 0
+    },
+    "capped": false,
+    "unsaved": 0,
+    "mode": "mixed",
+    "listening": true,
+    "audioCount": 5,
+    "newCount": 5,
+    "audioState": "idle",
+    "heardAudio": false,
+    "flipped": true,
+    "spellReady": false,
+    "reviewCount": 0,
+    "reviewIndex": 0,
+    "recovered": 0,
+    "pairs": {
+      "left": [],
+      "right": []
+    },
+    "pairLeft": -1,
+    "pairRight": -1,
+    "pairCount": 0,
+    "matchWrong": false,
+    "matchMessage": "",
+    "matchDone": false,
+    "pairBatch": 0,
+    "pairBatches": 0,
+    "finished": false,
+    "autoAdvancePaused": false
+  },
+  "cloze": {
+    "loading": false,
+    "failed": false,
+    "phase": "practice",
+    "words": [
+      {
+        "word": "apple",
+        "translation": "苹果",
+        "grade": 1,
+        "difficulty": 1,
+        "image_url": "/images/words/apple.png",
+        "id": 1,
+        "is_review": false,
+        "emoji": "🍎",
+        "sentence": "I eat an ___.",
+        "sentenceMeaning": "我吃一个苹果。",
+        "fullSentence": "I eat an apple.",
+        "audio": "/audio/words/apple.mp3",
+        "slowAudio": "/audio/words/apple-slow.mp3"
+      },
+      {
+        "word": "book",
+        "translation": "书",
+        "grade": 1,
+        "difficulty": 1,
+        "image_url": "/images/words/book.png",
+        "id": 2,
+        "is_review": false,
+        "emoji": "📕",
+        "sentence": "I read a ___.",
+        "sentenceMeaning": "我读一本书。",
+        "fullSentence": "I read a book.",
+        "audio": "/audio/words/book.mp3",
+        "slowAudio": "/audio/words/book-slow.mp3"
+      },
+      {
+        "word": "cat",
+        "translation": "猫",
+        "grade": 1,
+        "difficulty": 1,
+        "image_url": "/images/words/cat.png",
+        "id": 3,
+        "is_review": false,
+        "emoji": "🐱",
+        "sentence": "The ___ says meow.",
+        "sentenceMeaning": "小猫喵喵叫。",
+        "fullSentence": "The cat says meow.",
+        "audio": "/audio/words/cat.mp3",
+        "slowAudio": "/audio/words/cat-slow.mp3"
+      },
+      {
+        "word": "dog",
+        "translation": "狗",
+        "grade": 1,
+        "difficulty": 1,
+        "image_url": "/images/words/dog.png",
+        "id": 4,
+        "is_review": false,
+        "emoji": "🐶",
+        "sentence": "The ___ says woof.",
+        "sentenceMeaning": "小狗汪汪叫。",
+        "fullSentence": "The dog says woof.",
+        "audio": "/audio/words/dog.mp3",
+        "slowAudio": "/audio/words/dog-slow.mp3"
+      },
+      {
+        "word": "elephant",
+        "translation": "大象",
+        "grade": 1,
+        "difficulty": 2,
+        "image_url": "/images/words/elephant.png",
+        "id": 5,
+        "is_review": false,
+        "emoji": "🐘",
+        "sentence": "The ___ has a long nose.",
+        "sentenceMeaning": "大象有长长的鼻子。",
+        "fullSentence": "The elephant has a long nose.",
+        "audio": "/audio/words/elephant.mp3",
+        "slowAudio": "/audio/words/elephant-slow.mp3"
+      }
+    ],
+    "index": 0,
+    "question": {
+      "title": "例句填空",
+      "hint": "选一个单词，把句子补完整",
+      "icon": "✏️",
+      "type": "cloze",
+      "word": {
+        "word": "elephant",
+        "translation": "大象",
+        "grade": 1,
+        "difficulty": 2,
+        "image_url": "/images/words/elephant.png",
+        "id": 5,
+        "is_review": false,
+        "emoji": "🐘",
+        "sentence": "The ___ has a long nose.",
+        "sentenceMeaning": "大象有长长的鼻子。",
+        "fullSentence": "The elephant has a long nose.",
+        "audio": "/audio/words/elephant.mp3",
+        "slowAudio": "/audio/words/elephant-slow.mp3"
+      },
+      "options": [
+        {
+          "key": "option-0",
+          "label": "cake",
+          "correct": false
+        },
+        {
+          "key": "option-1",
+          "label": "elephant",
+          "correct": true
+        },
+        {
+          "key": "option-2",
+          "label": "cat",
+          "correct": false
+        },
+        {
+          "key": "option-3",
+          "label": "tree",
+          "correct": false
+        }
+      ],
+      "slots": [
+        {
+          "key": "slot-0",
+          "fixed": false,
+          "letter": "",
+          "tile": -1
+        },
+        {
+          "key": "slot-1",
+          "fixed": false,
+          "letter": "",
+          "tile": -1
+        },
+        {
+          "key": "slot-2",
+          "fixed": false,
+          "letter": "",
+          "tile": -1
+        },
+        {
+          "key": "slot-3",
+          "fixed": false,
+          "letter": "",
+          "tile": -1
+        },
+        {
+          "key": "slot-4",
+          "fixed": false,
+          "letter": "",
+          "tile": -1
+        },
+        {
+          "key": "slot-5",
+          "fixed": false,
+          "letter": "",
+          "tile": -1
+        },
+        {
+          "key": "slot-6",
+          "fixed": false,
+          "letter": "",
+          "tile": -1
+        },
+        {
+          "key": "slot-7",
+          "fixed": false,
+          "letter": "",
+          "tile": -1
+        }
+      ],
+      "tiles": [
+        {
+          "key": "tile-0",
+          "letter": "e",
+          "used": false
+        },
+        {
+          "key": "tile-1",
+          "letter": "e",
+          "used": false
+        },
+        {
+          "key": "tile-2",
+          "letter": "t",
+          "used": false
+        },
+        {
+          "key": "tile-3",
+          "letter": "a",
+          "used": false
+        },
+        {
+          "key": "tile-4",
+          "letter": "n",
+          "used": false
+        },
+        {
+          "key": "tile-5",
+          "letter": "p",
+          "used": false
+        },
+        {
+          "key": "tile-6",
+          "letter": "l",
+          "used": false
+        },
+        {
+          "key": "tile-7",
+          "letter": "h",
+          "used": false
+        }
+      ],
+      "sentenceBefore": "The ",
+      "sentenceAfter": " has a long nose."
+    },
+    "picked": -1,
+    "answered": false,
+    "isCorrect": false,
+    "earned": {
+      "coins": 0,
+      "bricks": 0
+    },
+    "stats": {
+      "right": 0,
+      "wrong": 0
+    },
+    "bonus": {
+      "granted": false,
+      "bricks": 0
+    },
+    "saving": false,
+    "saveError": false,
+    "lastReward": {
+      "coins": 0,
+      "bricks": 0
+    },
+    "capped": false,
+    "unsaved": 0,
+    "mode": "mixed",
+    "listening": true,
+    "audioCount": 5,
+    "newCount": 5,
+    "audioState": "idle",
+    "heardAudio": false,
+    "flipped": true,
+    "spellReady": false,
+    "reviewCount": 0,
+    "reviewIndex": 0,
+    "recovered": 0,
+    "pairs": {
+      "left": [],
+      "right": []
+    },
+    "pairLeft": -1,
+    "pairRight": -1,
+    "pairCount": 0,
+    "matchWrong": false,
+    "matchMessage": "",
+    "matchDone": false,
+    "pairBatch": 0,
+    "pairBatches": 0,
+    "finished": false,
+    "autoAdvancePaused": false
+  },
+  "correct": {
+    "loading": false,
+    "failed": false,
+    "phase": "practice",
+    "words": [
+      {
+        "word": "apple",
+        "translation": "苹果",
+        "grade": 1,
+        "difficulty": 1,
+        "image_url": "/images/words/apple.png",
+        "id": 1,
+        "is_review": false,
+        "emoji": "🍎",
+        "sentence": "I eat an ___.",
+        "sentenceMeaning": "我吃一个苹果。",
+        "fullSentence": "I eat an apple.",
+        "audio": "/audio/words/apple.mp3",
+        "slowAudio": "/audio/words/apple-slow.mp3"
+      },
+      {
+        "word": "book",
+        "translation": "书",
+        "grade": 1,
+        "difficulty": 1,
+        "image_url": "/images/words/book.png",
+        "id": 2,
+        "is_review": false,
+        "emoji": "📕",
+        "sentence": "I read a ___.",
+        "sentenceMeaning": "我读一本书。",
+        "fullSentence": "I read a book.",
+        "audio": "/audio/words/book.mp3",
+        "slowAudio": "/audio/words/book-slow.mp3"
+      },
+      {
+        "word": "cat",
+        "translation": "猫",
+        "grade": 1,
+        "difficulty": 1,
+        "image_url": "/images/words/cat.png",
+        "id": 3,
+        "is_review": false,
+        "emoji": "🐱",
+        "sentence": "The ___ says meow.",
+        "sentenceMeaning": "小猫喵喵叫。",
+        "fullSentence": "The cat says meow.",
+        "audio": "/audio/words/cat.mp3",
+        "slowAudio": "/audio/words/cat-slow.mp3"
+      },
+      {
+        "word": "dog",
+        "translation": "狗",
+        "grade": 1,
+        "difficulty": 1,
+        "image_url": "/images/words/dog.png",
+        "id": 4,
+        "is_review": false,
+        "emoji": "🐶",
+        "sentence": "The ___ says woof.",
+        "sentenceMeaning": "小狗汪汪叫。",
+        "fullSentence": "The dog says woof.",
+        "audio": "/audio/words/dog.mp3",
+        "slowAudio": "/audio/words/dog-slow.mp3"
+      },
+      {
+        "word": "elephant",
+        "translation": "大象",
+        "grade": 1,
+        "difficulty": 2,
+        "image_url": "/images/words/elephant.png",
+        "id": 5,
+        "is_review": false,
+        "emoji": "🐘",
+        "sentence": "The ___ has a long nose.",
+        "sentenceMeaning": "大象有长长的鼻子。",
+        "fullSentence": "The elephant has a long nose.",
+        "audio": "/audio/words/elephant.mp3",
+        "slowAudio": "/audio/words/elephant-slow.mp3"
+      }
+    ],
+    "index": 0,
+    "question": {
+      "title": "看词选义",
+      "hint": "这个单词是什么意思？",
+      "icon": "📖",
+      "type": "meaning",
+      "word": {
+        "word": "zebra",
+        "translation": "斑马",
+        "grade": 3,
+        "difficulty": 2,
+        "image_url": "/images/words/zebra.png",
+        "id": 25,
+        "is_review": false,
+        "emoji": "🦓",
+        "sentence": "The ___ is black and white.",
+        "sentenceMeaning": "斑马是黑白相间的。",
+        "fullSentence": "The zebra is black and white.",
+        "audio": "/audio/words/zebra.mp3",
+        "slowAudio": "/audio/words/zebra-slow.mp3"
+      },
+      "options": [
+        {
+          "key": "option-0",
+          "label": "花",
+          "correct": false
+        },
+        {
+          "key": "option-1",
+          "label": "树",
+          "correct": false
+        },
+        {
+          "key": "option-2",
+          "label": "小鸟",
+          "correct": false
+        },
+        {
+          "key": "option-3",
+          "label": "斑马",
+          "correct": true
+        }
+      ],
+      "slots": [
+        {
+          "key": "slot-0",
+          "fixed": false,
+          "letter": "",
+          "tile": -1
+        },
+        {
+          "key": "slot-1",
+          "fixed": false,
+          "letter": "",
+          "tile": -1
+        },
+        {
+          "key": "slot-2",
+          "fixed": false,
+          "letter": "",
+          "tile": -1
+        },
+        {
+          "key": "slot-3",
+          "fixed": false,
+          "letter": "",
+          "tile": -1
+        },
+        {
+          "key": "slot-4",
+          "fixed": false,
+          "letter": "",
+          "tile": -1
+        }
+      ],
+      "tiles": [
+        {
+          "key": "tile-0",
+          "letter": "e",
+          "used": false
+        },
+        {
+          "key": "tile-1",
+          "letter": "b",
+          "used": false
+        },
+        {
+          "key": "tile-2",
+          "letter": "z",
+          "used": false
+        },
+        {
+          "key": "tile-3",
+          "letter": "a",
+          "used": false
+        },
+        {
+          "key": "tile-4",
+          "letter": "r",
+          "used": false
+        }
+      ],
+      "sentenceBefore": "The ",
+      "sentenceAfter": " is black and white."
+    },
+    "picked": -1,
+    "answered": true,
+    "isCorrect": true,
+    "earned": {
+      "coins": 0,
+      "bricks": 0
+    },
+    "stats": {
+      "right": 0,
+      "wrong": 0
+    },
+    "bonus": {
+      "granted": false,
+      "bricks": 0
+    },
+    "saving": false,
+    "saveError": false,
+    "lastReward": {
+      "bricks": 1,
+      "coins": 5
+    },
+    "capped": false,
+    "unsaved": 0,
+    "mode": "mixed",
+    "listening": true,
+    "audioCount": 5,
+    "newCount": 5,
+    "audioState": "idle",
+    "heardAudio": false,
+    "flipped": true,
+    "spellReady": false,
+    "reviewCount": 0,
+    "reviewIndex": 0,
+    "recovered": 0,
+    "pairs": {
+      "left": [],
+      "right": []
+    },
+    "pairLeft": -1,
+    "pairRight": -1,
+    "pairCount": 0,
+    "matchWrong": false,
+    "matchMessage": "",
+    "matchDone": false,
+    "pairBatch": 0,
+    "pairBatches": 0,
+    "finished": false,
+    "autoAdvancePaused": false
+  },
+  "wrong": {
+    "loading": false,
+    "failed": false,
+    "phase": "practice",
+    "words": [
+      {
+        "word": "apple",
+        "translation": "苹果",
+        "grade": 1,
+        "difficulty": 1,
+        "image_url": "/images/words/apple.png",
+        "id": 1,
+        "is_review": false,
+        "emoji": "🍎",
+        "sentence": "I eat an ___.",
+        "sentenceMeaning": "我吃一个苹果。",
+        "fullSentence": "I eat an apple.",
+        "audio": "/audio/words/apple.mp3",
+        "slowAudio": "/audio/words/apple-slow.mp3"
+      },
+      {
+        "word": "book",
+        "translation": "书",
+        "grade": 1,
+        "difficulty": 1,
+        "image_url": "/images/words/book.png",
+        "id": 2,
+        "is_review": false,
+        "emoji": "📕",
+        "sentence": "I read a ___.",
+        "sentenceMeaning": "我读一本书。",
+        "fullSentence": "I read a book.",
+        "audio": "/audio/words/book.mp3",
+        "slowAudio": "/audio/words/book-slow.mp3"
+      },
+      {
+        "word": "cat",
+        "translation": "猫",
+        "grade": 1,
+        "difficulty": 1,
+        "image_url": "/images/words/cat.png",
+        "id": 3,
+        "is_review": false,
+        "emoji": "🐱",
+        "sentence": "The ___ says meow.",
+        "sentenceMeaning": "小猫喵喵叫。",
+        "fullSentence": "The cat says meow.",
+        "audio": "/audio/words/cat.mp3",
+        "slowAudio": "/audio/words/cat-slow.mp3"
+      },
+      {
+        "word": "dog",
+        "translation": "狗",
+        "grade": 1,
+        "difficulty": 1,
+        "image_url": "/images/words/dog.png",
+        "id": 4,
+        "is_review": false,
+        "emoji": "🐶",
+        "sentence": "The ___ says woof.",
+        "sentenceMeaning": "小狗汪汪叫。",
+        "fullSentence": "The dog says woof.",
+        "audio": "/audio/words/dog.mp3",
+        "slowAudio": "/audio/words/dog-slow.mp3"
+      },
+      {
+        "word": "elephant",
+        "translation": "大象",
+        "grade": 1,
+        "difficulty": 2,
+        "image_url": "/images/words/elephant.png",
+        "id": 5,
+        "is_review": false,
+        "emoji": "🐘",
+        "sentence": "The ___ has a long nose.",
+        "sentenceMeaning": "大象有长长的鼻子。",
+        "fullSentence": "The elephant has a long nose.",
+        "audio": "/audio/words/elephant.mp3",
+        "slowAudio": "/audio/words/elephant-slow.mp3"
+      }
+    ],
+    "index": 0,
+    "question": {
+      "title": "看词选义",
+      "hint": "这个单词是什么意思？",
+      "icon": "📖",
+      "type": "meaning",
+      "word": {
+        "word": "zebra",
+        "translation": "斑马",
+        "grade": 3,
+        "difficulty": 2,
+        "image_url": "/images/words/zebra.png",
+        "id": 25,
+        "is_review": false,
+        "emoji": "🦓",
+        "sentence": "The ___ is black and white.",
+        "sentenceMeaning": "斑马是黑白相间的。",
+        "fullSentence": "The zebra is black and white.",
+        "audio": "/audio/words/zebra.mp3",
+        "slowAudio": "/audio/words/zebra-slow.mp3"
+      },
+      "options": [
+        {
+          "key": "option-0",
+          "label": "花",
+          "correct": false
+        },
+        {
+          "key": "option-1",
+          "label": "树",
+          "correct": false
+        },
+        {
+          "key": "option-2",
+          "label": "小鸟",
+          "correct": false
+        },
+        {
+          "key": "option-3",
+          "label": "斑马",
+          "correct": true
+        }
+      ],
+      "slots": [
+        {
+          "key": "slot-0",
+          "fixed": false,
+          "letter": "",
+          "tile": -1
+        },
+        {
+          "key": "slot-1",
+          "fixed": false,
+          "letter": "",
+          "tile": -1
+        },
+        {
+          "key": "slot-2",
+          "fixed": false,
+          "letter": "",
+          "tile": -1
+        },
+        {
+          "key": "slot-3",
+          "fixed": false,
+          "letter": "",
+          "tile": -1
+        },
+        {
+          "key": "slot-4",
+          "fixed": false,
+          "letter": "",
+          "tile": -1
+        }
+      ],
+      "tiles": [
+        {
+          "key": "tile-0",
+          "letter": "e",
+          "used": false
+        },
+        {
+          "key": "tile-1",
+          "letter": "b",
+          "used": false
+        },
+        {
+          "key": "tile-2",
+          "letter": "z",
+          "used": false
+        },
+        {
+          "key": "tile-3",
+          "letter": "a",
+          "used": false
+        },
+        {
+          "key": "tile-4",
+          "letter": "r",
+          "used": false
+        }
+      ],
+      "sentenceBefore": "The ",
+      "sentenceAfter": " is black and white."
+    },
+    "picked": -1,
+    "answered": true,
+    "isCorrect": false,
+    "earned": {
+      "coins": 0,
+      "bricks": 0
+    },
+    "stats": {
+      "right": 0,
+      "wrong": 0
+    },
+    "bonus": {
+      "granted": false,
+      "bricks": 0
+    },
+    "saving": false,
+    "saveError": false,
+    "lastReward": {
+      "bricks": 1,
+      "coins": 5
+    },
+    "capped": false,
+    "unsaved": 0,
+    "mode": "mixed",
+    "listening": true,
+    "audioCount": 5,
+    "newCount": 5,
+    "audioState": "idle",
+    "heardAudio": false,
+    "flipped": true,
+    "spellReady": false,
+    "reviewCount": 0,
+    "reviewIndex": 0,
+    "recovered": 0,
+    "pairs": {
+      "left": [],
+      "right": []
+    },
+    "pairLeft": -1,
+    "pairRight": -1,
+    "pairCount": 0,
+    "matchWrong": false,
+    "matchMessage": "",
+    "matchDone": false,
+    "pairBatch": 0,
+    "pairBatches": 0,
+    "finished": false,
+    "autoAdvancePaused": false
+  },
+  "match": {
+    "loading": false,
+    "failed": false,
+    "phase": "match",
+    "words": [
+      {
+        "word": "apple",
+        "translation": "苹果",
+        "grade": 1,
+        "difficulty": 1,
+        "image_url": "/images/words/apple.png",
+        "id": 1,
+        "is_review": false,
+        "emoji": "🍎",
+        "sentence": "I eat an ___.",
+        "sentenceMeaning": "我吃一个苹果。",
+        "fullSentence": "I eat an apple.",
+        "audio": "/audio/words/apple.mp3",
+        "slowAudio": "/audio/words/apple-slow.mp3"
+      },
+      {
+        "word": "book",
+        "translation": "书",
+        "grade": 1,
+        "difficulty": 1,
+        "image_url": "/images/words/book.png",
+        "id": 2,
+        "is_review": false,
+        "emoji": "📕",
+        "sentence": "I read a ___.",
+        "sentenceMeaning": "我读一本书。",
+        "fullSentence": "I read a book.",
+        "audio": "/audio/words/book.mp3",
+        "slowAudio": "/audio/words/book-slow.mp3"
+      },
+      {
+        "word": "cat",
+        "translation": "猫",
+        "grade": 1,
+        "difficulty": 1,
+        "image_url": "/images/words/cat.png",
+        "id": 3,
+        "is_review": false,
+        "emoji": "🐱",
+        "sentence": "The ___ says meow.",
+        "sentenceMeaning": "小猫喵喵叫。",
+        "fullSentence": "The cat says meow.",
+        "audio": "/audio/words/cat.mp3",
+        "slowAudio": "/audio/words/cat-slow.mp3"
+      },
+      {
+        "word": "dog",
+        "translation": "狗",
+        "grade": 1,
+        "difficulty": 1,
+        "image_url": "/images/words/dog.png",
+        "id": 4,
+        "is_review": false,
+        "emoji": "🐶",
+        "sentence": "The ___ says woof.",
+        "sentenceMeaning": "小狗汪汪叫。",
+        "fullSentence": "The dog says woof.",
+        "audio": "/audio/words/dog.mp3",
+        "slowAudio": "/audio/words/dog-slow.mp3"
+      },
+      {
+        "word": "elephant",
+        "translation": "大象",
+        "grade": 1,
+        "difficulty": 2,
+        "image_url": "/images/words/elephant.png",
+        "id": 5,
+        "is_review": false,
+        "emoji": "🐘",
+        "sentence": "The ___ has a long nose.",
+        "sentenceMeaning": "大象有长长的鼻子。",
+        "fullSentence": "The elephant has a long nose.",
+        "audio": "/audio/words/elephant.mp3",
+        "slowAudio": "/audio/words/elephant-slow.mp3"
+      }
+    ],
+    "index": 0,
+    "question": null,
+    "picked": -1,
+    "answered": true,
+    "isCorrect": false,
+    "earned": {
+      "coins": 0,
+      "bricks": 0
+    },
+    "stats": {
+      "right": 0,
+      "wrong": 0
+    },
+    "bonus": {
+      "granted": false,
+      "bricks": 0
+    },
+    "saving": false,
+    "saveError": false,
+    "lastReward": {
+      "bricks": 1,
+      "coins": 5
+    },
+    "capped": false,
+    "unsaved": 0,
+    "mode": "mixed",
+    "listening": true,
+    "audioCount": 5,
+    "newCount": 5,
+    "audioState": "idle",
+    "heardAudio": false,
+    "flipped": true,
+    "spellReady": false,
+    "reviewCount": 0,
+    "reviewIndex": 0,
+    "recovered": 0,
+    "pairs": {
+      "left": [
+        {
+          "key": "left-0",
+          "pair": 0,
+          "label": "apple",
+          "matched": false
+        },
+        {
+          "key": "left-1",
+          "pair": 1,
+          "label": "book",
+          "matched": false
+        },
+        {
+          "key": "left-2",
+          "pair": 2,
+          "label": "cat",
+          "matched": false
+        },
+        {
+          "key": "left-3",
+          "pair": 3,
+          "label": "dog",
+          "matched": false
+        },
+        {
+          "key": "left-4",
+          "pair": 4,
+          "label": "elephant",
+          "matched": false
+        }
+      ],
+      "right": [
+        {
+          "key": "right-4",
+          "pair": 4,
+          "label": "大象",
+          "matched": false
+        },
+        {
+          "key": "right-1",
+          "pair": 1,
+          "label": "书",
+          "matched": false
+        },
+        {
+          "key": "right-3",
+          "pair": 3,
+          "label": "狗",
+          "matched": false
+        },
+        {
+          "key": "right-2",
+          "pair": 2,
+          "label": "猫",
+          "matched": false
+        },
+        {
+          "key": "right-0",
+          "pair": 0,
+          "label": "苹果",
+          "matched": false
+        }
+      ]
+    },
+    "pairLeft": -1,
+    "pairRight": -1,
+    "pairCount": 0,
+    "matchWrong": false,
+    "matchMessage": "点一个英文，再找到它的中文朋友",
+    "matchDone": false,
+    "pairBatch": 1,
+    "pairBatches": 1,
+    "finished": false,
+    "autoAdvancePaused": false
+  },
+  "done": {
+    "loading": false,
+    "failed": false,
+    "phase": "done",
+    "words": [
+      {
+        "word": "apple",
+        "translation": "苹果",
+        "grade": 1,
+        "difficulty": 1,
+        "image_url": "/images/words/apple.png",
+        "id": 1,
+        "is_review": false,
+        "emoji": "🍎",
+        "sentence": "I eat an ___.",
+        "sentenceMeaning": "我吃一个苹果。",
+        "fullSentence": "I eat an apple.",
+        "audio": "/audio/words/apple.mp3",
+        "slowAudio": "/audio/words/apple-slow.mp3"
+      },
+      {
+        "word": "book",
+        "translation": "书",
+        "grade": 1,
+        "difficulty": 1,
+        "image_url": "/images/words/book.png",
+        "id": 2,
+        "is_review": false,
+        "emoji": "📕",
+        "sentence": "I read a ___.",
+        "sentenceMeaning": "我读一本书。",
+        "fullSentence": "I read a book.",
+        "audio": "/audio/words/book.mp3",
+        "slowAudio": "/audio/words/book-slow.mp3"
+      },
+      {
+        "word": "cat",
+        "translation": "猫",
+        "grade": 1,
+        "difficulty": 1,
+        "image_url": "/images/words/cat.png",
+        "id": 3,
+        "is_review": false,
+        "emoji": "🐱",
+        "sentence": "The ___ says meow.",
+        "sentenceMeaning": "小猫喵喵叫。",
+        "fullSentence": "The cat says meow.",
+        "audio": "/audio/words/cat.mp3",
+        "slowAudio": "/audio/words/cat-slow.mp3"
+      },
+      {
+        "word": "dog",
+        "translation": "狗",
+        "grade": 1,
+        "difficulty": 1,
+        "image_url": "/images/words/dog.png",
+        "id": 4,
+        "is_review": false,
+        "emoji": "🐶",
+        "sentence": "The ___ says woof.",
+        "sentenceMeaning": "小狗汪汪叫。",
+        "fullSentence": "The dog says woof.",
+        "audio": "/audio/words/dog.mp3",
+        "slowAudio": "/audio/words/dog-slow.mp3"
+      },
+      {
+        "word": "elephant",
+        "translation": "大象",
+        "grade": 1,
+        "difficulty": 2,
+        "image_url": "/images/words/elephant.png",
+        "id": 5,
+        "is_review": false,
+        "emoji": "🐘",
+        "sentence": "The ___ has a long nose.",
+        "sentenceMeaning": "大象有长长的鼻子。",
+        "fullSentence": "The elephant has a long nose.",
+        "audio": "/audio/words/elephant.mp3",
+        "slowAudio": "/audio/words/elephant-slow.mp3"
+      }
+    ],
+    "index": 0,
+    "question": null,
+    "picked": -1,
+    "answered": true,
+    "isCorrect": false,
+    "earned": {
+      "bricks": 15,
+      "coins": 35
+    },
+    "stats": {
+      "right": 5,
+      "wrong": 0
+    },
+    "bonus": {
+      "granted": true,
+      "bricks": 10
+    },
+    "saving": false,
+    "saveError": false,
+    "lastReward": {
+      "bricks": 1,
+      "coins": 5
+    },
+    "capped": false,
+    "unsaved": 0,
+    "mode": "mixed",
+    "listening": true,
+    "audioCount": 5,
+    "newCount": 5,
+    "audioState": "idle",
+    "heardAudio": false,
+    "flipped": true,
+    "spellReady": false,
+    "reviewCount": 0,
+    "reviewIndex": 0,
+    "recovered": 0,
+    "pairs": {
+      "left": [
+        {
+          "key": "left-0",
+          "pair": 0,
+          "label": "apple",
+          "matched": false
+        },
+        {
+          "key": "left-1",
+          "pair": 1,
+          "label": "book",
+          "matched": false
+        },
+        {
+          "key": "left-2",
+          "pair": 2,
+          "label": "cat",
+          "matched": false
+        },
+        {
+          "key": "left-3",
+          "pair": 3,
+          "label": "dog",
+          "matched": false
+        },
+        {
+          "key": "left-4",
+          "pair": 4,
+          "label": "elephant",
+          "matched": false
+        }
+      ],
+      "right": [
+        {
+          "key": "right-4",
+          "pair": 4,
+          "label": "大象",
+          "matched": false
+        },
+        {
+          "key": "right-1",
+          "pair": 1,
+          "label": "书",
+          "matched": false
+        },
+        {
+          "key": "right-3",
+          "pair": 3,
+          "label": "狗",
+          "matched": false
+        },
+        {
+          "key": "right-2",
+          "pair": 2,
+          "label": "猫",
+          "matched": false
+        },
+        {
+          "key": "right-0",
+          "pair": 0,
+          "label": "苹果",
+          "matched": false
+        }
+      ]
+    },
+    "pairLeft": -1,
+    "pairRight": -1,
+    "pairCount": 0,
+    "matchWrong": false,
+    "matchMessage": "点一个英文，再找到它的中文朋友",
+    "matchDone": false,
+    "pairBatch": 1,
+    "pairBatches": 1,
+    "finished": false,
+    "autoAdvancePaused": false
+  }
+}

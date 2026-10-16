@@ -17,9 +17,20 @@ type User struct {
 	Coins       int            `gorm:"default:0" json:"coins"`
 	Bricks      int            `gorm:"default:0" json:"bricks"`
 	Level       int            `gorm:"default:1" json:"level"`
-	CreatedAt   time.Time      `json:"created_at"`
-	UpdatedAt   time.Time      `json:"updated_at"`
-	DeletedAt   gorm.DeletedAt `gorm:"index" json:"-"`
+
+	// 每日奖励限额追踪。
+	// RewardDate 记录 RewardBricks 是哪一天的，跨天时归零重新计数。
+	// 不单独建流水表：需求只是"今天还能拿多少"，两个字段足够，
+	// 且避免每次答题都多一次写入。
+	RewardDate   string `gorm:"type:varchar(10);index" json:"-"`
+	RewardBricks int    `gorm:"default:0" json:"-"`
+
+	// 完成当日全部单词的奖励，每天只能领一次
+	DailyBonusDate string `gorm:"type:varchar(10)" json:"-"`
+
+	CreatedAt time.Time      `json:"created_at"`
+	UpdatedAt time.Time      `json:"updated_at"`
+	DeletedAt gorm.DeletedAt `gorm:"index" json:"-"`
 }
 
 // Word 单词模型
@@ -93,4 +104,37 @@ type ReviewSchedule struct {
 	UpdatedAt      time.Time `json:"updated_at"`
 
 	Word Word `gorm:"foreignKey:WordID" json:"word,omitempty"`
+}
+
+// Subscription 订阅消息额度
+//
+// 订阅消息的授权是「一次性」的：用户点一次同意，只能推送一条。
+// 因此必须持久化剩余次数，推一条扣一次，扣完就不能再推，
+// 必须等用户下次主动订阅。
+//
+// 这个表存在的原因：如果只靠前端记「已订阅」，
+// 会出现「用户以为订阅了但推不出来」和「重复推浪费额度」两种问题。
+type Subscription struct {
+	ID     uint `gorm:"primaryKey" json:"id"`
+	UserID uint `gorm:"not null;uniqueIndex" json:"user_id"`
+
+	// Quota 剩余可推送次数。每次用户同意订阅 +1，每次成功推送 -1。
+	Quota int `gorm:"default:0" json:"quota"`
+
+	// LastRequestAt 最近一次向用户请求订阅的时间。
+	// 用于避免过于频繁地弹窗打扰用户。
+	LastRequestAt time.Time `json:"last_request_at"`
+
+	// LastGrantedAt 最近一次用户同意订阅的时间
+	LastGrantedAt time.Time `json:"last_granted_at"`
+
+	// LastPushedAt 最近一次成功推送的时间。
+	// 用于控制推送频率——每天最多一条，避免打扰。
+	LastPushedAt time.Time `json:"last_pushed_at"`
+
+	// TotalPushed 累计成功推送数，用于观察召回效果
+	TotalPushed int `gorm:"default:0" json:"total_pushed"`
+
+	CreatedAt time.Time `json:"created_at"`
+	UpdatedAt time.Time `json:"updated_at"`
 }

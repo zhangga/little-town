@@ -5,6 +5,7 @@ import (
 
 	"github.com/gin-gonic/gin"
 	"github.com/zhangga/little-town/backend/internal/models"
+	"github.com/zhangga/little-town/backend/internal/services"
 	"gorm.io/gorm"
 )
 
@@ -21,6 +22,13 @@ func getCurrentUserID(c *gin.Context) uint {
 		return userID.(uint)
 	}
 	return 0
+}
+
+// todayString 返回本地日期（YYYY-MM-DD）。
+// 直接复用 services 的实现，避免日期格式在两处各写一份而对不上——
+// 格式不一致会让每日上限的跨天重置失效。
+func todayString() string {
+	return services.TodayString()
 }
 
 // GetProfile 获取用户信息

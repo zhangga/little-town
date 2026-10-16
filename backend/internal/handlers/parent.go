@@ -6,6 +6,7 @@ import (
 
 	"github.com/gin-gonic/gin"
 	"github.com/zhangga/little-town/backend/internal/models"
+	"github.com/zhangga/little-town/backend/internal/services"
 	"gorm.io/gorm"
 )
 
@@ -40,7 +41,7 @@ func (h *ParentHandler) GetChildStats(c *gin.Context) {
 	h.db.Model(&models.ReviewSchedule{}).Where("user_id = ?", userID).Count(&totalWords)
 
 	// 今日学习
-	todayStart := time.Now().Truncate(24 * time.Hour)
+	todayStart := services.DayStart(time.Now())
 	var todayWords int64
 	h.db.Model(&models.LearningRecord{}).
 		Where("user_id = ? AND created_at >= ?", userID, todayStart).
@@ -57,12 +58,11 @@ func (h *ParentHandler) GetChildStats(c *gin.Context) {
 		accuracy = float64(correctRecords) / float64(totalRecords) * 100
 	}
 
-	// 连续打卡天数（简化版：从昨天开始往前数，连续有记录的天数）
+	// 连续打卡天数：从昨天开始往前数，连续有记录的天数
 	streakDays := 0
-	checkDate := time.Now().Truncate(24 * time.Hour).AddDate(0, 0, -1)
-	for i := 0; i < 365; i++ {
-		dayStart := checkDate.AddDate(0, 0, -i)
-		dayEnd := dayStart.Add(24 * time.Hour)
+	for i := 1; i <= 365; i++ {
+		dayStart := services.DayStartOffset(time.Now(), -i)
+		dayEnd := dayStart.AddDate(0, 0, 1)
 
 		var count int64
 		h.db.Model(&models.LearningRecord{}).
@@ -84,8 +84,8 @@ func (h *ParentHandler) GetChildStats(c *gin.Context) {
 	// 最近 7 天的学习数据
 	recentDays := make([]map[string]interface{}, 0, 7)
 	for i := 6; i >= 0; i-- {
-		dayStart := time.Now().Truncate(24 * time.Hour).AddDate(0, 0, -i)
-		dayEnd := dayStart.Add(24 * time.Hour)
+		dayStart := services.DayStartOffset(time.Now(), -i)
+		dayEnd := dayStart.AddDate(0, 0, 1)
 
 		var count int64
 		h.db.Model(&models.LearningRecord{}).

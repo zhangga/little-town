@@ -49,6 +49,12 @@ func SetupRouter(db *gorm.DB, cfg *config.Config) *gin.Engine {
 			parentHandler := handlers.NewParentHandler(db)
 			authorized.GET("/parent/stats", parentHandler.GetChildStats)
 			authorized.POST("/parent/add-word", parentHandler.AddCustomWord)
+
+			// 订阅消息
+			subscriptionHandler := handlers.NewSubscriptionHandler(db, cfg)
+			authorized.GET("/subscription/info", subscriptionHandler.GetSubscriptionInfo)
+			authorized.POST("/subscription/grant", subscriptionHandler.GrantSubscription)
+			authorized.POST("/subscription/test-push", subscriptionHandler.SendTestReminder)
 		}
 	}
 

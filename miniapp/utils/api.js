@@ -104,6 +104,16 @@ function del(url, data, needAuth) {
   return request({ url, method: 'DELETE', data, needAuth })
 }
 
+// 订阅消息相关
+//
+// 注意「一次性授权」这个约束：用户点一次同意，服务端只能推一条。
+// 所以订阅不是在设置页里开关一次，而是每天学完顺手续一次。
+const subscription = {
+  info: () => get('/subscription/info'),
+  grant: (accepted) => post('/subscription/grant', { accepted }),
+  testPush: () => post('/subscription/test-push')
+}
+
 module.exports = {
   API_BASE_URL,
   getToken,
@@ -114,5 +124,6 @@ module.exports = {
   get,
   post,
   put,
-  del
+  del,
+  subscription
 }

@@ -11,7 +11,7 @@
     "name": "商店",
     "description": "买东西的地方",
     "subject": "english",
-    "cost_bricks": 8,
+    "cost_bricks": 5,
     "unlock_level": 1,
     "image_url": "/images/buildings/shop.png"
   },

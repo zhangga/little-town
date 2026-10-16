@@ -1,110 +1,196 @@
-<!--pages/learn/learn.wxml-->
-<view class="learn-page">
-  <!-- 加载中 -->
+<template name="audio-controls">
+  <view class="audio-controls">
+    <button class="audio-button {{audioState === 'playing' ? 'audio-playing' : ''}}" bindtap="onPlayAudio" disabled="{{!word.audio}}" aria-label="播放单词发音">
+      <text class="audio-symbol">🔊</text>
+      <text>{{audioState === 'loading' ? '加载中…' : (audioState === 'playing' ? '正在读…' : '听发音')}}</text>
+    </button>
+    <button class="audio-button audio-slow" bindtap="onPlayAudio" data-slow="{{true}}" disabled="{{!word.audio}}">慢速听</button>
+  </view>
+  <text wx:if="{{audioState === 'error'}}" class="audio-note">暂时没播放出来，点一下重听，也可以继续练习</text>
+  <text wx:elif="{{!word.audio}}" class="audio-note">这个词暂时没有读音，先练认词和拼写吧</text>
+</template>
+
+<view class="learn-page {{answered && (phase === 'practice' || phase === 'review') ? 'has-answer' : ''}}">
   <view wx:if="{{loading}}" class="loading">
-    <text class="loading-emoji">📖</text>
+    <text class="loading-emoji">📚</text>
     <text class="loading-text">正在准备今天的单词…</text>
   </view>
-
-  <!-- 加载失败 -->
   <view wx:elif="{{failed}}" class="panel">
     <view class="empty">
       <text class="empty-emoji">📡</text>
-      <text class="empty-text">没能拿到今天的单词。检查一下网络，然后再试一次。</text>
+      <text class="empty-text">没能拿到今天的单词，检查网络后再试一次。</text>
       <button class="btn btn-primary" bindtap="onRetry">重新加载</button>
     </view>
   </view>
 
-  <!-- 答题 -->
+  <view wx:elif="{{phase === 'ready'}}" class="ready">
+    <view class="eyebrow">LITTLE TOWN · 单词探险</view>
+    <view class="welcome-row">
+      <view>
+        <view class="welcome-title">今天，换个玩法！</view>
+        <view class="welcome-sub">{{words.length}} 个单词 · {{newCount}} 个新朋友</view>
+      </view>
+      <text class="welcome-icon">🎒</text>
+    </view>
+    <view class="route-card block">
+      <view class="route-title">一颗单词，记住好几面</view>
+      <view class="route-stops">
+        <view><text class="route-icon">🃏</text><text>认一认</text></view>
+        <text class="route-arrow">→</text>
+        <view><text class="route-icon">🎧</text><text>听与拼</text></view>
+        <text class="route-arrow">→</text>
+        <view><text class="route-icon">🤝</text><text>配成对</text></view>
+      </view>
+      <text class="route-note">看图 · 选词义 · 听音 · 拼写 · 例句填空</text>
+    </view>
+    <view class="section-label">选一条今天的探险路线</view>
+    <button class="mode-card {{mode === 'mixed' ? 'mode-selected' : ''}}" bindtap="onMode" data-mode="mixed">
+      <text class="mode-icon">🌈</text>
+      <view class="mode-copy"><view class="mode-title">综合闯关 <text class="recommended">推荐</text></view><view class="mode-sub">先认新词，再轮换不同题型</view></view>
+      <text class="mode-check">{{mode === 'mixed' ? '✓' : ''}}</text>
+    </button>
+    <view class="mode-row">
+      <button class="mode-card mode-small {{mode === 'listen' ? 'mode-selected' : ''}}" bindtap="onMode" data-mode="listen" disabled="{{!audioCount || !listening}}">
+        <text class="mode-icon">🎧</text><view class="mode-title">听力小站</view><view class="mode-sub">用耳朵认单词</view>
+      </button>
+      <button class="mode-card mode-small {{mode === 'spell' ? 'mode-selected' : ''}}" bindtap="onMode" data-mode="spell">
+        <text class="mode-icon">🧩</text><view class="mode-title">拼写工坊</view><view class="mode-sub">用字母搭单词</view>
+      </button>
+    </view>
+    <view class="sound-setting">
+      <view><view class="setting-title">加入听力和自动朗读</view><text class="setting-sub">不方便出声时可以关掉</text></view>
+      <switch checked="{{listening}}" bindchange="onToggleListening" color="#4E7A2E" aria-label="加入听力和自动朗读" />
+    </view>
+    <text wx:if="{{audioCount < words.length}}" class="audio-note">有读音的 {{audioCount}} 个词可练听力，其余练认词。</text>
+    <button class="btn btn-primary btn-block start-button" bindtap="onStart">开始探险 →</button>
+  </view>
+
   <block wx:elif="{{question}}">
-    <!-- 进度 -->
     <view class="progress-row">
-      <view class="progress-track">
-        <view class="progress-fill" style="width: {{(index / words.length) * 100}}%;"></view>
-      </view>
-      <text class="progress-count tnum">{{index + 1}} / {{words.length}}</text>
+      <view class="progress-track"><view class="progress-fill" style="width: {{phase === 'review' ? 100 : (index / words.length) * 100}}%;"></view></view>
+      <text class="progress-count">{{phase === 'review' ? '巩固 ' + (reviewIndex + 1) + '/' + reviewCount : (index + 1) + ' / ' + words.length}}</text>
     </view>
-
-    <!-- 收益累计 -->
     <view class="earned-row">
-      <view class="chip">
-        <text class="chip-icon">🪙</text>
-        <text class="chip-num tnum">{{earned.coins}}</text>
-      </view>
-      <view class="chip">
-        <text class="chip-icon">🧱</text>
-        <text class="chip-num tnum">{{earned.bricks}}</text>
-      </view>
-      <view wx:if="{{question.is_review}}" class="review-flag">复习</view>
+      <view class="chip"><text>🧱</text><text>{{earned.bricks}}</text></view>
+      <view class="chip"><text>🪙</text><text>{{earned.coins}}</text></view>
+      <text class="stage-tag">{{phase === 'card' ? '新词见面卡' : (phase === 'review' ? '错词再练一次' : question.title)}}</text>
     </view>
 
-    <!-- 题干 -->
-    <view class="prompt block">
-      <text wx:if="{{question.type === 'pic'}}" class="prompt-emoji">{{question.promptEmoji}}</text>
-
-      <view wx:else class="prompt-word-wrap">
-        <text class="prompt-word">{{question.promptWord}}</text>
-        <view class="speaker" bindtap="onPlayAudio">🔊</view>
-      </view>
-
-      <text class="prompt-hint">{{question.hint}}</text>
-    </view>
-
-    <!-- 选项 -->
-    <view class="options">
-      <view
-        wx:for="{{question.options}}"
-        wx:key="key"
-        class="option {{answered && item.correct ? 'option-correct' : ''}} {{answered && !item.correct && picked === index ? 'option-wrong' : ''}} {{answered && !item.correct && picked !== index ? 'option-dim' : ''}}"
-        data-index="{{index}}"
-        bindtap="onPick"
-      >
-        <text class="option-label">{{item.label}}</text>
-        <text wx:if="{{answered && item.correct}}" class="option-mark">✓</text>
-        <text wx:elif="{{answered && !item.correct && picked === index}}" class="option-mark">✕</text>
+    <view wx:if="{{phase === 'card'}}" class="word-card block">
+      <text class="card-kicker">HELLO, NEW FRIEND!</text>
+      <text class="card-emoji">{{question.word.emoji}}</text>
+      <text class="card-word">{{question.word.word}}</text>
+      <template is="audio-controls" data="{{word: question.word, audioState: audioState}}" />
+      <button wx:if="{{!flipped}}" class="flip-button" bindtap="onFlip">想一想，它是什么意思？<text>点这里翻开卡片 ↗</text></button>
+      <view wx:else class="card-back">
+        <text class="card-meaning">{{question.word.translation}}</text>
+        <text wx:if="{{question.word.fullSentence}}" class="example">{{question.word.fullSentence}}</text>
+        <text wx:if="{{question.word.sentenceMeaning}}" class="example-meaning">{{question.word.sentenceMeaning}}</text>
       </view>
     </view>
+    <button wx:if="{{phase === 'card'}}" class="btn btn-primary btn-block next-button" bindtap="onCardContinue" disabled="{{!flipped}}">认识了，试着用一用 →</button>
 
-    <!-- 判定与继续 -->
-    <view class="footer">
-      <view wx:if="{{answered}}" class="verdict {{isCorrect ? 'verdict-ok' : 'verdict-no'}}">
-        <text class="verdict-title">{{isCorrect ? '答对了' : '答案是 ' + question.promptWord}}</text>
-        <text class="verdict-sub">{{isCorrect ? '砖块 +1，金币 +5' : '没关系，这个词等会儿还会再见到你'}}</text>
+    <block wx:else>
+      <view class="prompt block">
+        <text class="question-kicker">{{question.icon}} {{question.title}}</text>
+        <block wx:if="{{question.type === 'listen'}}">
+          <view class="listen-hero {{audioState === 'playing' ? 'listening' : ''}}">
+            <view class="sound-bar"></view><view class="sound-bar"></view><view class="sound-bar"></view><view class="sound-bar"></view><view class="sound-bar"></view>
+          </view>
+          <text class="listen-title">{{heardAudio ? '听到了吗？选一选' : '神秘单词藏在声音里'}}</text>
+        </block>
+        <text wx:elif="{{question.type === 'pic'}}" class="prompt-emoji">{{question.word.emoji}}</text>
+        <text wx:elif="{{question.type === 'meaning'}}" class="prompt-word">{{question.word.word}}</text>
+        <view wx:elif="{{question.type === 'cloze'}}" class="sentence-wrap">
+          <text class="sentence">{{question.sentenceBefore}}<text class="sentence-blank">{{answered ? question.word.word : '____'}}</text>{{question.sentenceAfter}}</text>
+          <text class="sentence-meaning">{{question.word.sentenceMeaning}}</text>
+        </view>
+        <block wx:else>
+          <text wx:if="{{question.type === 'spell'}}" class="spell-emoji">{{question.word.emoji}}</text>
+          <text class="prompt-translation">{{question.word.translation}}</text>
+        </block>
+        <text class="prompt-hint">{{question.hint}}</text>
+        <template wx:if="{{!answered && (question.type === 'listen' || question.type === 'meaning' || question.type === 'spell')}}" is="audio-controls" data="{{word: question.word, audioState: audioState}}" />
+        <button wx:if="{{question.type === 'listen' && !answered}}" class="text-button" bindtap="onSkipListening">现在不方便听，换一道认词题</button>
       </view>
 
-      <button
-        class="btn btn-primary btn-block"
-        wx:if="{{answered}}"
-        bindtap="onNext"
-      >{{index + 1 >= words.length ? '看看今天赚了多少' : '下一个'}}</button>
-    </view>
+      <view wx:if="{{question.type === 'spell'}}" class="spelling-area">
+        <view class="letter-slots">
+          <button wx:for="{{question.slots}}" wx:key="key" class="letter-slot {{item.fixed ? 'slot-fixed' : ''}} {{answered ? (isCorrect ? 'slot-correct' : 'slot-wrong') : ''}}" data-index="{{index}}" bindtap="onRemoveLetter" disabled="{{answered || item.fixed}}" aria-label="{{item.letter ? '移除字母 ' + item.letter : '待填写字母'}}">{{item.letter || '·'}}</button>
+        </view>
+        <text class="spelling-help">点上面的字母可以撤回</text>
+        <view class="letter-bank">
+          <button wx:for="{{question.tiles}}" wx:key="key" class="letter-tile {{item.used ? 'tile-used' : ''}}" data-index="{{index}}" bindtap="onTile" disabled="{{answered || item.used}}">{{item.letter}}</button>
+        </view>
+        <button wx:if="{{!answered}}" class="text-button" bindtap="onClearSpelling">重新拼</button>
+        <button wx:if="{{!answered}}" class="btn btn-primary btn-block" bindtap="onCheckSpelling" disabled="{{!spellReady}}">拼好了，检查一下</button>
+      </view>
+      <view wx:else class="options">
+        <button wx:for="{{question.options}}" wx:key="key" class="option {{answered && item.correct ? 'option-correct' : ''}} {{answered && !item.correct && picked === index ? 'option-wrong' : ''}} {{answered && !item.correct && picked !== index ? 'option-dim' : ''}}" data-index="{{index}}" bindtap="onPick" disabled="{{answered || (question.type === 'listen' && !heardAudio)}}">
+          <text class="option-letter">{{index === 0 ? 'A' : (index === 1 ? 'B' : (index === 2 ? 'C' : 'D'))}}</text>
+          <text class="option-label">{{item.label}}</text>
+          <text wx:if="{{answered && item.correct}}" class="option-mark">✓</text>
+          <text wx:elif="{{answered && picked === index}}" class="option-mark">✕</text>
+        </button>
+      </view>
+
+      <view wx:if="{{answered}}" class="answer-dock {{isCorrect ? 'verdict-ok' : 'verdict-no'}}">
+        <view class="answer-summary">
+          <view class="answer-copy">
+            <text class="verdict-title">{{isCorrect ? '✓ 答对了！' : '再认识它一次'}}</text>
+            <text class="answer-word">{{question.word.word}} <text class="answer-meaning">{{question.word.translation}}</text></text>
+          </view>
+          <view wx:if="{{question.word.audio}}" class="answer-audio">
+            <button class="audio-button" bindtap="onPlayAudio" aria-label="重听单词发音">🔊</button>
+            <button class="audio-button audio-slow" bindtap="onPlayAudio" data-slow="{{true}}">慢速</button>
+          </view>
+        </view>
+        <text wx:if="{{phase === 'review'}}" class="verdict-sub">{{isCorrect ? '比刚才更熟悉了！' : '再听一遍，下次继续练'}}</text>
+        <text wx:elif="{{saving}}" class="verdict-sub">正在把学习成果存进小镇…</text>
+        <text wx:elif="{{saveError}}" class="verdict-sub">网络不稳，这题的奖励还没确认，可以手动继续。</text>
+        <text wx:elif="{{lastReward.bricks || lastReward.coins}}" class="verdict-sub">本题收获：砖块 +{{lastReward.bricks}} · 金币 +{{lastReward.coins}}</text>
+        <text wx:else class="verdict-sub">{{isCorrect ? '今天的答题砖块已集满，继续练也很棒' : '等会儿会换个方式再练这个词'}}</text>
+        <text class="advance-note">{{saving ? '保存完成后自动继续' : (saveError ? '本题已停留，请查看网络提示' : (autoAdvancePaused ? '已暂停跳转，准备好了再继续' : (isCorrect ? '稍后自动进入下一题' : '看清答案后自动继续')))}}</text>
+        <view class="answer-actions">
+          <button class="pause-advance" bindtap="onToggleAutoAdvance" disabled="{{saving || saveError}}">{{autoAdvancePaused ? '恢复自动' : '停留看看'}}</button>
+          <button class="btn btn-primary next-answer" bindtap="onNext" disabled="{{saving}}">{{saving ? '保存中…' : '继续探险 →'}}</button>
+        </view>
+      </view>
+    </block>
   </block>
 
-  <!-- 今日完成 -->
+  <view wx:elif="{{phase === 'match'}}" class="match-page">
+    <view class="eyebrow">最后一站 · 词义配对</view>
+    <view class="welcome-title">帮单词找到朋友</view>
+    <view class="match-progress">{{pairCount}} / {{pairs.left.length}} 对 <text wx:if="{{pairBatches > 1}}">· 第 {{pairBatch}} 组</text></view>
+    <view class="match-columns">
+      <view class="match-column">
+        <text class="column-heading">英文</text>
+        <button wx:for="{{pairs.left}}" wx:key="key" class="pair-button {{item.matched ? 'pair-matched' : ''}} {{pairLeft === index ? (matchWrong ? 'pair-wrong' : 'pair-selected') : ''}}" data-side="left" data-index="{{index}}" bindtap="onMatchPick" disabled="{{item.matched || matchWrong}}">{{item.label}}<text wx:if="{{item.matched}}"> ✓</text></button>
+      </view>
+      <view class="match-column">
+        <text class="column-heading">中文</text>
+        <button wx:for="{{pairs.right}}" wx:key="key" class="pair-button {{item.matched ? 'pair-matched' : ''}} {{pairRight === index ? (matchWrong ? 'pair-wrong' : 'pair-selected') : ''}}" data-side="right" data-index="{{index}}" bindtap="onMatchPick" disabled="{{item.matched || matchWrong}}">{{item.label}}<text wx:if="{{item.matched}}"> ✓</text></button>
+      </view>
+    </view>
+    <view class="match-message {{matchWrong ? 'match-error' : ''}}" aria-role="status">{{matchMessage}}</view>
+    <button class="btn btn-primary btn-block" bindtap="onMatchNext" disabled="{{!matchDone}}">{{pairBatch < pairBatches ? '下一组' : '收好今天的成果 →'}}</button>
+  </view>
+
   <view wx:else class="done-wrap">
     <view class="done-card block">
-      <text class="done-emoji">🎉</text>
-      <text class="done-title">今天的单词学完了</text>
-
-      <view class="done-stats">
-        <view class="done-stat">
-          <text class="done-num tnum">{{stats.right}}</text>
-          <text class="done-label">答对</text>
-        </view>
-        <view class="done-stat">
-          <text class="done-num tnum">{{stats.wrong}}</text>
-          <text class="done-label">答错</text>
-        </view>
-        <view class="done-stat">
-          <text class="done-num tnum">{{earned.bricks}}</text>
-          <text class="done-label">砖块</text>
-        </view>
+      <text class="done-emoji">{{words.length ? '🎉' : '🌱'}}</text>
+      <text class="done-title">{{words.length ? '探险完成！' : '这一轮没有待学单词'}}</text>
+      <text class="done-note">{{words.length ? '听过、想过、拼过，单词更熟悉了' : '稍后再来看看有没有到期的复习吧'}}</text>
+      <view wx:if="{{words.length}}" class="done-stats">
+        <view class="done-stat"><text class="done-num">{{stats.right}}</text><text class="done-label">首次答对</text></view>
+        <view class="done-stat"><text class="done-num">{{recovered}}</text><text class="done-label">巩固答对</text></view>
+        <view class="done-stat"><text class="done-num">{{earned.bricks}}</text><text class="done-label">收获砖块</text></view>
       </view>
-
-      <text class="done-note">{{earned.bricks > 0 ? '砖块已经存进仓库，去建造里用掉它吧' : '明天再来，会有新单词等着你'}}</text>
-
-      <button class="btn btn-sun btn-block" bindtap="onBackToTown">回到小镇</button>
-      <button class="btn btn-block mt-16" bindtap="onRetry">再练一轮</button>
+      <view wx:if="{{bonus.granted}}" class="bonus"><text class="bonus-title">完成奖励 🧱 +{{bonus.bricks}}</text><text class="bonus-sub">已包含在本轮收获中</text></view>
+      <text wx:if="{{unsaved}}" class="audio-note">有 {{unsaved}} 题的保存结果未确认，回小镇时可查看实际收获。</text>
+      <button class="btn btn-sun btn-block" bindtap="onBackToTown">回小镇，看看新成果</button>
+      <button class="btn btn-block" bindtap="onRetry">再选一条路线</button>
     </view>
   </view>
 </view>
