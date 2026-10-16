@@ -12,6 +12,22 @@ const words = seed.map((word, index) => enrichWord({ ...word, id: index + 1, is_
 const event = (data) => ({ currentTarget: { dataset: data } })
 const flush = () => new Promise((resolve) => setImmediate(resolve))
 
+test('growth comes from saved server results and is not repeated during mistake practice', async () => {
+  const h = await pageHarness(words.slice(0, 1), () => ({ coins_earned: 0, bricks_earned: 0, xp_earned: 5 }))
+  h.page.onStart()
+  await answerQuestion(h.page, false, h.mockAudio)
+  assert.equal(h.page.data.earnedXP, 5)
+  assert.equal(h.page.data.lastXP, 5)
+  h.page.onNext()
+  assert.equal(h.page.data.phase, 'review')
+  assert.equal(h.page.data.lastXP, 0)
+  await answerQuestion(h.page, true, h.mockAudio)
+  assert.equal(h.page.data.earnedXP, 5)
+  assert.equal(h.calls.length, 1)
+  await h.page.loadDaily()
+  assert.equal(h.page.data.earnedXP, 0)
+})
+
 function audioMock() {
   const contexts = []
   return {

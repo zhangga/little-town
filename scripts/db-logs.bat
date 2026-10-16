@@ -35,16 +35,16 @@ if not "%~1"=="" if not "%FOLLOW%"=="1" (
   )
 )
 
-docker inspect little-town-db >nul 2>&1
+docker inspect little-town-mysql >nul 2>&1
 if errorlevel 1 (
   echo [X] 数据库容器不存在，执行 scripts\db-start.bat 启动
   exit /b 1
 )
 
 if "%FOLLOW%"=="1" (
-  docker logs -f --tail %TAIL% little-town-db
+  docker logs -f --tail %TAIL% little-town-mysql
 ) else (
-  docker logs --tail %TAIL% little-town-db
+  docker logs --tail %TAIL% little-town-mysql
 )
 exit /b 0
 

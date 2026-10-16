@@ -12,7 +12,7 @@
 
     <view class="id-body">
       <text class="id-name">{{userInfo.nickname || '小镇长'}}</text>
-      <text class="id-meta">{{gradeLabel}}{{gradeLabel ? ' · ' : ''}}Lv.{{userInfo.level || 1}}</text>
+      <text class="id-meta">{{gradeLabel || '每天学一点，小镇长大一点'}}</text>
     </view>
   </view>
 
@@ -54,6 +54,7 @@
 
   <!-- 入口 -->
   <view class="menu">
+    <view class="menu-item block-sm" bindtap="onGoResident"><text class="menu-icon">🏡</text><view class="menu-body"><text class="menu-title">小镇长的家</text><text class="menu-sub">换装、布置庭院，让小屋慢慢长大</text></view><text class="menu-arrow">›</text></view>
     <view class="menu-item block-sm" bindtap="onGoParent">
       <text class="menu-icon">📋</text>
       <view class="menu-body">

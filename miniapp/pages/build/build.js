@@ -1,123 +1,110 @@
-// pages/build/build.js
 const api = require('../../utils/api')
-const { buildingEmoji } = require('../../utils/assets')
-const { showError, showSuccess, showConfirm } = require('../../utils/util')
+const { townSprite } = require('../../utils/assets')
+const { catalogState } = require('../../utils/town')
+const { showError } = require('../../utils/util')
 
 Page({
   data: {
-    loading: true,
-    failed: false,
-    buildings: [],
+    loading: true, refreshing: false, failed: false,
+    buildings: [], visibleBuildings: [],
     user: { bricks: 0, coins: 0, level: 1 },
-    building: false,
-    builtCount: 0
+    filter: 'all', builtCount: 0, readyCount: 0,
+    recommended: null, selected: null, completed: null, building: false,
+    brickSprite: townSprite('砖块'), coinSprite: townSprite('金币'), toolSprite: townSprite('工具')
   },
 
   onLoad() {
-    if (!wx.getStorageSync('token')) {
-      wx.redirectTo({ url: '/pages/login/login' })
-      return
-    }
-    this.loadBuildings()
+    if (!wx.getStorageSync('token')) wx.redirectTo({ url: '/pages/login/login' })
   },
 
   onShow() {
-    if (wx.getStorageSync('token')) {
-      this.loadBuildings()
-    }
+    if (wx.getStorageSync('token') && !this.data.building) this.loadBuildings()
   },
+
+  onUnload() { this._disposed = true },
 
   onPullDownRefresh() {
-    this.loadBuildings().then(() => wx.stopPullDownRefresh())
+    return this.loadBuildings().finally(() => wx.stopPullDownRefresh())
   },
 
-  async loadBuildings() {
-    this.setData({ loading: true, failed: false })
+  loadBuildings() {
+    if (this.data.building) return Promise.resolve()
+    if (this._loadPromise) return this._loadPromise
+    this.setData({ loading: !this.data.buildings.length, refreshing: true, failed: false })
+    this._loadPromise = this.fetchBuildings().finally(() => { this._loadPromise = null })
+    return this._loadPromise
+  },
+
+  async fetchBuildings() {
     try {
       const res = await api.get('/buildings')
-      const raw = (res && res.buildings) || []
-
-      const buildings = raw.map((item) => ({
-        id: item.id,
-        name: item.name,
-        description: item.description,
-        emoji: buildingEmoji(item.name),
-        image_url: item.image_url || '',
-        cost_bricks: item.cost_bricks,
-        unlock_level: item.unlock_level || 1,
-        is_built: !!item.is_built,
-        can_build: !!item.can_build
-      }))
-
-      const builtCount = buildings.filter((b) => b.is_built).length
-
-      this.setData({
-        buildings,
-        user: (res && res.user) || this.data.user,
-        builtCount,
-        loading: false
-      })
+      if (this._disposed) return
+      const user = res.user || this.data.user
+      this.setData(Object.assign({ user, loading: false, refreshing: false },
+        catalogState(res.buildings || [], user, this.data.filter, this.data.selected && this.data.selected.id)))
+      this.syncResources(user)
     } catch (err) {
-      this.setData({ loading: false, failed: true })
+      if (this._disposed) return
+      this.setData({ loading: false, refreshing: false, failed: !this.data.buildings.length })
       showError(err.message || '建筑清单加载失败')
     }
   },
 
-  onBuildTap(e) {
-    const { index } = e.currentTarget.dataset
-    const item = this.data.buildings[index]
-
-    if (item.is_built) return
-    if (!item.can_build) {
-      showError('砖块不够，先去学几个单词')
-      return
-    }
-    if (this.data.building) return
-
-    this.confirmBuild(item)
+  syncResources(user) {
+    const cached = wx.getStorageSync('userInfo')
+    if (cached) wx.setStorageSync('userInfo', Object.assign({}, cached, user))
   },
 
-  async confirmBuild(item) {
-    const ok = await showConfirm({
-      title: '建造' + item.name,
-      content: '需要 ' + item.cost_bricks + ' 块砖。建好后它会出现在小镇地图上。',
-      confirmText: '建'
-    })
-    if (!ok) return
+  onFilter(e) {
+    const filter = e.currentTarget.dataset.filter
+    if (!['all', 'ready', 'built'].includes(filter)) return
+    this.setData(Object.assign({ filter }, catalogState(this.data.buildings, this.data.user, filter)))
+  },
 
+  onSelect(e) {
+    if (this.data.building) return
+    const selected = this.data.buildings.find(item => item.id === Number(e.currentTarget.dataset.id))
+    if (selected) this.setData({ selected, completed: null })
+  },
+
+  onCloseDetail() {
+    if (!this.data.building) this.setData({ selected: null, completed: null })
+  },
+
+  onNoop() {},
+
+  async onBuild() {
+    const item = this.data.selected
+    if (!item || !item.can_build || this.data.building || this.data.refreshing || this.data.completed) return
+    // 在等待请求前锁住操作，连续点击只会提交一次。
     this.setData({ building: true })
     try {
-      await api.post('/buildings/build', { building_id: item.id })
+      const res = await api.post('/buildings/build', { building_id: item.id })
+      const remaining = Number.isFinite(res.remaining_bricks) ? res.remaining_bricks : Math.max(0, this.data.user.bricks - item.cost_bricks)
+      const user = Object.assign({}, this.data.user, { bricks: remaining })
+      this.syncResources(user)
+      wx.setStorageSync('lastBuiltBuilding', { name: item.name })
+      if (this._disposed) return
+      const raw = this.data.buildings.map(building => Object.assign({}, building, {
+        is_built: building.id === item.id || building.is_built
+      }))
+      this.setData(Object.assign({ user, completed: item }, catalogState(raw, user, this.data.filter, item.id)))
       wx.vibrateShort({ type: 'medium' })
-      showSuccess(item.name + ' 建好了')
-
-      // 同步本地资源
-      const userInfo = wx.getStorageSync('userInfo')
-      if (userInfo) {
-        userInfo.bricks = Math.max(0, (userInfo.bricks || 0) - item.cost_bricks)
-        wx.setStorageSync('userInfo', userInfo)
-      }
-
-      await this.loadBuildings()
     } catch (err) {
-      showError(err.message || '建造失败，再试一次')
-    } finally {
+      if (this._disposed) return
+      const messages = { 'not enough bricks': '砖块已变化，正在重新清点', 'building already exists': '这座建筑已经落成啦' }
+      showError(messages[err.message] || err.message || '建造失败，再试一次')
+      // 请求可能已成功但响应丢失，重新读取可防止再次提交同一座建筑。
       this.setData({ building: false })
+      await this.loadBuildings()
+    } finally {
+      if (!this._disposed) this.setData({ building: false })
     }
   },
 
-  onGoLearn() {
-    wx.switchTab({ url: '/pages/learn/learn' })
-  },
-
-  onGoTown() {
-    wx.switchTab({ url: '/pages/index/index' })
-  },
-
+  onGoLearn() { this.onCloseDetail(); wx.switchTab({ url: '/pages/learn/learn' }) },
+  onGoTown() { this.onCloseDetail(); wx.switchTab({ url: '/pages/index/index' }) },
   onShareAppMessage() {
-    return {
-      title: '我在小小镇盖房子，来看看我的小镇',
-      path: '/pages/index/index'
-    }
+    return { title: '学单词，建一座自己的方块小镇', path: '/pages/index/index' }
   }
 })

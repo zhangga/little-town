@@ -18,15 +18,15 @@ func NewSpacedRepetitionService(db *gorm.DB) *SpacedRepetitionService {
 	return &SpacedRepetitionService{
 		db: db,
 		intervals: []int{
-			5,      // Level 0: 5 分钟后
-			30,     // Level 1: 30 分钟后
-			720,    // Level 2: 12 小时后
-			1440,   // Level 3: 1 天后
-			2880,   // Level 4: 2 天后
-			5760,   // Level 5: 4 天后
-			10080,  // Level 6: 7 天后
-			21600,  // Level 7: 15 天后
-			43200,  // Level 8: 30 天后
+			5,     // Level 0: 5 分钟后
+			30,    // Level 1: 30 分钟后
+			720,   // Level 2: 12 小时后
+			1440,  // Level 3: 1 天后
+			2880,  // Level 4: 2 天后
+			5760,  // Level 5: 4 天后
+			10080, // Level 6: 7 天后
+			21600, // Level 7: 15 天后
+			43200, // Level 8: 30 天后
 		},
 	}
 }
@@ -149,7 +149,7 @@ func (s *SpacedRepetitionService) GetUserStats(userID uint) (map[string]interfac
 	// 今天学习的数量
 	todayStart := DayStart(time.Now())
 	s.db.Model(&models.LearningRecord{}).
-		Where("user_id = ? AND created_at >= ?", userID, todayStart).
+		Where("user_id = ? AND updated_at >= ?", userID, todayStart).
 		Count(&todayLearned)
 
 	// 正确率

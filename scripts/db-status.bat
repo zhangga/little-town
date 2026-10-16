@@ -32,7 +32,7 @@ echo === 容器状态 ===
 
 echo.
 echo === 连通性 ===
-for /f "tokens=*" %%s in ('docker inspect --format="{{.State.Health.Status}}" little-town-db 2^>nul') do set STATUS=%%s
+for /f "tokens=*" %%s in ('docker inspect --format="{{.State.Health.Status}}" little-town-mysql 2^>nul') do set STATUS=%%s
 
 if not defined STATUS (
   echo [X] 数据库容器不存在，执行 scripts\db-start.bat 启动
@@ -45,12 +45,10 @@ if "!STATUS!"=="unhealthy" echo [X] 数据库不健康，执行 scripts\db-logs.
 
 echo.
 echo === 数据表 ===
-docker exec little-town-db psql -U postgres -d littletown_db -c "\dt" 2>nul
+docker exec little-town-mysql sh -c "MYSQL_PWD=$MYSQL_PASSWORD mysql -u$MYSQL_USER -D$MYSQL_DATABASE -e 'SHOW TABLES'" 2>nul
 if errorlevel 1 echo   （数据库未运行，或后端尚未首次启动建表）
 
 echo.
 echo === 数据量 ===
-docker exec little-town-db psql -U postgres -d littletown_db -tAc "SELECT 'users: ' || count(*) FROM users" 2>nul
-docker exec little-town-db psql -U postgres -d littletown_db -tAc "SELECT 'words: ' || count(*) FROM words" 2>nul
-docker exec little-town-db psql -U postgres -d littletown_db -tAc "SELECT 'buildings: ' || count(*) FROM buildings" 2>nul
+docker exec little-town-mysql sh -c "MYSQL_PWD=$MYSQL_PASSWORD mysql -u$MYSQL_USER -D$MYSQL_DATABASE -e 'SELECT COUNT(*) AS users FROM users; SELECT COUNT(*) AS words FROM words; SELECT COUNT(*) AS buildings FROM buildings'" 2>nul
 exit /b 0

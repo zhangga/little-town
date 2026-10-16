@@ -1,0 +1,51 @@
+package router
+
+import (
+	"net/http/httptest"
+	"strings"
+	"testing"
+
+	"github.com/zhangga/little-town/backend/internal/config"
+)
+
+func TestHealthAndReadinessAreDifferent(t *testing.T) {
+	r := SetupRouter(nil, &config.Config{})
+	for path, status := range map[string]int{"/health": 200, "/ready": 503, "/internal/jobs/daily-push": 404} {
+		method := "GET"
+		if strings.Contains(path, "jobs") {
+			method = "POST"
+		}
+		res := httptest.NewRecorder()
+		r.ServeHTTP(res, httptest.NewRequest(method, path, nil))
+		if res.Code != status {
+			t.Fatalf("%s: got %d want %d", path, res.Code, status)
+		}
+	}
+}
+
+func TestExternalJobRequiresItsOwnCredential(t *testing.T) {
+	key := strings.Repeat("j", 40)
+	r := SetupRouter(nil, &config.Config{JobToken: key})
+	for _, token := range []string{"", key, "Bearer forged-jwt", "Bearer " + key} {
+		req := httptest.NewRequest("POST", "/internal/jobs/daily-push", nil)
+		req.Header.Set("Authorization", token)
+		res := httptest.NewRecorder()
+		r.ServeHTTP(res, req)
+		want := 401
+		if token == "Bearer "+key {
+			want = 200
+		} // 微信未配置时返回 skipped，不发消息。
+		if res.Code != want {
+			t.Fatalf("job status=%d want=%d", res.Code, want)
+		}
+	}
+}
+
+func TestProductionCannotFallbackToMockLogin(t *testing.T) {
+	r := SetupRouter(nil, &config.Config{Env: "production"})
+	res := httptest.NewRecorder()
+	r.ServeHTTP(res, httptest.NewRequest("POST", "/api/v1/auth/login", strings.NewReader(`{"code":"dev:must-not-login"}`)))
+	if res.Code != 401 {
+		t.Fatalf("production mock login: got %d want 401", res.Code)
+	}
+}

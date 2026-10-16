@@ -1,7 +1,16 @@
 package main
 
 import (
+	"context"
+	"errors"
+	"fmt"
 	"log"
+	"net"
+	"net/http"
+	"os"
+	"os/signal"
+	"syscall"
+	"time"
 
 	"github.com/gin-gonic/gin"
 	"github.com/joho/godotenv"
@@ -14,93 +23,101 @@ import (
 )
 
 func main() {
-	// 加载环境变量
-	if err := godotenv.Load(); err != nil {
-		log.Println("Warning: .env file not found, using system environment variables")
+	if err := run(); err != nil {
+		log.Print(err)
+		os.Exit(1)
 	}
+}
 
-	// 加载配置
+func run() error {
+	_ = godotenv.Load()
 	cfg := config.Load()
-
-	// 初始化日志落盘。
-	// 失败不阻断启动——开发时更常见的是目录权限问题，
-	// 此时降级为只输出终端，比直接退出更有用。
-	logger, writer, err := logging.Setup(logging.Options{
-		Dir:      cfg.LogDir,
-		Prefix:   "app",
-		KeepDays: cfg.LogKeepDays,
-	})
-	if err != nil {
-		log.Printf("警告：日志文件初始化失败，仅输出到终端: %v", err)
-	} else {
-		defer logger.Close()
-
-		log.SetOutput(writer)
-		// 让 Gin 的访问日志与错误日志也写进同一个文件
-		gin.DefaultWriter = writer
-		gin.DefaultErrorWriter = writer
+	if err := cfg.Validate(); err != nil {
+		return fmt.Errorf("configuration: %w", err)
+	}
+	if err := cfg.ApplyTimeZone(); err != nil {
+		return err
 	}
 
-	// 初始化数据库
-	db, err := database.InitDB(cfg)
-	if err != nil {
-		log.Fatal("Failed to initialize database:", err)
-	}
-
-	// 自动迁移数据库表
-	if err := database.AutoMigrate(db); err != nil {
-		log.Fatal("Failed to migrate database:", err)
-	}
-
-	// 设置 Gin 模式
+	log.SetOutput(os.Stdout)
+	gin.DefaultWriter, gin.DefaultErrorWriter = os.Stdout, os.Stderr
 	if cfg.Env == "production" {
 		gin.SetMode(gin.ReleaseMode)
 	}
-
-	// 启动信息
-	log.Println("========== 小小镇后端启动 ==========")
-
-	if logger != nil {
-		if removed, err := logger.CleanupOldFiles(); err == nil && removed > 0 {
-			log.Printf("已清理 %d 个过期日志文件（保留 %d 天）", removed, cfg.LogKeepDays)
+	if cfg.LogToFile {
+		fileLogger, writer, err := logging.Setup(logging.Options{Dir: cfg.LogDir, Prefix: "app", KeepDays: cfg.LogKeepDays})
+		if err != nil {
+			log.Printf("日志文件初始化失败，仅输出终端: %v", err)
+		} else {
+			defer fileLogger.Close()
+			log.SetOutput(writer)
+			gin.DefaultWriter, gin.DefaultErrorWriter = writer, writer
+			_, _ = fileLogger.CleanupOldFiles()
+			log.Printf("日志文件：%s", fileLogger.CurrentPath())
 		}
-		log.Printf("日志文件：%s", logger.CurrentPath())
 	}
 
-	log.Printf("运行环境：%s", cfg.Env)
+	db, err := database.InitDB(cfg)
+	if err != nil {
+		return err
+	}
+	sqlDB, err := db.DB()
+	if err != nil {
+		return err
+	}
+	defer sqlDB.Close()
 
-	// 明确告知登录模式，避免带着开发模式的假 openid 上线而不自知
-	if cfg.WechatAppID != "" && cfg.WechatSecret != "" {
-		log.Printf("微信登录：已配置（AppID %s）", maskAppID(cfg.WechatAppID))
-	} else {
-		log.Println("微信登录：未配置 ⚠️  当前为开发模式，openid 由固定种子派生")
-		log.Println("         生产环境请在 .env 中填写 WECHAT_APPID 与 WECHAT_SECRET")
+	ctx, cancel := signal.NotifyContext(context.Background(), os.Interrupt, syscall.SIGTERM)
+	defer cancel()
+	if cfg.AutoMigrate {
+		acquired, err := database.WithLock(ctx, db, "schema-and-seed", 30*time.Second, func() error { return database.AutoMigrate(db) })
+		if err != nil {
+			return fmt.Errorf("schema migration: %w", err)
+		}
+		if !acquired {
+			return fmt.Errorf("timed out waiting for schema migration lock")
+		}
 	}
 
-	// 初始化路由
-	r := router.SetupRouter(db, cfg)
-
-	// 启动订阅消息推送调度
-	pushScheduler := scheduler.New(cfg, services.NewSubscriptionService(
-		db,
-		services.NewWeChatService(cfg.WechatAppID, cfg.WechatSecret),
-		cfg.SubscribeTemplateID,
-		cfg.SubscribePage,
+	pushScheduler := scheduler.New(cfg, db, services.NewSubscriptionService(
+		db, services.NewWeChatService(cfg.WechatAppID, cfg.WechatSecret), cfg.SubscribeTemplateID, cfg.SubscribePage,
 	))
 	pushScheduler.Start()
 	defer pushScheduler.Stop()
 
-	// 启动服务器
-	addr := cfg.ServerHost + ":" + cfg.ServerPort
-	log.Printf("监听地址：%s", addr)
-	log.Println("=====================================")
-
-	if err := r.Run(addr); err != nil {
-		log.Fatal("Failed to start server:", err)
+	addr := net.JoinHostPort(cfg.ServerHost, cfg.ServerPort)
+	server := &http.Server{
+		Addr: addr, Handler: router.SetupRouter(db, cfg),
+		ReadHeaderTimeout: 5 * time.Second, ReadTimeout: 15 * time.Second,
+		WriteTimeout: 120 * time.Second, IdleTimeout: 60 * time.Second,
+		BaseContext: func(net.Listener) context.Context { return ctx },
 	}
+	log.Printf("小小镇后端启动：环境=%s 部署=%s 时区=%s 监听=%s", cfg.Env, cfg.DeployTarget, cfg.TimeZone, addr)
+	if cfg.WechatAppID != "" && cfg.WechatSecret != "" {
+		log.Printf("微信登录：已配置（AppID %s）", maskAppID(cfg.WechatAppID))
+	} else {
+		log.Println("微信登录：开发模拟模式")
+	}
+	errs := make(chan error, 1)
+	go func() { errs <- server.ListenAndServe() }()
+	select {
+	case err := <-errs:
+		if !errors.Is(err, http.ErrServerClosed) {
+			return err
+		}
+	case <-ctx.Done():
+		log.Println("正在停止后端服务…")
+		shutdownCtx, stop := context.WithTimeout(context.Background(), 20*time.Second)
+		defer stop()
+		if err := server.Shutdown(shutdownCtx); err != nil {
+			_ = server.Close()
+			return err
+		}
+	}
+	log.Println("后端服务已停止")
+	return nil
 }
 
-// maskAppID 只保留首尾字符，日志里不出现完整 AppID
 func maskAppID(id string) string {
 	if len(id) <= 8 {
 		return "****"

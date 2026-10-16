@@ -1,0 +1,16 @@
+.git
+.env
+.env.*
+**/.env
+**/.env.*
+tmp
+logs
+uploads
+vendor
+**/*.exe
+**/*.dump
+**/*_test.go
+server
+import
+Dockerfile*
+docker-compose*.yml

@@ -6,76 +6,69 @@ import (
 	"time"
 
 	"github.com/zhangga/little-town/backend/internal/config"
+	"github.com/zhangga/little-town/backend/internal/database"
 	"github.com/zhangga/little-town/backend/internal/services"
+	"gorm.io/gorm"
 )
 
-// Scheduler 每小时检查一次是否需要执行每日推送
 type Scheduler struct {
 	cfg  *config.Config
+	db   *gorm.DB
 	subs *services.SubscriptionService
 	stop context.CancelFunc
 	done chan struct{}
 }
 
-func New(cfg *config.Config, subs *services.SubscriptionService) *Scheduler {
-	return &Scheduler{
-		cfg:  cfg,
-		subs: subs,
-		done: make(chan struct{}),
-	}
+type Summary struct {
+	Configured bool `json:"configured"`
+	Busy       bool `json:"busy"`
+	Sent       int  `json:"sent"`
+	Skipped    int  `json:"skipped"`
+	Failed     int  `json:"failed"`
 }
 
-// Start 启动调度循环
-//
-// 实现方式是「按分钟检查，每天只执行一次」，而不是精确的定时任务。
-// 这样做的好处：
-//   - 服务半夜重启、或当天错过了时间点，只要还在当天就能补上
-//   - 不需要引入 cron 依赖
-//   - 重复执行由 PushTargets 的「距上次推送 ≥ 20 小时」条件兜住，
-//     不会给同一个人重复推送
-//
-// 代价是实际推送时间可能有几分钟偏差，对「每日提醒」这个场景无所谓。
-func (s *Scheduler) Start() {
-	if !s.cfg.PushEnabled {
-		log.Println("订阅消息推送：已禁用（PUSH_ENABLED=false）")
-		return
-	}
-	if !s.subs.Configured() {
-		log.Println("订阅消息推送：未配置（需要 WECHAT_SECRET 与 SUBSCRIBE_TEMPLATE_ID）")
-		return
-	}
+func New(cfg *config.Config, db *gorm.DB, subs *services.SubscriptionService) *Scheduler {
+	return &Scheduler{cfg: cfg, db: db, subs: subs, done: make(chan struct{})}
+}
 
+// Start 仅用于常驻实例。云托管可缩容到零，默认由外部任务调用 RunDaily。
+func (s *Scheduler) Start() {
+	if !s.cfg.PushEnabled || !s.subs.Configured() {
+		log.Println("进程内每日提醒未启用；可按需配置外部任务入口")
+		return
+	}
 	ctx, cancel := context.WithCancel(context.Background())
 	s.stop = cancel
-
-	log.Printf("订阅消息推送：已启用，每天 %02d:00 前后发送复习提醒", s.cfg.PushHour)
-
 	go func() {
 		defer close(s.done)
-
-		// 每分钟检查一次，判断是否到了推送时间
 		ticker := time.NewTicker(time.Minute)
 		defer ticker.Stop()
-
-		// 记录今天是否已经跑过，避免同一小时内重复执行
-		lastRunDate := ""
-
-		// 启动时立即检查一次，覆盖「服务在推送时间之后才启动」的情况
-		s.tick(&lastRunDate)
-
+		lastDate := ""
+		tick := func() {
+			now := time.Now()
+			today := now.Format("2006-01-02")
+			if lastDate == today || now.Hour() < s.cfg.PushHour {
+				return
+			}
+			summary, err := s.RunDaily(ctx)
+			if err != nil {
+				log.Printf("每日提醒失败: %v", err)
+			} else if summary.Failed == 0 {
+				lastDate = today
+			}
+		}
+		tick()
 		for {
 			select {
 			case <-ctx.Done():
-				log.Println("订阅消息推送：已停止")
 				return
 			case <-ticker.C:
-				s.tick(&lastRunDate)
+				tick()
 			}
 		}
 	}()
 }
 
-// Stop 停止调度
 func (s *Scheduler) Stop() {
 	if s.stop != nil {
 		s.stop()
@@ -83,57 +76,43 @@ func (s *Scheduler) Stop() {
 	}
 }
 
-// tick 判断当前是否该执行推送
-func (s *Scheduler) tick(lastRunDate *string) {
-	now := time.Now()
-	today := now.Format("2006-01-02")
-
-	// 今天已经跑过
-	if *lastRunDate == today {
-		return
+// RunDaily 可由常驻调度、HTTP 任务或一次性命令调用。
+// MySQL 锁协调多副本；发送后更新时间和额度，重试时跳过近期已推送的用户。
+func (s *Scheduler) RunDaily(ctx context.Context) (Summary, error) {
+	summary := Summary{Configured: s.subs.Configured()}
+	if !summary.Configured {
+		return summary, nil
 	}
-
-	// 还没到推送时间
-	if now.Hour() < s.cfg.PushHour {
-		return
-	}
-
-	*lastRunDate = today
-	s.runDailyPush()
-}
-
-// runDailyPush 执行一次每日推送
-func (s *Scheduler) runDailyPush() {
-	start := time.Now()
-
-	targets, err := s.subs.FindPushTargets(s.cfg.PushBatchSize, s.cfg.DailyWordCount)
-	if err != nil {
-		log.Printf("订阅消息推送：查询待推用户失败: %v", err)
-		return
-	}
-
-	if len(targets) == 0 {
-		log.Println("订阅消息推送：今天没有需要提醒的用户")
-		return
-	}
-
-	var sent, skipped, failed int
-	for _, t := range targets {
-		result := s.subs.PushReminder(t)
-		switch {
-		case result.Success:
-			sent++
-		case result.Skipped:
-			skipped++
-		default:
-			failed++
-			log.Printf("订阅消息推送：user=%d 失败: %s", t.UserID, result.Reason)
+	acquired, err := database.WithLock(ctx, s.db, "daily-push", 0, func() error {
+		targets, err := s.subs.FindPushTargets(s.cfg.PushBatchSize, s.cfg.DailyWordCount)
+		if err != nil {
+			return err
 		}
-
-		// 轻微间隔，避免瞬间打满微信接口的调用频次
-		time.Sleep(80 * time.Millisecond)
+		for _, target := range targets {
+			if err := ctx.Err(); err != nil {
+				return err
+			}
+			result := s.subs.PushReminder(target)
+			switch {
+			case result.Success:
+				summary.Sent++
+			case result.Skipped:
+				summary.Skipped++
+			default:
+				summary.Failed++
+				log.Printf("每日提醒 user=%d 失败: %s", target.UserID, result.Reason)
+			}
+			select {
+			case <-ctx.Done():
+				return ctx.Err()
+			case <-time.After(80 * time.Millisecond):
+			}
+		}
+		return nil
+	})
+	summary.Busy = !acquired && err == nil
+	if err == nil {
+		log.Printf("每日提醒：成功=%d 跳过=%d 失败=%d 其他副本执行中=%t", summary.Sent, summary.Skipped, summary.Failed, summary.Busy)
 	}
-
-	log.Printf("订阅消息推送完成：成功 %d，跳过 %d，失败 %d，耗时 %s",
-		sent, skipped, failed, time.Since(start).Round(time.Millisecond))
+	return summary, err
 }

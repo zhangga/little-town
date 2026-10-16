@@ -2,6 +2,8 @@
 
 多题型学习、常速／慢速发音和对应验收说明见 [学习模式与读音](learning-modes.md)。
 
+本地、微信云托管和自建服务器的切换及部署步骤见 [部署说明](deployment.md)。开发版默认本地；体验版/正式版默认通过 callContainer 访问既有云托管环境。
+
 ## 一、启动顺序
 
 后端和前端是两个独立进程，联调时先起后端。
@@ -13,10 +15,11 @@ cd C:\work\github\little-town\backend
 
 # 首次：复制并填写配置
 copy .env.example .env
-# 编辑 .env，至少改 DB_PASSWORD 和 JWT_SECRET
+# 核对 .env 的数据库连接信息，设置 JWT_SECRET；本地数据库密码需与 Compose 一致
 
-# 建库（如果还没建）
-createdb -U postgres littletown_db
+# 启动本地 MySQL，自动创建数据库（Windows）
+..\scripts\db-start.bat
+# Linux/macOS 使用 ../scripts/db-start.sh
 
 # 下载依赖
 go mod download
@@ -48,7 +51,7 @@ curl http://localhost:8080/health
 
 **关键设置**：详情 → 本地设置 → 勾选「不校验合法域名」。
 
-默认的 `http://localhost:8080` 不是 HTTPS，不勾选这一项请求会被拦截。上线前需换成已备案的 HTTPS 域名。
+本地开发使用 `http://localhost:8080`，需要关闭开发工具的域名校验。体验版/正式版默认走微信云托管；选择自建服务器目标时，填写 HTTPS 地址并在微信后台配置合法域名。
 
 **注意工作区缓存的旧 AppID**：如果之前用另一个 AppID 打开过这个目录，开发者工具会记住旧值，表现为改了配置文件却仍按旧账号运行。此时需要在工具的「项目列表」里把该项目**移除**，再重新导入。
 

@@ -435,29 +435,33 @@ async function main() {
     } else {
       const t = fresh.data.token
 
-      // 连答同一题，验证刷砖被限制
+      // 同一词重复提交不应再次发奖；每日上限另由真实数据库回归覆盖。
       const daily = await req('GET', '/learn/daily-words', { token: t })
       const someWord = (daily.data?.words ?? [])[0]
 
       if (!someWord) {
         bad('没有单词可答，无法验证限额')
       } else {
-        let capped = false
-        let capAt = 0
-        for (let i = 0; i < 40; i++) {
+        let first
+        let repeatFailed = false
+        for (let i = 0; i < 5; i++) {
           const r = await req('POST', '/learn/submit-answer', {
             token: t, body: { word_id: someWord.id, is_correct: true }
           })
-          if (r.data?.capped) { capped = true; capAt = i + 1; break }
+          if (i === 0) first = r.data
+          if (r.status !== 200 || (i > 0 && (r.data?.bricks_earned !== 0 || r.data?.coins_earned !== 0))) {
+            repeatFailed = true
+            break
+          }
         }
 
         const prof = await req('GET', '/user/profile', { token: t })
-        if (capped) {
-          ok('连答同一题触发每日上限', '第 ' + capAt + ' 次被削，今日砖块 ' + prof.data.bricks)
+        if (!repeatFailed && prof.data.bricks === first?.total_bricks && prof.data.coins === first?.total_coins) {
+          ok('重复提交同一题不会重复发奖', '资源余额保持首次答题后的值')
         } else {
-          bad('连答 40 次仍未触发上限', '砖块已到 ' + prof.data.bricks + '，限额可能失效')
+          bad('重复提交增发奖励或请求失败', '当前砖块 ' + prof.data.bricks)
         }
-        if (prof.data.bricks <= 20) {
+        if (prof.data.bricks <= (daily.data?.daily_brick_cap || 20)) {
           ok('刷砖无法突破上限', '最终 ' + prof.data.bricks + ' 块')
         } else {
           bad('刷砖突破了上限', prof.data.bricks + ' 块')

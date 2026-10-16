@@ -114,7 +114,7 @@ func (h *AuthHandler) Login(c *gin.Context) {
 		if req.Grade >= 1 && req.Grade <= 6 {
 			user.Grade = req.Grade
 		}
-		if err := h.db.Save(&user).Error; err != nil {
+		if err := h.db.Model(&user).Updates(map[string]interface{}{"nickname": user.Nickname, "avatar": user.Avatar, "grade": user.Grade}).Error; err != nil {
 			c.JSON(http.StatusInternalServerError, gin.H{"error": "保存资料失败，请重试"})
 			return
 		}
@@ -146,6 +146,9 @@ func (h *AuthHandler) resolveOpenID(code string) (openID string, sessionKey stri
 	}
 
 	if err == services.ErrWeChatNotConfigured {
+		if h.cfg.Env == "production" {
+			return "", "", services.ErrWeChatNotConfigured
+		}
 		log.Println("[dev] 未配置 WECHAT_APPID/WECHAT_SECRET，使用开发模式登录（openid 由固定种子派生）")
 		return devOpenID(code), "", nil
 	}

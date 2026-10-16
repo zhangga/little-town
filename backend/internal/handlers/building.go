@@ -1,6 +1,8 @@
 package handlers
 
 import (
+	"errors"
+	"gorm.io/gorm/clause"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
@@ -43,8 +45,8 @@ func (h *BuildingHandler) ListBuildings(c *gin.Context) {
 	// 标记每个建筑的状态
 	type BuildingItem struct {
 		models.Building
-		IsBuilt    bool `json:"is_built"`
-		CanBuild   bool `json:"can_build"`
+		IsBuilt  bool `json:"is_built"`
+		CanBuild bool `json:"can_build"`
 	}
 
 	builtMap := make(map[uint]bool)
@@ -122,9 +124,9 @@ func (h *BuildingHandler) GetMyTown(c *gin.Context) {
 
 	c.JSON(http.StatusOK, gin.H{
 		"town_data": gin.H{
-			"coins":         user.Coins,
-			"bricks":        user.Bricks,
-			"level":         user.Level,
+			"coins":           user.Coins,
+			"bricks":          user.Bricks,
+			"level":           user.Level,
 			"total_buildings": len(townBuildings),
 		},
 		"buildings": townBuildings,
@@ -138,82 +140,52 @@ type BuildBuildingRequest struct {
 // BuildBuilding 建造建筑
 func (h *BuildingHandler) BuildBuilding(c *gin.Context) {
 	userID := getCurrentUserID(c)
-
 	var req BuildBuildingRequest
 	if err := c.ShouldBindJSON(&req); err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		c.JSON(http.StatusBadRequest, gin.H{"error": "请选择建筑"})
 		return
 	}
-
-	// 获取建筑信息
 	var building models.Building
 	if err := h.db.First(&building, req.BuildingID).Error; err != nil {
 		c.JSON(http.StatusNotFound, gin.H{"error": "building not found"})
 		return
 	}
-
-	// 检查是否已建造
-	var existing models.UserBuilding
-	if err := h.db.Where("user_id = ? AND building_id = ?", userID, req.BuildingID).First(&existing).Error; err == nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": "building already exists"})
-		return
-	}
-
-	// 获取用户信息
-	var user models.User
-	if err := h.db.First(&user, userID).Error; err != nil {
-		c.JSON(http.StatusNotFound, gin.H{"error": "user not found"})
-		return
-	}
-
-	// 检查砖块是否足够
-	if user.Bricks < building.CostBricks {
-		c.JSON(http.StatusBadRequest, gin.H{
-			"error":         "not enough bricks",
-			"required":      building.CostBricks,
-			"current":       user.Bricks,
-		})
-		return
-	}
-
-	// 计算建筑位置（简单布局：按已建造数量依次排列）
-	var builtCount int64
-	h.db.Model(&models.UserBuilding{}).Where("user_id = ?", userID).Count(&builtCount)
-
-	// 网格布局：4 列
-	col := int(builtCount) % 4
-	row := int(builtCount) / 4
-	posX := 60 + col*180
-	posY := 60 + row*200
-
-	// 扣减砖块，创建建筑记录
-	tx := h.db.Begin()
-
-	user.Bricks -= building.CostBricks
-	if err := tx.Save(&user).Error; err != nil {
-		tx.Rollback()
-		c.JSON(http.StatusInternalServerError, gin.H{"error": "failed to deduct bricks"})
-		return
-	}
-
-	userBuilding := models.UserBuilding{
-		UserID:     userID,
-		BuildingID: building.ID,
-		PositionX:  posX,
-		PositionY:  posY,
-		BuiltAt:    timeNow(),
-	}
-	if err := tx.Create(&userBuilding).Error; err != nil {
-		tx.Rollback()
+	duplicate := errors.New("building already exists")
+	insufficient := errors.New("not enough bricks")
+	remaining := 0
+	err := h.db.Transaction(func(tx *gorm.DB) error {
+		var user models.User
+		if err := tx.Clauses(clause.Locking{Strength: "UPDATE"}).First(&user, userID).Error; err != nil {
+			return err
+		}
+		var count int64
+		if err := tx.Model(&models.UserBuilding{}).Where("user_id = ? AND building_id = ?", userID, req.BuildingID).Count(&count).Error; err != nil {
+			return err
+		}
+		if count > 0 {
+			return duplicate
+		}
+		if building.CostBricks < 0 || user.Bricks < building.CostBricks {
+			return insufficient
+		}
+		var builtCount int64
+		if err := tx.Model(&models.UserBuilding{}).Where("user_id = ?", userID).Count(&builtCount).Error; err != nil {
+			return err
+		}
+		remaining = user.Bricks - building.CostBricks
+		if err := tx.Model(&user).Update("bricks", remaining).Error; err != nil {
+			return err
+		}
+		return tx.Create(&models.UserBuilding{UserID: userID, BuildingID: building.ID, PositionX: 60 + int(builtCount)%4*180, PositionY: 60 + int(builtCount)/4*200, BuiltAt: timeNow()}).Error
+	})
+	if err != nil {
+		if errors.Is(err, duplicate) || errors.Is(err, insufficient) {
+			c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+			return
+		}
+		_ = c.Error(err)
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "failed to build"})
 		return
 	}
-
-	tx.Commit()
-
-	c.JSON(http.StatusOK, gin.H{
-		"message":      "building constructed",
-		"building":     building,
-		"remaining_bricks": user.Bricks,
-	})
+	c.JSON(http.StatusOK, gin.H{"message": "building constructed", "building": building, "remaining_bricks": remaining})
 }

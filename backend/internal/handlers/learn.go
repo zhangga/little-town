@@ -1,6 +1,8 @@
 package handlers
 
 import (
+	"errors"
+	"gorm.io/gorm/clause"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
@@ -92,10 +94,10 @@ func (h *LearnHandler) GetDailyWords(c *gin.Context) {
 		"words": items,
 		"count": len(items),
 		// 让前端知道今天是否已经达标，用于展示"还差几个词"
-		"daily_goal": h.cfg.DailyWordCount,
-		"bonus_bricks":     services.DailyCompletionBonus,
-		"daily_brick_cap":  services.DailyBrickCap,
-		"bonus_claimed":    user.DailyBonusDate == todayString(),
+		"daily_goal":      h.cfg.DailyWordCount,
+		"bonus_bricks":    services.DailyCompletionBonus,
+		"daily_brick_cap": services.DailyBrickCap,
+		"bonus_claimed":   user.DailyBonusDate == todayString(),
 	})
 }
 
@@ -110,87 +112,93 @@ type SubmitAnswerRequest struct {
 // 若答完这一题后今天的学习量已达标，会顺带发放完成奖励。
 func (h *LearnHandler) SubmitAnswer(c *gin.Context) {
 	userID := getCurrentUserID(c)
-
 	var req SubmitAnswerRequest
 	if err := c.ShouldBindJSON(&req); err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		c.JSON(http.StatusBadRequest, gin.H{"error": "提交的单词无效"})
 		return
 	}
-
-	// 记录学习情况
-	var record models.LearningRecord
-	result := h.db.Where("user_id = ? AND word_id = ?", userID, req.WordID).First(&record)
-
-	if result.Error == gorm.ErrRecordNotFound {
-		record = models.LearningRecord{
-			UserID:    userID,
-			WordID:    req.WordID,
-			IsCorrect: req.IsCorrect,
+	var reward *services.RewardResult
+	var growth *services.ResidentLearning
+	bonusGranted, bonusBricks := false, 0
+	err := h.db.Transaction(func(tx *gorm.DB) error {
+		// 学习发奖与换装/小屋消费使用同一把用户行锁，避免旧余额覆盖新消费。
+		var user models.User
+		if err := tx.Clauses(clause.Locking{Strength: "UPDATE"}).First(&user, userID).Error; err != nil {
+			return err
 		}
-		if req.IsCorrect {
-			record.TimesRight = 1
-		} else {
-			record.TimesWrong = 1
+		var word models.Word
+		if err := tx.First(&word, req.WordID).Error; err != nil {
+			return err
 		}
-		h.db.Create(&record)
-	} else {
-		record.IsCorrect = req.IsCorrect
-		if req.IsCorrect {
-			record.TimesRight++
-		} else {
-			record.TimesWrong++
+		var record models.LearningRecord
+		lookup := tx.Where("user_id = ? AND word_id = ?", userID, req.WordID).First(&record).Error
+		isReview := lookup == nil
+		if lookup != nil && !errors.Is(lookup, gorm.ErrRecordNotFound) {
+			return lookup
 		}
-		h.db.Save(&record)
-	}
-
-	// 更新复习计划
-	var schedule models.ReviewSchedule
-	currentLevel := 0
-	if err := h.db.Where("user_id = ? AND word_id = ?", userID, req.WordID).First(&schedule).Error; err == nil {
-		currentLevel = schedule.ReviewLevel
-	}
-
-	if err := h.reviewService.UpdateReviewSchedule(userID, req.WordID, req.IsCorrect, currentLevel); err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"error": "failed to update review schedule"})
-		return
-	}
-
-	// 发奖
-	reward, err := h.rewardService.GrantForAnswer(userID, req.IsCorrect)
+		var err error
+		growth, err = services.NewResidentService(tx, h.cfg.DailyWordCount).RecordLearning(tx, userID, req.WordID, req.IsCorrect, isReview)
+		if err != nil {
+			return err
+		}
+		// 同一个词当天重复提交不推进复习级别；先答错再答对仍可记录一次纠正。
+		if growth.FirstToday || growth.RewardEligible {
+			if !isReview {
+				record = models.LearningRecord{UserID: userID, WordID: req.WordID}
+			}
+			record.IsCorrect = req.IsCorrect
+			if req.IsCorrect {
+				record.TimesRight++
+			} else {
+				record.TimesWrong++
+			}
+			if err := tx.Save(&record).Error; err != nil {
+				return err
+			}
+			var schedule models.ReviewSchedule
+			lookup := tx.Where("user_id = ? AND word_id = ?", userID, req.WordID).First(&schedule).Error
+			if lookup != nil && !errors.Is(lookup, gorm.ErrRecordNotFound) {
+				return lookup
+			}
+			if err := services.NewSpacedRepetitionService(tx).UpdateReviewSchedule(userID, req.WordID, req.IsCorrect, schedule.ReviewLevel); err != nil {
+				return err
+			}
+		}
+		rewards := services.NewRewardService(tx)
+		reward, err = rewards.GrantForAnswer(userID, growth.RewardEligible)
+		if err != nil {
+			return err
+		}
+		if growth.DayComplete {
+			granted, bonus, err := rewards.GrantCompletionBonus(userID)
+			if err != nil {
+				return err
+			}
+			if granted {
+				bonusGranted, bonusBricks = true, bonus.BricksEarned
+				reward.BricksEarned += bonus.BricksEarned
+				reward.CoinsEarned += bonus.CoinsEarned
+				reward.TotalCoins, reward.TotalBricks = bonus.TotalCoins, bonus.TotalBricks
+			}
+		}
+		return nil
+	})
 	if err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"error": "failed to grant reward"})
+		if errors.Is(err, gorm.ErrRecordNotFound) {
+			c.JSON(http.StatusNotFound, gin.H{"error": "用户或单词不存在"})
+			return
+		}
+		_ = c.Error(err)
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "学习记录暂未保存，请稍后重试"})
 		return
 	}
-
-	// 检查是否刚好完成当日学习量，是则发放完成奖励
-	bonusGranted := false
-	bonusBricks := 0
-	complete, err := h.rewardService.IsDayComplete(userID, h.cfg.DailyWordCount)
-	if err == nil && complete {
-		granted, bonusResult, bonusErr := h.rewardService.GrantCompletionBonus(userID)
-		if bonusErr == nil && granted {
-			bonusGranted = true
-			bonusBricks = bonusResult.BricksEarned
-			// 完成奖励叠加到本次返回
-			reward.BricksEarned += bonusResult.BricksEarned
-			reward.CoinsEarned += bonusResult.CoinsEarned
-			reward.TotalCoins = bonusResult.TotalCoins
-			reward.TotalBricks = bonusResult.TotalBricks
-		}
-	}
-
 	c.JSON(http.StatusOK, gin.H{
-		"message":        "answer submitted",
-		"is_correct":     req.IsCorrect,
-		"coins_earned":   reward.CoinsEarned,
-		"bricks_earned":  reward.BricksEarned,
-		"total_coins":    reward.TotalCoins,
-		"total_bricks":   reward.TotalBricks,
-		"capped":         reward.Capped,
-		"bricks_today":   reward.BricksToday,
-		"daily_cap":      reward.DailyCap,
-		"bonus_granted":  bonusGranted,
-		"bonus_bricks":   bonusBricks,
+		"message": "answer submitted", "is_correct": req.IsCorrect,
+		"coins_earned": reward.CoinsEarned, "bricks_earned": reward.BricksEarned,
+		"total_coins": reward.TotalCoins, "total_bricks": reward.TotalBricks,
+		"capped": reward.Capped, "bricks_today": reward.BricksToday, "daily_cap": reward.DailyCap,
+		"bonus_granted": bonusGranted, "bonus_bricks": bonusBricks,
+		"xp_earned": growth.XPEarned, "total_xp": growth.Experience, "resident_level": growth.Level,
 	})
 }
 

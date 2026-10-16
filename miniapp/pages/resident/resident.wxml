@@ -1,0 +1,43 @@
+<import src="../../templates/resident.wxml" />
+<view class="resident-page">
+  <view wx:if="{{loading}}" class="loading">正在打开小镇长的家…</view>
+  <view wx:elif="{{failed}}" class="resident-empty"><text>小屋暂时没连上</text><button class="resident-primary" bindtap="loadResident">重新加载</button></view>
+  <block wx:elif="{{state}}">
+    <view class="resident-top"><text class="resident-eyebrow">MY LITTLE HOME</text><view class="resident-wallet"><text>{{state.wallet.coins}} 金币</text><text>{{state.wallet.bricks}} 砖块</text></view></view>
+    <view class="resident-hero">
+      <view class="resident-sky"><view class="resident-cloud" /><text class="home-tag">{{state.home.name}} · Lv.{{state.home.level}}</text></view>
+      <view class="resident-ground" />
+      <view class="resident-house"><template is="resident-art" data="{{art: state.homeArt}}" /></view>
+      <view wx:if="{{state.gardenArt}}" class="resident-garden"><template is="resident-art" data="{{art: state.gardenArt}}" /></view>
+      <button class="resident-character {{waving ? 'waving' : ''}}" bindtap="onWave" aria-label="和小镇长打招呼"><template is="resident-art" data="{{art: state.characterArt}}" /></button>
+      <view class="resident-bubble">{{waving ? '一起把小镇慢慢建起来！' : '今天也一起学一点吧'}}</view>
+    </view>
+    <view class="resident-identity">
+      <view wx:if="{{editingName}}" class="resident-name-form"><input value="{{nameDraft}}" maxlength="12" bindinput="onNameInput" placeholder="给小镇长起个名字" disabled="{{busy}}" /><button bindtap="onSaveName" disabled="{{busy}}">保存</button><button bindtap="onCancelName" disabled="{{busy}}">取消</button></view>
+      <view wx:else class="resident-name-row"><text class="resident-name">{{state.resident.name}}</text><button bindtap="onEditName" aria-label="修改角色名字">改名字</button><text class="resident-level">Lv.{{state.resident.level}} {{state.resident.title}}</text></view>
+      <view class="resident-xp-row"><text>{{state.resident.xp_needed ? '再积累 ' + (state.resident.xp_needed - state.resident.xp_current) + ' 成长，就能获得新称号' : '你已经是小镇守护者啦'}}</text><text>{{state.resident.xp_needed ? state.resident.xp_current + ' / ' + state.resident.xp_needed : '最高等级'}}</text></view>
+      <view class="resident-meter"><view style="width: {{state.xpPercent}}%;" /></view>
+    </view>
+    <view class="resident-tabs"><button class="{{tab === 'outfit' ? 'active' : ''}}" data-tab="outfit" bindtap="onTab">我的衣橱</button><button class="{{tab === 'decoration' ? 'active' : ''}}" data-tab="decoration" bindtap="onTab">庭院装饰</button><button class="{{tab === 'home' ? 'active' : ''}}" data-tab="home" bindtap="onTab">小屋升级</button></view>
+    <block wx:if="{{tab !== 'home'}}">
+      <view class="resident-section-note">{{tab === 'outfit' ? '挑一套喜欢的衣服，先试试看' : '用一点小装饰，让这里更像你的家'}}</view>
+      <view class="resident-grid"><button wx:for="{{items}}" wx:key="id" class="resident-item {{item.equipped ? 'equipped' : ''}}" data-id="{{item.id}}" bindtap="onSelect">
+        <text wx:if="{{item.equipped}}" class="item-badge">使用中</text>
+        <view class="item-art"><template wx:if="{{item.art}}" is="resident-art" data="{{art: item.art}}" /><text wx:else class="empty-garden">留白也很美</text></view>
+        <text class="item-name">{{item.name}}</text><text class="item-price">{{item.owned ? '已拥有' : item.price + ' 金币'}}</text>
+      </button></view>
+    </block>
+    <view wx:else class="resident-home-panel">
+      <view class="home-panel-heading"><text>{{state.home.next_level ? '下一站，更温暖的家' : '花园之家，已经落成'}}</text><text class="home-small">{{state.home.next_level ? 'Lv.' + state.home.level + ' → Lv.' + state.home.next_level : 'Lv.3 · 最高级'}}</text></view>
+      <view class="home-next-art"><template is="resident-art" data="{{art: state.nextHomeArt || state.homeArt}}" /></view>
+      <text class="home-description">{{state.home.next_level === 2 ? '添一个门廊，开一扇明亮的小窗。' : state.home.next_level === 3 ? '多一层空间，也多一座看风景的阳台。' : '每一块砖，都是你认真学习的印记。'}}</text>
+      <view wx:if="{{state.home.next_level}}"><view class="home-material"><text>升级需要 {{state.home.upgrade_cost}} 砖块</text><text>已有 {{state.wallet.bricks}}</text></view><button class="resident-primary" bindtap="onPreviewHome">{{state.home.can_upgrade ? '预览升级' : '看看升级后的家'}}</button></view>
+    </view>
+    <view class="resident-daily"><view><text class="daily-heading">{{state.daily.done ? '今天的学习完成啦' : '每天一点，小镇长也在成长'}}</text><text class="daily-caption">今日 {{state.daily.completed}} / {{state.daily.goal}} 词 · 首次练习每词 +5 成长，完成再 +{{state.daily.bonus_xp}}</text></view><button bindtap="onGoLearn">{{state.daily.done ? '再练练' : '去学习'}} →</button></view>
+  </block>
+  <view wx:if="{{selected}}" class="resident-mask" bindtap="onClose" catchtouchmove="onNoop"><view class="resident-sheet" catchtap="onNoop">
+    <view class="sheet-heading"><text>{{selected.type === 'home' ? '小屋升级预览' : selected.kind === 'outfit' ? '试穿一下' : '装饰预览'}}</text><button bindtap="onClose" disabled="{{busy}}" aria-label="关闭预览">×</button></view>
+    <scroll-view class="sheet-scroll" scroll-y><view class="sheet-art"><template wx:if="{{selected.art}}" is="resident-art" data="{{art: selected.art}}" /><text wx:else class="empty-garden">清爽的院子</text></view><view class="sheet-name">{{selected.name}}</view><view class="sheet-description">{{selected.description}}</view><view class="sheet-price">{{selected.owned ? '已经在你的收藏里' : selected.price + (selected.type === 'home' ? ' 砖块' : ' 金币')}}</view><view wx:if="{{!selected.owned && !selected.affordable}}" class="sheet-missing">还差 {{selected.missing}} {{selected.type === 'home' ? '砖块' : '金币'}}，学完单词再来吧</view></scroll-view>
+    <view class="sheet-actions"><button class="resident-primary" bindtap="onConfirm" disabled="{{busy || selected.equipped}}">{{busy ? '正在保存…' : selected.equipped ? '正在使用' : !selected.owned && !selected.affordable ? '去学习攒资源' : selected.type === 'home' ? '花 ' + selected.price + ' 砖块升级' : selected.owned ? '使用这件物品' : '花 ' + selected.price + ' 金币购买并使用'}}</button><text wx:if="{{!selected.owned && selected.affordable}}" class="sheet-hint">确认后扣除{{selected.type === 'home' ? '砖块' : '金币'}}，永久保留</text></view>
+  </view></view>
+</view>

@@ -79,8 +79,7 @@ func (s *RewardService) GrantForAnswer(userID uint, isCorrect bool) (*RewardResu
 	}
 
 	if isCorrect {
-		// 金币不设上限：它目前没有消费出口，设限没有意义；
-		// 真正影响游戏进程的是砖块。
+		// 金币用于角色和庭院装饰；接口层限制同一个词每天只领一次。
 		result.CoinsEarned = CoinsPerCorrect
 		user.Coins += result.CoinsEarned
 
@@ -99,7 +98,9 @@ func (s *RewardService) GrantForAnswer(userID uint, isCorrect bool) (*RewardResu
 		user.RewardBricks += bricks
 	}
 
-	if err := s.db.Save(&user).Error; err != nil {
+	if err := s.db.Model(&user).Updates(map[string]interface{}{
+		"coins": user.Coins, "bricks": user.Bricks, "reward_date": user.RewardDate, "reward_bricks": user.RewardBricks,
+	}).Error; err != nil {
 		return nil, err
 	}
 
@@ -133,7 +134,9 @@ func (s *RewardService) GrantCompletionBonus(userID uint) (granted bool, result 
 	user.Coins += CoinsPerCorrect * 2
 	user.DailyBonusDate = date
 
-	if err := s.db.Save(&user).Error; err != nil {
+	if err := s.db.Model(&user).Updates(map[string]interface{}{
+		"coins": user.Coins, "bricks": user.Bricks, "daily_bonus_date": user.DailyBonusDate,
+	}).Error; err != nil {
 		return false, nil, err
 	}
 

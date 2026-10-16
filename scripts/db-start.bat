@@ -1,6 +1,6 @@
 @echo off
 REM ============================================================
-REM  启动开发数据库（PostgreSQL + Adminer）
+REM  启动开发数据库（MySQL + Adminer）
 REM
 REM  用法：
 REM    scripts\db-start.bat            启动数据库
@@ -77,15 +77,15 @@ REM 容器起来 ≠ 数据库可连接，这里必须等 healthcheck 通过，
 REM 否则紧接着启动后端会报 connection refused
 echo -n -^> 等待数据库就绪
 set READY=0
-for /l %%i in (1,1,40) do (
+for /l %%i in (1,1,120) do (
   if !READY!==0 (
-    for /f "tokens=*" %%s in ('docker inspect --format="{{.State.Health.Status}}" little-town-db 2^>nul') do set STATUS=%%s
-    for /f "tokens=*" %%r in ('docker inspect --format="{{.State.Running}}" little-town-db 2^>nul') do set RUNNING=%%r
+    for /f "tokens=*" %%s in ('docker inspect --format="{{.State.Health.Status}}" little-town-mysql 2^>nul') do set STATUS=%%s
+    for /f "tokens=*" %%r in ('docker inspect --format="{{.State.Running}}" little-town-mysql 2^>nul') do set RUNNING=%%r
 
     if "!RUNNING!"=="false" (
       echo.
       echo [X] 容器已退出，日志如下：
-      docker logs --tail 30 little-town-db
+      docker logs --tail 30 little-town-mysql
       exit /b 1
     )
     if "!STATUS!"=="healthy" (
@@ -99,13 +99,13 @@ for /l %%i in (1,1,40) do (
 echo.
 
 if not "%READY%"=="1" (
-  echo [X] 等待超时（40 秒）。检查日志：%COMPOSE% logs postgres
+  echo [X] 等待超时（120 秒）。检查日志：%COMPOSE% logs mysql
   exit /b 1
 )
 
 echo [OK] 数据库已就绪
 echo.
-echo   PostgreSQL  127.0.0.1:5432   库 littletown_db   用户 postgres
+echo   MySQL       127.0.0.1:3306   库 littletown_db   用户 littletown
 echo   Adminer     http://localhost:8081
 echo.
 echo   下一步：
@@ -115,7 +115,7 @@ echo     停止数据库  scripts\db-stop.bat
 exit /b 0
 
 :help
-echo 启动开发数据库（PostgreSQL + Adminer）
+echo 启动开发数据库（MySQL + Adminer）
 echo.
 echo   scripts\db-start.bat            启动数据库
 echo   scripts\db-start.bat --reset    清空数据后重新启动

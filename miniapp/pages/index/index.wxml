@@ -1,101 +1,36 @@
-<!--pages/index/index.wxml-->
+<import src="../../templates/voxel.wxml" />
+<import src="../../templates/resident.wxml" />
 <view class="town-page">
-  <!-- 资源栏：金币与砖块 -->
-  <view class="topbar">
-    <view class="row gap-16">
-      <view class="chip">
-        <text class="chip-icon">🪙</text>
-        <text class="chip-num tnum">{{town.coins}}</text>
-      </view>
-      <view class="chip">
-        <text class="chip-icon">🧱</text>
-        <text class="chip-num tnum">{{town.bricks}}</text>
-      </view>
-    </view>
-    <view class="chip">
-      <text class="chip-icon">⭐</text>
-      <text class="chip-num tnum">Lv.{{town.level}}</text>
-    </view>
+  <view class="town-topbar">
+    <view class="town-resource"><view class="town-resource-art"><template is="voxel" data="{{sprite: brickSprite}}" /></view><text class="town-resource-num">{{town.bricks}}</text><text>砖块</text></view>
+    <view class="town-resource"><view class="town-resource-art"><template is="voxel" data="{{sprite: coinSprite}}" /></view><text class="town-resource-num">{{town.coins}}</text><text>金币</text></view>
+    <view class="town-count">{{buildings.length}} 座建筑</view>
   </view>
-
-  <!-- 加载中 -->
-  <view wx:if="{{loading}}" class="loading">
-    <text class="loading-emoji">🏗️</text>
-    <text class="loading-text">正在查看小镇…</text>
-  </view>
-
-  <!-- 加载失败 -->
-  <view wx:elif="{{failed}}" class="panel">
-    <view class="empty">
-      <text class="empty-emoji">📡</text>
-      <text class="empty-text">没能连上小镇。检查一下网络，然后再试一次。</text>
-      <button class="btn btn-primary" bindtap="loadTown">重新加载</button>
-    </view>
-  </view>
-
-  <!-- 小镇地图 -->
-  <scroll-view wx:else class="map-scroll" scroll-y>
-    <view class="map" style="height: {{mapHeight}}rpx;">
-      <view class="grass-grid"></view>
-
-      <!-- 建筑：直接落在草地上，不用卡片包裹 -->
-      <view
-        wx:for="{{buildings}}"
-        wx:key="id"
-        class="plot"
-        style="left: {{item.left}}rpx; top: {{item.top}}rpx; animation-delay: {{item.delay}}ms;"
-        data-index="{{index}}"
-        bindtap="onBuildingTap"
-      >
-        <view class="plot-shadow"></view>
-        <image
-          wx:if="{{item.image_url}}"
-          class="plot-image"
-          src="{{item.image_url}}"
-          mode="aspectFit"
-        ></image>
-        <text wx:else class="plot-emoji">{{item.emoji}}</text>
-        <view class="plot-label">{{item.name}}</view>
+  <view wx:if="{{loading}}" class="loading"><view class="town-loading-art"><template is="voxel" data="{{sprite: flagSprite}}" /></view><text>正在打开小镇大门…</text></view>
+  <view wx:elif="{{failed}}" class="panel empty"><text>小镇暂时没连上，再试一次吧。</text><button class="btn btn-sun" bindtap="loadTown">重新加载</button></view>
+  <scroll-view wx:else class="town-scroll" scroll-y>
+    <view wx:if="{{growth}}" class="town-welcome"><view class="welcome-character"><template is="resident-art" data="{{art: growth.characterArt}}" /></view><view class="welcome-copy"><view class="welcome-name">你好，{{growth.resident.name}}</view><text>Lv.{{growth.resident.level}} · {{growth.resident.title}}</text><view class="welcome-meter"><view style="width: {{growth.xpPercent}}%;" /></view></view><button bindtap="onGoResident">装扮角色 ›</button></view>
+    <view wx:else class="town-intro"><view class="town-title">我的方块小镇</view><button wx:if="{{growthFailed}}" class="growth-retry" bindtap="loadTown">角色暂未连上 · 点此重试</button></view>
+    <view wx:if="{{growth}}" class="town-task"><view><view class="task-title">{{growth.daily.done ? '今日任务完成啦！' : '今天的小目标'}}<text>{{growth.daily.completed}} / {{growth.daily.goal}} 词</text></view><text class="task-caption">{{growth.daily.done ? '学习的收获，去装扮你的家吧。' : '学新词或复习旧词，让小镇长一起成长。'}}</text></view><button bindtap="onDailyTask">{{growth.daily.done ? '回家看看' : '开始学习'}} →</button></view>
+    <view class="town-land">
+      <view class="land-road" />
+      <view class="land-trees"><template is="voxel" data="{{sprite: treeSprite}}" /></view>
+      <view class="town-plots">
+        <button wx:if="{{growth}}" class="town-plot occupied home-plot" bindtap="onGoResident" aria-label="进入小镇长的家"><view class="plot-art"><template is="resident-art" data="{{art: growth.homeArt}}" /></view><view class="plot-resident"><template is="resident-art" data="{{art: growth.characterArt}}" /></view><view wx:if="{{growth.gardenArt}}" class="plot-garden"><template is="resident-art" data="{{art: growth.gardenArt}}" /></view><view class="plot-label">我的家 · Lv.{{growth.home.level}}</view></button>
+        <button wx:for="{{plots}}" wx:key="id" class="town-plot {{item.occupied ? 'occupied' : 'vacant'}} {{item.isNew ? 'new-building' : ''}}" style="animation-delay: {{item.delay || 0}}ms;" data-index="{{index}}" bindtap="onPlotTap" aria-label="{{item.occupied ? '查看' + item.name : '空地，去建造'}}">
+          <view wx:if="{{item.isNew}}" class="new-flag">新落成！</view>
+          <view class="plot-art"><template is="voxel" data="{{sprite: item.sprite}}" /></view>
+          <view wx:if="{{item.occupied}}" class="plot-label">{{item.name}}</view>
+          <view wx:elif="{{item.next}}" class="plot-invite">＋ 在这里建造</view>
+          <view wx:else class="plot-empty-label">待开垦</view>
+        </button>
       </view>
-
-      <!-- 空地：引导去学习 -->
-      <view wx:if="{{buildings.length === 0}}" class="vacant">
-        <text class="vacant-emoji">🚧</text>
-        <text class="vacant-title">这里还是一块空地</text>
-        <text class="vacant-text">学几个单词，就能换来第一批砖块</text>
-        <button class="btn btn-primary" bindtap="onGoLearn">去学单词</button>
-      </view>
+      <view class="town-sign"><text>{{buildings.length ? '点一点建筑，看看小镇的新风景' : '空地已经备好，第一座建筑等你来造'}}</text></view>
     </view>
+    <view wx:if="{{!buildings.length}}" class="town-first-plan"><view><text class="first-plan-title">第一座建筑，等你动工</text><text class="first-plan-caption">去工坊挑一张喜欢的图纸，看看需要多少砖</text></view><button bindtap="onGoBuild">去看看 →</button></view>
   </scroll-view>
-
-  <!-- 操作条：固定在地图下方，不遮挡建筑 -->
-  <view wx:if="{{!loading && !failed}}" class="dock">
-    <view class="dock-btn" bindtap="onGoLearn">
-      <text class="dock-icon">📖</text>
-      <text class="dock-text">学单词</text>
-    </view>
-    <view class="dock-btn dock-btn-main" bindtap="onGoBuild">
-      <text class="dock-icon">🔨</text>
-      <text class="dock-text">去建造</text>
-    </view>
-  </view>
-
-  <!-- 建筑详情 -->
-  <view wx:if="{{selected}}" class="mask" bindtap="onCloseDetail">
-    <view class="detail block" catchtap="onNoop">
-      <view class="detail-head">
-        <text class="detail-emoji">{{selected.emoji}}</text>
-        <view class="col">
-          <text class="detail-name">{{selected.name}}</text>
-          <text class="caption">{{selected.built_at}} 建成</text>
-        </view>
-      </view>
-      <text class="detail-desc">{{selected.description}}</text>
-      <view class="detail-stat">
-        <text class="detail-stat-num tnum">{{selected.word_count}}</text>
-        <text class="detail-stat-label">个单词在这里被记住</text>
-      </view>
-      <button class="btn btn-block" bindtap="onCloseDetail">知道了</button>
-    </view>
+  <view wx:if="{{!loading && !failed}}" class="town-dock"><button class="town-learn" bindtap="onGoLearn">学单词 · 攒砖块</button><button class="town-build" bindtap="onGoBuild">＋ 建造新建筑</button></view>
+  <view wx:if="{{selected}}" class="town-mask" bindtap="onCloseDetail" catchtouchmove="onNoop">
+    <view class="town-detail" catchtap="onNoop"><view class="detail-art"><template is="voxel" data="{{sprite: selected.sprite}}" /></view><view class="detail-title">{{selected.name}}</view><text class="detail-date">{{selected.builtDate ? selected.builtDate + ' 落成' : '由你亲手建成'}}</text><text class="detail-description">{{selected.description}}</text><view class="detail-memory">{{selected.word_count > 0 ? selected.word_count + ' 个单词在这里被记住' : '一砖一瓦，都是你的学习成果。'}}</view><button bindtap="onCloseDetail">继续逛小镇</button></view>
   </view>
 </view>

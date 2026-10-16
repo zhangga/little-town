@@ -1,279 +1,62 @@
-/* pages/index/index.wxss */
-.town-page {
-  height: 100vh;
-  display: flex;
-  flex-direction: column;
-  background: #7FBF4D;
-}
-
-/* 资源栏 */
-.topbar {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 20rpx 24rpx;
-  background: #4E7A2E;
-  border-bottom: 4rpx solid #33291D;
-}
-
-/* 地图滚动区 */
-.map-scroll {
-  flex: 1;
-  min-height: 0;
-}
-
-.map {
-  position: relative;
-  width: 100%;
-  background: #7FBF4D;
-  overflow: hidden;
-}
-
-/* 草地纹理：横竖细线做出地块，不用图片 */
-.grass-grid {
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background-image:
-    linear-gradient(to right, rgba(51, 41, 29, 0.07) 2rpx, transparent 2rpx),
-    linear-gradient(to bottom, rgba(51, 41, 29, 0.07) 2rpx, transparent 2rpx);
-  background-size: 172rpx 105rpx;
-  pointer-events: none;
-}
-
-/* 建筑地块 */
-.plot {
-  position: absolute;
-  width: 172rpx;
-  height: 210rpx;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: flex-start;
-  padding-top: 16rpx;
-  box-sizing: border-box;
-  animation: drop 460ms cubic-bezier(0.34, 1.56, 0.64, 1) backwards;
-}
-
-/* 落砖动画：这是全镇唯一一个编排过的动效 */
-@keyframes drop {
-  0% {
-    opacity: 0;
-    transform: translateY(-48rpx) scale(0.7);
-  }
-  70% {
-    opacity: 1;
-  }
-  100% {
-    opacity: 1;
-    transform: translateY(0) scale(1);
-  }
-}
-
-/* 建筑脚下的椭圆投影，让建筑"站"在草地上 */
-.plot-shadow {
-  position: absolute;
-  bottom: 44rpx;
-  width: 104rpx;
-  height: 24rpx;
-  background: rgba(51, 41, 29, 0.22);
-  border-radius: 50%;
-}
-
-.plot-emoji {
-  font-size: 104rpx;
-  line-height: 1;
-  margin-top: 12rpx;
-}
-
-.plot-image {
-  width: 116rpx;
-  height: 116rpx;
-  margin-top: 12rpx;
-}
-
-.plot-label {
-  margin-top: 12rpx;
-  background: #FFFCF2;
-  border: 4rpx solid #33291D;
-  border-radius: 999rpx;
-  padding: 4rpx 20rpx;
-  font-size: 22rpx;
-  font-weight: 800;
-  color: #33291D;
-}
-
-/* 空地引导 */
-.vacant {
-  position: absolute;
-  top: 140rpx;
-  left: 48rpx;
-  right: 48rpx;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 20rpx;
-  padding: 56rpx 40rpx;
-  background: #FFFCF2;
-  border: 4rpx solid #33291D;
-  border-radius: 20rpx;
-  box-shadow: 8rpx 8rpx 0 #33291D;
-}
-
-.vacant-emoji {
-  font-size: 96rpx;
-  line-height: 1;
-}
-
-.vacant-title {
-  font-size: 36rpx;
-  font-weight: 800;
-  color: #33291D;
-}
-
-.vacant-text {
-  font-size: 26rpx;
-  font-weight: 600;
-  color: #8A8172;
-  text-align: center;
-}
-
-/* 底部操作条 */
-.dock {
-  display: flex;
-  gap: 20rpx;
-  padding: 20rpx 24rpx calc(20rpx + env(safe-area-inset-bottom));
-  background: #4E7A2E;
-  border-top: 4rpx solid #33291D;
-}
-
-.dock-btn {
-  flex: 1;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 12rpx;
-  padding: 24rpx;
-  background: #FFFCF2;
-  border: 4rpx solid #33291D;
-  border-radius: 16rpx;
-  box-shadow: 6rpx 6rpx 0 #33291D;
-}
-
-.dock-btn-main {
-  background: #E0553A;
-}
-
-.dock-btn-main .dock-text {
-  color: #FFFCF2;
-}
-
-.dock-btn:active {
-  transform: translate(4rpx, 4rpx);
-  box-shadow: 2rpx 2rpx 0 #33291D;
-}
-
-.dock-icon {
-  font-size: 34rpx;
-  line-height: 1;
-}
-
-.dock-text {
-  font-size: 30rpx;
-  font-weight: 800;
-  color: #33291D;
-}
-
-/* 建筑详情 */
-.mask {
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background: rgba(51, 41, 29, 0.55);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  z-index: 100;
-}
-
-.detail {
-  width: 600rpx;
-  border-radius: 20rpx;
-  padding: 40rpx;
-  animation: pop 240ms ease-out;
-}
-
-@keyframes pop {
-  from {
-    transform: scale(0.9);
-    opacity: 0;
-  }
-  to {
-    transform: scale(1);
-    opacity: 1;
-  }
-}
-
-.detail-head {
-  display: flex;
-  align-items: center;
-  gap: 24rpx;
-}
-
-.detail-emoji {
-  font-size: 88rpx;
-  line-height: 1;
-}
-
-.detail-name {
-  font-size: 40rpx;
-  font-weight: 800;
-  color: #33291D;
-}
-
-.detail-desc {
-  display: block;
-  margin: 28rpx 0;
-  font-size: 28rpx;
-  font-weight: 600;
-  color: #33291D;
-}
-
-.detail-stat {
-  display: flex;
-  align-items: baseline;
-  gap: 12rpx;
-  padding: 24rpx;
-  background: #FFF3D0;
-  border: 4rpx solid #33291D;
-  border-radius: 12rpx;
-  margin-bottom: 32rpx;
-}
-
-.detail-stat-num {
-  font-size: 56rpx;
-  font-weight: 800;
-  color: #E0553A;
-}
-
-.detail-stat-label {
-  font-size: 26rpx;
-  font-weight: 700;
-  color: #33291D;
-}
-
-/* 加载态 */
-.loading-emoji {
-  font-size: 96rpx;
-  line-height: 1;
-  animation: bob 1.4s ease-in-out infinite;
-}
-
-@keyframes bob {
-  0%, 100% { transform: translateY(0); }
-  50% { transform: translateY(-16rpx); }
-}
+page { background: #cfe4b0; }
+.town-page { height: 100vh; display: flex; flex-direction: column; color: #344330; background: #e5edd3; }
+.town-page button { margin: 0; padding: 0; font-family: inherit; }
+.town-page button::after { border: none; }
+.town-topbar { display: flex; align-items: center; gap: 22rpx; padding: 14rpx 24rpx; background: #fffcf3; border-bottom: 2rpx solid #d1d9bd; }
+.town-resource { display: flex; align-items: center; gap: 5rpx; font-size: 19rpx; color: #8a806b; }
+.town-resource-art { width: 55rpx; height: 55rpx; }
+.town-resource-num { font-size: 29rpx; font-weight: 900; color: #473b2c; font-variant-numeric: tabular-nums; }
+.town-count { margin-left: auto; padding: 8rpx 16rpx; border-radius: 8rpx; background: #e5edda; font-size: 22rpx; font-weight: 700; }
+.town-scroll { flex: 1; min-height: 0; }
+.town-intro { padding: 36rpx 28rpx 30rpx; text-align: center; background: #e5edd3; }
+.town-eyebrow { font-size: 17rpx; letter-spacing: 3rpx; color: #859573; }
+.town-title { font-size: 44rpx; font-weight: 900; margin: 4rpx 0 10rpx; letter-spacing: 2rpx; }
+.town-subtitle { font-size: 23rpx; color: #6e825c; }
+.town-land { position: relative; margin: 0 16rpx; padding: 28rpx 10rpx 20rpx; border-radius: 100rpx 100rpx 28rpx 28rpx; border: 3rpx solid #a3c480; border-bottom: 14rpx solid #a4ae77; background-color: #c6dea3; background-image: radial-gradient(#b5d193 2rpx, transparent 2rpx); background-size: 24rpx 24rpx; overflow: hidden; }
+.land-road { position: absolute; left: 47%; top: 0; bottom: 0; width: 6%; background: #dddcab; border-left: 3rpx solid #bfca91; border-right: 3rpx solid #bfca91; transform: rotate(23deg); opacity: .7; }
+.land-trees { position: absolute; right: -24rpx; top: -20rpx; width: 155rpx; height: 155rpx; opacity: .65; }
+.town-plots { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 24rpx 0; position: relative; }
+.town-page .town-plot { position: relative; width: 100%; background: transparent; overflow: visible; line-height: 1.4; border-radius: 0; display: flex; flex-direction: column; align-items: center; padding: 8rpx 0; }
+.plot-art { width: 214rpx; height: 214rpx; max-width: 100%; }
+.plot-label { margin-top: -6rpx; padding: 6rpx 18rpx; color: #4c5035; font-size: 22rpx; font-weight: 800; background: #fffaf0; border: 2rpx solid #a7ab83; border-radius: 8rpx; box-shadow: 0 4rpx 0 #aebd89; }
+.plot-invite { padding: 7rpx 10rpx; font-size: 20rpx; font-weight: 800; color: #546b40; border: 2rpx dashed #879f61; border-radius: 8rpx; background: #dbe9be; }
+.plot-empty-label { font-size: 20rpx; padding: 8rpx; color: #839367; }
+.vacant .plot-art { opacity: .65; }
+.new-flag { position: absolute; top: 0; left: 50%; transform: translateX(-50%); z-index: 2; padding: 4rpx 12rpx; border-radius: 6rpx; background: #f8cb5c; color: #59441e; font-size: 19rpx; font-weight: 800; white-space: nowrap; }
+.new-building .plot-art { animation: town-landed 600ms ease-out; }
+@keyframes town-landed { from { opacity: 0; transform: translateY(-44rpx) scale(.8); } 70% { transform: translateY(6rpx) scale(1.04); } to { opacity: 1; transform: translateY(0) scale(1); } }
+.town-sign { position: relative; text-align: center; font-size: 20rpx; color: #6e8250; padding: 28rpx 0 10rpx; }
+.town-first-plan { margin: 22rpx 24rpx 28rpx; padding: 22rpx; background: #fffcf0; border: 2rpx solid #b9c59b; border-radius: 12rpx; display: flex; align-items: center; justify-content: space-between; gap: 16rpx; }
+.first-plan-title { display: block; font-size: 26rpx; font-weight: 800; }
+.first-plan-caption { display: block; font-size: 20rpx; color: #8a806b; margin-top: 6rpx; }
+.town-page .town-first-plan button { flex-shrink: 0; font-size: 23rpx; padding: 12rpx 18rpx; color: #4b623a; background: #e3edce; border-radius: 8rpx; }
+.town-dock { display: flex; flex-shrink: 0; gap: 20rpx; padding: 20rpx 24rpx calc(20rpx + env(safe-area-inset-bottom)); background: #fffcf3; border-top: 2rpx solid #cad5b5; }
+.town-page .town-dock button { flex: 1; font-size: 27rpx; font-weight: 800; border: 2rpx solid #536047; border-radius: 12rpx; line-height: 1.5; padding: 22rpx 10rpx; box-shadow: 0 5rpx 0 #c6ceb1; }
+.town-learn { background: #f7edcf; color: #625739; }
+.town-page .town-build { background: #496a3e; color: #fffdf3; box-shadow: 0 5rpx 0 #2d4927; }
+.town-loading-art { width: 160rpx; height: 160rpx; }
+.town-mask { position: fixed; inset: 0; z-index: 100; background: rgba(25,35,24,.55); display: flex; align-items: center; justify-content: center; padding: 40rpx; }
+.town-detail { width: 100%; max-height: 85vh; overflow-y: auto; padding: 20rpx 36rpx 36rpx; box-sizing: border-box; border: 3rpx solid #4b4935; border-radius: 24rpx; background: #fffcf3; text-align: center; box-shadow: 0 8rpx 0 #344330; }
+.detail-art { width: 280rpx; height: 280rpx; margin: auto; }
+.detail-title { font-size: 40rpx; font-weight: 900; }
+.detail-date { display: block; font-size: 21rpx; margin: 8rpx 0 20rpx; color: #8a806b; }
+.detail-description { display: block; font-size: 26rpx; }
+.detail-memory { padding: 20rpx 10rpx; margin: 24rpx 0; background: #e8f0d9; border-radius: 10rpx; font-size: 24rpx; color: #617d45; }
+.town-page .town-detail button { font-size: 28rpx; line-height: 1.5; padding: 22rpx; font-weight: 800; background: #496a3e; color: #fffdf3; border-radius: 12rpx; }
+.town-welcome { display: flex; align-items: center; gap: 8rpx; padding: 12rpx 24rpx 4rpx 8rpx; }
+.welcome-character { width: 145rpx; height: 145rpx; flex-shrink: 0; }
+.welcome-copy { flex: 1; min-width: 0; }
+.welcome-name { font-size: 32rpx; font-weight: 900; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.welcome-copy text { font-size: 21rpx; color: #82916f; }
+.welcome-meter { height: 8rpx; width: 80%; max-width: 240rpx; background: #d4ddc1; margin-top: 14rpx; border-radius: 8rpx; overflow: hidden; }
+.welcome-meter view { height: 100%; background: #8ba86c; }
+.town-page .town-welcome button { flex-shrink: 0; font-size: 22rpx; color: #5c7448; background: #f7faee; padding: 12rpx 18rpx; border-radius: 14rpx; }
+.town-task { display: flex; align-items: center; gap: 12rpx; margin: 0 24rpx 26rpx; padding: 22rpx; border: 2rpx solid #d5dabe; border-radius: 20rpx; background: #fffbee; }
+.town-task > view { flex: 1; min-width: 0; }
+.task-title { font-size: 27rpx; font-weight: 800; }
+.task-title text { margin-left: 16rpx; color: #8a9d62; font-size: 22rpx; }
+.task-caption { display: block; font-size: 20rpx; color: #90937b; margin-top: 8rpx; line-height: 1.6; }
+.town-page .town-task button { flex-shrink: 0; background: #f3cd68; color: #675325; border-radius: 12rpx; font-size: 23rpx; font-weight: 800; padding: 15rpx 18rpx; }
+.plot-resident { position: absolute; right: -4rpx; bottom: 35rpx; width: 100rpx; height: 100rpx; }
+.plot-garden { position: absolute; left: 0; bottom: 40rpx; width: 65rpx; height: 65rpx; }
+.town-page .growth-retry { font-size: 23rpx; background: transparent; color: #687b53; }

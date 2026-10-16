@@ -17,7 +17,7 @@ for arg in "$@"; do
   case "$arg" in
     --clean|-c) CLEAN=true ;;
     -h|--help)
-      grep '^#' "$0" | sed 's/^# \{0,1\}//' | head -8
+      grep '^#' "$SCRIPT_DIR/$(basename "${BASH_SOURCE[0]}")" | sed 's/^# \{0,1\}//' | head -8
       exit 0
       ;;
     *)

@@ -149,7 +149,8 @@
         <text wx:elif="{{saving}}" class="verdict-sub">正在把学习成果存进小镇…</text>
         <text wx:elif="{{saveError}}" class="verdict-sub">网络不稳，这题的奖励还没确认，可以手动继续。</text>
         <text wx:elif="{{lastReward.bricks || lastReward.coins}}" class="verdict-sub">本题收获：砖块 +{{lastReward.bricks}} · 金币 +{{lastReward.coins}}</text>
-        <text wx:else class="verdict-sub">{{isCorrect ? '今天的答题砖块已集满，继续练也很棒' : '等会儿会换个方式再练这个词'}}</text>
+        <text wx:else class="verdict-sub">{{isCorrect ? '这个词今天已经领过奖励，继续巩固也很棒' : '等会儿会换个方式再练这个词'}}</text>
+        <text wx:if="{{lastXP > 0}}" class="verdict-sub">小镇长成长 +{{lastXP}}</text>
         <text class="advance-note">{{saving ? '保存完成后自动继续' : (saveError ? '本题已停留，请查看网络提示' : (autoAdvancePaused ? '已暂停跳转，准备好了再继续' : (isCorrect ? '稍后自动进入下一题' : '看清答案后自动继续')))}}</text>
         <view class="answer-actions">
           <button class="pause-advance" bindtap="onToggleAutoAdvance" disabled="{{saving || saveError}}">{{autoAdvancePaused ? '恢复自动' : '停留看看'}}</button>
@@ -188,6 +189,7 @@
         <view class="done-stat"><text class="done-num">{{earned.bricks}}</text><text class="done-label">收获砖块</text></view>
       </view>
       <view wx:if="{{bonus.granted}}" class="bonus"><text class="bonus-title">完成奖励 🧱 +{{bonus.bricks}}</text><text class="bonus-sub">已包含在本轮收获中</text></view>
+      <view wx:if="{{earnedXP > 0}}" class="bonus"><text class="bonus-title">小镇长成长 +{{earnedXP}}</text><text class="bonus-sub">回小镇看看你的新进步</text></view>
       <text wx:if="{{unsaved}}" class="audio-note">有 {{unsaved}} 题的保存结果未确认，回小镇时可查看实际收获。</text>
       <button class="btn btn-sun btn-block" bindtap="onBackToTown">回小镇，看看新成果</button>
       <button class="btn btn-block" bindtap="onRetry">再选一条路线</button>

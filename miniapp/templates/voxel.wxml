@@ -1,0 +1,6 @@
+<!-- 一张透明图集共用缓存，每个容器只显示一个方形单元。 -->
+<template name="voxel">
+  <view class="voxel-sprite">
+    <image class="voxel-atlas" src="/images/town/voxel-atlas.png" mode="scaleToFill" style="left: {{sprite.x}}%; top: {{sprite.y}}%;" aria-hidden="true" />
+  </view>
+</template>

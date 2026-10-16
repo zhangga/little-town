@@ -180,6 +180,21 @@ page {
   font-variant-numeric: tabular-nums;
 }
 
+/* 方块小镇：4 × 4 图集，每个容器只露出一个方形单元。 */
+.voxel-sprite {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  pointer-events: none;
+}
+.voxel-atlas {
+  position: absolute;
+  width: 400%;
+  height: 400%;
+  max-width: none;
+}
+
 /* 空状态：邀请行动，不卖惨 */
 .empty {
   display: flex;
@@ -223,3 +238,5 @@ page {
 @supports not (gap: 8rpx) {
   .chip + .chip { margin-left: 16rpx; }
 }
+.art-sprite { position: relative; width: 100%; height: 100%; overflow: hidden; }
+.art-atlas { position: absolute; max-width: none; pointer-events: none; }

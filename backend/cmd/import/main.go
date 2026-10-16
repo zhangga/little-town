@@ -1,12 +1,14 @@
 package main
 
 import (
+	"context"
 	"encoding/json"
 	"errors"
 	"flag"
 	"fmt"
 	"os"
 	"strings"
+	"time"
 
 	"github.com/joho/godotenv"
 	"github.com/zhangga/little-town/backend/internal/config"
@@ -28,6 +30,12 @@ func main() {
 	}
 
 	cfg := config.Load()
+	if err := cfg.Validate(); err != nil {
+		fatal("配置无效", err)
+	}
+	if err := cfg.ApplyTimeZone(); err != nil {
+		fatal("时区配置无效", err)
+	}
 
 	// 默认静音 SQL 日志：一次导入要跑上百条 INSERT，
 	// 全量日志会把进度信息淹掉
@@ -42,6 +50,21 @@ func main() {
 	}
 	if err != nil {
 		fatal("连接数据库失败", err)
+	}
+	acquired, err := database.WithLock(context.Background(), db, "schema-and-seed", 30*time.Second, func() error {
+		return importAll(db, cfg)
+	})
+	if err != nil {
+		fatal("数据导入失败", err)
+	}
+	if !acquired {
+		fatal("等待数据导入锁超时", fmt.Errorf("another instance is initializing data"))
+	}
+}
+
+func importAll(db *gorm.DB, cfg *config.Config) error {
+	if err := database.AutoMigrate(db); err != nil {
+		fatal("初始化数据库表失败", err)
 	}
 
 	fmt.Println()
@@ -92,6 +115,10 @@ func main() {
 		fmt.Println("数据已是最新，没有任何改动。")
 	}
 	fmt.Println()
+	if wordStats.Errors+buildingStats.Errors > 0 {
+		return fmt.Errorf("some seed records failed to import")
+	}
+	return nil
 }
 
 // Stats 导入统计

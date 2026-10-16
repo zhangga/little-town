@@ -1,0 +1,11 @@
+{
+  "environmentId": "prod-d4g0vweip50ea1139",
+  "service": "golang-y91h",
+  "publicURL": "https://golang-y91h-329751-5-1317371943.sh.run.tcloudbase.com",
+  "sourceDirectory": "backend",
+  "dockerfile": "Dockerfile",
+  "port": 80,
+  "readinessPath": "/ready",
+  "environmentVariablesReference": "backend/.env.cloudrun.example",
+  "note": "Deployment reference only. Apply settings in the existing WeChat CloudRun console; this file does not change live settings."
+}

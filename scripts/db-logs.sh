@@ -19,7 +19,7 @@ for arg in "$@"; do
   case "$arg" in
     -f|--follow) FOLLOW="-f" ;;
     -h|--help)
-      grep '^#' "$0" | sed 's/^# \{0,1\}//' | head -9
+      grep '^#' "$SCRIPT_DIR/$(basename "${BASH_SOURCE[0]}")" | sed 's/^# \{0,1\}//' | head -9
       exit 0
       ;;
     ''|*[!0-9]*)
@@ -30,13 +30,13 @@ for arg in "$@"; do
   esac
 done
 
-if ! docker inspect little-town-db >/dev/null 2>&1; then
+if ! docker inspect little-town-mysql >/dev/null 2>&1; then
   echo "✗ 数据库容器不存在，执行 ./scripts/db-start.sh 启动" >&2
   exit 1
 fi
 
 if [ -n "$FOLLOW" ]; then
-  docker logs -f --tail "$TAIL" little-town-db
+  docker logs -f --tail "$TAIL" little-town-mysql
 else
-  docker logs --tail "$TAIL" little-town-db
+  docker logs --tail "$TAIL" little-town-mysql
 fi

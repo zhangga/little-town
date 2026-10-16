@@ -1,6 +1,16 @@
 // utils/assets.js
-// 在美术素材接入前，用 emoji 充当建筑与单词的图形。
-// 后端返回 image_url 时优先用图片，此处仅作为兜底。
+// 单词插画保留 emoji；小镇使用随包加载的原创方块风图集。
+const TOWN_SPRITES = {
+  '学校': 0, '商店': 1, '医院': 2, '公园': 3,
+  '餐厅': 4, '电影院': 5, '图书馆': 6, '警察局': 7,
+  '消防站': 8, '体育馆': 9, '空地': 10, '树林': 11,
+  '砖块': 12, '金币': 13, '工具': 14, '旗帜': 15
+}
+
+function townSprite(name) {
+  const index = Object.prototype.hasOwnProperty.call(TOWN_SPRITES, name) ? TOWN_SPRITES[name] : 10
+  return { x: -(index % 4) * 100, y: -Math.floor(index / 4) * 100 }
+}
 
 const BUILDING_EMOJI = {
   '学校': '🏫',
@@ -67,6 +77,7 @@ const GRADES = [
 ]
 
 module.exports = {
+  townSprite,
   buildingEmoji,
   wordEmoji,
   GRADES

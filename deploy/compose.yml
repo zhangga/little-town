@@ -1,0 +1,84 @@
+name: little-town-server
+
+services:
+  mysql:
+    image: mysql:8.4
+    restart: unless-stopped
+    environment:
+      MYSQL_DATABASE: ${DB_NAME:-littletown_db}
+      MYSQL_USER: ${DB_USER:-littletown}
+      MYSQL_PASSWORD: ${DB_PASSWORD:?Set DB_PASSWORD in deploy/.env}
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD:?Set MYSQL_ROOT_PASSWORD in deploy/.env}
+      TZ: Asia/Shanghai
+    command: ["--character-set-server=utf8mb4", "--collation-server=utf8mb4_bin", "--default-time-zone=+08:00"]
+    volumes:
+      - mysql-data:/var/lib/mysql
+    healthcheck:
+      test: ["CMD-SHELL", "MYSQL_PWD=$$MYSQL_PASSWORD mysql --protocol=tcp -h127.0.0.1 -u$$MYSQL_USER $$MYSQL_DATABASE -e 'SELECT 1'"]
+      interval: 5s
+      timeout: 5s
+      start_period: 30s
+      retries: 24
+
+  app:
+    image: little-town-backend:${IMAGE_TAG:-latest}
+    build:
+      context: ../backend
+    user: "10001:10001"
+    restart: unless-stopped
+    environment:
+      ENV: production
+      DEPLOY_TARGET: server
+      SERVER_HOST: 0.0.0.0
+      SERVER_PORT: "8080"
+      PORT: "8080"
+      DB_HOST: mysql
+      DB_PORT: "3306"
+      DB_NAME: ${DB_NAME:-littletown_db}
+      DB_USER: ${DB_USER:-littletown}
+      DB_PASSWORD: ${DB_PASSWORD:?Set DB_PASSWORD in deploy/.env}
+      DB_TLS: ${DB_TLS:-false}
+      DB_TIMEZONE: ${DB_TIMEZONE:-Asia/Shanghai}
+      DB_MAX_OPEN: ${DB_MAX_OPEN:-10}
+      DB_MAX_IDLE: ${DB_MAX_IDLE:-5}
+      DB_CONN_MAX_LIFETIME: ${DB_CONN_MAX_LIFETIME:-300}
+      WECHAT_APPID: ${WECHAT_APPID:?Set WECHAT_APPID in deploy/.env}
+      WECHAT_SECRET: ${WECHAT_SECRET:?Set WECHAT_SECRET in deploy/.env}
+      JWT_SECRET: ${JWT_SECRET:?Set JWT_SECRET in deploy/.env}
+      JOB_TOKEN: ${JOB_TOKEN:-}
+      SUBSCRIBE_TEMPLATE_ID: ${SUBSCRIBE_TEMPLATE_ID:-}
+      SUBSCRIBE_PAGE: ${SUBSCRIBE_PAGE:-pages/learn/learn}
+      PUSH_HOUR: ${PUSH_HOUR:-19}
+      PUSH_BATCH_SIZE: ${PUSH_BATCH_SIZE:-200}
+      AUTO_MIGRATE: ${AUTO_MIGRATE:-true}
+      TZ: Asia/Shanghai
+      APP_TIMEZONE: Asia/Shanghai
+      LOG_TO_FILE: "false"
+      PUSH_ENABLED: ${PUSH_ENABLED:-true}
+      INIT_DATA: ${INIT_DATA:-true}
+    ports:
+      - "127.0.0.1:${APP_PORT:-8080}:8080"
+    depends_on:
+      mysql:
+        condition: service_healthy
+
+  caddy:
+    image: caddy:2-alpine
+    restart: unless-stopped
+    environment:
+      APP_DOMAIN: ${APP_DOMAIN:?Set APP_DOMAIN in deploy/.env}
+    ports:
+      - "${PUBLIC_BIND:-0.0.0.0}:${HTTP_PORT:-80}:80"
+      - "${PUBLIC_BIND:-0.0.0.0}:${HTTPS_PORT:-443}:443"
+    volumes:
+      - ./Caddyfile:/etc/caddy/Caddyfile:ro
+      - caddy-data:/data
+      - caddy-config:/config
+    depends_on:
+      app:
+        condition: service_healthy
+
+volumes:
+  mysql-data:
+  caddy-data:
+  caddy-config:

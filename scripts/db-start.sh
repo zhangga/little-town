@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 #
-# 启动开发数据库（PostgreSQL + Adminer）
+# 启动开发数据库（MySQL + Adminer）
 #
 # 用法：
 #   ./scripts/db-start.sh          启动数据库
@@ -18,7 +18,7 @@ for arg in "$@"; do
   case "$arg" in
     --reset|-r) RESET=true ;;
     -h|--help)
-      grep '^#' "$0" | sed 's/^# \{0,1\}//' | head -12
+      grep '^#' "$SCRIPT_DIR/$(basename "${BASH_SOURCE[0]}")" | sed 's/^# \{0,1\}//' | head -12
       exit 0
       ;;
     *)
@@ -73,9 +73,9 @@ $COMPOSE up -d
 # 容器起来 ≠ 数据库可连接，这里必须等 healthcheck 通过，
 # 否则紧接着启动后端会报 connection refused
 echo -n "→ 等待数据库就绪"
-CONTAINER="little-town-db"
+CONTAINER="little-town-mysql"
 READY=false
-for i in $(seq 1 40); do
+for i in $(seq 1 120); do
   status="$(docker inspect --format='{{.State.Health.Status}}' "$CONTAINER" 2>/dev/null || echo "starting")"
   if [ "$status" = "healthy" ]; then
     READY=true
@@ -95,13 +95,13 @@ done
 echo
 
 if [ "$READY" != true ]; then
-  echo "✗ 等待超时（40 秒）。检查日志：$COMPOSE logs postgres" >&2
+  echo "✗ 等待超时（120 秒）。检查日志：$COMPOSE logs mysql" >&2
   exit 1
 fi
 
 echo "✓ 数据库已就绪"
 echo
-echo "  PostgreSQL  127.0.0.1:5432   库 littletown_db   用户 postgres"
+echo "  MySQL       127.0.0.1:3306   库 littletown_db   用户 littletown"
 echo "  Adminer     http://localhost:8081"
 echo
 echo "  下一步："

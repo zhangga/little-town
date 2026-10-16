@@ -76,7 +76,7 @@ func (h *UserHandler) UpdateProfile(c *gin.Context) {
 		user.Grade = req.Grade
 	}
 
-	if err := h.db.Save(&user).Error; err != nil {
+	if err := h.db.Model(&user).Updates(map[string]interface{}{"nickname": user.Nickname, "avatar": user.Avatar, "grade": user.Grade}).Error; err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "failed to update user"})
 		return
 	}

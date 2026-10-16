@@ -2,6 +2,8 @@
 
 数据库相关的日常操作。Windows 用 `.bat`，Linux/macOS 用 `.sh`，两者行为一致。
 
+微信云托管源码包使用 `scripts\package-cloudrun.ps1` 生成，输出到 `output/cloudrun`。该命令不会发布线上服务。三种运行方式及生产配置见 [部署说明](../docs/deployment.md)。
+
 | 操作 | Windows | Linux / macOS |
 |------|---------|---------------|
 | 启动数据库 | `scripts\db-start.bat` | `./scripts/db-start.sh` |
@@ -15,14 +17,14 @@
 ## 完整启动流程
 
 ```bash
-# 1. 起数据库（脚本会等到真正可连接才返回）
+# 1. 起数据库（脚本会等到真正可连接才返回），首次先复制 backend/.env.example 为 backend/.env
 ./scripts/db-start.sh
 
-# 2. 起后端（首次会自动建表）
-cd backend && go run cmd/server/main.go
-
-# 3. 另开终端，导入单词与建筑（可重复执行，幂等）
+# 2. 自动建表并导入单词与建筑（可重复执行，幂等）
 cd backend && go run cmd/import/main.go
+
+# 3. 在 backend 目录启动后端
+go run cmd/server/main.go
 ```
 
 或者用 VSCode：`F5` 选「启动后端服务」，再 `F5` 选「导入初始数据（单词 + 建筑）」。
@@ -39,14 +41,18 @@ cd backend && go run cmd/import/main.go
 
 | 项 | 值 |
 |---|---|
-| PostgreSQL | `127.0.0.1:5432` |
+| MySQL 8.4 LTS | `127.0.0.1:3306` |
 | 数据库 | `littletown_db` |
-| 用户 / 密码 | `postgres` / `littletown_dev_pw` |
+| 用户 / 密码 | `littletown` / `littletown_dev_pw` |
 | Adminer（网页版管理界面） | http://localhost:8081 |
 
-Adminer 登录时：系统选 `PostgreSQL`，服务器填 `postgres`（容器名，不是 localhost），用户名 `postgres`，密码同上，数据库 `littletown_db`。
+Adminer 登录时：系统选 `MySQL`，服务器填 `mysql`（Compose 服务名），用户名 `littletown`，密码同上，数据库 `littletown_db`。
 
-这里的密码与 `backend/.env` 的 `DB_PASSWORD` 必须一致，否则后端会报 `password authentication failed`。改动时两处都要改。
+这里的密码与 `backend/.env` 的 `DB_PASSWORD` 必须一致，否则后端会报 `Access denied`。改动时两处都要改。应用使用普通用户 `littletown`；root 密码 `littletown_root_dev_pw` 仅供本机管理使用。
+
+默认字符集为 `utf8mb4`，使用 `utf8mb4_bin` 排序规则，保持 OpenID 和单词的大小写区分，支持中文与 emoji。`DB_TIMEZONE=Asia/Shanghai`，本地使用 `DB_TLS=false`；云托管、自建服务器填写各自的 MySQL 连接信息，要求 TLS 时设置 `DB_TLS=true`。
+
+MySQL 使用独立的 `little-town-mysqldata` 数据卷。原 PostgreSQL 容器和数据卷不会被这些脚本自动删除；切换前应备份旧数据，已有用户及学习进度需要迁移，不能通过重新导入词库替代。
 
 ## 前置要求
 
@@ -54,11 +60,11 @@ Docker Desktop（Windows/macOS）或 docker engine（Linux）。脚本会检查�
 
 ## 换端口
 
-如果 5432 或 8081 被占用，改 `backend/docker-compose.yml` 的端口映射，并同步改 `backend/.env` 的 `DB_PORT`：
+如果 3306 或 8081 被占用，改 `backend/docker-compose.yml` 的端口映射，并同步改 `backend/.env` 的 `DB_PORT`：
 
 ```yaml
 ports:
-  - "127.0.0.1:15432:5432"   # 宿主机 15432 → 容器 5432
+  - "127.0.0.1:13306:3306"   # 宿主机 13306 → 容器 3306
 ```
 
 两个端口都只绑定到 `127.0.0.1`，局域网内其他机器连不上，开发库不会意外暴露。

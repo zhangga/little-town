@@ -9,7 +9,7 @@ Page({
     question: null, picked: -1, answered: false, isCorrect: false,
     earned: { coins: 0, bricks: 0 }, stats: { right: 0, wrong: 0 },
     bonus: { granted: false, bricks: 0 }, saving: false, saveError: false,
-    lastReward: { coins: 0, bricks: 0 }, capped: false, unsaved: 0,
+    lastReward: { coins: 0, bricks: 0 }, capped: false, unsaved: 0, earnedXP: 0, lastXP: 0,
     mode: 'mixed', listening: true, audioCount: 0, newCount: 0,
     audioState: 'idle', heardAudio: false, flipped: false,
     spellReady: false, reviewCount: 0, reviewIndex: 0, recovered: 0,
@@ -104,7 +104,7 @@ Page({
         audioCount: words.filter((word) => word.audio).length,
         newCount: words.filter((word) => !word.is_review).length,
         earned: { coins: 0, bricks: 0 }, stats: { right: 0, wrong: 0 },
-        bonus: { granted: false, bricks: 0 }, capped: false,
+        bonus: { granted: false, bricks: 0 }, capped: false, earnedXP: 0, lastXP: 0,
         saving: false, saveError: false, unsaved: 0, reviewCount: 0, recovered: 0,
         autoAdvancePaused: false
       })
@@ -141,7 +141,7 @@ Page({
     this.setData({
       index, question, phase: card ? 'card' : 'practice', flipped: false,
       picked: -1, answered: false, isCorrect: false, spellReady: false,
-      heardAudio: false, saveError: false, lastReward: { coins: 0, bricks: 0 },
+      heardAudio: false, saveError: false, lastReward: { coins: 0, bricks: 0 }, lastXP: 0,
       autoAdvancePaused: false
     })
     this.scrollToTop()
@@ -235,7 +235,9 @@ Page({
       if (!this._alive) return
       const coins = Number(res.coins_earned) || 0
       const bricks = Number(res.bricks_earned) || 0
+      const xp = Math.max(0, Number(res.xp_earned) || 0)
       const patch = {
+        earnedXP: this.data.earnedXP + xp, lastXP: xp,
         earned: { coins: this.data.earned.coins + coins, bricks: this.data.earned.bricks + bricks },
         lastReward: { coins, bricks }, capped: !!res.capped
       }
@@ -248,7 +250,7 @@ Page({
         wx.setStorageSync('userInfo', userInfo)
       }
     } catch (err) {
-      // 超时可能已到账，当前接口不支持幂等重试，不能自动重发。
+      // 超时可能已到账，保留提示，由下次进入小镇同步服务端余额。
       if (this._alive) this.setData({ saveError: true, unsaved: this.data.unsaved + 1 })
     } finally {
       if (this._alive) {
@@ -280,7 +282,7 @@ Page({
       phase: 'review', reviewIndex: index, reviewCount: this._mistakes.length,
       question: makeQuestion(word, this.data.words, 'spell', this.data.listening),
       picked: -1, answered: false, isCorrect: false, spellReady: false,
-      heardAudio: false, saveError: false, autoAdvancePaused: false
+      heardAudio: false, saveError: false, autoAdvancePaused: false, lastXP: 0
     })
     this.scrollToTop()
   },

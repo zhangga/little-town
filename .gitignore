@@ -46,6 +46,7 @@ uploads/
 backend/server
 backend/import
 backend/tmp/
+output/cloudrun/
 
 # Miniapp specific
 miniapp/project.private.config.json

@@ -20,12 +20,12 @@
 - **状态管理**: 小程序原生 data/setData
 
 ### 后端
-- **语言**: Go 1.21+
+- **语言**: Go 1.25+
 - **框架**: Gin (HTTP 路由)
-- **数据库**: PostgreSQL 14+
+- **数据库**: MySQL 8.0+（本地开发使用 8.4 LTS）
 - **ORM**: GORM
 - **认证**: JWT
-- **部署**: 腾讯云/阿里云轻量服务器
+- **部署**: 本地开发、微信云托管、自建 Docker 服务器（见 [部署说明](docs/deployment.md)）
 
 ### 核心算法
 - **艾宾浩斯记忆曲线**: 5分钟、30分钟、12小时、1天、2天、4天、7天、15天、30天
@@ -70,8 +70,8 @@ little-town/
 ## 快速开始
 
 ### 1. 环境要求
-- Go 1.21+
-- PostgreSQL 14+
+- Go 1.25+
+- MySQL 8.0+（可通过项目脚本启动 Docker 数据库）
 - Node.js 16+ (如果需要本地开发小程序)
 - 微信开发者工具
 
@@ -90,13 +90,11 @@ cp .env.example .env
 # 安装依赖
 go mod download
 
-# 创建数据库
-createdb littletown_db
+# 启动本地 MySQL（当前在 backend 目录；Windows 使用 ..\scripts\db-start.bat）
+# Docker 会自动创建 littletown_db 数据库
+../scripts/db-start.sh
 
-# 运行数据库迁移(自动创建表)
-go run cmd/server/main.go  # 首次运行会自动迁移
-
-# 导入初始数据(单词和建筑)
+# 自动建表并导入初始数据(单词和建筑，可重复执行)
 go run cmd/import/main.go
 
 # 启动服务器
@@ -112,7 +110,7 @@ cd miniapp
 
 # 用微信开发者工具打开该目录
 
-# 修改 utils/config.js 中的 API_BASE_URL 为你的后端地址
+# 按 utils/config.js 中的 ENV 与 TARGETS 选择 local / cloudrun / server
 
 # 在开发者工具中编译运行
 ```
@@ -226,6 +224,8 @@ Level 8    30 天       完全掌握
 
 ## 部署
 
+完整配置、已有微信云托管环境、自建 HTTPS 部署及每日提醒入口，见 [部署说明](docs/deployment.md)。开发版默认访问本机，体验版和正式版默认使用已配置的微信云托管环境；自建部署可通过 `miniapp/utils/config.js` 切换。
+
 ### 测试环境
 ```bash
 # 使用 Docker Compose
@@ -233,31 +233,19 @@ cd backend
 docker-compose up -d
 ```
 
-### 生产环境
+### 微信云托管
+
+在仓库根目录运行 `scripts\package-cloudrun.ps1` 生成源码包，上传到已有环境 `prod-d4g0vweip50ea1139` 的服务 `golang-y91h`，端口使用 80。MySQL 连接变量、微信凭证和 JWT_SECRET 按 [部署说明](docs/deployment.md) 在控制台配置。
+
+### 自建服务器
+
+将 `deploy/.env.example` 复制为 `deploy/.env`，填写域名、数据库密码和微信凭证，然后在仓库根目录执行：
+
 ```bash
-# 编译二进制文件
-go build -o server cmd/server/main.go
-
-# 运行
-./server
+docker compose --env-file deploy/.env -f deploy/compose.yml up -d --build
 ```
 
-推荐使用 systemd 管理服务:
-```ini
-[Unit]
-Description=Little Town Backend
-After=network.target
-
-[Service]
-Type=simple
-User=www-data
-WorkingDirectory=/opt/little-town
-ExecStart=/opt/little-town/server
-Restart=on-failure
-
-[Install]
-WantedBy=multi-user.target
-```
+同一个后端镜像通过环境变量切换配置，MySQL 数据保存在独立数据卷，Caddy 对外提供 HTTPS。
 
 ## 许可证
 

@@ -75,7 +75,8 @@ func (s *SubscriptionService) RecordRequest(userID uint) error {
 	if err != nil {
 		return err
 	}
-	sub.LastRequestAt = time.Now()
+	now := time.Now()
+	sub.LastRequestAt = &now
 	return s.db.Save(sub).Error
 }
 
@@ -93,7 +94,7 @@ func (s *SubscriptionService) ShouldRequest(userID uint) (bool, error) {
 	if sub.Quota > 0 {
 		return false, nil
 	}
-	if !sub.LastRequestAt.IsZero() && time.Since(sub.LastRequestAt) < RequestInterval {
+	if sub.LastRequestAt != nil && time.Since(*sub.LastRequestAt) < RequestInterval {
 		return false, nil
 	}
 	return true, nil
@@ -109,9 +110,10 @@ func (s *SubscriptionService) Grant(userID uint) (int, error) {
 	}
 
 	sub.Quota++
-	sub.LastGrantedAt = time.Now()
+	now := time.Now()
+	sub.LastGrantedAt = &now
 	// 用户刚同意过，把请求时间也更新，避免紧接着又弹一次
-	sub.LastRequestAt = time.Now()
+	sub.LastRequestAt = &now
 
 	if err := s.db.Save(sub).Error; err != nil {
 		return 0, err
@@ -147,11 +149,11 @@ func (s *SubscriptionService) TemplateID() string {
 
 // PushTarget 一个待推送的用户
 type PushTarget struct {
-	UserID      uint
-	OpenID      string
-	Nickname    string
-	DueCount    int // 待复习单词数
-	DailyGoal   int
+	UserID       uint
+	OpenID       string
+	Nickname     string
+	DueCount     int // 待复习单词数
+	DailyGoal    int
 	LearnedToday int
 }
 
@@ -281,7 +283,8 @@ func (s *SubscriptionService) PushReminder(target PushTarget) PushResult {
 		if sub.Quota > 0 {
 			sub.Quota--
 		}
-		sub.LastPushedAt = time.Now()
+		now := time.Now()
+		sub.LastPushedAt = &now
 		sub.TotalPushed++
 		if err := s.db.Save(sub).Error; err != nil {
 			log.Printf("警告：推送成功但额度扣减失败 user=%d: %v", target.UserID, err)

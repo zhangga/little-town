@@ -24,13 +24,17 @@ else
   exit 1
 fi
 
+mysql_query() {
+  docker exec little-town-mysql sh -c 'MYSQL_PWD="$MYSQL_PASSWORD" exec mysql -u"$MYSQL_USER" "$MYSQL_DATABASE" --execute="$1"' sh "$1"
+}
+
 echo "=== 容器状态 ==="
 $COMPOSE ps
 
 echo
 echo "=== 连通性 ==="
-if docker inspect --format='{{.State.Health.Status}}' little-town-db >/dev/null 2>&1; then
-  status="$(docker inspect --format='{{.State.Health.Status}}' little-town-db)"
+if docker inspect --format='{{.State.Health.Status}}' little-town-mysql >/dev/null 2>&1; then
+  status="$(docker inspect --format='{{.State.Health.Status}}' little-town-mysql)"
   case "$status" in
     healthy)   echo "✓ 数据库已就绪，可以连接" ;;
     starting)  echo "… 数据库正在启动，稍等几秒" ;;
@@ -44,7 +48,7 @@ fi
 echo
 echo "=== 数据表 ==="
 # 容器未运行时这条查询会失败，用 || true 让脚本正常结束
-if docker exec little-town-db psql -U postgres -d littletown_db -c "\dt" 2>/dev/null; then
+if mysql_query "SHOW TABLES" 2>/dev/null; then
   :
 else
   echo "  （数据库未运行，或后端尚未首次启动建表）"
@@ -52,9 +56,4 @@ fi
 
 echo
 echo "=== 数据量 ==="
-docker exec little-town-db psql -U postgres -d littletown_db -tAc \
-  "SELECT 'users: ' || count(*) FROM users" 2>/dev/null || true
-docker exec little-town-db psql -U postgres -d littletown_db -tAc \
-  "SELECT 'words: ' || count(*) FROM words" 2>/dev/null || true
-docker exec little-town-db psql -U postgres -d littletown_db -tAc \
-  "SELECT 'buildings: ' || count(*) FROM buildings" 2>/dev/null || true
+mysql_query "SELECT 'users' AS table_name, COUNT(*) AS row_count FROM users UNION ALL SELECT 'words', COUNT(*) FROM words UNION ALL SELECT 'buildings', COUNT(*) FROM buildings" 2>/dev/null || true

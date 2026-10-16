@@ -2,21 +2,22 @@ package models
 
 import (
 	"time"
+
 	"gorm.io/gorm"
 )
 
 // User 用户模型
 type User struct {
-	ID          uint           `gorm:"primaryKey" json:"id"`
-	OpenID      string         `gorm:"uniqueIndex;not null" json:"open_id"`
-	UnionID     string         `gorm:"index" json:"union_id"`
-	Nickname    string         `json:"nickname"`
-	Avatar      string         `json:"avatar"`
-	ParentPhone string         `json:"parent_phone"`
-	Grade       int            `json:"grade"` // 年级 1-6
-	Coins       int            `gorm:"default:0" json:"coins"`
-	Bricks      int            `gorm:"default:0" json:"bricks"`
-	Level       int            `gorm:"default:1" json:"level"`
+	ID          uint   `gorm:"primaryKey" json:"id"`
+	OpenID      string `gorm:"size:100;uniqueIndex;not null" json:"open_id"`
+	UnionID     string `gorm:"size:100;index" json:"union_id"`
+	Nickname    string `gorm:"size:100" json:"nickname"`
+	Avatar      string `gorm:"type:text" json:"avatar"`
+	ParentPhone string `gorm:"size:20" json:"parent_phone"`
+	Grade       int    `json:"grade"` // 年级 1-6
+	Coins       int    `gorm:"default:0" json:"coins"`
+	Bricks      int    `gorm:"default:0" json:"bricks"`
+	Level       int    `gorm:"default:1" json:"level"`
 
 	// 每日奖励限额追踪。
 	// RewardDate 记录 RewardBricks 是哪一天的，跨天时归零重新计数。
@@ -36,12 +37,12 @@ type User struct {
 // Word 单词模型
 type Word struct {
 	ID          uint           `gorm:"primaryKey" json:"id"`
-	Word        string         `gorm:"not null" json:"word"`
-	Translation string         `gorm:"not null" json:"translation"` // 中文释义
-	Grade       int            `gorm:"not null" json:"grade"`       // 年级
-	Subject     string         `gorm:"default:'english'" json:"subject"` // 学科 english/math/chinese
-	ImageURL    string         `json:"image_url"`
-	AudioURL    string         `json:"audio_url"`
+	Word        string         `gorm:"size:100;not null" json:"word"`
+	Translation string         `gorm:"size:200;not null" json:"translation"`     // 中文释义
+	Grade       int            `gorm:"not null" json:"grade"`                    // 年级
+	Subject     string         `gorm:"size:20;default:'english'" json:"subject"` // 学科 english/math/chinese
+	ImageURL    string         `gorm:"type:text" json:"image_url"`
+	AudioURL    string         `gorm:"type:text" json:"audio_url"`
 	Difficulty  int            `gorm:"default:1" json:"difficulty"` // 难度 1-5
 	CreatedAt   time.Time      `json:"created_at"`
 	UpdatedAt   time.Time      `json:"updated_at"`
@@ -51,10 +52,10 @@ type Word struct {
 // Building 建筑模型
 type Building struct {
 	ID          uint           `gorm:"primaryKey" json:"id"`
-	Name        string         `gorm:"not null" json:"name"`
-	Description string         `json:"description"`
-	ImageURL    string         `json:"image_url"`
-	Subject     string         `gorm:"default:'english'" json:"subject"`
+	Name        string         `gorm:"size:100;not null" json:"name"`
+	Description string         `gorm:"type:text" json:"description"`
+	ImageURL    string         `gorm:"type:text" json:"image_url"`
+	Subject     string         `gorm:"size:20;default:'english'" json:"subject"`
 	CostBricks  int            `gorm:"default:10" json:"cost_bricks"` // 建造成本
 	UnlockLevel int            `gorm:"default:1" json:"unlock_level"` // 解锁等级
 	CreatedAt   time.Time      `json:"created_at"`
@@ -83,8 +84,8 @@ type LearningRecord struct {
 	UserID     uint      `gorm:"not null;index" json:"user_id"`
 	WordID     uint      `gorm:"not null;index" json:"word_id"`
 	IsCorrect  bool      `json:"is_correct"`
-	TimesRight int       `gorm:"default:0" json:"times_right"` // 累计答对次数
-	TimesWrong int       `gorm:"default:0" json:"times_wrong"` // 累计答错次数
+	TimesRight int       `gorm:"default:0" json:"times_right"`  // 累计答对次数
+	TimesWrong int       `gorm:"default:0" json:"times_wrong"`  // 累计答错次数
 	Mastered   bool      `gorm:"default:false" json:"mastered"` // 是否已掌握
 	CreatedAt  time.Time `json:"created_at"`
 	UpdatedAt  time.Time `json:"updated_at"`
@@ -123,14 +124,14 @@ type Subscription struct {
 
 	// LastRequestAt 最近一次向用户请求订阅的时间。
 	// 用于避免过于频繁地弹窗打扰用户。
-	LastRequestAt time.Time `json:"last_request_at"`
+	LastRequestAt *time.Time `json:"last_request_at"`
 
 	// LastGrantedAt 最近一次用户同意订阅的时间
-	LastGrantedAt time.Time `json:"last_granted_at"`
+	LastGrantedAt *time.Time `json:"last_granted_at"`
 
 	// LastPushedAt 最近一次成功推送的时间。
 	// 用于控制推送频率——每天最多一条，避免打扰。
-	LastPushedAt time.Time `json:"last_pushed_at"`
+	LastPushedAt *time.Time `json:"last_pushed_at"`
 
 	// TotalPushed 累计成功推送数，用于观察召回效果
 	TotalPushed int `gorm:"default:0" json:"total_pushed"`

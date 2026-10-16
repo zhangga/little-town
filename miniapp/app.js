@@ -8,6 +8,12 @@ App({
   },
 
   onLaunch() {
+    try {
+      api.initialize()
+    } catch (err) {
+      console.error('服务初始化失败', err)
+    }
+
     // 读取本地缓存的用户信息
     const userInfo = wx.getStorageSync('userInfo')
     if (userInfo) {

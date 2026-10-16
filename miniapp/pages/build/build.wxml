@@ -1,75 +1,61 @@
-<!--pages/build/build.wxml-->
+<import src="../../templates/voxel.wxml" />
 <view class="build-page">
-  <!-- 仓库 -->
-  <view class="store-bar">
-    <view class="chip">
-      <text class="chip-icon">🧱</text>
-      <text class="chip-num tnum">{{user.bricks}}</text>
-    </view>
-    <text class="store-hint">每答对一个单词得 1 块砖</text>
+  <view class="workshop-head">
+    <view><text class="eyebrow">LITTLE TOWN · WORKSHOP</text><view class="workshop-title">小镇建造工坊</view></view>
+    <button class="town-link" bindtap="onGoTown">回小镇 ↗</button>
   </view>
-
-  <!-- 加载中 -->
-  <view wx:if="{{loading}}" class="loading">
-    <text class="loading-emoji">🧱</text>
-    <text class="loading-text">正在清点建材…</text>
+  <view class="inventory">
+    <view class="inventory-main"><view class="resource-art"><template is="voxel" data="{{sprite: brickSprite}}" /></view><view><text class="inventory-label">我的砖块</text><view class="inventory-count">{{user.bricks}}<text class="unit"> 块</text></view></view></view>
+    <view class="inventory-coins"><view class="coin-art"><template is="voxel" data="{{sprite: coinSprite}}" /></view><text>{{user.coins}} 金币</text></view>
   </view>
-
-  <!-- 加载失败 -->
-  <view wx:elif="{{failed}}" class="panel">
-    <view class="empty">
-      <text class="empty-emoji">📡</text>
-      <text class="empty-text">没能拿到建筑清单。检查一下网络，然后再试一次。</text>
-      <button class="btn btn-primary" bindtap="loadBuildings">重新加载</button>
-    </view>
-  </view>
-
+  <view wx:if="{{loading}}" class="loading"><view class="loading-art"><template is="voxel" data="{{sprite: toolSprite}}" /></view><text>正在展开建造图纸…</text></view>
+  <view wx:elif="{{failed}}" class="panel empty"><text>图纸还没送到，重新试试吧。</text><button class="btn btn-sun" bindtap="loadBuildings">重新加载</button></view>
   <block wx:else>
-    <!-- 已有建筑的主入口 -->
-    <view wx:if="{{builtCount > 0}}" class="back-town" bindtap="onGoTown">
-      <text class="back-town-emoji">🏘️</text>
-      <text class="back-town-text">小镇里已经有 {{builtCount}} 栋建筑</text>
-      <text class="back-town-arrow">去看看</text>
+    <view wx:if="{{recommended}}" class="next-project" data-id="{{recommended.id}}" bindtap="onSelect" role="button" aria-label="查看推荐建筑图纸">
+      <view class="project-copy"><text class="project-kicker">下一块小镇拼图</text><view class="project-title">造一座{{recommended.name}}</view><text class="project-desc">{{recommended.can_build ? '材料齐了，今天就能动工！' : '攒下的每一块砖，都让它更近一步。'}}</text><view class="project-cta">{{recommended.can_build ? '查看图纸，开始建造' : recommended.status + ' · 查看图纸'}} <text>→</text></view></view>
+      <view class="project-art"><template is="voxel" data="{{sprite: recommended.sprite}}" /></view>
     </view>
-
-    <!-- 建筑清单 -->
-    <view class="list">
-      <view
-        wx:for="{{buildings}}"
-        wx:key="id"
-        class="card {{item.is_built ? 'card-built' : ''}} {{!item.is_built && !item.can_build ? 'card-locked' : ''}}"
-        data-index="{{index}}"
-        bindtap="onBuildTap"
-      >
-        <view class="card-graphic">
-          <text class="card-emoji">{{item.emoji}}</text>
-        </view>
-
-        <view class="card-body">
-          <view class="card-head">
-            <text class="card-name">{{item.name}}</text>
-            <view wx:if="{{item.is_built}}" class="tag tag-done">已建成</view>
-            <view wx:elif="{{item.can_build}}" class="tag tag-ready">可以建</view>
-            <view wx:else class="tag tag-need">缺 {{item.cost_bricks - user.bricks}} 块砖</view>
-          </view>
-
-          <text class="card-desc">{{item.description}}</text>
-
-          <view class="card-foot">
-            <view class="cost">
-              <text class="cost-icon">🧱</text>
-              <text class="cost-num tnum">{{item.cost_bricks}}</text>
-            </view>
-            <text wx:if="{{item.unlock_level > 1}}" class="card-lv caption">Lv.{{item.unlock_level}} 解锁</text>
-          </view>
-        </view>
+    <view wx:elif="{{buildings.length}}" class="collection-complete" bindtap="onGoTown"><text>小镇图鉴集齐啦！</text><text>去看看你亲手建成的 {{builtCount}} 座建筑 →</text></view>
+    <view class="catalog-heading"><text>建筑图鉴</text><text class="catalog-count">已落成 {{builtCount}} / {{buildings.length}}</text></view>
+    <view class="catalog-tabs">
+      <button class="catalog-tab {{filter === 'all' ? 'is-active' : ''}}" data-filter="all" bindtap="onFilter">全部图纸</button>
+      <button class="catalog-tab {{filter === 'ready' ? 'is-active' : ''}}" data-filter="ready" bindtap="onFilter">可建造 {{readyCount}}</button>
+      <button class="catalog-tab {{filter === 'built' ? 'is-active' : ''}}" data-filter="built" bindtap="onFilter">已落成 {{builtCount}}</button>
+    </view>
+    <view class="blueprint-grid">
+      <button wx:for="{{visibleBuildings}}" wx:key="id" class="blueprint-card {{item.is_built ? 'is-built' : ''}}" data-id="{{item.id}}" bindtap="onSelect" aria-label="{{item.name}}，{{item.status}}">
+        <view class="card-state {{item.can_build ? 'state-ready' : ''}} {{item.is_built ? 'state-built' : ''}}">{{item.status}}</view>
+        <view class="card-art"><template is="voxel" data="{{sprite: item.sprite}}" /></view>
+        <view class="card-name">{{item.name}}</view>
+        <view class="card-caption">{{item.description}}</view>
+        <view class="card-footer"><view class="card-cost"><view class="mini-brick"><template is="voxel" data="{{sprite: brickSprite}}" /></view><text>{{item.cost_bricks}} 砖</text></view><text class="card-arrow">{{item.is_built ? '✓' : '＋'}}</text></view>
+      </button>
+    </view>
+    <view wx:if="{{!visibleBuildings.length}}" class="catalog-empty"><text>{{filter === 'built' ? '第一座建筑，等你来点亮。' : '还没有可动工的图纸，再攒一些砖块吧。'}}</text><button class="btn btn-sun" bindtap="onGoLearn">学单词，攒砖块</button></view>
+    <view class="catalog-footnote">学习攒砖块 · 砖块造建筑 · 建成就能在小镇里找到它</view>
+  </block>
+  <view class="workshop-dock"><view><view class="dock-title">给下一座建筑添块砖</view><text class="dock-caption">完成学习任务，领取建造奖励</text></view><button bindtap="onGoLearn">去学单词 →</button></view>
+  <view wx:if="{{selected}}" class="blueprint-mask" bindtap="onCloseDetail" catchtouchmove="onNoop">
+    <view class="blueprint-sheet {{completed ? 'sheet-completed' : ''}}" catchtap="onNoop">
+      <view class="sheet-top"><text>{{completed ? '小镇又长大了一点' : '建造图纸'}}</text><button class="sheet-close" disabled="{{building}}" bindtap="onCloseDetail" aria-label="关闭图纸">×</button></view>
+      <scroll-view class="sheet-body" scroll-y>
+      <view class="sheet-art {{building ? 'is-building' : ''}} {{completed ? 'has-landed' : ''}}"><template is="voxel" data="{{sprite: selected.sprite}}" /></view>
+      <view class="sheet-title">{{selected.name}}{{completed ? '，落成！' : ''}}</view>
+      <text class="sheet-description">{{completed ? '你学会的单词，变成了小镇的新风景。' : selected.description}}</text>
+      <view wx:if="{{completed}}" class="completion-note">本次使用 {{completed.cost_bricks}} 砖 · 仓库剩余 {{user.bricks}} 砖</view>
+      <view wx:elif="{{selected.is_built}}" class="completion-note">这座建筑已经在你的小镇里啦</view>
+      <view wx:else class="materials">
+        <view class="materials-heading"><view class="material-name"><view class="mini-brick"><template is="voxel" data="{{sprite: brickSprite}}" /></view><text>所需砖块</text></view><text class="material-count {{selected.can_build ? 'enough' : ''}}">{{selected.materialCount}} / {{selected.cost_bricks}}</text></view>
+        <view class="material-track"><view class="material-fill" style="width: {{selected.progress}}%;" /></view>
+        <view class="material-hint">{{selected.can_build ? '材料已备齐，建造后还剩 ' + (user.bricks - selected.cost_bricks) + ' 块砖' : selected.missing ? '还差 ' + selected.missing + ' 块砖，完成学习任务继续积攒' : '这张图纸暂未开放'}}</view>
+      </view>
+      </scroll-view>
+      <view class="sheet-actions">
+        <button wx:if="{{completed || selected.is_built}}" class="sheet-primary" bindtap="onGoTown">去小镇看看 →</button>
+        <button wx:elif="{{selected.can_build}}" class="sheet-primary" loading="{{building}}" disabled="{{building || refreshing}}" bindtap="onBuild">{{building ? '正在搭建…' : '使用 ' + selected.cost_bricks + ' 块砖 · 开始建造'}}</button>
+        <button wx:else class="sheet-primary" bindtap="onGoLearn">学单词，攒砖块 →</button>
+        <button class="sheet-secondary" disabled="{{building}}" bindtap="onCloseDetail">{{completed ? '继续挑选图纸' : '再看看其他建筑'}}</button>
       </view>
     </view>
-
-    <!-- 砖块不够时的引导 -->
-    <view wx:if="{{user.bricks === 0 && builtCount === 0}}" class="tip panel">
-      <text class="tip-text">还没有砖块。先去学单词，答对一题就有 1 块砖。</text>
-      <button class="btn btn-primary btn-block" bindtap="onGoLearn">去学单词</button>
-    </view>
-  </block>
+  </view>
 </view>

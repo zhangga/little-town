@@ -4,6 +4,7 @@
     "pages/learn/learn",
     "pages/build/build",
     "pages/profile/profile",
+    "pages/resident/resident",
     "pages/parent/parent",
     "pages/login/login"
   ],
