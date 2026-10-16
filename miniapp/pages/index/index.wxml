@@ -11,7 +11,7 @@
   <scroll-view wx:else class="town-scroll" scroll-y>
     <view wx:if="{{growth}}" class="town-welcome"><view class="welcome-character"><template is="resident-art" data="{{art: growth.characterArt}}" /></view><view class="welcome-copy"><view class="welcome-name">你好，{{growth.resident.name}}</view><text>Lv.{{growth.resident.level}} · {{growth.resident.title}}</text><view class="welcome-meter"><view style="width: {{growth.xpPercent}}%;" /></view></view><button bindtap="onGoResident">装扮角色 ›</button></view>
     <view wx:else class="town-intro"><view class="town-title">我的方块小镇</view><button wx:if="{{growthFailed}}" class="growth-retry" bindtap="loadTown">角色暂未连上 · 点此重试</button></view>
-    <view wx:if="{{growth}}" class="town-task"><view><view class="task-title">{{growth.daily.done ? '今日任务完成啦！' : '今天的小目标'}}<text>{{growth.daily.completed}} / {{growth.daily.goal}} 词</text></view><text class="task-caption">{{growth.daily.done ? '学习的收获，去装扮你的家吧。' : '学新词或复习旧词，让小镇长一起成长。'}}</text></view><button bindtap="onDailyTask">{{growth.daily.done ? '回家看看' : '开始学习'}} →</button></view>
+    <view wx:if="{{growth}}" class="town-task"><view><view class="task-title">{{growth.daily.done ? '今日任务完成啦！' : '今天的小目标'}}<text>{{growth.daily.completed}} / {{growth.daily.goal}} 词</text></view><text class="task-caption">{{growth.daily.done ? '小目标已完成，还可以继续学或自由复习。' : '学新词或复习旧词，让小镇长一起成长。'}}</text></view><button bindtap="onDailyTask">{{growth.daily.done ? '继续学习' : '开始学习'}} →</button></view>
     <view class="town-land">
       <view class="land-road" />
       <view class="land-trees"><template is="voxel" data="{{sprite: treeSprite}}" /></view>

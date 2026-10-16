@@ -15,7 +15,8 @@ Page({
     spellReady: false, reviewCount: 0, reviewIndex: 0, recovered: 0,
     pairs: { left: [], right: [] }, pairLeft: -1, pairRight: -1,
     pairCount: 0, matchWrong: false, matchMessage: '', matchDone: false,
-    pairBatch: 0, pairBatches: 0, finished: false, autoAdvancePaused: false
+    pairBatch: 0, pairBatches: 0, finished: false, autoAdvancePaused: false,
+    freePractice: false, dailyGoal: 5, goalDone: false
   },
 
   onLoad() {
@@ -28,7 +29,11 @@ Page({
     })
     if (this.checkAuth()) this.loadDaily()
   },
-  onShow() { this._visible = true },
+  onShow() {
+    this._visible = true
+    // tab 页会缓存；完成后再次进入应准备下一轮，正在答的题保持原样。
+    if (this._alive && !this.data.loading && (this.data.phase === 'done' || this.data.failed)) this.loadDaily()
+  },
   onHide() {
     this._visible = false
     this.clearAutoAdvance()
@@ -94,12 +99,15 @@ Page({
     clearTimeout(this._matchTimer)
     this.setData({ loading: true, failed: false })
     try {
-      const res = await api.get('/learn/daily-words')
+      const res = await api.get('/learn/daily-words', { practice_after: this._practiceAfter || 0 })
       if (!this._alive || loadID !== this._loadID) return
       const words = ((res && res.words) || []).map(enrichWord)
+      const freePractice = res.session_kind === 'practice'
+      this._practiceAfter = freePractice ? (Number(res.practice_next_id) || 0) : 0
       this._mistakes = []
       this.setData({
         loading: false, phase: words.length ? 'ready' : 'done', words, index: 0,
+        freePractice, dailyGoal: Number(res.daily_goal) || 5, goalDone: !!res.bonus_claimed,
         question: null, finished: !words.length, answered: false,
         audioCount: words.filter((word) => word.audio).length,
         newCount: words.filter((word) => !word.is_review).length,
@@ -228,8 +236,13 @@ Page({
       stats: {
         right: this.data.stats.right + (isCorrect ? 1 : 0),
         wrong: this.data.stats.wrong + (isCorrect ? 0 : 1)
-      }, saving: true
+      }, saving: !this.data.freePractice
     })
+    // 额外练习只计本轮表现，不提交奖励，也不提前推进间隔复习。
+    if (this.data.freePractice) {
+      this.scheduleAutoAdvance()
+      return
+    }
     try {
       const res = await api.post('/learn/submit-answer', { word_id: word.id, is_correct: isCorrect })
       if (!this._alive) return
@@ -341,7 +354,7 @@ Page({
     this._audio.stop()
     this.setData({ phase: 'done', finished: true, question: null })
     this.scrollToTop()
-    this.maybeRequestSubscribe()
+    if (!this.data.freePractice) this.maybeRequestSubscribe()
   },
 
   onPlayAudio(e) {
@@ -380,7 +393,8 @@ Page({
       console.warn('获取订阅状态失败', err)
     }
   },
-  onRetry() { this.loadDaily() },
+  onRetry() { if (!this.data.loading) return this.loadDaily() },
+  onGoProfile() { wx.switchTab({ url: '/pages/profile/profile' }) },
   onBackToTown() { wx.switchTab({ url: '/pages/index/index' }) },
   onShareAppMessage() {
     return { title: '听一听、拼一拼，我在小小镇学单词', path: '/pages/index/index' }

@@ -8,6 +8,7 @@
 .welcome-title { font-size: 45rpx; line-height: 1.25; font-weight: 900; letter-spacing: -1rpx; }
 .welcome-sub { font-size: 25rpx; margin-top: 14rpx; color: #416274; font-weight: 600; }
 .welcome-icon { font-size: 96rpx; transform: rotate(8deg); }
+.study-note { padding: 18rpx 22rpx; margin: 0 0 24rpx; border-radius: 14rpx; background: #d7edf1; color: #416274; font-size: 23rpx; line-height: 1.6; }
 .route-card { padding: 28rpx; border-radius: 24rpx; background: #FFF3D0; }
 .route-title { font-size: 30rpx; font-weight: 800; }
 .route-stops { display: flex; align-items: center; justify-content: space-between; margin: 24rpx 8rpx; }

@@ -27,11 +27,12 @@
     <view class="eyebrow">LITTLE TOWN · 单词探险</view>
     <view class="welcome-row">
       <view>
-        <view class="welcome-title">今天，换个玩法！</view>
-        <view class="welcome-sub">{{words.length}} 个单词 · {{newCount}} 个新朋友</view>
+        <view class="welcome-title">{{freePractice ? '老朋友，再练一练' : goalDone ? '继续探索新单词！' : '今天，换个玩法！'}}</view>
+        <view class="welcome-sub">{{words.length}} 个单词 · {{freePractice ? '自由复习' : newCount + ' 个新朋友'}}</view>
       </view>
       <text class="welcome-icon">🎒</text>
     </view>
+    <view class="study-note">{{freePractice ? '新词已学完，复习还未到期？现在也能自由练习，不发放奖励、不改变复习计划。' : goalDone ? '今日目标已完成，还可以继续学。成长和奖励按每日规则发放，学习不限轮数。' : '每日 ' + dailyGoal + ' 词是小目标，完成后仍然可以继续学习。'}}</view>
     <view class="route-card block">
       <view class="route-title">一颗单词，记住好几面</view>
       <view class="route-stops">
@@ -62,7 +63,7 @@
       <switch checked="{{listening}}" bindchange="onToggleListening" color="#4E7A2E" aria-label="加入听力和自动朗读" />
     </view>
     <text wx:if="{{audioCount < words.length}}" class="audio-note">有读音的 {{audioCount}} 个词可练听力，其余练认词。</text>
-    <button class="btn btn-primary btn-block start-button" bindtap="onStart">开始探险 →</button>
+    <button class="btn btn-primary btn-block start-button" bindtap="onStart">{{freePractice ? '开始自由复习' : '开始探险'}} →</button>
   </view>
 
   <block wx:elif="{{question}}">
@@ -146,6 +147,7 @@
           </view>
         </view>
         <text wx:if="{{phase === 'review'}}" class="verdict-sub">{{isCorrect ? '比刚才更熟悉了！' : '再听一遍，下次继续练'}}</text>
+        <text wx:elif="{{freePractice}}" class="verdict-sub">{{isCorrect ? '记得很棒！自由复习不发放奖励。' : '再认识一次，等会儿换个方式练。'}}</text>
         <text wx:elif="{{saving}}" class="verdict-sub">正在把学习成果存进小镇…</text>
         <text wx:elif="{{saveError}}" class="verdict-sub">网络不稳，这题的奖励还没确认，可以手动继续。</text>
         <text wx:elif="{{lastReward.bricks || lastReward.coins}}" class="verdict-sub">本题收获：砖块 +{{lastReward.bricks}} · 金币 +{{lastReward.coins}}</text>
@@ -181,18 +183,20 @@
   <view wx:else class="done-wrap">
     <view class="done-card block">
       <text class="done-emoji">{{words.length ? '🎉' : '🌱'}}</text>
-      <text class="done-title">{{words.length ? '探险完成！' : '这一轮没有待学单词'}}</text>
-      <text class="done-note">{{words.length ? '听过、想过、拼过，单词更熟悉了' : '稍后再来看看有没有到期的复习吧'}}</text>
+      <text class="done-title">{{words.length ? (freePractice ? '这一轮复习完成！' : '这一轮探险完成！') : '当前还没有可练的单词'}}</text>
+      <text class="done-note">{{words.length ? '听过、想过、拼过，还可以继续下一轮' : '不是达到学习上限。请在“我的”核对年级，或请家长补充单词。'}}</text>
       <view wx:if="{{words.length}}" class="done-stats">
         <view class="done-stat"><text class="done-num">{{stats.right}}</text><text class="done-label">首次答对</text></view>
         <view class="done-stat"><text class="done-num">{{recovered}}</text><text class="done-label">巩固答对</text></view>
-        <view class="done-stat"><text class="done-num">{{earned.bricks}}</text><text class="done-label">收获砖块</text></view>
+        <view class="done-stat"><text class="done-num">{{freePractice ? words.length : earned.bricks}}</text><text class="done-label">{{freePractice ? '复习单词' : '收获砖块'}}</text></view>
       </view>
       <view wx:if="{{bonus.granted}}" class="bonus"><text class="bonus-title">完成奖励 🧱 +{{bonus.bricks}}</text><text class="bonus-sub">已包含在本轮收获中</text></view>
       <view wx:if="{{earnedXP > 0}}" class="bonus"><text class="bonus-title">小镇长成长 +{{earnedXP}}</text><text class="bonus-sub">回小镇看看你的新进步</text></view>
       <text wx:if="{{unsaved}}" class="audio-note">有 {{unsaved}} 题的保存结果未确认，回小镇时可查看实际收获。</text>
-      <button class="btn btn-sun btn-block" bindtap="onBackToTown">回小镇，看看新成果</button>
-      <button class="btn btn-block" bindtap="onRetry">再选一条路线</button>
+      <button wx:if="{{words.length}}" class="btn btn-primary btn-block" bindtap="onRetry">{{freePractice ? '再练一组' : '继续学习下一轮'}} →</button>
+      <button wx:else class="btn btn-primary btn-block" bindtap="onGoProfile">查看年级和词库</button>
+      <button class="btn btn-block" bindtap="onBackToTown">回小镇，看看新成果</button>
+      <button wx:if="{{!words.length}}" class="btn btn-block" bindtap="onRetry">重新加载单词</button>
     </view>
   </view>
 </view>

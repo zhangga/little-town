@@ -4,6 +4,7 @@ import (
 	"errors"
 	"gorm.io/gorm/clause"
 	"net/http"
+	"strconv"
 
 	"github.com/gin-gonic/gin"
 	"github.com/zhangga/little-town/backend/internal/config"
@@ -38,15 +39,24 @@ func (h *LearnHandler) GetDailyWords(c *gin.Context) {
 		return
 	}
 
-	// 先取需要复习的单词（最多 3 个）
-	dueSchedules, err := h.reviewService.GetDueWords(userID, 3)
+	afterID, err := strconv.ParseUint(c.DefaultQuery("practice_after", "0"), 10, 64)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "invalid practice cursor"})
+		return
+	}
+	goal := h.cfg.DailyWordCount
+	if goal < 1 {
+		goal = 5
+	}
+	// 每日目标是每轮题量和奖励目标，不是每天最多能学的词数。
+	dueSchedules, err := h.reviewService.GetDueWords(userID, min(3, goal))
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "failed to get review words"})
 		return
 	}
 
 	// 再取新单词补足每日目标
-	remaining := h.cfg.DailyWordCount - len(dueSchedules)
+	remaining := goal - len(dueSchedules)
 	newWords := []models.Word{}
 	if remaining > 0 {
 		newWords, err = h.reviewService.GetNewWords(userID, user.Grade, remaining)
@@ -90,11 +100,29 @@ func (h *LearnHandler) GetDailyWords(c *gin.Context) {
 		})
 	}
 
+	sessionKind := "learning"
+	var practiceNextID uint
+	if len(items) == 0 {
+		practice, err := h.reviewService.GetPracticeWords(userID, goal, uint(afterID))
+		if err != nil {
+			c.JSON(http.StatusInternalServerError, gin.H{"error": "failed to get practice words"})
+			return
+		}
+		sessionKind = "practice"
+		for _, w := range practice {
+			items = append(items, WordItem{ID: w.ID, Word: w.Word, Translation: w.Translation, ImageURL: w.ImageURL, AudioURL: w.AudioURL, IsReview: true})
+			practiceNextID = w.ID
+		}
+		if len(items) == 0 {
+			sessionKind = "empty"
+		}
+	}
+
 	c.JSON(http.StatusOK, gin.H{
-		"words": items,
-		"count": len(items),
+		"words": items, "count": len(items),
+		"session_kind": sessionKind, "practice_next_id": practiceNextID,
 		// 让前端知道今天是否已经达标，用于展示"还差几个词"
-		"daily_goal":      h.cfg.DailyWordCount,
+		"daily_goal":      goal,
 		"bonus_bricks":    services.DailyCompletionBonus,
 		"daily_brick_cap": services.DailyBrickCap,
 		"bonus_claimed":   user.DailyBonusDate == todayString(),

@@ -1,0 +1,145 @@
+package handlers
+
+import (
+	"encoding/json"
+	"fmt"
+	"net/http/httptest"
+	"os"
+	"strings"
+	"testing"
+	"time"
+
+	"github.com/gin-gonic/gin"
+	"github.com/zhangga/little-town/backend/internal/config"
+	"github.com/zhangga/little-town/backend/internal/database"
+	"github.com/zhangga/little-town/backend/internal/models"
+	"github.com/zhangga/little-town/backend/internal/services"
+)
+
+func TestLearningContinuesAfterDailyGoal(t *testing.T) {
+	name := os.Getenv("MYSQL_TEST_DB")
+	if name == "" {
+		t.Skip("set MYSQL_TEST_DB for MySQL integration tests")
+	}
+	if !strings.HasPrefix(name, "littletown_test_") {
+		t.Fatal("MYSQL_TEST_DB must start with littletown_test_")
+	}
+	cfg := config.Load()
+	cfg.DBName = name
+	cfg.DailyWordCount = 2
+	db, err := database.InitDBSilent(cfg)
+	if err != nil {
+		t.Fatal(err)
+	}
+	sqlDB, _ := db.DB()
+	t.Cleanup(func() { sqlDB.Close() })
+	if err := database.AutoMigrate(db); err != nil {
+		t.Fatal(err)
+	}
+	user := models.User{OpenID: fmt.Sprintf("continue-learning-%d", time.Now().UnixNano()), Grade: 91, DailyBonusDate: services.TodayString()}
+	if err := db.Create(&user).Error; err != nil {
+		t.Fatal(err)
+	}
+	words := []models.Word{{Word: "apple", Translation: "苹果", Grade: 91}, {Word: "zebra", Translation: "斑马", Grade: 91}, {Word: "water", Translation: "水", Grade: 91}}
+	if err := db.Create(&words).Error; err != nil {
+		t.Fatal(err)
+	}
+	t.Cleanup(func() {
+		db.Where("user_id = ?", user.ID).Delete(&models.ReviewSchedule{})
+		db.Unscoped().Delete(&user)
+		for _, w := range words {
+			db.Unscoped().Delete(&w)
+		}
+	})
+	for _, word := range words {
+		if err := db.Create(&models.ReviewSchedule{UserID: user.ID, WordID: word.ID, NextReviewAt: time.Now().Add(time.Hour), LastReviewedAt: time.Now()}).Error; err != nil {
+			t.Fatal(err)
+		}
+	}
+	gin.SetMode(gin.TestMode)
+	router := gin.New()
+	router.Use(func(c *gin.Context) { c.Set("user_id", user.ID) })
+	router.GET("/words", NewLearnHandler(db, cfg).GetDailyWords)
+	type response struct {
+		Words []struct {
+			ID       uint `json:"id"`
+			IsReview bool `json:"is_review"`
+		}
+		SessionKind  string `json:"session_kind"`
+		Next         uint   `json:"practice_next_id"`
+		BonusClaimed bool   `json:"bonus_claimed"`
+	}
+	get := func(query string) response {
+		t.Helper()
+		w := httptest.NewRecorder()
+		router.ServeHTTP(w, httptest.NewRequest("GET", "/words"+query, nil))
+		if w.Code != 200 {
+			t.Fatalf("words: %d %s", w.Code, w.Body.String())
+		}
+		var res response
+		if err := json.Unmarshal(w.Body.Bytes(), &res); err != nil {
+			t.Fatal(err)
+		}
+		return res
+	}
+	first := get("")
+	if len(first.Words) != 2 || first.SessionKind != "practice" {
+		t.Fatalf("learner with completed goal and learned words cannot continue: %+v", first)
+	}
+	if !first.BonusClaimed || !first.Words[0].IsReview {
+		t.Fatal("practice lost goal or review state")
+	}
+	next := get(fmt.Sprintf("?practice_after=%d", first.Next))
+	if len(next.Words) != 2 || next.Words[0].ID != words[2].ID || next.Words[1].ID != words[0].ID {
+		t.Fatalf("practice must rotate and wrap without duplicates: %+v", next)
+	}
+	// Fetching free practice does not change due times, awards or study records.
+	var due int64
+	db.Model(&models.ReviewSchedule{}).Where("user_id = ? AND next_review_at <= ?", user.ID, time.Now()).Count(&due)
+	if due != 0 {
+		t.Fatal("free practice changed due dates")
+	}
+	var studied int64
+	db.Model(&models.ResidentStudy{}).Where("user_id = ?", user.ID).Count(&studied)
+	if studied != 0 {
+		t.Fatal("listing practice awarded growth")
+	}
+	// Even after the daily bonus, a newly available word remains learnable.
+	newWord := models.Word{Word: "bird", Translation: "鸟", Grade: 91}
+	if err := db.Create(&newWord).Error; err != nil {
+		t.Fatal(err)
+	}
+	words = append(words, newWord)
+	more := get("")
+	if len(more.Words) != 1 || more.Words[0].ID != newWord.ID || more.SessionKind != "learning" {
+		t.Fatalf("daily goal must not block new words: %+v", more)
+	}
+	// Due reviews have priority over optional practice; deleted vocabulary is never returned.
+	if err := db.Model(&models.ReviewSchedule{}).Where("user_id = ? AND word_id = ?", user.ID, words[0].ID).Update("next_review_at", time.Now().Add(-time.Minute)).Error; err != nil {
+		t.Fatal(err)
+	}
+	more = get("")
+	if len(more.Words) != 2 || more.Words[0].ID != words[0].ID || more.SessionKind != "learning" {
+		t.Fatalf("due review priority: %+v", more)
+	}
+	if err := db.Delete(&words[0]).Error; err != nil {
+		t.Fatal(err)
+	}
+	more = get("")
+	for _, word := range more.Words {
+		if word.ID == 0 || word.ID == words[0].ID {
+			t.Fatal("deleted word returned")
+		}
+	}
+	// A new account without any vocabulary receives an honest empty result, not fake words.
+	if err := db.Where("user_id = ?", user.ID).Delete(&models.ReviewSchedule{}).Error; err != nil {
+		t.Fatal(err)
+	}
+	if err := db.Model(&user).Update("grade", 92).Error; err != nil {
+		t.Fatal(err)
+	}
+	empty := get("")
+	if len(empty.Words) != 0 || empty.SessionKind != "empty" {
+		t.Fatalf("empty vocabulary: %+v", empty)
+	}
+}

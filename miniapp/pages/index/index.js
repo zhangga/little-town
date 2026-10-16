@@ -65,7 +65,7 @@ Page({
   onGoLearn() { wx.switchTab({ url: '/pages/learn/learn' }) },
   onGoBuild() { wx.switchTab({ url: '/pages/build/build' }) },
   onGoResident() { wx.navigateTo({ url: '/pages/resident/resident' }) },
-  onDailyTask() { if (this.data.growth && this.data.growth.daily.done) this.onGoResident(); else this.onGoLearn() },
+  onDailyTask() { this.onGoLearn() },
   onShareAppMessage() {
     return { title: '学单词，建一座自己的方块小镇', path: '/pages/index/index' }
   }

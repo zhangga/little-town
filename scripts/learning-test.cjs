@@ -12,6 +12,40 @@ const words = seed.map((word, index) => enrichWord({ ...word, id: index + 1, is_
 const event = (data) => ({ currentTarget: { dataset: data } })
 const flush = () => new Promise((resolve) => setImmediate(resolve))
 
+test('returning to a completed or empty tab loads another round without losing an active round', async () => {
+  const h = await pageHarness([words[0]])
+  let reads = 0
+  h.api.get = async () => { reads++; return { words: [words[1]], bonus_claimed: true } }
+  h.page.onStart(); h.page.onHide(); h.page.onShow(); await flush()
+  assert.equal(reads, 0)
+  h.page.finish(); h.page.onHide(); h.page.onShow(); await flush()
+  assert.equal(reads, 1)
+  assert.equal(h.page.data.phase, 'ready')
+  assert.equal(h.page.data.words[0].id, words[1].id)
+  h.page.setData({ phase: 'done', finished: true, words: [] })
+  h.page.onHide(); h.page.onShow(); await flush()
+  assert.equal(reads, 2)
+  h.page.onUnload()
+})
+
+test('free practice stays playable without submitting awards or changing spaced review schedules', async () => {
+  const h = await pageHarness([words[0]])
+  let query
+  h.api.get = async (url, params) => { query = params; return { words: [{...words[0],is_review:true}], session_kind:'practice', practice_next_id:42, bonus_claimed:true } }
+  await h.page.loadDaily()
+  h.page.setData({listening:false}); h.page.onMode(event({mode:'spell'})); h.page.onStart()
+  await answerQuestion(h.page, true, h.mockAudio)
+  assert.equal(h.page.data.stats.right, 1)
+  assert.equal(h.calls.length, 0)
+  assert.equal(h.page.data.earnedXP, 0)
+  h.clock.advance(1600); completePairs(h.page)
+  assert.equal(h.page.data.phase, 'done')
+  await h.page.onRetry()
+  assert.equal(query.practice_after, 42)
+  assert.equal(h.page.data.phase, 'ready')
+  h.page.onUnload()
+})
+
 test('growth comes from saved server results and is not repeated during mistake practice', async () => {
   const h = await pageHarness(words.slice(0, 1), () => ({ coins_earned: 0, bricks_earned: 0, xp_earned: 5 }))
   h.page.onStart()

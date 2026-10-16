@@ -99,6 +99,7 @@ func (s *SpacedRepetitionService) GetDueWords(userID uint, limit int) ([]models.
 	err := s.db.
 		Preload("Word").
 		Where("user_id = ? AND next_review_at <= ?", userID, time.Now()).
+		Where("word_id IN (?)", s.db.Model(&models.Word{}).Select("id").Where("subject = ?", "english")).
 		Order("next_review_at ASC").
 		Limit(limit).
 		Find(&schedules).Error
@@ -123,6 +124,30 @@ func (s *SpacedRepetitionService) GetNewWords(userID uint, grade int, limit int)
 		Find(&words).Error
 
 	return words, err
+}
+
+// GetPracticeWords 在没有新词和到期任务时提供已学词，读取不改变复习计划。
+// 用单词 ID 游标轮换题组；到词库末尾后从头补齐，不重复返回同一词。
+func (s *SpacedRepetitionService) GetPracticeWords(userID uint, limit int, afterID uint) ([]models.Word, error) {
+	words := []models.Word{}
+	if limit < 1 {
+		return words, nil
+	}
+	learned := s.db.Model(&models.ReviewSchedule{}).Select("word_id").Where("user_id = ?", userID)
+	query := func() *gorm.DB {
+		return s.db.Where("subject = ? AND id IN (?)", "english", learned).Order("id ASC")
+	}
+	if err := query().Where("id > ?", afterID).Limit(limit).Find(&words).Error; err != nil {
+		return nil, err
+	}
+	if len(words) < limit && afterID > 0 {
+		var wrapped []models.Word
+		if err := query().Where("id <= ?", afterID).Limit(limit - len(words)).Find(&wrapped).Error; err != nil {
+			return nil, err
+		}
+		words = append(words, wrapped...)
+	}
+	return words, nil
 }
 
 // GetUserStats 获取用户学习统计
