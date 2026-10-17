@@ -60,3 +60,70 @@ page { background: #cfe4b0; }
 .plot-resident { position: absolute; right: -4rpx; bottom: 35rpx; width: 100rpx; height: 100rpx; }
 .plot-garden { position: absolute; left: 0; bottom: 40rpx; width: 65rpx; height: 65rpx; }
 .town-page .growth-retry { font-size: 23rpx; background: transparent; color: #687b53; }
+.life-weather { display: flex; align-items: center; gap: 14rpx; margin: 0 28rpx 18rpx; }
+.life-weather > text:first-child { font-size: 43rpx; }
+.life-weather > view { flex: 1; min-width: 0; font-size: 24rpx; font-weight: 800; }
+.life-weather > view > text { display: block; margin-top: 5rpx; font-size: 20rpx; line-height: 1.6; font-weight: 400; color: #72825d; }
+.life-weather-note { writing-mode: vertical-rl; letter-spacing: 4rpx; font-size: 17rpx; color: #809267; padding: 8rpx; border-left: 2rpx solid #becda5; }
+.town-evening { background-color: #adc5aa; border-color: #8aa590; }
+.life-lane { height: 68rpx; position: relative; margin: 12rpx 12rpx 0; border-radius: 40rpx; background: #dedbb0; border-bottom: 5rpx solid #bac18c; overflow: hidden; }
+.life-walker { position: absolute; top: -22rpx; width: 100rpx; height: 100rpx; animation: life-stroll 22s linear infinite alternate; pointer-events: none; }
+.life-walker-0 { left: 5%; }
+.life-walker-1 { left: 35%; animation-delay: -11s; animation-duration: 28s; }
+.life-roaming-pet { position: absolute; left: 18%; top: 12rpx; font-size: 34rpx; animation: life-stroll 22s linear infinite alternate; pointer-events: none; }
+@keyframes life-stroll { from { transform: translateX(0); } to { transform: translateX(260rpx); } }
+.plot-pets { position: absolute; left: 10rpx; bottom: 44rpx; font-size: 32rpx; display: flex; }
+.plot-pets text { animation: life-bob 3s ease-in-out infinite; }
+.plot-pets.pet-resting text { animation: none; opacity: .65; }
+.plot-event { position: absolute; top: 10rpx; right: 14rpx; font-size: 27rpx; background: #fff8e7; border: 2rpx solid #d5ac6a; border-radius: 50%; width: 47rpx; height: 47rpx; display: flex; align-items: center; justify-content: center; box-shadow: 0 4rpx 0 #a3b380; z-index: 2; animation: life-bob 3s ease-in-out infinite; }
+@keyframes life-bob { 50% { transform: translateY(-5rpx); } }
+.scene-paused .life-walker, .scene-paused .life-roaming-pet, .scene-paused .plot-pets text, .scene-paused .plot-event { animation-play-state: paused; }
+.life-section-heading { display: flex; justify-content: space-between; align-items: center; margin: 30rpx 28rpx 16rpx; gap: 12rpx; }
+.life-section-heading > view { font-size: 30rpx; font-weight: 900; display: flex; align-items: center; gap: 12rpx; }
+.life-section-heading > text { font-size: 20rpx; color: #7a8767; }
+.life-dot { width: 12rpx; height: 12rpx; background: #7ea55d; border-radius: 50%; }
+.life-event { margin: 0 24rpx; padding: 24rpx; background: #fffcf1; border: 2rpx solid #c4cda9; border-radius: 22rpx; box-shadow: 0 6rpx 0 #d0d9b8; }
+.life-event-help { background: #fff8e9; border-color: #d7bd89; }
+.life-event-top { display: flex; align-items: center; gap: 16rpx; }
+.life-event-top > view { flex: 1; min-width: 0; }
+.life-event-icon { font-size: 44rpx; background: #f0e9cb; border-radius: 16rpx; padding: 10rpx; flex-shrink: 0; }
+.life-kicker { font-size: 19rpx; color: #8c8e70; }
+.life-event-title { margin-top: 5rpx; font-size: 29rpx; font-weight: 900; line-height: 1.4; }
+.life-price { font-size: 20rpx; color: #997234; background: #f6e8c4; border-radius: 20rpx; padding: 7rpx 13rpx; flex-shrink: 0; }
+.life-event-description { font-size: 24rpx; line-height: 1.8; color: #7d7d62; margin: 20rpx 0; }
+.town-page .life-action { display: block; width: 100%; box-sizing: border-box; padding: 20rpx 16rpx; line-height: 1.6; font-size: 25rpx; font-weight: 800; background: #506e42; color: #fffcf1; border-radius: 12rpx; }
+.town-page .life-action[disabled] { opacity: .55; }
+.life-fineprint { display: block; text-align: center; margin-top: 13rpx; font-size: 19rpx; color: #a09577; }
+.life-rule-note { margin: 17rpx 28rpx; font-size: 19rpx; color: #8a9475; text-align: center; }
+.life-quiet { display: flex; align-items: center; gap: 20rpx; margin: 0 24rpx; padding: 26rpx; border: 2rpx dashed #b5c59c; border-radius: 18rpx; }
+.life-quiet > text { font-size: 46rpx; }
+.life-quiet > view > view { font-size: 26rpx; font-weight: 800; }
+.life-quiet > view > text { display: block; margin-top: 8rpx; font-size: 22rpx; line-height: 1.7; color: #7f8e6a; }
+.life-memory { margin: 20rpx 28rpx; padding-left: 20rpx; border-left: 4rpx solid #c3b979; }
+.life-memory > text { font-size: 20rpx; color: #9c905c; }
+.life-memory > view { margin-top: 10rpx; font-size: 22rpx; line-height: 1.8; color: #7d876c; }
+.pet-grid { display: grid; grid-template-columns: repeat(2,minmax(0,1fr)); gap: 18rpx; padding: 0 24rpx; }
+.town-page .pet-card { background: #fffcf1; border: 2rpx solid #c4cda9; border-radius: 22rpx; padding: 20rpx; line-height: 1.6; display: flex; flex-direction: column; align-items: center; color: #465639; text-align: center; }
+.town-page .pet-card.pet-owned { background: #eaf0db; color: #465639; }
+.pet-portrait { font-size: 66rpx; line-height: 1.5; }
+.pet-name { font-size: 26rpx; font-weight: 900; }
+.pet-caption { font-size: 20rpx; color: #919579; margin: 8rpx 0 16rpx; flex: 1; }
+.pet-state { display: block; width: 100%; padding-top: 12rpx; border-top: 2rpx dashed #d9d9bb; font-size: 21rpx; color: #997334; font-weight: 800; }
+.pet-owned .pet-state { color: #708653; }
+.pet-vet-note { display: flex; gap: 12rpx; align-items: center; margin: 20rpx 28rpx 34rpx; font-size: 20rpx; color: #83916e; line-height: 1.7; }
+.pet-vet-note > view { flex: 1; }
+.town-page .pet-vet-note button { font-size: 20rpx; background: transparent; color: #526c40; flex-shrink: 0; }
+.pet-sheet { width: 100%; max-height: 82vh; display: flex; flex-direction: column; background: #fffcf3; border: 3rpx solid #4b4935; border-radius: 24rpx; text-align: center; box-shadow: 0 8rpx 0 #344330; overflow: hidden; }
+.pet-sheet-body { flex: 1; min-height: 0; overflow: hidden; }
+.pet-sheet-body .detail-title, .pet-sheet-body .detail-description { margin: 12rpx 28rpx; }
+.pet-sheet-body .detail-memory { margin: 24rpx 28rpx; line-height: 1.8; }
+.pet-sheet-portrait { display: block; font-size: 108rpx; line-height: 1.6; padding-top: 22rpx; }
+.pet-sheet-actions { padding: 20rpx 28rpx; border-top: 2rpx solid #ece8d6; flex-shrink: 0; }
+.town-page .life-dismiss { display: block; width: 100%; padding: 18rpx; background: transparent; color: #7e886b; font-size: 24rpx; line-height: 1.5; }
+.life-feedback .detail-memory { line-height: 1.9; }
+.life-retry { display: flex; justify-content: space-between; align-items: center; margin: 24rpx; font-size: 23rpx; color: #7c8265; }
+.town-page .life-retry button { font-size: 22rpx; padding: 10rpx 20rpx; background: #fffcf1; color: #526c40; border-radius: 10rpx; }
+.town-page .life-alert { display: flex; align-items: center; gap: 12rpx; width: calc(100% - 48rpx); margin: 0 24rpx 20rpx; padding: 14rpx 20rpx; border: 2rpx solid #d6c18c; border-radius: 12rpx; background: #fcf2d8; color: #77623b; font-size: 23rpx; line-height: 1.6; text-align: left; }
+.life-alert text:nth-child(2) { flex: 1; min-width: 0; }
+.life-alert text:last-child { font-size: 20rpx; flex-shrink: 0; }
+@media (prefers-reduced-motion: reduce) { .life-walker, .life-roaming-pet, .plot-pets text, .plot-event { animation: none; } }

@@ -50,7 +50,7 @@ if (require.main === module) {
     const raw = seed.map((item, index) => ({ ...item, id: index + 1, can_build: item.cost_bricks <= 12 }))
     const state = catalogState(raw, { bricks: 12 }, 'all')
     assert.equal(state.recommended.name, '商店')
-    assert.equal(state.readyCount, 4)
+    assert.equal(state.readyCount, 5)
     const shop = state.buildings.find(item => item.name === '商店')
     assert.equal(shop.progress, 100)
     assert.equal(shop.missing, 0)
@@ -60,8 +60,9 @@ if (require.main === module) {
     assert.equal(catalogState(raw, { bricks: 0 }, 'ready').visibleBuildings.length, 0)
   })
 
-  test('all seeded buildings have distinct local sprite frames and unknown names have a safe fallback', () => {
+  test('seeded buildings use local art, the vet reuses clinic art, and unknown names safely fall back', () => {
     assert.equal(new Set(seed.map(item => JSON.stringify(townSprite(item.name)))).size, 10)
+    assert.deepEqual(townSprite('宠物医院'), townSprite('医院'))
     assert.deepEqual(townSprite('constructor'), townSprite('空地'))
     assert.deepEqual(townSprite('新建筑'), townSprite('空地'))
   })
@@ -141,7 +142,7 @@ if (require.main === module) {
     const raw = seed.map((item, index) => ({ ...item, id: index + 1, position_x: 60 + (index % 4) * 180, position_y: 60 + Math.floor(index / 4) * 200, built_at: '2026-10-16 12:00:00' }))
     const snapshot = JSON.stringify(raw)
     const layout = townPlots(raw, '体育馆')
-    assert.equal(layout.buildings.length, 10)
+    assert.equal(layout.buildings.length, 11)
     assert.equal(layout.plots.length, 12)
     assert.equal(layout.plots.filter(item => item.next).length, 1)
     assert.equal(layout.buildings.filter(item => item.isNew).length, 1)

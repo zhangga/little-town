@@ -75,7 +75,7 @@
       <view class="reward-heading"><text>{{rewardHeader.title}}</text><text class="reward-progress">{{rewardHeader.progress}}</text></view>
       <view class="earned-row">
         <view class="chip"><text>🧱</text><text>{{rewardHeader.bricks}}</text></view>
-        <view class="chip"><text>🪙</text><text>{{rewardHeader.coins}}</text></view>
+        <view class="chip"><image class="coin-icon" src="/images/town/gold-coin.png" mode="aspectFit" aria-hidden="true" /><text>{{rewardHeader.coins}}</text></view>
         <text class="stage-tag">{{phase === 'card' ? '新词见面卡' : (phase === 'review' ? '错词再练一次' : question.title)}}</text>
       </view>
       <text class="reward-note">{{rewardHeader.note}}</text>

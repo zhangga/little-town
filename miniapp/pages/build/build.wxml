@@ -26,7 +26,7 @@
       <button wx:for="{{visibleBuildings}}" wx:key="id" class="blueprint-card {{item.is_built ? 'is-built' : ''}}" data-id="{{item.id}}" bindtap="onSelect" aria-label="{{item.name}}，{{item.status}}">
         <view class="card-state {{item.can_build ? 'state-ready' : ''}} {{item.is_built ? 'state-built' : ''}}">{{item.status}}</view>
         <view class="card-art"><template is="voxel" data="{{sprite: item.sprite}}" /></view>
-        <view class="card-name">{{item.name}}</view>
+        <view class="card-name">{{item.name === '宠物医院' ? '🐾 ' : ''}}{{item.name}}</view>
         <view class="card-caption">{{item.description}}</view>
         <view class="card-footer"><view class="card-cost"><view class="mini-brick"><template is="voxel" data="{{sprite: brickSprite}}" /></view><text>{{item.cost_bricks}} 砖</text></view><text class="card-arrow">{{item.is_built ? '✓' : '＋'}}</text></view>
       </button>
@@ -42,6 +42,7 @@
       <view class="sheet-art {{building ? 'is-building' : ''}} {{completed ? 'has-landed' : ''}}"><template is="voxel" data="{{sprite: selected.sprite}}" /></view>
       <view class="sheet-title">{{selected.name}}{{completed ? '，落成！' : ''}}</view>
       <text class="sheet-description">{{completed ? '你学会的单词，变成了小镇的新风景。' : selected.description}}</text>
+      <view wx:if="{{selected.lifeHint}}" class="completion-note">{{selected.lifeHint}}</view>
       <view wx:if="{{completed}}" class="completion-note">本次使用 {{completed.cost_bricks}} 砖 · 仓库剩余 {{user.bricks}} 砖</view>
       <view wx:elif="{{selected.is_built}}" class="completion-note">这座建筑已经在你的小镇里啦</view>
       <view wx:else class="materials">

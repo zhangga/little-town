@@ -24,6 +24,14 @@
     "image_url": "/images/buildings/hospital.png"
   },
   {
+    "name": "宠物医院",
+    "description": "照顾毛茸茸的小伙伴，拥有宠物后解锁宠物看病",
+    "subject": "english",
+    "cost_bricks": 10,
+    "unlock_level": 1,
+    "image_url": "/images/buildings/hospital.png"
+  },
+  {
     "name": "公园",
     "description": "玩耍的地方",
     "subject": "english",

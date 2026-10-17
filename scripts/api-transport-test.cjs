@@ -36,10 +36,11 @@ function harness(version = 'develop', storage = {}, changeConfig) {
 
 test('local requests preserve existing login and do not initialize cloud SDK', async () => {
   const h = harness('develop', { token: 'local-token', userInfo: { id: 1 } })
+  h.storage.apiBackend = 'http:' + h.config.TARGETS.local.baseURL
   await h.api.get('/learn/daily-words', { grade: 2 })
   assert.equal(h.cloudInit.length, 0)
   assert.equal(h.calls[0].kind, 'http')
-  assert.equal(h.calls[0].options.url, 'http://localhost:8080/api/v1/learn/daily-words')
+  assert.equal(h.calls[0].options.url, h.config.TARGETS.local.baseURL + '/learn/daily-words')
   assert.equal(h.calls[0].options.header.Authorization, 'Bearer local-token')
   assert.equal(h.storage.userInfo.id, 1)
 })

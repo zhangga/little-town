@@ -499,6 +499,20 @@ Authorization: Bearer <your_jwt_token>
 
 ---
 
+## 6. 小镇生活
+
+以下接口沿用登录鉴权和 `/api/v1` 前缀：
+
+| 方法 | 路径 | JSON 请求 |
+| --- | --- | --- |
+| GET | `/town-life` | 无 |
+| POST | `/town-life/pets/purchase` | `{"pet_id":"dog"}` 或 `{"pet_id":"cat"}` |
+| POST | `/town-life/events/resolve` | `{"event_id":123}` |
+
+均返回 `wallet`（coins/bricks）、`pets`（id/name/icon/description/price/owned）、已建建筑名 `buildings`、待办 `event`（无待办时为 null）、最近三条已处理事件 `recent`、`unlocked_count`。事件含 id/kind/building/icon/title/description/action/outcome/cost/created_at/resolved_at。
+
+GET 会按节奏生成符合已拥有条件的事件；同时最多一件，每日最多三件，处理后至少间隔两小时。宠物各 20 金币，服务每次 1 金币，日常活动免费。购买和处理都由服务端校验价格、所有权和余额，重复请求不重复消费。余额不足、条件未满足、物品/事件不存在返回 400。完整规则及发布步骤见 [小镇生活](town-life.md)。
+
 ## 错误码
 
 ### HTTP 状态码

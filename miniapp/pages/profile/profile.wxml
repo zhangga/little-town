@@ -19,7 +19,7 @@
   <!-- 资源 -->
   <view class="res-row">
     <view class="res-card block-sm">
-      <text class="res-icon">🪙</text>
+      <image class="res-icon coin-icon" src="/images/town/gold-coin.png" mode="aspectFit" aria-hidden="true" />
       <text class="res-num tnum">{{userInfo.coins || 0}}</text>
       <text class="res-label">金币</text>
     </view>

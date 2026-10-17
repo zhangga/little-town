@@ -1,4 +1,5 @@
 const { townSprite } = require('./assets')
+const { buildingLife } = require('./town-life')
 
 function describeBuilding(item, user) {
   const cost = Math.max(0, Number(item.cost_bricks) || 0)
@@ -8,7 +9,7 @@ function describeBuilding(item, user) {
   // 解锁由接口决定；当前版本按砖块开放，不展示尚未实现的等级门槛。
   const ready = !built && !!item.can_build && missing === 0
   return Object.assign({}, item, {
-    sprite: townSprite(item.name), cost_bricks: cost,
+    sprite: townSprite(item.name), lifeHint: buildingLife[item.name] || '', cost_bricks: cost,
     is_built: built, can_build: ready, missing,
     progress: cost ? Math.min(100, Math.floor(bricks / cost * 100)) : 100,
     materialCount: Math.min(bricks, cost),
@@ -32,7 +33,7 @@ function catalogState(raw, user, filter, selectedID) {
 
 function townPlots(raw, recentName, withHome) {
   const buildings = raw.map((item, index) => Object.assign({}, item, {
-    sprite: townSprite(item.name), builtDate: String(item.built_at || '').slice(0, 10),
+    sprite: townSprite(item.name), lifeHint: buildingLife[item.name] || '', builtDate: String(item.built_at || '').slice(0, 10),
     isNew: item.name === recentName, delay: Math.min(index, 5) * 60
   }))
   // 旧数据的第四列会超出屏幕；展示统一使用三列，不改动已存建筑位置。

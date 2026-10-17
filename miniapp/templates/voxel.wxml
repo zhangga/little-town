@@ -1,6 +1,7 @@
-<!-- 一张透明图集共用缓存，每个容器只显示一个方形单元。 -->
+<!-- 建筑共用透明图集，资源图标可使用独立小图。 -->
 <template name="voxel">
   <view class="voxel-sprite">
-    <image class="voxel-atlas" src="/images/town/voxel-atlas.png" mode="scaleToFill" style="left: {{sprite.x}}%; top: {{sprite.y}}%;" aria-hidden="true" />
+    <image wx:if="{{sprite.image}}" class="voxel-icon" src="{{sprite.image}}" mode="aspectFit" aria-hidden="true" />
+    <image wx:else class="voxel-atlas" src="/images/town/voxel-atlas.png" mode="scaleToFill" style="left: {{sprite.x}}%; top: {{sprite.y}}%;" aria-hidden="true" />
   </view>
 </template>
