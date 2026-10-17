@@ -8,7 +8,7 @@ const { presentLife, townScene } = require('../../utils/town-life')
 Page({
   data: {
     town: { coins: 0, bricks: 0, level: 1, total_buildings: 0 },
-    buildings: [], plots: [], selected: null, loading: true, failed: false, growth: null, growthFailed: false,
+    buildings: [], plots: [], meadowTiles: [], selected: null, loading: true, failed: false, growth: null, growthFailed: false,
     brickSprite: townSprite('砖块'), coinSprite: townSprite('金币'),
     treeSprite: townSprite('树林'), flagSprite: townSprite('旗帜'),
     life: null, lifeFailed: false, lifeBusy: false, refreshing: false,

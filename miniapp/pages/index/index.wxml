@@ -15,21 +15,22 @@
     <view class="life-weather"><text>{{scene.icon}}</text><view><view>{{scene.label}}</view><text>{{scene.description}}</text></view><text class="life-weather-note">慢慢生活</text></view>
     <button wx:if="{{life.event}}" class="life-alert" bindtap="onGoLife"><text>{{life.event.icon}}</text><text>{{life.event.title}}</text><text>去看看 ›</text></button>
     <view class="town-land {{scene.evening ? 'town-evening' : ''}}">
-      <view class="land-road" />
+      <view class="land-meadow" aria-hidden="true"><image wx:for="{{meadowTiles}}" wx:key="id" class="land-meadow-tile" src="/images/town/meadow-grass.jpg" mode="scaleToFill" /></view>
       <view class="land-trees"><template is="voxel" data="{{sprite: treeSprite}}" /></view>
       <view class="town-plots">
         <button wx:if="{{growth}}" class="town-plot occupied home-plot" bindtap="onGoResident" aria-label="进入小镇长的家"><view class="plot-art"><template is="resident-art" data="{{art: growth.homeArt}}" /></view><view class="plot-resident"><template is="resident-art" data="{{art: growth.characterArt}}" /></view><view wx:if="{{growth.gardenArt}}" class="plot-garden"><template is="resident-art" data="{{art: growth.gardenArt}}" /></view><view wx:if="{{life.companions.length}}" class="plot-pets {{life.petResting ? 'pet-resting' : ''}}"><text wx:for="{{life.companions}}" wx:for-item="pet" wx:key="id">{{pet.icon}}</text></view><view wx:if="{{life.event.kind === 'resident_sick'}}" class="plot-event">🩺</view><view class="plot-label">我的家 · Lv.{{growth.home.level}}</view></button>
         <button wx:for="{{plots}}" wx:key="id" class="town-plot {{item.occupied ? 'occupied' : 'vacant'}} {{item.isNew ? 'new-building' : ''}}" style="animation-delay: {{item.delay || 0}}ms;" data-index="{{index}}" bindtap="onPlotTap" aria-label="{{item.occupied ? '查看' + item.name : '空地，去建造'}}">
           <view wx:if="{{item.isNew}}" class="new-flag">新落成！</view>
           <view wx:if="{{life.event && life.event.building === item.name}}" class="plot-event">{{life.event.icon}}</view>
-          <view class="plot-art"><template is="voxel" data="{{sprite: item.sprite}}" /></view>
+          <view wx:if="{{item.occupied}}" class="plot-art"><template is="voxel" data="{{sprite: item.sprite}}" /></view>
+          <view wx:else class="plot-art vacant-ground {{item.next ? 'vacant-next' : ''}}" aria-hidden="true"><view class="build-area" /><view class="build-marker">＋</view></view>
           <view wx:if="{{item.occupied}}" class="plot-label">{{item.name === '宠物医院' ? '🐾 ' : ''}}{{item.name}}</view>
-          <view wx:elif="{{item.next}}" class="plot-invite">＋ 在这里建造</view>
-          <view wx:else class="plot-empty-label">待开垦</view>
+          <view wx:elif="{{item.next}}" class="plot-invite">建造新建筑</view>
+          <view wx:else class="plot-empty-label">空地 · 可建造</view>
         </button>
       </view>
       <view class="life-lane" aria-hidden="true"><view wx:for="{{scene.walkers}}" wx:key="index" class="life-walker life-walker-{{index}}"><template is="resident-art" data="{{art: item}}" /></view><view wx:if="{{life.companions.length && !life.petResting}}" class="life-roaming-pet">{{life.companions[0].icon}}</view></view>
-      <view class="town-sign"><text>{{buildings.length ? '点一点建筑，看看小镇的新风景' : '空地已经备好，第一座建筑等你来造'}}</text></view>
+      <view class="town-sign"><text>黄色 ＋ 是可建造的空地，点一点添座新建筑</text></view>
     </view>
     <view wx:if="{{lifeFailed}}" class="life-retry"><text>小镇生活暂时没连上</text><button bindtap="loadTown" disabled="{{refreshing || lifeBusy}}">重新看看</button></view>
     <block wx:if="{{life}}">

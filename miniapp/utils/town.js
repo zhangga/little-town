@@ -43,7 +43,10 @@ function townPlots(raw, recentName, withHome) {
   while (plots.length < count) {
     plots.push({ id: 'empty-' + plots.length, occupied: false, next: plots.length === buildings.length, sprite: townSprite('空地') })
   }
-  return { buildings, plots }
+  // 草地按完整纹理块铺满地图，地图变长时也不会露出背景或拉伸花朵。
+  const rows = Math.ceil((plots.length + homeCount) / 3)
+  const meadowTiles = Array.from({ length: Math.ceil((rows * 300 + 160) / 720) }, (_, index) => ({ id: 'meadow-' + index }))
+  return { buildings, plots, meadowTiles }
 }
 
 module.exports = { describeBuilding, catalogState, townPlots }
