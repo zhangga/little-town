@@ -28,21 +28,118 @@ test('returning to a completed or empty tab loads another round without losing a
   h.page.onUnload()
 })
 
-test('free practice stays playable without submitting awards or changing spaced review schedules', async () => {
+test('free practice saves answers and awards four bricks and twelve coins only after completing the round', async () => {
   const h = await pageHarness([words[0]])
   let query
-  h.api.get = async (url, params) => { query = params; return { words: [{...words[0],is_review:true}], session_kind:'practice', practice_next_id:42, bonus_claimed:true } }
+  h.api.get = async (url, params) => { query = params; return { words: [{...words[0],is_review:true}], session_kind:'practice', practice_next_id:42, practice_token:'round-one', practice_rewards:{bricks_per_round:4,coins_per_round:12,remaining_rounds:3,daily_round_cap:3}, bonus_claimed:true } }
+  const calls = []
+  h.api.post = async (url, data) => {
+    calls.push({url,data})
+    return url.endsWith('/complete') ? {round_bricks:4,round_coins:12,total_bricks:4,total_coins:12,practice_rewards:{remaining_rounds:2}} : {saved:true}
+  }
   await h.page.loadDaily()
   h.page.setData({listening:false}); h.page.onMode(event({mode:'spell'})); h.page.onStart()
   await answerQuestion(h.page, true, h.mockAudio)
   assert.equal(h.page.data.stats.right, 1)
-  assert.equal(h.calls.length, 0)
+  assert.equal(calls.length, 1)
+  assert.equal(calls[0].url, '/learn/practice/answer')
+  assert.equal(h.page.data.earned.bricks, 0)
   assert.equal(h.page.data.earnedXP, 0)
-  h.clock.advance(1600); completePairs(h.page)
+  h.clock.advance(1600); completePairs(h.page); await flush()
   assert.equal(h.page.data.phase, 'done')
+  assert.equal(h.page.data.earned.bricks,4)
+  assert.equal(h.page.data.earned.coins,12)
+  assert.equal(h.page.data.rewardHeader.title,'本轮已到账')
+  assert.equal(h.page.data.rewardHeader.bricks,'4')
+  assert.equal(h.page.data.rewardHeader.coins,'12')
+  assert.equal(h.storage.userInfo.coins,12)
+  assert.equal(h.page.data.practiceRewards.remaining_rounds,2)
+  h.page.finish(); h.page.onMatchNext(); await flush()
+  assert.equal(calls.filter(c=>c.url.endsWith('/complete')).length,1)
   await h.page.onRetry()
   assert.equal(query.practice_after, 42)
   assert.equal(h.page.data.phase, 'ready')
+  assert.equal(h.page.data.rewardHeader.title,'完成本轮可得')
+  assert.equal(h.page.data.rewardHeader.progress,'已答 0/1 · 答对 0')
+  h.page.onUnload()
+})
+
+test('a lost practice settlement is retried manually with the same ticket and restores the awarded amount', async () => {
+  const h = await pageHarness([words[0]])
+  h.api.get = async () => ({words:[{...words[0],is_review:true}],session_kind:'practice',practice_token:'stable-round'})
+  const tickets=[]
+  h.api.post = async (url,data) => {
+    if (!url.endsWith('/complete')) return {saved:true}
+    tickets.push(data.practice_token)
+    if(tickets.length===1) throw new Error('timeout')
+    return {already_completed:true,bricks_earned:0,coins_earned:0,round_bricks:4,round_coins:12,total_bricks:14,total_coins:112,practice_rewards:{remaining_rounds:2}}
+  }
+  await h.page.loadDaily();h.page.setData({listening:false,mode:'spell'});h.page.onStart()
+  await answerQuestion(h.page,true,h.mockAudio);h.page.onNext();completePairs(h.page);await flush()
+  assert.equal(h.page.data.practiceSettlementError,true)
+  assert.equal(h.page.data.earned.bricks,0)
+  h.page.onHide();h.page.onShow();await flush()
+  assert.equal(h.page.data.phase,'done')
+  await h.page.onRetryPracticeReward()
+  assert.deepEqual(tickets,['stable-round','stable-round'])
+  assert.equal(h.page.data.practiceSettled,true)
+  assert.equal(h.page.data.earned.bricks,4)
+  assert.equal(h.storage.userInfo.coins,112)
+  h.page.onUnload()
+})
+
+test('practice at the daily cap stays playable and does not show an award', async () => {
+  const h=await pageHarness([words[0]])
+  h.api.get=async()=>({words:[{...words[0],is_review:true}],session_kind:'practice',practice_token:'cap-round',practice_rewards:{remaining_rounds:0}})
+  h.api.post=async(url)=>url.endsWith('/complete')?{capped:true,round_bricks:0,round_coins:0,total_bricks:12,total_coins:36,practice_rewards:{remaining_rounds:0}}:{saved:true}
+  await h.page.loadDaily();h.page.setData({listening:false,mode:'spell'});h.page.onStart()
+  await answerQuestion(h.page,true,h.mockAudio);h.page.onNext();completePairs(h.page);await flush()
+  assert.equal(h.page.data.practiceSettled,true)
+  assert.equal(h.page.data.capped,true)
+  assert.equal(h.page.data.earned.bricks,0)
+  assert.equal(h.page.data.earnedXP,0)
+  assert.equal(h.page.data.rewardHeader.title,'今日复习奖励已领满')
+  h.page.onUnload()
+})
+
+test('an uncertain practice answer is only retried manually and settlement waits for all saved words', async () => {
+  const h=await pageHarness([words[0]])
+  h.api.get=async()=>({words:[{...words[0],is_review:true}],session_kind:'practice',practice_token:'retry-answer'})
+  const calls=[]
+  h.api.post=async(url,data)=>{
+    calls.push({url,data})
+    if(calls.length===1) throw new Error('timeout')
+    return url.endsWith('/complete')?{round_bricks:4,round_coins:12,total_bricks:4,total_coins:12,practice_rewards:{remaining_rounds:2}}:{saved:true}
+  }
+  await h.page.loadDaily();h.page.setData({listening:false,mode:'spell'});h.page.onStart()
+  await answerQuestion(h.page,true,h.mockAudio)
+  assert.equal(h.page.data.saveError,true)
+  h.page.onNext();completePairs(h.page);await flush()
+  assert.equal(calls.length,1)
+  assert.equal(h.page.data.practiceSettlementError,true)
+  await h.page.onRetryPracticeReward()
+  assert.deepEqual(calls.map(c=>c.url),['/learn/practice/answer','/learn/practice/answer','/learn/practice/complete'])
+  assert.equal(h.page.data.unsaved,0)
+  assert.equal(h.page.data.earned.bricks,4)
+  h.page.onUnload()
+})
+
+test('a late practice settlement cannot change the next round or an unloaded page', async () => {
+  const h=await pageHarness([words[0]])
+  h.api.get=async()=>({words:[{...words[0],is_review:true}],session_kind:'practice',practice_token:'late-round'})
+  let resolve
+  h.api.post=async(url)=>url.endsWith('/complete')?new Promise(r=>{resolve=r}):{saved:true}
+  await h.page.loadDaily();h.page.setData({listening:false,mode:'spell'});h.page.onStart()
+  await answerQuestion(h.page,true,h.mockAudio);h.page.onNext();completePairs(h.page)
+  assert.equal(h.page.data.practiceSettling,true)
+  await h.page.onRetry()
+  assert.equal(h.page.data.phase,'done')
+  await h.page.loadDaily()
+  resolve({round_bricks:4,round_coins:12,total_bricks:4,total_coins:12,practice_rewards:{remaining_rounds:2}})
+  await flush()
+  assert.equal(h.page.data.phase,'ready')
+  assert.equal(h.page.data.earned.bricks,0)
+  assert.equal(h.storage.userInfo.coins,0)
   h.page.onUnload()
 })
 
@@ -60,6 +157,79 @@ test('growth comes from saved server results and is not repeated during mistake 
   assert.equal(h.calls.length, 1)
   await h.page.loadDaily()
   assert.equal(h.page.data.earnedXP, 0)
+})
+
+test('the practice reward header shows the whole-round target and progress before any reward is credited', async () => {
+  const h=await pageHarness(words.slice(0,3))
+  h.api.get=async()=>({words:words.slice(0,3).map(word=>({...word,is_review:true})),session_kind:'practice',practice_token:'header-round',practice_rewards:{bricks_per_round:4,coins_per_round:12,remaining_rounds:3}})
+  h.api.post=async()=>({saved:true})
+  await h.page.loadDaily();h.page.setData({listening:false,mode:'spell'});h.page.onStart()
+  for(let i=0;i<2;i++) {await answerQuestion(h.page,true,h.mockAudio);h.page.onNext()}
+  assert.equal(h.page.data.rewardHeader.title,'完成本轮可得')
+  assert.equal(h.page.data.rewardHeader.bricks,'4')
+  assert.equal(h.page.data.rewardHeader.coins,'12')
+  assert.equal(h.page.data.rewardHeader.progress,'已答 2/3 · 答对 2')
+  assert.match(h.page.data.rewardHeader.note,/配对后到账/)
+  assert.equal(h.page.data.earned.bricks,0)
+  assert.equal(h.storage.userInfo.coins,0)
+  h.page.onUnload()
+})
+
+test('the learning reward header updates from saved rewards and explains zero rewards and pending saves', async () => {
+  const h=await pageHarness(words.slice(0,3))
+  h.page.setData({listening:false,mode:'spell'});h.page.onStart()
+  for(let i=0;i<2;i++) {await answerQuestion(h.page,true,h.mockAudio);h.page.onNext()}
+  assert.equal(h.page.data.rewardHeader.title,'本轮已到账')
+  assert.equal(h.page.data.rewardHeader.bricks,'2')
+  assert.equal(h.page.data.rewardHeader.coins,'10')
+  h.api.post=async()=>({bricks_earned:0,coins_earned:0})
+  await answerQuestion(h.page,true,h.mockAudio)
+  assert.match(h.page.data.rewardHeader.note,/今天已领过奖励/)
+  h.page.onUnload()
+
+  const failed=await pageHarness([words[0]],()=>{throw new Error('timeout')})
+  failed.page.setData({listening:false,mode:'spell'});failed.page.onStart()
+  await answerQuestion(failed.page,true,failed.mockAudio)
+  assert.match(failed.page.data.rewardHeader.note,/奖励待确认/)
+  assert.equal(failed.page.data.rewardHeader.bricks,'0')
+  failed.page.onUnload()
+})
+
+test('the learning reward header explains saving before updating the credited total', async () => {
+  let resolve
+  const h=await pageHarness([words[0]],()=>new Promise(r=>{resolve=r}))
+  h.page.setData({listening:false,mode:'spell'});h.page.onStart()
+  const saved=answerQuestion(h.page,true,h.mockAudio)
+  assert.match(h.page.data.rewardHeader.note,/正在保存/)
+  assert.equal(h.page.data.rewardHeader.coins,'0')
+  resolve({bricks_earned:1,coins_earned:5,total_bricks:1,total_coins:5});await saved
+  assert.equal(h.page.data.rewardHeader.coins,'5')
+  assert.doesNotMatch(h.page.data.rewardHeader.note,/正在保存/)
+  h.page.onUnload()
+})
+
+test('already rewarded words keep their explanation when advancing instead of showing unexplained zero totals', async () => {
+  const h=await pageHarness(words.slice(0,3),()=>({bricks_earned:0,coins_earned:0}))
+  h.page.setData({listening:false,mode:'spell'});h.page.onStart()
+  for(let i=0;i<2;i++) {await answerQuestion(h.page,true,h.mockAudio);h.page.onNext()}
+  assert.equal(h.page.data.rewardHeader.title,'这些词今天已领奖')
+  assert.equal(h.page.data.rewardHeader.bricks,'—')
+  assert.equal(h.page.data.rewardHeader.coins,'—')
+  assert.match(h.page.data.rewardHeader.note,/今天已领过奖励/)
+  assert.equal(h.page.data.earned.bricks,0)
+  h.page.onUnload()
+})
+
+test('the practice reward header distinguishes a full daily quota from rewards waiting for settlement', async () => {
+  const h=await pageHarness([words[0]])
+  h.api.get=async()=>({words:[{...words[0],is_review:true}],session_kind:'practice',practice_token:'header-cap',practice_rewards:{bricks_per_round:4,coins_per_round:12,remaining_rounds:0}})
+  h.api.post=async()=>({saved:true})
+  await h.page.loadDaily();h.page.setData({listening:false,mode:'spell'});h.page.onStart()
+  await answerQuestion(h.page,true,h.mockAudio)
+  assert.equal(h.page.data.rewardHeader.title,'今日复习奖励已领满')
+  assert.equal(h.page.data.rewardHeader.bricks,'—')
+  assert.match(h.page.data.rewardHeader.note,/明天/)
+  h.page.onUnload()
 })
 
 function audioMock() {

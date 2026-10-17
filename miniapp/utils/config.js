@@ -2,7 +2,7 @@
 const TARGETS = {
   local: {
     transport: 'http',
-    baseURL: 'http://localhost:8080/api/v1',
+    baseURL: 'http://192.168.31.52:8080/api/v1',
     timeout: 10000
   },
   cloudrun: {

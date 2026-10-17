@@ -49,3 +49,14 @@ func TestProductionCannotFallbackToMockLogin(t *testing.T) {
 		t.Fatalf("production mock login: got %d want 401", res.Code)
 	}
 }
+
+func TestPracticeRoutesRequireLogin(t *testing.T) {
+	r := SetupRouter(nil, &config.Config{})
+	for _, path := range []string{"/api/v1/learn/practice/answer", "/api/v1/learn/practice/complete"} {
+		res := httptest.NewRecorder()
+		r.ServeHTTP(res, httptest.NewRequest("POST", path, strings.NewReader(`{}`)))
+		if res.Code != 401 {
+			t.Fatalf("%s must require login, got %d", path, res.Code)
+		}
+	}
+}

@@ -32,7 +32,7 @@
       </view>
       <text class="welcome-icon">🎒</text>
     </view>
-    <view class="study-note">{{freePractice ? '新词已学完，复习还未到期？现在也能自由练习，不发放奖励、不改变复习计划。' : goalDone ? '今日目标已完成，还可以继续学。成长和奖励按每日规则发放，学习不限轮数。' : '每日 ' + dailyGoal + ' 词是小目标，完成后仍然可以继续学习。'}}</view>
+    <view class="study-note">{{freePractice ? (practiceRewards.remaining_rounds > 0 ? '完成本轮题目和配对，奖励 ' + practiceRewards.bricks_per_round + ' 块砖、' + practiceRewards.coins_per_round + ' 金币；今天还可奖励 ' + practiceRewards.remaining_rounds + ' 轮。' : '今天的自由复习奖励已领满，还可以继续练习；明天再来收获奖励。') : goalDone ? '今日目标已完成，还可以继续学。成长和奖励按每日规则发放，学习不限轮数。' : '每日 ' + dailyGoal + ' 词是小目标，完成后仍然可以继续学习。'}}</view>
     <view class="route-card block">
       <view class="route-title">一颗单词，记住好几面</view>
       <view class="route-stops">
@@ -71,10 +71,14 @@
       <view class="progress-track"><view class="progress-fill" style="width: {{phase === 'review' ? 100 : (index / words.length) * 100}}%;"></view></view>
       <text class="progress-count">{{phase === 'review' ? '巩固 ' + (reviewIndex + 1) + '/' + reviewCount : (index + 1) + ' / ' + words.length}}</text>
     </view>
-    <view class="earned-row">
-      <view class="chip"><text>🧱</text><text>{{earned.bricks}}</text></view>
-      <view class="chip"><text>🪙</text><text>{{earned.coins}}</text></view>
-      <text class="stage-tag">{{phase === 'card' ? '新词见面卡' : (phase === 'review' ? '错词再练一次' : question.title)}}</text>
+    <view class="reward-summary" aria-role="status">
+      <view class="reward-heading"><text>{{rewardHeader.title}}</text><text class="reward-progress">{{rewardHeader.progress}}</text></view>
+      <view class="earned-row">
+        <view class="chip"><text>🧱</text><text>{{rewardHeader.bricks}}</text></view>
+        <view class="chip"><text>🪙</text><text>{{rewardHeader.coins}}</text></view>
+        <text class="stage-tag">{{phase === 'card' ? '新词见面卡' : (phase === 'review' ? '错词再练一次' : question.title)}}</text>
+      </view>
+      <text class="reward-note">{{rewardHeader.note}}</text>
     </view>
 
     <view wx:if="{{phase === 'card'}}" class="word-card block">
@@ -147,9 +151,9 @@
           </view>
         </view>
         <text wx:if="{{phase === 'review'}}" class="verdict-sub">{{isCorrect ? '比刚才更熟悉了！' : '再听一遍，下次继续练'}}</text>
-        <text wx:elif="{{freePractice}}" class="verdict-sub">{{isCorrect ? '记得很棒！自由复习不发放奖励。' : '再认识一次，等会儿换个方式练。'}}</text>
         <text wx:elif="{{saving}}" class="verdict-sub">正在把学习成果存进小镇…</text>
         <text wx:elif="{{saveError}}" class="verdict-sub">网络不稳，这题的奖励还没确认，可以手动继续。</text>
+        <text wx:elif="{{freePractice}}" class="verdict-sub">{{practiceRewards.remaining_rounds > 0 ? '本题已保存，完成整轮后一起领取奖励。' : '记得更牢了！今天的复习奖励已领满，明天再来收获。'}}</text>
         <text wx:elif="{{lastReward.bricks || lastReward.coins}}" class="verdict-sub">本题收获：砖块 +{{lastReward.bricks}} · 金币 +{{lastReward.coins}}</text>
         <text wx:else class="verdict-sub">{{isCorrect ? '这个词今天已经领过奖励，继续巩固也很棒' : '等会儿会换个方式再练这个词'}}</text>
         <text wx:if="{{lastXP > 0}}" class="verdict-sub">小镇长成长 +{{lastXP}}</text>
@@ -187,13 +191,19 @@
       <text class="done-note">{{words.length ? '听过、想过、拼过，还可以继续下一轮' : '不是达到学习上限。请在“我的”核对年级，或请家长补充单词。'}}</text>
       <view wx:if="{{words.length}}" class="done-stats">
         <view class="done-stat"><text class="done-num">{{stats.right}}</text><text class="done-label">首次答对</text></view>
-        <view class="done-stat"><text class="done-num">{{recovered}}</text><text class="done-label">巩固答对</text></view>
-        <view class="done-stat"><text class="done-num">{{freePractice ? words.length : earned.bricks}}</text><text class="done-label">{{freePractice ? '复习单词' : '收获砖块'}}</text></view>
+        <view class="done-stat"><text class="done-num">{{earned.bricks}}</text><text class="done-label">收获砖块</text></view>
+        <view class="done-stat"><text class="done-num">{{earned.coins}}</text><text class="done-label">收获金币</text></view>
+      </view>
+      <text wx:if="{{recovered}}" class="audio-note">巩固答对 {{recovered}} 个单词</text>
+      <view wx:if="{{freePractice}}" class="bonus">
+        <text class="bonus-title">{{practiceSettling ? '正在收好本轮奖励…' : practiceSettlementError ? '本轮奖励尚未确认' : capped ? '今日自由复习奖励已领满' : '本轮复习奖励已到账！'}}</text>
+        <text class="bonus-sub">{{practiceSettlementError ? practiceError : practiceSettled ? '今天还可奖励 ' + practiceRewards.remaining_rounds + ' 轮，自由复习不改变复习计划和成长。' : '请稍等，收获会保存到你的小镇。'}}</text>
+        <button wx:if="{{practiceSettlementError}}" class="btn btn-primary btn-block" bindtap="onRetryPracticeReward" disabled="{{practiceSettling}}">重新确认奖励</button>
       </view>
       <view wx:if="{{bonus.granted}}" class="bonus"><text class="bonus-title">完成奖励 🧱 +{{bonus.bricks}}</text><text class="bonus-sub">已包含在本轮收获中</text></view>
       <view wx:if="{{earnedXP > 0}}" class="bonus"><text class="bonus-title">小镇长成长 +{{earnedXP}}</text><text class="bonus-sub">回小镇看看你的新进步</text></view>
       <text wx:if="{{unsaved}}" class="audio-note">有 {{unsaved}} 题的保存结果未确认，回小镇时可查看实际收获。</text>
-      <button wx:if="{{words.length}}" class="btn btn-primary btn-block" bindtap="onRetry">{{freePractice ? '再练一组' : '继续学习下一轮'}} →</button>
+      <button wx:if="{{words.length}}" class="btn btn-primary btn-block" bindtap="onRetry" disabled="{{practiceSettling}}">{{freePractice ? '再练一组' : '继续学习下一轮'}} →</button>
       <button wx:else class="btn btn-primary btn-block" bindtap="onGoProfile">查看年级和词库</button>
       <button class="btn btn-block" bindtap="onBackToTown">回小镇，看看新成果</button>
       <button wx:if="{{!words.length}}" class="btn btn-block" bindtap="onRetry">重新加载单词</button>

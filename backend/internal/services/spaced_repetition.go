@@ -96,9 +96,14 @@ func (s *SpacedRepetitionService) UpdateReviewSchedule(userID, wordID uint, isCo
 // GetDueWords 获取需要复习的单词
 func (s *SpacedRepetitionService) GetDueWords(userID uint, limit int) ([]models.ReviewSchedule, error) {
 	var schedules []models.ReviewSchedule
+	// 今天已领过答对奖励的词留给自由复习，避免一直下发无奖励的到期任务。
+	// 不改动到期时间；次日仍可进入正常间隔复习。
+	rewardedToday := s.db.Model(&models.ResidentStudy{}).Select("word_id").
+		Where("user_id = ? AND day = ? AND rewarded = ?", userID, TodayString(), true)
 	err := s.db.
 		Preload("Word").
 		Where("user_id = ? AND next_review_at <= ?", userID, time.Now()).
+		Where("word_id NOT IN (?)", rewardedToday).
 		Where("word_id IN (?)", s.db.Model(&models.Word{}).Select("id").Where("subject = ?", "english")).
 		Order("next_review_at ASC").
 		Limit(limit).

@@ -37,7 +37,11 @@
 .progress-track { flex: 1; height: 20rpx; background: #FFFCF2; border: 4rpx solid #33291D; border-radius: 999rpx; overflow: hidden; }
 .progress-fill { height: 100%; background: #E0553A; transition: width 240ms ease; }
 .progress-count { font-size: 24rpx; font-weight: 800; white-space: nowrap; }
-.earned-row { display: flex; align-items: center; gap: 14rpx; margin-bottom: 24rpx; }
+.reward-summary { margin-bottom: 24rpx; padding: 20rpx; background: #FFFCF2; border: 3rpx solid #33291D; border-radius: 18rpx; }
+.reward-heading { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 8rpx; font-size: 25rpx; font-weight: 800; margin-bottom: 14rpx; }
+.reward-progress { font-size: 22rpx; font-weight: 600; color: #416274; }
+.earned-row { display: flex; align-items: center; flex-wrap: wrap; gap: 14rpx; margin-bottom: 10rpx; }
+.reward-note { display: block; font-size: 22rpx; line-height: 1.5; color: #416274; }
 .stage-tag { margin-left: auto; font-size: 23rpx; font-weight: 800; background: #FFF3D0; padding: 8rpx 18rpx; border: 3rpx solid #33291D; border-radius: 999rpx; }
 .word-card, .prompt { border-radius: 26rpx; padding: 32rpx 26rpx; display: flex; flex-direction: column; align-items: center; text-align: center; }
 .card-kicker { font-size: 20rpx; letter-spacing: 3rpx; color: #85714C; font-weight: 700; }

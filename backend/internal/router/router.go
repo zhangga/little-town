@@ -63,6 +63,8 @@ func SetupRouter(db *gorm.DB, cfg *config.Config) *gin.Engine {
 			learnHandler := handlers.NewLearnHandler(db, cfg)
 			authorized.GET("/learn/daily-words", learnHandler.GetDailyWords)
 			authorized.POST("/learn/submit-answer", learnHandler.SubmitAnswer)
+			authorized.POST("/learn/practice/answer", learnHandler.SubmitPracticeAnswer)
+			authorized.POST("/learn/practice/complete", learnHandler.CompletePractice)
 			authorized.GET("/learn/stats", learnHandler.GetStats)
 
 			// 建筑

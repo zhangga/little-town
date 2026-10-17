@@ -2,6 +2,7 @@ const api = require('../../utils/api')
 const { showError } = require('../../utils/util')
 const { enrichWord, normalize, makePlan, makeQuestion, makePairs } = require('../../utils/learning')
 const { createPronunciation } = require('../../utils/pronunciation')
+const { makeRewardHeader } = require('../../utils/learning-rewards')
 
 Page({
   data: {
@@ -16,7 +17,9 @@ Page({
     pairs: { left: [], right: [] }, pairLeft: -1, pairRight: -1,
     pairCount: 0, matchWrong: false, matchMessage: '', matchDone: false,
     pairBatch: 0, pairBatches: 0, finished: false, autoAdvancePaused: false,
-    freePractice: false, dailyGoal: 5, goalDone: false
+    freePractice: false, dailyGoal: 5, goalDone: false,
+    practiceRewards: null, practiceSettling: false, practiceSettled: false,
+    practiceSettlementError: false, practiceError: '', rewardHeader: makeRewardHeader({})
   },
 
   onLoad() {
@@ -32,7 +35,8 @@ Page({
   onShow() {
     this._visible = true
     // tab 页会缓存；完成后再次进入应准备下一轮，正在答的题保持原样。
-    if (this._alive && !this.data.loading && (this.data.phase === 'done' || this.data.failed)) this.loadDaily()
+    const pendingPractice = this.data.freePractice && this.data.finished && !this.data.practiceSettled
+    if (this._alive && !this.data.loading && !pendingPractice && (this.data.phase === 'done' || this.data.failed)) this.loadDaily()
   },
   onHide() {
     this._visible = false
@@ -54,6 +58,10 @@ Page({
   },
   scrollToTop() {
     if (this._visible && wx.pageScrollTo) wx.pageScrollTo({ scrollTop: 0, duration: 0 })
+  },
+  setRewardState(patch) {
+    const rewardHeader = makeRewardHeader(Object.assign({}, this.data, patch))
+    this.setData(Object.assign({}, patch, { rewardHeader }))
   },
 
   clearAutoAdvance() {
@@ -103,9 +111,11 @@ Page({
       if (!this._alive || loadID !== this._loadID) return
       const words = ((res && res.words) || []).map(enrichWord)
       const freePractice = res.session_kind === 'practice'
+      this._practiceToken = res.practice_token || ''
+      this._practiceUnsaved = new Set()
       this._practiceAfter = freePractice ? (Number(res.practice_next_id) || 0) : 0
       this._mistakes = []
-      this.setData({
+      this.setRewardState({
         loading: false, phase: words.length ? 'ready' : 'done', words, index: 0,
         freePractice, dailyGoal: Number(res.daily_goal) || 5, goalDone: !!res.bonus_claimed,
         question: null, finished: !words.length, answered: false,
@@ -114,7 +124,8 @@ Page({
         earned: { coins: 0, bricks: 0 }, stats: { right: 0, wrong: 0 },
         bonus: { granted: false, bricks: 0 }, capped: false, earnedXP: 0, lastXP: 0,
         saving: false, saveError: false, unsaved: 0, reviewCount: 0, recovered: 0,
-        autoAdvancePaused: false
+        autoAdvancePaused: false, practiceRewards: res.practice_rewards || null,
+        practiceSettling: false, practiceSettled: false, practiceSettlementError: false, practiceError: ''
       })
       this.scrollToTop()
     } catch (err) {
@@ -137,6 +148,10 @@ Page({
   },
   onStart() {
     if (this.data.phase !== 'ready' || !this.data.words.length) return
+    if (this.data.freePractice && !this._practiceToken) {
+      showError('复习服务暂不可用，请稍后重新进入')
+      return
+    }
     this._plan = makePlan(this.data.words, this.data.mode, this.data.listening)
     this._mistakes = []
     this.showStep(0)
@@ -146,7 +161,7 @@ Page({
     this._audio.stop()
     const question = this._plan[index]
     const card = !question.word.is_review && this.data.mode === 'mixed'
-    this.setData({
+    this.setRewardState({
       index, question, phase: card ? 'card' : 'practice', flipped: false,
       picked: -1, answered: false, isCorrect: false, spellReady: false,
       heardAudio: false, saveError: false, lastReward: { coins: 0, bricks: 0 }, lastXP: 0,
@@ -232,15 +247,29 @@ Page({
       return
     }
     if (!isCorrect) this._mistakes.push(word)
-    this.setData({
+    this.setRewardState({
       stats: {
         right: this.data.stats.right + (isCorrect ? 1 : 0),
         wrong: this.data.stats.wrong + (isCorrect ? 0 : 1)
-      }, saving: !this.data.freePractice
+      }, saving: true
     })
-    // 额外练习只计本轮表现，不提交奖励，也不提前推进间隔复习。
+    const loadID = this._loadID
+    // 自由复习只保存本轮进度；整轮完成后结算，不改变间隔复习和成长。
     if (this.data.freePractice) {
-      this.scheduleAutoAdvance()
+      this._practiceUnsaved.add(word.id)
+      try {
+        await api.post('/learn/practice/answer', { practice_token: this._practiceToken, word_id: word.id })
+        if (!this._alive || loadID !== this._loadID) return
+        this._practiceUnsaved.delete(word.id)
+        this.setRewardState({ unsaved: this._practiceUnsaved.size })
+      } catch (err) {
+        if (this._alive && loadID === this._loadID) this.setRewardState({ saveError: true, unsaved: this._practiceUnsaved.size })
+      } finally {
+        if (this._alive && loadID === this._loadID) {
+          this.setRewardState({ saving: false })
+          this.scheduleAutoAdvance()
+        }
+      }
       return
     }
     try {
@@ -255,7 +284,7 @@ Page({
         lastReward: { coins, bricks }, capped: !!res.capped
       }
       if (res.bonus_granted) patch.bonus = { granted: true, bricks: res.bonus_bricks || 0 }
-      this.setData(patch)
+      this.setRewardState(patch)
       const userInfo = wx.getStorageSync('userInfo')
       if (userInfo && typeof res.total_coins === 'number') {
         userInfo.coins = res.total_coins
@@ -264,10 +293,10 @@ Page({
       }
     } catch (err) {
       // 超时可能已到账，保留提示，由下次进入小镇同步服务端余额。
-      if (this._alive) this.setData({ saveError: true, unsaved: this.data.unsaved + 1 })
+      if (this._alive) this.setRewardState({ saveError: true, unsaved: this.data.unsaved + 1 })
     } finally {
       if (this._alive) {
-        this.setData({ saving: false })
+        this.setRewardState({ saving: false })
         this.scheduleAutoAdvance()
       }
     }
@@ -291,7 +320,7 @@ Page({
     this.clearAutoAdvance()
     this._audio.stop()
     const word = this._mistakes[index]
-    this.setData({
+    this.setRewardState({
       phase: 'review', reviewIndex: index, reviewCount: this._mistakes.length,
       question: makeQuestion(word, this.data.words, 'spell', this.data.listening),
       picked: -1, answered: false, isCorrect: false, spellReady: false,
@@ -345,17 +374,53 @@ Page({
     })
   },
   onMatchNext() {
-    if (!this.data.matchDone) return
+    if (this.data.phase !== 'match' || !this.data.matchDone) return
     this._pairBatch++
     this.showPairBatch()
   },
   finish() {
+    if (this.data.finished) return
     this.clearAutoAdvance()
     this._audio.stop()
     this.setData({ phase: 'done', finished: true, question: null })
     this.scrollToTop()
-    if (!this.data.freePractice) this.maybeRequestSubscribe()
+    if (this.data.freePractice) return this.settlePractice()
+    this.maybeRequestSubscribe()
   },
+
+  async settlePractice(retry = false) {
+    if (!this.data.freePractice || !this.data.finished || this.data.practiceSettling || this.data.practiceSettled) return
+    const loadID = this._loadID
+    const token = this._practiceToken
+    this.setRewardState({ practiceSettling: true, practiceSettlementError: false, practiceError: '' })
+    try {
+      if (this._practiceUnsaved.size && !retry) throw new Error('有复习进度尚未保存，请重新确认奖励')
+      // 手动重试使用同一票据；后端按单词去重，结果不明也不会重复计数。
+      for (const wordID of this._practiceUnsaved) {
+        await api.post('/learn/practice/answer', { practice_token: token, word_id: wordID })
+        if (!this._alive || loadID !== this._loadID) return
+        this._practiceUnsaved.delete(wordID)
+      }
+      const res = await api.post('/learn/practice/complete', { practice_token: token })
+      if (!this._alive || loadID !== this._loadID) return
+      this.setRewardState({
+        earned: { bricks: Number(res.round_bricks) || 0, coins: Number(res.round_coins) || 0 },
+        practiceRewards: res.practice_rewards, practiceSettled: true, capped: !!res.capped,
+        practiceSettlementError: false, unsaved: 0
+      })
+      const userInfo = wx.getStorageSync('userInfo')
+      if (userInfo && typeof res.total_coins === 'number' && typeof res.total_bricks === 'number') {
+        userInfo.coins = res.total_coins
+        userInfo.bricks = res.total_bricks
+        wx.setStorageSync('userInfo', userInfo)
+      }
+    } catch (err) {
+      if (this._alive && loadID === this._loadID) this.setRewardState({ practiceSettlementError: true, practiceError: err.message || '奖励结果还没确认，请重试' })
+    } finally {
+      if (this._alive && loadID === this._loadID) this.setRewardState({ practiceSettling: false })
+    }
+  },
+  onRetryPracticeReward() { return this.settlePractice(true) },
 
   onPlayAudio(e) {
     if (!this.data.question) return
@@ -393,7 +458,7 @@ Page({
       console.warn('获取订阅状态失败', err)
     }
   },
-  onRetry() { if (!this.data.loading) return this.loadDaily() },
+  onRetry() { if (!this.data.loading && !this.data.practiceSettling) return this.loadDaily() },
   onGoProfile() { wx.switchTab({ url: '/pages/profile/profile' }) },
   onBackToTown() { wx.switchTab({ url: '/pages/index/index' }) },
   onShareAppMessage() {

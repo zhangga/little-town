@@ -171,9 +171,54 @@ Authorization: Bearer <your_jwt_token>
 }
 ```
 
-答对会获得奖励:
+同词当天首次答对会获得奖励（答题砖块每日最多 20 块）:
 - 金币 +5
 - 砖块 +1
+
+### 自由复习整轮奖励
+
+以下接口均需要普通登录 Bearer token，前缀为 `/api/v1`。正常学习的单题奖励不变。
+
+当 `GET /learn/daily-words` 返回 `session_kind: "practice"` 时，还会包含：
+
+```json
+{
+  "practice_token": "服务端签发的本轮题组票据",
+  "practice_rewards": {
+    "bricks_per_round": 4,
+    "coins_per_round": 12,
+    "daily_round_cap": 3,
+    "rewarded_rounds": 0,
+    "remaining_rounds": 3
+  }
+}
+```
+
+`POST /learn/practice/answer`：每答完一个词，发送 `{"practice_token":"...","word_id":5}`，成功返回 `{"saved":true}`。同一词重复提交不会增加本轮进度；这里只保存进度，不发单题奖励、不修改间隔复习和成长。
+
+`POST /learn/practice/complete`：完成本轮全部题目、巩固与配对后发送 `{"practice_token":"..."}`。服务端检查每个题组单词都已保存，再结算 **4 砖、12 金币，每日最多 3 轮**。额外字段中的客户端金额会被忽略。
+
+```json
+{
+  "bricks_earned": 4,
+  "coins_earned": 12,
+  "round_bricks": 4,
+  "round_coins": 12,
+  "total_bricks": 19,
+  "total_coins": 47,
+  "capped": false,
+  "already_completed": false,
+  "practice_rewards": {
+    "bricks_per_round": 4,
+    "coins_per_round": 12,
+    "daily_round_cap": 3,
+    "rewarded_rounds": 1,
+    "remaining_rounds": 2
+  }
+}
+```
+
+重复结算同一票据返回 `already_completed: true`，`*_earned` 为 0；`round_bricks / round_coins` 返回本轮原有奖励，供网络响应丢失后恢复展示。第 4 轮及以后仍可完成，`capped: true` 且本轮奖励为 0。额度独立于普通答题砖块上限。票据仅对本人、当天和该题组有效，未答完或票据失效返回 400；不能用题组票据代替登录凭证。
 
 ### 3.3 获取学习统计
 
