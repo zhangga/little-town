@@ -8,12 +8,14 @@ page { background: #cfe4b0; }
 .town-resource-num { font-size: 29rpx; font-weight: 900; color: #473b2c; font-variant-numeric: tabular-nums; }
 .town-count { margin-left: auto; padding: 8rpx 16rpx; border-radius: 8rpx; background: #e5edda; font-size: 22rpx; font-weight: 700; }
 .town-scroll { flex: 1; min-height: 0; }
-.layout-toolbar { display: flex; align-items: center; gap: 12rpx; padding: 18rpx 24rpx; background: #fffcf3; border-bottom: 2rpx solid #cad5b5; flex-shrink: 0; }
+.layout-toolbar { display: flex; align-items: center; gap: 12rpx; padding: 10rpx 20rpx; background: #fffcf3; border-bottom: 2rpx solid #cad5b5; flex-shrink: 0; }
 .layout-copy { flex: 1; min-width: 0; }
-.layout-copy > view { font-size: 25rpx; font-weight: 900; }
-.layout-copy > text { display: block; color: #7a8064; font-size: 19rpx; line-height: 1.6; margin-top: 4rpx; }
-.town-page .layout-toggle { flex-shrink: 0; padding: 15rpx 20rpx; color: #5e491c; background: #f8d56f; border: 2rpx solid #b39143; border-radius: 12rpx; font-size: 23rpx; font-weight: 800; line-height: 1.6; box-shadow: 0 4rpx 0 #d6b45c; }
-.town-page .layout-cancel { flex-shrink: 0; padding: 15rpx 6rpx; background: transparent; color: #68725a; font-size: 22rpx; line-height: 1.6; }
+.layout-copy > view { font-size: 23rpx; font-weight: 900; line-height: 1.4; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.layout-copy > text { display: block; color: #7a8064; font-size: 18rpx; line-height: 1.4; margin-top: 2rpx; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+/* 按内容定宽，避免微信 v2 按钮的默认宽度挤占说明区。 */
+.town-page .layout-toolbar button { width: auto; min-width: 0; min-height: 64rpx; flex-shrink: 0; white-space: nowrap; }
+.town-page .layout-toggle { padding: 12rpx 18rpx; color: #5e491c; background: #f8d56f; border: 2rpx solid #b39143; border-radius: 12rpx; font-size: 22rpx; font-weight: 800; line-height: 1.5; box-shadow: 0 4rpx 0 #d6b45c; }
+.town-page .layout-cancel { padding: 12rpx 8rpx; background: transparent; color: #68725a; font-size: 22rpx; line-height: 1.5; }
 .layout-toolbar-editing { background: #fff5cc; }
 .town-intro { padding: 36rpx 28rpx 30rpx; text-align: center; background: #e5edd3; }
 .town-eyebrow { font-size: 17rpx; letter-spacing: 3rpx; color: #859573; }

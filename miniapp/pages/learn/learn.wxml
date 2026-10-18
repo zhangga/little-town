@@ -11,6 +11,14 @@
 </template>
 
 <view class="learn-page {{answered && (phase === 'practice' || phase === 'review') ? 'has-answer' : ''}}">
+  <view wx:if="{{!loading && !failed}}" class="daily-quota" aria-role="status" aria-live="polite">
+    <view class="daily-quota-heading">今日奖励剩余<text>领满后也能继续学习</text></view>
+    <view class="daily-quota-counts">
+      <view class="quota-item {{dailyRewardQuota.answerRemaining === 0 ? 'quota-empty' : ''}}"><text class="quota-label">答题砖块</text><view><text class="quota-number">{{dailyRewardQuota.answerRemaining}}</text><text class="quota-total"> / {{dailyRewardQuota.answerCap}} 次</text></view></view>
+      <view class="quota-item {{dailyRewardQuota.practiceRemaining === 0 ? 'quota-empty' : ''}}"><text class="quota-label">自由复习</text><view><text class="quota-number">{{dailyRewardQuota.practiceRemaining}}</text><text class="quota-total"> / {{dailyRewardQuota.practiceCap}} 次</text></view></view>
+      <view class="quota-item {{dailyRewardQuota.completionRemaining === 0 ? 'quota-empty' : ''}}"><text class="quota-label">每日目标</text><view><text class="quota-number">{{dailyRewardQuota.completionRemaining}}</text><text class="quota-total"> / 1 次</text></view></view>
+    </view>
+  </view>
   <view wx:if="{{loading}}" class="loading">
     <text class="loading-emoji">📚</text>
     <text class="loading-text">正在准备今天的单词…</text>

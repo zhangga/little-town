@@ -27,9 +27,9 @@
   <view wx:if="{{loading}}" class="loading"><view class="town-loading-art"><template is="voxel" data="{{sprite: flagSprite}}" /></view><text>正在打开小镇大门…</text></view>
   <view wx:elif="{{failed}}" class="panel empty"><text>小镇暂时没连上，再试一次吧。</text><button class="btn btn-sun" bindtap="loadTown">重新加载</button></view>
   <view wx:if="{{!loading && !failed}}" class="layout-toolbar {{editingLayout ? 'layout-toolbar-editing' : ''}}">
-    <view class="layout-copy"><view>{{editingLayout ? '拖动建筑，自由安排' : '我的小镇，我来摆'}}</view><text>{{editingLayout ? (moveSelection !== '' ? '已选中建筑，点一块地放下 · 占位会互换' : '移动免费，不扣金币和砖块') : '地块已全部展开，向下滑动继续逛'}}</text></view>
-    <button wx:if="{{editingLayout}}" class="layout-cancel" disabled="{{layoutSaving}}" bindtap="onCancelLayout">取消</button>
-    <button class="layout-toggle" disabled="{{layoutSaving || dragging || refreshing || lifeBusy}}" loading="{{layoutSaving}}" bindtap="onToggleLayout">{{editingLayout ? (layoutSaving ? '保存中' : '完成摆放') : '自由摆放'}}</button>
+    <view class="layout-copy"><view>{{editingLayout ? '拖动建筑，自由安排' : '我的小镇，我来摆'}}</view><text>{{editingLayout ? (moveSelection !== '' ? '点地放下 · 占位互换' : '免费移动 · 不扣资源') : '向下滑动，继续逛逛'}}</text></view>
+    <button wx:if="{{editingLayout}}" class="layout-cancel" size="mini" disabled="{{layoutSaving}}" bindtap="onCancelLayout">取消</button>
+    <button class="layout-toggle" size="mini" disabled="{{layoutSaving || dragging || refreshing || lifeBusy}}" loading="{{layoutSaving}}" bindtap="onToggleLayout">{{editingLayout ? (layoutSaving ? '保存中' : '完成摆放') : '自由摆放'}}</button>
   </view>
   <scroll-view wx:if="{{!loading && !failed}}" class="town-scroll" scroll-y scroll-top="{{mapScrollTop}}" bindscroll="onTownScroll" scroll-into-view="{{townAnchor}}" scroll-with-animation="{{!dragging}}">
     <view wx:if="{{growth}}" class="town-welcome"><view class="welcome-character"><template is="resident-art" data="{{art: growth.characterArt}}" /></view><view class="welcome-copy"><view class="welcome-name">你好，{{growth.resident.name}}</view><text>Lv.{{growth.resident.level}} · {{growth.resident.title}}</text><view class="welcome-meter"><view style="width: {{growth.xpPercent}}%;" /></view></view><button bindtap="onGoResident">装扮角色 ›</button></view>

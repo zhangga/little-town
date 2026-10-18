@@ -9,9 +9,50 @@ const { enrichWord, makeQuestion, makePlan, makePairs, normalize } = require('..
 const createPronunciation = loadPronunciation()
 const seed = require('../backend/data/words/grade-1-3.json')
 const textbook = require('../miniapp/data/textbook-words')
+const { makeDailyRewardQuota } = require('../miniapp/utils/learning-rewards')
 const words = seed.map((word, index) => enrichWord({ ...word, id: index + 1, is_review: false }))
 const event = (data) => ({ currentTarget: { dataset: data } })
 const flush = () => new Promise((resolve) => setImmediate(resolve))
+
+test('daily reward counts distinguish answer bricks, practice rounds and the one-time goal bonus', () => {
+  assert.deepEqual(makeDailyRewardQuota({dailyBrickCap:20,bricksToday:7,bricksPerCorrect:1,goalDone:false,practiceRewards:{daily_round_cap:3,remaining_rounds:2}}), {
+    answerRemaining:13,answerCap:20,practiceRemaining:2,practiceCap:3,completionRemaining:1
+  })
+  const capped = makeDailyRewardQuota({dailyBrickCap:20,bricksToday:25,bricksPerCorrect:1,goalDone:true,practiceRewards:{daily_round_cap:3,remaining_rounds:0}})
+  assert.equal(capped.answerRemaining,0)
+  assert.equal(capped.practiceRemaining,0)
+  assert.equal(capped.completionRemaining,0)
+  assert.equal(makeDailyRewardQuota({}).answerRemaining,'—')
+  assert.equal(makeDailyRewardQuota({}).practiceRemaining,'—')
+})
+
+test('daily counts update only from saved answers and exclude completion bonus bricks', async () => {
+  const h = await pageHarness(words.slice(0,3))
+  h.api.get = async () => ({words:words.slice(0,3),daily_brick_cap:20,bricks_today:6,bricks_per_correct:1,bonus_claimed:false,practice_rewards:{daily_round_cap:3,remaining_rounds:2}})
+  await h.page.loadDaily()
+  assert.equal(h.page.data.dailyRewardQuota.answerRemaining,14)
+  assert.equal(h.page.data.dailyRewardQuota.practiceRemaining,2)
+  assert.equal(h.page.data.dailyRewardQuota.completionRemaining,1)
+  let resolve
+  h.api.post = async () => new Promise(r=>{resolve=r})
+  h.page.onStart()
+  const saving = answerQuestion(h.page,true,h.mockAudio)
+  assert.equal(h.page.data.saving,true)
+  assert.equal(h.page.data.dailyRewardQuota.answerRemaining,14)
+  resolve({coins_earned:15,bricks_earned:11,bricks_today:7,daily_cap:20,bonus_granted:true,bonus_bricks:10})
+  await saving
+  assert.equal(h.page.data.dailyRewardQuota.answerRemaining,13)
+  assert.equal(h.page.data.dailyRewardQuota.completionRemaining,0)
+  h.page.onNext()
+  h.api.post = async () => ({coins_earned:0,bricks_earned:0,bricks_today:7,daily_cap:20})
+  await answerQuestion(h.page,true,h.mockAudio)
+  assert.equal(h.page.data.dailyRewardQuota.answerRemaining,13)
+  h.page.onNext()
+  h.api.post = async () => {throw Error('timeout')}
+  await answerQuestion(h.page,true,h.mockAudio)
+  assert.equal(h.page.data.dailyRewardQuota.answerRemaining,13)
+  h.page.onUnload()
+})
 
 // 微信小程序用 require(path, success, fail) 异步加载分包。
 // 不在 wx mock 上虚构小游戏的 loadSubpackage 接口。
@@ -54,6 +95,7 @@ test('free practice saves answers and awards four bricks and twelve coins only a
     return url.endsWith('/complete') ? {round_bricks:4,round_coins:12,total_bricks:4,total_coins:12,practice_rewards:{remaining_rounds:2}} : {saved:true}
   }
   await h.page.loadDaily()
+  assert.equal(h.page.data.dailyRewardQuota.practiceRemaining,3)
   h.page.setData({listening:false}); h.page.onMode(event({mode:'spell'})); h.page.onStart()
   await answerQuestion(h.page, true, h.mockAudio)
   assert.equal(h.page.data.stats.right, 1)
@@ -70,6 +112,7 @@ test('free practice saves answers and awards four bricks and twelve coins only a
   assert.equal(h.page.data.rewardHeader.coins,'12')
   assert.equal(h.storage.userInfo.coins,12)
   assert.equal(h.page.data.practiceRewards.remaining_rounds,2)
+  assert.equal(h.page.data.dailyRewardQuota.practiceRemaining,2)
   h.page.finish(); h.page.onMatchNext(); await flush()
   assert.equal(calls.filter(c=>c.url.endsWith('/complete')).length,1)
   await h.page.onRetry()

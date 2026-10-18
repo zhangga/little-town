@@ -43,4 +43,21 @@ function makeRewardHeader(state) {
   return header
 }
 
-module.exports = { makeRewardHeader }
+function makeDailyRewardQuota(state) {
+  const count = value => typeof value === 'number' && Number.isFinite(value) && value >= 0 ? Math.floor(value) : null
+  const cap = count(state.dailyBrickCap)
+  const today = count(state.bricksToday)
+  const perAnswer = count(state.bricksPerCorrect)
+  const practice = state.practiceRewards || {}
+  const practiceCap = count(practice.daily_round_cap)
+  const practiceRemaining = count(practice.remaining_rounds)
+  return {
+    answerRemaining: cap !== null && today !== null && perAnswer > 0 ? Math.floor(Math.max(0, cap - today) / perAnswer) : '—',
+    answerCap: cap !== null && perAnswer > 0 ? Math.floor(cap / perAnswer) : '—',
+    practiceRemaining: practiceRemaining === null ? '—' : practiceCap === null ? practiceRemaining : Math.min(practiceCap, practiceRemaining),
+    practiceCap: practiceCap === null ? '—' : practiceCap,
+    completionRemaining: state.goalDone ? 0 : 1
+  }
+}
+
+module.exports = { makeRewardHeader, makeDailyRewardQuota }

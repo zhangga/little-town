@@ -2,7 +2,7 @@ const api = require('../../utils/api')
 const { showError } = require('../../utils/util')
 const { enrichWord, normalize, makePlan, makeQuestion, makePairs } = require('../../utils/learning')
 const { createPronunciation } = require('../../utils/pronunciation')
-const { makeRewardHeader } = require('../../utils/learning-rewards')
+const { makeRewardHeader, makeDailyRewardQuota } = require('../../utils/learning-rewards')
 
 Page({
   data: {
@@ -18,6 +18,7 @@ Page({
     pairCount: 0, matchWrong: false, matchMessage: '', matchDone: false,
     pairBatch: 0, pairBatches: 0, finished: false, autoAdvancePaused: false,
     freePractice: false, dailyGoal: 5, goalDone: false,
+    dailyBrickCap: null, bricksToday: null, bricksPerCorrect: null, dailyRewardQuota: makeDailyRewardQuota({}),
     practiceRewards: null, practiceSettling: false, practiceSettled: false,
     practiceSettlementError: false, practiceError: '', rewardHeader: makeRewardHeader({})
   },
@@ -60,8 +61,8 @@ Page({
     if (this._visible && wx.pageScrollTo) wx.pageScrollTo({ scrollTop: 0, duration: 0 })
   },
   setRewardState(patch) {
-    const rewardHeader = makeRewardHeader(Object.assign({}, this.data, patch))
-    this.setData(Object.assign({}, patch, { rewardHeader }))
+    const state = Object.assign({}, this.data, patch)
+    this.setData(Object.assign({}, patch, { rewardHeader: makeRewardHeader(state), dailyRewardQuota: makeDailyRewardQuota(state) }))
   },
 
   clearAutoAdvance() {
@@ -118,6 +119,9 @@ Page({
       this.setRewardState({
         loading: false, phase: words.length ? 'ready' : 'done', words, index: 0,
         freePractice, dailyGoal: Number(res.daily_goal) || 5, goalDone: !!res.bonus_claimed,
+        dailyBrickCap: res.daily_brick_cap == null ? null : res.daily_brick_cap,
+        bricksToday: res.bricks_today == null ? null : res.bricks_today,
+        bricksPerCorrect: res.bricks_per_correct == null ? null : res.bricks_per_correct,
         question: null, finished: !words.length, answered: false,
         audioCount: words.filter((word) => word.audio).length,
         newCount: words.filter((word) => !word.is_review).length,
@@ -287,7 +291,12 @@ Page({
         earned: { coins: this.data.earned.coins + coins, bricks: this.data.earned.bricks + bricks },
         lastReward: { coins, bricks }, capped: !!res.capped
       }
-      if (res.bonus_granted) patch.bonus = { granted: true, bricks: res.bonus_bricks || 0 }
+      if (typeof res.bricks_today === 'number') patch.bricksToday = res.bricks_today
+      if (typeof res.daily_cap === 'number') patch.dailyBrickCap = res.daily_cap
+      if (res.bonus_granted) {
+        patch.bonus = { granted: true, bricks: res.bonus_bricks || 0 }
+        patch.goalDone = true
+      }
       this.setRewardState(patch)
       const userInfo = wx.getStorageSync('userInfo')
       if (userInfo && typeof res.total_coins === 'number') {

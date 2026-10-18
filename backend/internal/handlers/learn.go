@@ -119,30 +119,37 @@ func (h *LearnHandler) GetDailyWords(c *gin.Context) {
 	}
 
 	var practiceToken string
-	var practiceRewards *services.PracticeRewards
+	practiceRewards, err := h.practiceService().Status(userID)
+	if err != nil {
+		practiceError(c, err)
+		return
+	}
 	if sessionKind == "practice" {
 		ids := make([]uint, len(items))
 		for i, item := range items {
 			ids[i] = item.ID
 		}
 		practiceToken, err = h.practiceService().NewTicket(userID, ids)
-		if err == nil {
-			practiceRewards, err = h.practiceService().Status(userID)
-		}
 		if err != nil {
 			practiceError(c, err)
 			return
 		}
+	}
+	bricksToday := 0
+	if user.RewardDate == todayString() {
+		bricksToday = max(0, user.RewardBricks)
 	}
 	c.JSON(http.StatusOK, gin.H{
 		"words": items, "count": len(items),
 		"session_kind": sessionKind, "practice_next_id": practiceNextID,
 		"practice_token": practiceToken, "practice_rewards": practiceRewards,
 		// 让前端知道今天是否已经达标，用于展示"还差几个词"
-		"daily_goal":      goal,
-		"bonus_bricks":    services.DailyCompletionBonus,
-		"daily_brick_cap": services.DailyBrickCap,
-		"bonus_claimed":   user.DailyBonusDate == todayString(),
+		"daily_goal":         goal,
+		"bonus_bricks":       services.DailyCompletionBonus,
+		"daily_brick_cap":    services.DailyBrickCap,
+		"bricks_today":       bricksToday,
+		"bricks_per_correct": services.BricksPerCorrect,
+		"bonus_claimed":      user.DailyBonusDate == todayString(),
 	})
 }
 

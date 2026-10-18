@@ -179,10 +179,14 @@ Authorization: Bearer <your_jwt_token>
 
 以下接口均需要普通登录 Bearer token，前缀为 `/api/v1`。正常学习的单题奖励不变。
 
-当 `GET /learn/daily-words` 返回 `session_kind: "practice"` 时，还会包含：
+`GET /learn/daily-words` 在所有模式（learning / practice / empty）返回今日奖励状态，用于学习页面展示剩余次数。`bricks_today` 只含当天的答题砖块，不包含目标完成奖励；跨天读取为 0。`practice_token` 只在 `session_kind: "practice"` 时签发。
 
 ```json
 {
+  "daily_brick_cap": 20,
+  "bricks_per_correct": 1,
+  "bricks_today": 7,
+  "bonus_claimed": false,
   "practice_token": "服务端签发的本轮题组票据",
   "practice_rewards": {
     "bricks_per_round": 4,
@@ -193,6 +197,8 @@ Authorization: Bearer <your_jwt_token>
   }
 }
 ```
+
+答题砖块剩余次数为 `max(0, daily_brick_cap - bricks_today) / bricks_per_correct` 向下取整；目标奖励在 `bonus_claimed` 为 false 时还剩 1 次，为 true 时剩 0 次。答题成功后使用响应的 `bricks_today`、`daily_cap` 更新额度，`bonus_granted` 为 true 时更新目标奖励次数。自由复习使用 `practice_rewards.remaining_rounds`，完成整轮后以结算响应更新，不预扣次数。
 
 `POST /learn/practice/answer`：每答完一个词，发送 `{"practice_token":"...","word_id":5}`，成功返回 `{"saved":true}`。同一词重复提交不会增加本轮进度；这里只保存进度，不发单题奖励、不修改间隔复习和成长。
 
