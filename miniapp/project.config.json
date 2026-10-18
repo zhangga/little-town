@@ -2,7 +2,10 @@
   "description": "小小镇 - 小学生多学科学习小程序",
   "packOptions": {
     "ignore": [],
-    "include": []
+    "include": [
+      { "type": "folder", "value": "audio/words" },
+      { "type": "folder", "value": "textbook-audio/words" }
+    ]
   },
   "setting": {
     "urlCheck": false,

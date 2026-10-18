@@ -168,6 +168,10 @@ Page({
       autoAdvancePaused: false
     })
     this.scrollToTop()
+    // 新词第一次见面就听读音；翻卡不重播，重听和慢速仍由按钮控制。
+    if (card && this._alive && this._visible && this.data.listening && question.word.audio) {
+      this._audio.play(question.word, false)
+    }
   },
   onFlip() {
     if (this.data.phase === 'card') this.setData({ flipped: true })

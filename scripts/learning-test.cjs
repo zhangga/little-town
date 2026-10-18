@@ -6,12 +6,27 @@ const path = require('node:path')
 const vm = require('node:vm')
 const { createRequire } = require('node:module')
 const { enrichWord, makeQuestion, makePlan, makePairs, normalize } = require('../miniapp/utils/learning')
-const { createPronunciation } = require('../miniapp/utils/pronunciation')
+const createPronunciation = loadPronunciation()
 const seed = require('../backend/data/words/grade-1-3.json')
 const textbook = require('../miniapp/data/textbook-words')
 const words = seed.map((word, index) => enrichWord({ ...word, id: index + 1, is_review: false }))
 const event = (data) => ({ currentTarget: { dataset: data } })
 const flush = () => new Promise((resolve) => setImmediate(resolve))
+
+// 微信小程序用 require(path, success, fail) 异步加载分包。
+// 不在 wx mock 上虚构小游戏的 loadSubpackage 接口。
+function loadPronunciation(loadPackage = (name, success) => {
+  assert.equal(name, '../textbook-audio/ready.js')
+  success({})
+}) {
+  const filename = path.resolve(__dirname, '../miniapp/utils/pronunciation.js')
+  const module = { exports: {} }
+  vm.runInNewContext(fs.readFileSync(filename, 'utf8'), {
+    module, exports: module.exports, require: loadPackage,
+    setTimeout, clearTimeout, console
+  }, { filename })
+  return module.exports.createPronunciation
+}
 
 test('returning to a completed or empty tab loads another round without losing an active round', async () => {
   const h = await pageHarness([words[0]])
@@ -286,7 +301,8 @@ async function pageHarness(input = words.slice(0, 5), post) {
   }
   let definition
   vm.runInNewContext(fs.readFileSync(filename, 'utf8'), {
-    require: (name) => name === '../../utils/api' ? api : localRequire(name),
+    require: (name) => name === '../../utils/api' ? api :
+      name === '../../utils/pronunciation' ? { createPronunciation } : localRequire(name),
     Page: (value) => { definition = value },
     wx: { ...mockAudio, getStorageSync: (key) => storage[key], setStorageSync: (key, value) => { storage[key] = value }, showToast() {}, redirectTo() {}, switchTab() {} },
     setTimeout: (fn, delay = 0) => {
@@ -383,10 +399,13 @@ test('homographs keep meaning-specific examples and apostrophes map to safe audi
 
 test('all seed words have examples and both packaged pronunciations within each package budget', () => {
   assert.equal(words.length, 240)
+  const included = require('../miniapp/project.config.json').packOptions.include
   for (const word of words) {
     assert.equal(word.sentence.split('___').length, 2)
     assert.ok(word.fullSentence.includes(word.word))
     for (const asset of [word.audio, word.slowAudio]) {
+      const relative = asset.replace(/^\//, '')
+      assert.ok(included.some(rule => rule.type === 'folder' && relative.startsWith(rule.value + '/')), asset + ' must survive unused-file filtering')
       const raw = fs.readFileSync(path.join(__dirname, '../miniapp', asset))
       assert.ok(raw.length > 1000, asset)
       assert.equal(raw.subarray(0, 3).toString(), 'ID3', asset)
@@ -410,12 +429,14 @@ test('all seed words have examples and both packaged pronunciations within each 
 test('textbook pronunciation waits for its package, caches successful loads and ignores cancelled callbacks', () => {
   const wx = audioMock()
   const loads = []
-  wx.loadSubpackage = options => loads.push(options)
+  const createPlayer = loadPronunciation((name, success, fail) => loads.push({ name, success, fail }))
   const states = []
-  const audio = createPronunciation(wx, state => states.push(state))
+  const audio = createPlayer(wx, state => states.push(state))
   const word = enrichWord({word: 'welcome'})
   audio.play(word, false)
-  assert.equal(loads[0].name, 'textbook-audio')
+  assert.equal(typeof wx.loadSubpackage, 'undefined', 'mini programs do not expose the mini-game API')
+  assert.equal(states.at(-1).audioState, 'loading')
+  assert.equal(loads[0].name, '../textbook-audio/ready.js')
   assert.equal(wx.contexts.length, 0)
   assert.equal(states.at(-1).audioState, 'loading')
   audio.stop()
@@ -428,12 +449,34 @@ test('textbook pronunciation waits for its package, caches successful loads and 
   audio.stop()
 })
 
+test('the reported word to and its slow recording play through the mini-program package entry', () => {
+  const wx = audioMock()
+  const createPlayer = loadPronunciation((name, success) => {
+    const entry = path.resolve(__dirname, '../miniapp/utils', name)
+    success(require(entry))
+  })
+  let state = {}
+  const audio = createPlayer(wx, patch => { state = { ...state, ...patch } })
+  const word = enrichWord({ word: 'to' })
+  for (const slow of [false, true]) {
+    audio.play(word, slow)
+    const player = wx.contexts.at(-1)
+    assert.ok(player, 'a mini program must reach the player without wx.loadSubpackage')
+    assert.equal(player.src, slow ? word.slowAudio : word.audio)
+    assert.ok(fs.readFileSync(path.join(__dirname, '../miniapp', player.src)).length > 1000)
+    assert.equal(state.audioState, 'playing')
+    player.callbacks.ended()
+    assert.equal(state.heardAudio, true)
+  }
+  audio.stop()
+})
+
 test('a failed textbook package can be retried without unlocking a stale word', () => {
   const wx = audioMock()
   const loads = []
-  wx.loadSubpackage = options => loads.push(options)
+  const createPlayer = loadPronunciation((name, success, fail) => loads.push({ name, success, fail }))
   const states = []
-  const audio = createPronunciation(wx, state => states.push(state))
+  const audio = createPlayer(wx, state => states.push(state))
   const word = enrichWord({word: 'welcome'})
   audio.play(word, false)
   loads[0].fail()
@@ -489,6 +532,60 @@ test('new words have revealable cards; reviewing words go straight to practice',
   review.page.onStart()
   assert.equal(review.page.data.phase, 'practice')
   review.page.onUnload()
+})
+
+test('a new textbook card reads the word automatically and still offers slow replay', async () => {
+  const word = words.find(word => word.word === 'welcome')
+  const { page, calls, mockAudio } = await pageHarness([word])
+  page.onStart()
+  assert.equal(page.data.phase, 'card')
+  assert.equal(mockAudio.contexts.length, 1)
+  assert.equal(mockAudio.contexts[0].src, word.audio)
+  assert.equal(page.data.audioState, 'playing')
+  page.onFlip()
+  assert.equal(mockAudio.contexts.length, 1, 'flipping must not restart the pronunciation')
+  page.onPlayAudio(event({ slow: true }))
+  assert.equal(mockAudio.contexts[0].destroyed, true)
+  assert.equal(mockAudio.contexts[1].src, word.slowAudio)
+  page.onHide()
+  assert.equal(mockAudio.contexts[1].destroyed, true)
+  assert.equal(calls.length, 0)
+  page.onUnload()
+})
+
+test('each next new card reads its own word and card playback never satisfies the listening question', async () => {
+  const input = ['welcome', 'school'].map(name => words.find(word => word.word === name))
+  const { page, calls, mockAudio } = await pageHarness(input)
+  page.onStart()
+  assert.equal(mockAudio.contexts.at(-1)?.src, input[0].audio)
+  mockAudio.contexts.at(-1).callbacks.ended()
+  assert.equal(page.data.heardAudio, true)
+  page.onFlip(); page.onCardContinue()
+  assert.equal(page.data.heardAudio, false)
+  await answerQuestion(page, true, mockAudio)
+  page.onNext()
+  assert.equal(page.data.phase, 'card')
+  assert.equal(mockAudio.contexts.at(-1).src, input[1].audio)
+  assert.equal(page.data.heardAudio, false)
+  assert.equal(calls.length, 1)
+  page.onUnload()
+})
+
+test('automatic card reading respects quiet mode and skips review words or missing audio', async () => {
+  for (const condition of ['quiet', 'review', 'missing', 'hidden']) {
+    const word = condition === 'missing' ? { id: 999, word: 'custom', translation: '自定义', is_review: false } :
+      { ...words[0], is_review: condition === 'review' }
+    const { page, mockAudio } = await pageHarness([word])
+    if (condition === 'quiet') page.onToggleListening({ detail: { value: false } })
+    if (condition === 'hidden') page.onHide()
+    page.onStart()
+    assert.equal(mockAudio.contexts.length, 0, condition)
+    if (condition === 'quiet') {
+      page.onPlayAudio(event({}))
+      assert.equal(mockAudio.contexts[0].src, word.audio, 'quiet mode still permits a deliberate replay')
+    }
+    page.onUnload()
+  }
 })
 
 test('a complete mixed session records five answers, then reviews mistakes and matches without extra rewards', async () => {

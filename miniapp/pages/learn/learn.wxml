@@ -59,7 +59,7 @@
       </button>
     </view>
     <view class="sound-setting">
-      <view><view class="setting-title">加入听力和自动朗读</view><text class="setting-sub">不方便出声时可以关掉</text></view>
+      <view><view class="setting-title">加入听力和自动朗读</view><text class="setting-sub">新词自动读一遍，不方便出声时可关闭</text></view>
       <switch checked="{{listening}}" bindchange="onToggleListening" color="#4E7A2E" aria-label="加入听力和自动朗读" />
     </view>
     <text wx:if="{{audioCount < words.length}}" class="audio-note">有读音的 {{audioCount}} 个词可练听力，其余练认词。</text>

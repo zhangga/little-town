@@ -53,11 +53,11 @@ function createPronunciation(wxApi, onState) {
     timer = setTimeout(fail, 10000)
     if (word.audioPackage && !loadedPackages.has(word.audioPackage)) {
       try {
-        wxApi.loadSubpackage({
-          name: word.audioPackage,
-          success() { loadedPackages.add(word.audioPackage); start() },
-          fail
-        })
+        // 小程序通过异步 require 加载分包；wx.loadSubpackage 属于小游戏接口。
+        require('../textbook-audio/ready.js', () => {
+          loadedPackages.add(word.audioPackage)
+          start()
+        }, fail)
       } catch (err) {
         fail()
       }
