@@ -5,15 +5,18 @@ const { showError } = require('../../utils/util')
 const { presentResident, saveWallet } = require('../../utils/resident')
 const { presentLife, townScene } = require('../../utils/town-life')
 const { createStroll, strollingActors } = require('../../utils/town-stroll')
+const { createLayoutEditor } = require('../../utils/town-layout-editor')
 
-Page({
+Page(Object.assign({
   data: {
     town: { coins: 0, bricks: 0, level: 1, total_buildings: 0 },
     buildings: [], plots: [], meadowTiles: [], walkMap: null, walkers: [], selected: null, loading: true, failed: false, growth: null, growthFailed: false,
     brickSprite: townSprite('砖块'), coinSprite: townSprite('金币'),
     treeSprite: townSprite('树林'), flagSprite: townSprite('旗帜'),
     life: null, lifeFailed: false, lifeBusy: false, refreshing: false,
-    selectedPet: null, lifeFeedback: null, townAnchor: '', scene: townScene([], new Date().getHours()), sceneActive: true
+    selectedPet: null, lifeFeedback: null, townAnchor: '', scene: townScene([], new Date().getHours()), sceneActive: true,
+    layout: null, editingLayout: false, layoutDirty: false, layoutSaving: false,
+    dragging: false, dragID: '', dragLeft: 0, dragTop: 0, dropSlot: -1, moveSelection: '', mapScrollTop: 0
   },
 
   onLoad() {
@@ -25,21 +28,23 @@ Page({
 
   onShow() {
     this.setData({ sceneActive: true })
-    if (this._stroll) this._stroll.start()
-    if (wx.getStorageSync('token')) this.loadTown()
+    if (this._stroll && !this.data.editingLayout) this._stroll.start()
+    if (wx.getStorageSync('token') && !this.data.editingLayout) this.loadTown()
   },
 
   onHide() {
     this.setData({ sceneActive: false })
+    this.stopLayoutDrag()
     if (this._stroll) this._stroll.stop()
   },
   onUnload() {
+    this.stopLayoutDrag()
     this._disposed = true
     if (this._stroll) this._stroll.destroy()
   },
 
   syncStroll() {
-    if (this._stroll && this.data.walkMap) {
+    if (this._stroll && this.data.walkMap && !this.data.editingLayout) {
       this._stroll.sync(this.data.walkMap, strollingActors(this.data.growth, this.data.life))
     }
   },
@@ -49,7 +54,7 @@ Page({
   },
 
   loadTown() {
-    if (this.data.lifeBusy) return Promise.resolve()
+    if (this.data.lifeBusy || this.data.editingLayout) return Promise.resolve()
     if (this._loadPromise) return this._loadPromise
     this.setData({ loading: !this.data.plots.length, failed: false, refreshing: true })
     this._loadPromise = this.fetchTown().finally(() => {
@@ -69,7 +74,7 @@ Page({
       if (this._disposed) return
       const growth = resident ? presentResident(resident) : null
       const recent = wx.getStorageSync('lastBuiltBuilding')
-      const layout = townPlots(res.buildings || [], recent && recent.name, !!growth)
+      const layout = townPlots(res.buildings || [], recent && recent.name, true, res.layout || {})
       const town = Object.assign({}, res.town_data || this.data.town, growth ? growth.wallet : {})
       this.setData(Object.assign({ town, growth, growthFailed: !growth, loading: false, lifeFailed: !life }, layout))
       if (life) this.applyLife(life)
@@ -157,8 +162,10 @@ Page({
   },
 
   onPlotTap(e) {
+    if (this.data.editingLayout) { this.onLayoutPlotTap(e); return }
     const plot = this.data.plots[e.currentTarget.dataset.index]
     if (!plot) return
+    if (plot.home) { this.onGoResident(); return }
     if (!plot.occupied) { this.onGoBuild(); return }
     this.setData({ selected: plot })
   },
@@ -172,4 +179,4 @@ Page({
   onShareAppMessage() {
     return { title: '学单词，建一座自己的方块小镇', path: '/pages/index/index' }
   }
-})
+}, createLayoutEditor(wx, api, showError)))

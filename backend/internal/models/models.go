@@ -18,6 +18,8 @@ type User struct {
 	Coins       int    `gorm:"default:0" json:"coins"`
 	Bricks      int    `gorm:"default:0" json:"bricks"`
 	Level       int    `gorm:"default:1" json:"level"`
+	TownHomeX   int    `gorm:"default:0" json:"-"`
+	TownHomeY   int    `gorm:"default:0" json:"-"`
 
 	// 每日奖励限额追踪。
 	// RewardDate 记录 RewardBricks 是哪一天的，跨天时归零重新计数。

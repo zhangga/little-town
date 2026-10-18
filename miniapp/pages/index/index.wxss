@@ -8,27 +8,40 @@ page { background: #cfe4b0; }
 .town-resource-num { font-size: 29rpx; font-weight: 900; color: #473b2c; font-variant-numeric: tabular-nums; }
 .town-count { margin-left: auto; padding: 8rpx 16rpx; border-radius: 8rpx; background: #e5edda; font-size: 22rpx; font-weight: 700; }
 .town-scroll { flex: 1; min-height: 0; }
+.layout-toolbar { display: flex; align-items: center; gap: 12rpx; padding: 18rpx 24rpx; background: #fffcf3; border-bottom: 2rpx solid #cad5b5; flex-shrink: 0; }
+.layout-copy { flex: 1; min-width: 0; }
+.layout-copy > view { font-size: 25rpx; font-weight: 900; }
+.layout-copy > text { display: block; color: #7a8064; font-size: 19rpx; line-height: 1.6; margin-top: 4rpx; }
+.town-page .layout-toggle { flex-shrink: 0; padding: 15rpx 20rpx; color: #5e491c; background: #f8d56f; border: 2rpx solid #b39143; border-radius: 12rpx; font-size: 23rpx; font-weight: 800; line-height: 1.6; box-shadow: 0 4rpx 0 #d6b45c; }
+.town-page .layout-cancel { flex-shrink: 0; padding: 15rpx 6rpx; background: transparent; color: #68725a; font-size: 22rpx; line-height: 1.6; }
+.layout-toolbar-editing { background: #fff5cc; }
 .town-intro { padding: 36rpx 28rpx 30rpx; text-align: center; background: #e5edd3; }
 .town-eyebrow { font-size: 17rpx; letter-spacing: 3rpx; color: #859573; }
 .town-title { font-size: 44rpx; font-weight: 900; margin: 4rpx 0 10rpx; letter-spacing: 2rpx; }
 .town-subtitle { font-size: 23rpx; color: #6e825c; }
-.town-land { position: relative; margin: 0 16rpx; padding: 28rpx 10rpx 20rpx; border-radius: 100rpx 100rpx 28rpx 28rpx; border: 3rpx solid #8da951; border-bottom: 14rpx solid #7d9149; background: #92b84a; overflow: hidden; }
+.town-land { position: relative; width: 100%; box-sizing: border-box; padding: 28rpx 0 20rpx; border-top: 3rpx solid #8da951; border-bottom: 14rpx solid #7d9149; background: #92b84a; overflow: hidden; }
 .land-meadow { position: absolute; inset: 0; overflow: hidden; pointer-events: none; }
 .land-meadow-tile { display: block; width: 100%; height: 720rpx; }
 .land-trees { position: absolute; right: -24rpx; top: -20rpx; width: 155rpx; height: 155rpx; pointer-events: none; }
 .town-neighborhood { position: relative; }
-.town-plots { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); grid-auto-rows: 272rpx; gap: 72rpx 0; position: relative; }
-.town-page .town-plot { position: relative; width: 100%; background: transparent; overflow: visible; line-height: 1.4; border-radius: 0; display: flex; flex-direction: column; align-items: center; padding: 8rpx 0; }
+.town-plots { position: relative; width: 100%; }
+.town-page .town-plot { position: absolute; width: 33.333333%; height: 272rpx; box-sizing: border-box; background: transparent; overflow: visible; line-height: 1.4; border-radius: 16rpx; display: flex; flex-direction: column; align-items: center; padding: 8rpx 0; }
 .plot-art { width: 214rpx; height: 214rpx; max-width: 100%; }
+.home-fallback { display: block; text-align: center; font-size: 150rpx; line-height: 214rpx; }
 .plot-label { display: flex; align-items: center; justify-content: center; gap: 6rpx; max-width: 100%; box-sizing: border-box; white-space: nowrap; margin-top: -6rpx; padding: 6rpx 12rpx; color: #4c5035; font-size: 22rpx; font-weight: 800; background: #fffaf0; border: 2rpx solid #a7ab83; border-radius: 8rpx; box-shadow: 0 4rpx 0 #aebd89; }
 .plot-label-icon { flex-shrink: 0; font-size: 24rpx; line-height: 1; }
 .plot-invite { padding: 7rpx 16rpx; font-size: 20rpx; font-weight: 800; color: #6c501b; border: 2rpx solid #c9982e; border-radius: 10rpx; background: #ffdc71; box-shadow: 0 4rpx 0 rgba(119,119,42,.3); }
 .plot-empty-label { font-size: 20rpx; padding: 8rpx 12rpx; color: #765d24; background: #fff0b9; border: 2rpx solid #d7ba62; border-radius: 10rpx; }
 .vacant-ground { position: relative; }
-.build-area { position: absolute; left: 50%; top: 64%; width: 130rpx; height: 130rpx; box-sizing: border-box; transform: translate(-50%, -50%) scaleY(.55) rotate(45deg); border: 5rpx dashed #f8d36b; border-radius: 12rpx; background: rgba(255,227,128,.12); box-shadow: 0 0 0 3rpx rgba(108,124,40,.18); }
+.build-area { position: absolute; left: 50%; top: 61%; width: 168rpx; height: 168rpx; box-sizing: border-box; transform: translate(-50%, -50%) scaleY(.55) rotate(45deg); border: 4rpx dashed #9c792d; border-radius: 12rpx; background: #f5d77c; box-shadow: 7rpx 7rpx 0 #c9a852, 0 0 0 5rpx rgba(255,240,171,.7); }
 .build-marker { position: absolute; left: 50%; top: 64%; transform: translate(-50%, -50%); display: flex; align-items: center; justify-content: center; width: 54rpx; height: 54rpx; border-radius: 50%; border: 3rpx solid #ffe9a1; color: #7d5918; background: #f7ca52; font-size: 40rpx; font-weight: 900; line-height: 1; box-shadow: 0 5rpx 0 rgba(111,122,39,.24); }
-.vacant-next .build-area { border-color: #ffe58c; background: rgba(255,226,109,.22); }
-.vacant-next .build-marker { background: #ffdb65; }
+.layout-origin { position: absolute; width: 33.333333%; height: 272rpx; box-sizing: border-box; border: 3rpx dashed #fff2b5; border-radius: 18rpx; background: rgba(255,232,151,.28); pointer-events: none; }
+.layout-editing .occupied { background: rgba(255,251,221,.22); border: 2rpx dashed rgba(255,246,192,.85); }
+.town-page .layout-selected { background: rgba(255,231,147,.75); border: 4rpx solid #9f762b; transform: translateY(-8rpx); }
+.town-page .layout-target { background: rgba(255,232,147,.65); outline: 4rpx solid #fff2b5; outline-offset: -6rpx; }
+.town-page .layout-dragging { z-index: 10; background: rgba(255,246,202,.9); border: 3rpx solid #ab812f; box-shadow: 0 12rpx 20rpx rgba(52,67,48,.3); transform: scale(1.04); opacity: .95; }
+.layout-grip { position: absolute; top: 5rpx; right: 10rpx; color: #6a572a; background: #ffe8a0; border-radius: 6rpx; padding: 0 8rpx; font-size: 28rpx; line-height: 1.3; }
+.layout-editing .plot-event { animation: none; }
 .new-flag { position: absolute; top: 0; left: 50%; transform: translateX(-50%); z-index: 2; padding: 4rpx 12rpx; border-radius: 6rpx; background: #f8cb5c; color: #59441e; font-size: 19rpx; font-weight: 800; white-space: nowrap; }
 .new-building .plot-art { animation: town-landed 600ms ease-out; }
 @keyframes town-landed { from { opacity: 0; transform: translateY(-44rpx) scale(.8); } 70% { transform: translateY(6rpx) scale(1.04); } to { opacity: 1; transform: translateY(0) scale(1); } }

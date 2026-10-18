@@ -29,7 +29,13 @@ async function harness(options = {}) {
       if (options.get) return options.get(url, server)
       if (url === '/town-life') return structuredClone(server)
       if (url === '/resident') return residentFixture()
-      return { town_data: { coins: 100, bricks: 100 }, buildings: server.buildings.map((name, i) => ({ id: i + 1, name })) }
+      return { town_data: { coins: 100, bricks: 100 }, buildings: server.buildings.map((name, i) => Object.assign({ id: i + 1, name }, server.layout && server.layout.buildings.find(item => item.id === i + 1))), layout: server.layout }
+    },
+    put: async (url, body) => {
+      calls.push({ method: 'PUT', url, body })
+      if (options.put) return options.put(url, body, server)
+      server.layout = Object.assign({ columns: 3, rows: 6 }, structuredClone(body))
+      return { layout: structuredClone(server.layout), coins_spent: 0, bricks_spent: 0 }
     },
     post: async (url, body) => {
       calls.push({ method: 'POST', url, body })
@@ -46,7 +52,7 @@ async function harness(options = {}) {
     }
   }
   vm.runInNewContext(fs.readFileSync(filename, 'utf8'), {
-    require: name => name === '../../utils/api' ? api : name === '../../utils/util' ? { showError: message => errors.push(message) } : name === '../../utils/resident' ? { ...localRequire(name), saveWallet: wallet => Object.assign(storage.userInfo, wallet) } : name === '../../utils/town-stroll' ? { ...localRequire(name), createStroll: onChange => localRequire(name).createStroll(onChange, strollClock, () => .2) } : localRequire(name),
+    require: name => name === '../../utils/api' ? api : name === '../../utils/util' ? { showError: message => errors.push(message) } : name === '../../utils/resident' ? { ...localRequire(name), saveWallet: wallet => Object.assign(storage.userInfo, wallet) } : name === '../../utils/town-stroll' ? { ...localRequire(name), createStroll: onChange => localRequire(name).createStroll(onChange, strollClock, () => .2) } : name === '../../utils/town-layout-editor' ? { createLayoutEditor: (wxApi, api, showError) => localRequire(name).createLayoutEditor(wxApi, api, showError, strollClock) } : localRequire(name),
     Page: value => { definition = value }, wx: {
       getStorageSync: key => storage[key], setStorageSync: (key, value) => { storage[key] = value }, removeStorageSync: key => { delete storage[key] },
       redirectTo() {}, stopPullDownRefresh() {}, switchTab: options => navigation.push(options.url), navigateTo: options => navigation.push(options.url)

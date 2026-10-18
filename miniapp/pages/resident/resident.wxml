@@ -10,7 +10,7 @@
       <view class="resident-house"><template is="resident-art" data="{{art: state.homeArt}}" /></view>
       <view wx:if="{{state.gardenArt}}" class="resident-garden"><template is="resident-art" data="{{art: state.gardenArt}}" /></view>
       <button class="resident-character {{waving ? 'waving' : ''}}" bindtap="onWave" aria-label="和小镇长打招呼"><template is="resident-art" data="{{art: state.characterArt}}" /></button>
-      <view class="resident-bubble">{{waving ? '一起把小镇慢慢建起来！' : '今天也一起学一点吧'}}</view>
+      <view class="resident-bubble" style="position: absolute; left: 518rpx; top: 18rpx">{{waving ? '一起把小镇慢慢建起来！' : '今天也一起学一点吧'}}</view>
     </view>
     <view class="resident-identity">
       <view wx:if="{{editingName}}" class="resident-name-form">

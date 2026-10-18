@@ -90,9 +90,14 @@ func (h *BuildingHandler) GetMyTown(c *gin.Context) {
 	if err := h.db.
 		Preload("Building").
 		Where("user_id = ?", userID).
-		Order("built_at ASC").
+		Order("built_at ASC, id ASC").
 		Find(&userBuildings).Error; err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "failed to get town"})
+		return
+	}
+	layout, err := readTownLayout(h.db, user, userBuildings)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "failed to get town layout"})
 		return
 	}
 
@@ -109,14 +114,14 @@ func (h *BuildingHandler) GetMyTown(c *gin.Context) {
 	}
 
 	townBuildings := make([]TownBuilding, 0, len(userBuildings))
-	for _, ub := range userBuildings {
+	for index, ub := range userBuildings {
 		townBuildings = append(townBuildings, TownBuilding{
 			ID:          ub.ID,
 			Name:        ub.Building.Name,
 			Description: ub.Building.Description,
 			ImageURL:    ub.Building.ImageURL,
-			PositionX:   ub.PositionX,
-			PositionY:   ub.PositionY,
+			PositionX:   layout.Buildings[index].X,
+			PositionY:   layout.Buildings[index].Y,
 			WordCount:   ub.WordCount,
 			BuiltAt:     ub.BuiltAt.Format("2006-01-02 15:04:05"),
 		})
@@ -130,6 +135,7 @@ func (h *BuildingHandler) GetMyTown(c *gin.Context) {
 			"total_buildings": len(townBuildings),
 		},
 		"buildings": townBuildings,
+		"layout":    layout,
 	})
 }
 
@@ -168,15 +174,20 @@ func (h *BuildingHandler) BuildBuilding(c *gin.Context) {
 		if building.CostBricks < 0 || user.Bricks < building.CostBricks {
 			return insufficient
 		}
-		var builtCount int64
-		if err := tx.Model(&models.UserBuilding{}).Where("user_id = ?", userID).Count(&builtCount).Error; err != nil {
+		var owned []models.UserBuilding
+		if err := tx.Where("user_id = ?", userID).Order("built_at ASC, id ASC").Find(&owned).Error; err != nil {
 			return err
 		}
+		layout, err := readTownLayout(tx, user, owned)
+		if err != nil {
+			return err
+		}
+		position := layout.FirstEmpty()
 		remaining = user.Bricks - building.CostBricks
 		if err := tx.Model(&user).Update("bricks", remaining).Error; err != nil {
 			return err
 		}
-		return tx.Create(&models.UserBuilding{UserID: userID, BuildingID: building.ID, PositionX: 60 + int(builtCount)%4*180, PositionY: 60 + int(builtCount)/4*200, BuiltAt: timeNow()}).Error
+		return tx.Create(&models.UserBuilding{UserID: userID, BuildingID: building.ID, PositionX: position.X, PositionY: position.Y, BuiltAt: timeNow()}).Error
 	})
 	if err != nil {
 		if errors.Is(err, duplicate) || errors.Is(err, insufficient) {

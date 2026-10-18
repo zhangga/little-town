@@ -1,5 +1,23 @@
 <import src="../../templates/voxel.wxml" />
 <import src="../../templates/resident.wxml" />
+<template name="town-plot-content">
+  <block wx:if="{{item.home}}">
+    <view class="plot-art"><template wx:if="{{growth.homeArt}}" is="resident-art" data="{{art: growth.homeArt}}" /><text wx:else class="home-fallback">🏡</text></view>
+    <view wx:if="{{life.event.kind === 'resident_sick' && growth.characterArt}}" class="plot-resident"><template is="resident-art" data="{{art: growth.characterArt}}" /></view>
+    <view wx:if="{{growth.gardenArt}}" class="plot-garden"><template is="resident-art" data="{{art: growth.gardenArt}}" /></view>
+    <view wx:if="{{life.companions.length && life.petResting}}" class="plot-pets pet-resting"><view wx:for="{{life.companions}}" wx:for-item="pet" wx:key="id" class="plot-pet-art"><template is="resident-art" data="{{art: pet.art}}" /></view></view>
+    <view wx:if="{{life.event.kind === 'resident_sick'}}" class="plot-event">🩺</view>
+    <view class="plot-label"><text class="plot-label-icon" aria-hidden="true">🏡</text><text>我的家{{growth.home.level ? ' · Lv.' + growth.home.level : ''}}</text></view>
+  </block>
+  <block wx:else>
+    <view wx:if="{{item.isNew}}" class="new-flag">新落成！</view>
+    <view wx:if="{{life.event && life.event.building === item.name}}" class="plot-event">{{life.event.icon}}</view>
+    <view wx:if="{{item.occupied}}" class="plot-art"><template is="voxel" data="{{sprite: item.sprite}}" /></view>
+    <view wx:else class="plot-art vacant-ground" aria-hidden="true"><view class="build-area" /><view class="build-marker">＋</view></view>
+    <view wx:if="{{item.occupied}}" class="plot-label"><text class="plot-label-icon" aria-hidden="true">{{item.icon}}</text><text>{{item.name}}</text></view>
+    <view wx:else class="plot-empty-label">{{editingLayout ? '可放置' : '空地 · 可建造'}}</view>
+  </block>
+</template>
 <view class="town-page {{sceneActive ? 'scene-active' : 'scene-paused'}}">
   <view class="town-topbar">
     <view class="town-resource"><view class="town-resource-art"><template is="voxel" data="{{sprite: brickSprite}}" /></view><text class="town-resource-num">{{town.bricks}}</text><text>砖块</text></view>
@@ -8,29 +26,34 @@
   </view>
   <view wx:if="{{loading}}" class="loading"><view class="town-loading-art"><template is="voxel" data="{{sprite: flagSprite}}" /></view><text>正在打开小镇大门…</text></view>
   <view wx:elif="{{failed}}" class="panel empty"><text>小镇暂时没连上，再试一次吧。</text><button class="btn btn-sun" bindtap="loadTown">重新加载</button></view>
-  <scroll-view wx:else class="town-scroll" scroll-y scroll-into-view="{{townAnchor}}" scroll-with-animation>
+  <view wx:if="{{!loading && !failed}}" class="layout-toolbar {{editingLayout ? 'layout-toolbar-editing' : ''}}">
+    <view class="layout-copy"><view>{{editingLayout ? '拖动建筑，自由安排' : '我的小镇，我来摆'}}</view><text>{{editingLayout ? (moveSelection !== '' ? '已选中建筑，点一块地放下 · 占位会互换' : '移动免费，不扣金币和砖块') : '地块已全部展开，向下滑动继续逛'}}</text></view>
+    <button wx:if="{{editingLayout}}" class="layout-cancel" disabled="{{layoutSaving}}" bindtap="onCancelLayout">取消</button>
+    <button class="layout-toggle" disabled="{{layoutSaving || dragging || refreshing || lifeBusy}}" loading="{{layoutSaving}}" bindtap="onToggleLayout">{{editingLayout ? (layoutSaving ? '保存中' : '完成摆放') : '自由摆放'}}</button>
+  </view>
+  <scroll-view wx:if="{{!loading && !failed}}" class="town-scroll" scroll-y scroll-top="{{mapScrollTop}}" bindscroll="onTownScroll" scroll-into-view="{{townAnchor}}" scroll-with-animation="{{!dragging}}">
     <view wx:if="{{growth}}" class="town-welcome"><view class="welcome-character"><template is="resident-art" data="{{art: growth.characterArt}}" /></view><view class="welcome-copy"><view class="welcome-name">你好，{{growth.resident.name}}</view><text>Lv.{{growth.resident.level}} · {{growth.resident.title}}</text><view class="welcome-meter"><view style="width: {{growth.xpPercent}}%;" /></view></view><button bindtap="onGoResident">装扮角色 ›</button></view>
     <view wx:else class="town-intro"><view class="town-title">我的方块小镇</view><button wx:if="{{growthFailed}}" class="growth-retry" bindtap="loadTown">角色暂未连上 · 点此重试</button></view>
     <view wx:if="{{growth}}" class="town-task"><view><view class="task-title">{{growth.daily.done ? '今日任务完成啦！' : '今天的小目标'}}<text>{{growth.daily.completed}} / {{growth.daily.goal}} 词</text></view><text class="task-caption">{{growth.daily.done ? '小目标已完成，还可以继续学或自由复习。' : '学新词或复习旧词，让小镇长一起成长。'}}</text></view><button bindtap="onDailyTask">{{growth.daily.done ? '继续学习' : '开始学习'}} →</button></view>
     <view class="life-weather"><text>{{scene.icon}}</text><view><view>{{scene.label}}</view><text>{{scene.description}}</text></view><text class="life-weather-note">慢慢生活</text></view>
     <button wx:if="{{life.event}}" class="life-alert" bindtap="onGoLife"><text>{{life.event.icon}}</text><text>{{life.event.title}}</text><text>去看看 ›</text></button>
-    <view class="town-land {{scene.evening ? 'town-evening' : ''}}">
+    <view class="town-land {{scene.evening ? 'town-evening' : ''}} {{editingLayout ? 'layout-editing' : ''}}">
       <view class="land-meadow" aria-hidden="true"><image wx:for="{{meadowTiles}}" wx:key="id" class="land-meadow-tile" src="/images/town/meadow-grass.jpg" mode="scaleToFill" /></view>
       <view class="land-trees"><template is="voxel" data="{{sprite: treeSprite}}" /></view>
       <view class="town-neighborhood" style="height: {{walkMap.height}}rpx;">
-      <view class="town-plots">
-        <button wx:if="{{growth}}" class="town-plot occupied home-plot" bindtap="onGoResident" aria-label="进入小镇长的家"><view class="plot-art"><template is="resident-art" data="{{art: growth.homeArt}}" /></view><view wx:if="{{life.event.kind === 'resident_sick'}}" class="plot-resident"><template is="resident-art" data="{{art: growth.characterArt}}" /></view><view wx:if="{{growth.gardenArt}}" class="plot-garden"><template is="resident-art" data="{{art: growth.gardenArt}}" /></view><view wx:if="{{life.companions.length && life.petResting}}" class="plot-pets pet-resting"><view wx:for="{{life.companions}}" wx:for-item="pet" wx:key="id" class="plot-pet-art"><template is="resident-art" data="{{art: pet.art}}" /></view></view><view wx:if="{{life.event.kind === 'resident_sick'}}" class="plot-event">🩺</view><view class="plot-label"><text class="plot-label-icon" aria-hidden="true">🏡</text><text>我的家 · Lv.{{growth.home.level}}</text></view></button>
-        <button wx:for="{{plots}}" wx:key="id" class="town-plot {{item.occupied ? 'occupied' : 'vacant'}} {{item.isNew ? 'new-building' : ''}}" style="animation-delay: {{item.delay || 0}}ms;" data-index="{{index}}" bindtap="onPlotTap" aria-label="{{item.occupied ? '查看' + item.name : '空地，去建造'}}">
-          <view wx:if="{{item.isNew}}" class="new-flag">新落成！</view>
-          <view wx:if="{{life.event && life.event.building === item.name}}" class="plot-event">{{life.event.icon}}</view>
-          <view wx:if="{{item.occupied}}" class="plot-art"><template is="voxel" data="{{sprite: item.sprite}}" /></view>
-          <view wx:else class="plot-art vacant-ground {{item.next ? 'vacant-next' : ''}}" aria-hidden="true"><view class="build-area" /><view class="build-marker">＋</view></view>
-          <view wx:if="{{item.occupied}}" class="plot-label"><text class="plot-label-icon" aria-hidden="true">{{item.icon}}</text><text>{{item.name}}</text></view>
-          <view wx:elif="{{item.next}}" class="plot-invite">建造新建筑</view>
-          <view wx:else class="plot-empty-label">空地 · 可建造</view>
-        </button>
+      <view class="town-plots" style="height: {{walkMap.height}}rpx;">
+        <block wx:for="{{plots}}" wx:key="id">
+          <view wx:if="{{dragging && dragID === item.id}}" class="layout-origin" style="left: {{item.left}}%; top: {{item.top}}rpx;" />
+          <button wx:if="{{editingLayout && item.occupied}}" class="town-plot occupied {{moveSelection === item.id ? 'layout-selected' : ''}} {{dragging && dragID === item.id ? 'layout-dragging' : ''}} {{dragging && dropSlot === item.slot ? 'layout-target' : ''}}" style="left: {{dragging && dragID === item.id ? dragLeft : item.left}}%; top: {{dragging && dragID === item.id ? dragTop : item.top}}rpx;" data-index="{{index}}" bindtap="onPlotTap" bindtouchstart="onLayoutTouchStart" catchtouchmove="onLayoutTouchMove" bindtouchend="onLayoutTouchEnd" bindtouchcancel="stopLayoutDrag" aria-label="{{'移动' + item.name + '，免费'}}">
+            <template is="town-plot-content" data="{{item, growth, life, editingLayout}}" />
+            <text class="layout-grip" aria-hidden="true">⠿</text>
+          </button>
+          <button wx:else class="town-plot {{item.occupied ? 'occupied' : 'vacant'}} {{item.isNew ? 'new-building' : ''}} {{dragging && dropSlot === item.slot ? 'layout-target' : ''}}" style="left: {{item.left}}%; top: {{item.top}}rpx; animation-delay: {{item.delay || 0}}ms;" data-index="{{index}}" bindtap="onPlotTap" aria-label="{{item.occupied ? '查看' + item.name : editingLayout ? '空地，放置建筑' : '空地，去建造'}}">
+            <template is="town-plot-content" data="{{item, growth, life, editingLayout}}" />
+          </button>
+        </block>
       </view>
-      <view class="town-strollers" aria-hidden="true">
+      <view wx:if="{{!editingLayout}}" class="town-strollers" aria-hidden="true">
         <view wx:for="{{walkers}}" wx:key="id" data-actor-id="{{item.id}}" data-direction="{{item.direction}}" class="stroll-actor {{item.moving ? 'stroll-moving' : 'stroll-idle'}} {{item.type === 'pet' ? 'stroll-pet' : ''}}" style="left: {{item.x}}%; top: {{item.y}}rpx; transition-duration: {{item.duration}}ms;">
           <view class="stroll-shadow" />
           <view class="stroll-facing"><view class="stroll-body"><template is="resident-art" data="{{art: item.art}}" /></view></view>
@@ -38,7 +61,7 @@
         </view>
       </view>
       </view>
-      <view class="town-sign"><text>黄色 ＋ 是可建造的空地，点一点添座新建筑</text></view>
+      <view class="town-sign"><text>{{editingLayout ? '可直接拖动，也可先点建筑再点目标地块' : '黄色地块都可以建造 · 下方还有更多空地'}}</text></view>
     </view>
     <view wx:if="{{lifeFailed}}" class="life-retry"><text>小镇生活暂时没连上</text><button bindtap="loadTown" disabled="{{refreshing || lifeBusy}}">重新看看</button></view>
     <block wx:if="{{life}}">
@@ -60,7 +83,7 @@
     </block>
     <view wx:if="{{!buildings.length}}" class="town-first-plan"><view><text class="first-plan-title">第一座建筑，等你动工</text><text class="first-plan-caption">去工坊挑一张喜欢的图纸，看看需要多少砖</text></view><button bindtap="onGoBuild">去看看 →</button></view>
   </scroll-view>
-  <view wx:if="{{!loading && !failed}}" class="town-dock"><button class="town-learn" bindtap="onGoLearn">📖 学单词</button><button class="town-build" bindtap="onGoBuild">＋ 建造</button><button class="town-pets" bindtap="onGoPets" disabled="{{lifeBusy || refreshing}}" aria-label="打开宠物商店，购买宠物">🐾 买宠物</button></view>
+  <view wx:if="{{!loading && !failed && !editingLayout}}" class="town-dock"><button class="town-learn" bindtap="onGoLearn">📖 学单词</button><button class="town-build" bindtap="onGoBuild">＋ 建造</button><button class="town-pets" bindtap="onGoPets" disabled="{{lifeBusy || refreshing}}" aria-label="打开宠物商店，购买宠物">🐾 买宠物</button></view>
   <view wx:if="{{selected}}" class="town-mask" bindtap="onCloseDetail" catchtouchmove="onNoop">
     <view class="town-detail" catchtap="onNoop"><view class="detail-art"><template is="voxel" data="{{sprite: selected.sprite}}" /></view><view class="detail-title">{{selected.name}}</view><text class="detail-date">{{selected.builtDate ? selected.builtDate + ' 落成' : '由你亲手建成'}}</text><text class="detail-description">{{selected.description}}</text><view wx:if="{{selected.lifeHint}}" class="detail-memory">{{selected.lifeHint}}</view><view class="detail-memory">{{selected.word_count > 0 ? selected.word_count + ' 个单词在这里被记住' : '一砖一瓦，都是你的学习成果。'}}</view><button bindtap="onCloseDetail">继续逛小镇</button></view>
   </view>

@@ -77,6 +77,7 @@ func SetupRouter(db *gorm.DB, cfg *config.Config) *gin.Engine {
 			authorized.GET("/buildings", buildingHandler.ListBuildings)
 			authorized.GET("/buildings/my-town", buildingHandler.GetMyTown)
 			authorized.POST("/buildings/build", buildingHandler.BuildBuilding)
+			authorized.PUT("/buildings/layout", buildingHandler.SaveLayout)
 
 			// 家长端
 			parentHandler := handlers.NewParentHandler(db)

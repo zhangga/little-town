@@ -143,11 +143,11 @@ if (require.main === module) {
     const snapshot = JSON.stringify(raw)
     const layout = townPlots(raw, '体育馆')
     assert.equal(layout.buildings.length, 11)
-    assert.equal(layout.plots.length, 12)
+    assert.equal(layout.plots.length, 18)
     assert.equal(layout.plots.filter(item => item.next).length, 1)
     assert.equal(layout.buildings.filter(item => item.isNew).length, 1)
     assert.equal(layout.buildings[0].builtDate, '2026-10-16')
     assert.equal(JSON.stringify(raw), snapshot)
-    assert.equal(townPlots([], '').plots.length, 6)
+    assert.equal(townPlots([], '').plots.length, 18)
   })
 }

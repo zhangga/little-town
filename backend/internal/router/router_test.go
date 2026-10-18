@@ -75,3 +75,12 @@ func TestTownLifeRoutesRequireLogin(t *testing.T) {
 		}
 	}
 }
+
+func TestTownLayoutRequiresLogin(t *testing.T) {
+	r := SetupRouter(nil, &config.Config{})
+	res := httptest.NewRecorder()
+	r.ServeHTTP(res, httptest.NewRequest("PUT", "/api/v1/buildings/layout", strings.NewReader(`{}`)))
+	if res.Code != 401 {
+		t.Fatalf("layout must require login, got %d", res.Code)
+	}
+}

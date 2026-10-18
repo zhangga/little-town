@@ -3,7 +3,7 @@ const { strollArt } = require('./stroll-art')
 // 与首页的 272rpx 地块 + 72rpx 行间距一致，脚下路线位于名称牌下方。
 const ROW_STEP = 344
 const LANE_Y = 322
-const MAP_WIDTH = 692
+const MAP_WIDTH = 750
 const visits = {
   '我的家': '歇一会儿', '学校': '打个招呼', '商店': '买点面包',
   '医院': '问声好', '宠物医院': '看看伙伴', '公园': '看看花儿',

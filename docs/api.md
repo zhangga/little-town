@@ -321,7 +321,7 @@ Authorization: Bearer <your_jwt_token>
     "coins": 120,
     "bricks": 35,
     "level": 2,
-    "total_buildings": 3
+    "total_buildings": 2
   },
   "buildings": [
     {
@@ -329,8 +329,8 @@ Authorization: Bearer <your_jwt_token>
       "name": "学校",
       "description": "孩子们学习的地方",
       "image_url": "/images/buildings/school.png",
-      "position_x": 60,
-      "position_y": 60,
+      "position_x": 1,
+      "position_y": 0,
       "word_count": 12,
       "built_at": "2024-10-10 14:30:00"
     },
@@ -339,25 +339,37 @@ Authorization: Bearer <your_jwt_token>
       "name": "医院",
       "description": "看病的地方",
       "image_url": "/images/buildings/hospital.png",
-      "position_x": 240,
-      "position_y": 60,
+      "position_x": 2,
+      "position_y": 0,
       "word_count": 8,
       "built_at": "2024-10-12 16:00:00"
     }
-  ]
+  ],
+  "layout": {
+    "columns": 3,
+    "rows": 6,
+    "home": {"position_x": 0, "position_y": 0},
+    "buildings": [
+      {"id": 1, "position_x": 1, "position_y": 0},
+      {"id": 2, "position_x": 2, "position_y": 0}
+    ]
+  }
 }
 ```
 
 | 字段 | 说明 |
 |------|------|
-| position_x, position_y | 建筑在地图上的坐标 |
+| position_x, position_y | 从 0 开始的列、行坐标；三列，行数见 layout.rows；旧像素坐标读取时归一化 |
 | word_count | 通过该建筑学习的单词数 |
+| layout | 地图尺寸、小屋位置和已建位置；按全部图鉴、小屋及额外一行预留，最少 18 格 |
 
 ### 4.3 建造建筑
 
 **POST** `/buildings/build`
 
 需要认证。消耗砖块建造建筑。
+
+新建筑放入当前布局的第一块空地，不覆盖已保存的建筑或小屋位置；建造前后地图容量按完整图鉴计算。
 
 #### 请求参数
 ```json
@@ -394,6 +406,26 @@ Authorization: Bearer <your_jwt_token>
   "error": "building already exists"
 }
 ```
+
+### 4.4 免费保存建筑摆放
+
+**PUT** `/buildings/layout`
+
+需要认证。完整提交小屋和自己的全部已建建筑，`id` 使用 `/buildings/my-town` 返回的用户建筑 ID。坐标是从 0 开始的列、行，必须在返回的地图尺寸内，所有位置不能重叠。
+
+```json
+{
+  "home": {"position_x": 0, "position_y": 0},
+  "buildings": [
+    {"id": 1, "position_x": 2, "position_y": 5},
+    {"id": 2, "position_x": 1, "position_y": 4}
+  ]
+}
+```
+
+成功返回 `layout`（结构同上）、`coins_spent: 0`、`bricks_spent: 0`。余额为零也可保存，重复保存不收费。服务端与建造共用用户行锁，整张地图原子提交；遗漏建筑、包含他人的建筑、重复 ID、重叠或越界均返回 400，原布局不变。若编辑期间新增建筑，需取消草稿并刷新后再摆放。
+
+用户表新增小屋位置字段 `town_home_x`、`town_home_y`，默认 0；本地后端开启 `AUTO_MIGRATE` 时重启自动迁移。
 
 ---
 
