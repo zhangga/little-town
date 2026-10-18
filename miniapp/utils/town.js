@@ -1,5 +1,6 @@
-const { townSprite } = require('./assets')
+const { townSprite, buildingEmoji } = require('./assets')
 const { buildingLife } = require('./town-life')
+const { walkingMap } = require('./town-stroll')
 
 function describeBuilding(item, user) {
   const cost = Math.max(0, Number(item.cost_bricks) || 0)
@@ -33,7 +34,7 @@ function catalogState(raw, user, filter, selectedID) {
 
 function townPlots(raw, recentName, withHome) {
   const buildings = raw.map((item, index) => Object.assign({}, item, {
-    sprite: townSprite(item.name), lifeHint: buildingLife[item.name] || '', builtDate: String(item.built_at || '').slice(0, 10),
+    sprite: townSprite(item.name), icon: buildingEmoji(item.name), lifeHint: buildingLife[item.name] || '', builtDate: String(item.built_at || '').slice(0, 10),
     isNew: item.name === recentName, delay: Math.min(index, 5) * 60
   }))
   // 旧数据的第四列会超出屏幕；展示统一使用三列，不改动已存建筑位置。
@@ -44,9 +45,9 @@ function townPlots(raw, recentName, withHome) {
     plots.push({ id: 'empty-' + plots.length, occupied: false, next: plots.length === buildings.length, sprite: townSprite('空地') })
   }
   // 草地按完整纹理块铺满地图，地图变长时也不会露出背景或拉伸花朵。
-  const rows = Math.ceil((plots.length + homeCount) / 3)
-  const meadowTiles = Array.from({ length: Math.ceil((rows * 300 + 160) / 720) }, (_, index) => ({ id: 'meadow-' + index }))
-  return { buildings, plots, meadowTiles }
+  const walkMap = walkingMap(plots, withHome)
+  const meadowTiles = Array.from({ length: Math.ceil((walkMap.height + 160) / 720) }, (_, index) => ({ id: 'meadow-' + index }))
+  return { buildings, plots, meadowTiles, walkMap }
 }
 
 module.exports = { describeBuilding, catalogState, townPlots }

@@ -28,7 +28,8 @@ page { background: #edf0df; }
 .resident-meter view { height: 100%; background: #8da96c; border-radius: inherit; transition: width .3s; }
 .resident-name-form { display: flex; align-items: center; gap: 14rpx; }
 .resident-name-form input { min-width: 0; flex: 1; font-size: 28rpx; background: #edf0df; padding: 15rpx; border-radius: 12rpx; }
-.resident-name-form button { font-size: 24rpx; background: transparent; color: #526e42; }
+/* 微信 v2 普通按钮默认宽 184px，横排时会把输入区域挤到 0。 */
+.resident-page .resident-name-form button { width: auto; flex-shrink: 0; padding: 12rpx 16rpx; font-size: 24rpx; background: transparent; color: #526e42; }
 .resident-tabs { display: flex; padding: 8rpx; gap: 6rpx; margin: 28rpx 0 0; background: #dfe5cf; border-radius: 16rpx; }
 .resident-tabs button { flex: 1; color: #7c886a; background: transparent; font-size: 25rpx; padding: 17rpx 0; border-radius: 12rpx; }
 .resident-tabs button.active { background: #fffcf3; color: #3c5c32; font-weight: 900; box-shadow: 0 3rpx 8rpx #cbd3ba; }

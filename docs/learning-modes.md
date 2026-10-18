@@ -1,6 +1,22 @@
 # 多题型学习与读音
 
-重新编译小程序后，从「学单词」进入新的路线选择页。后端接口保持兼容，现有账号和词库无需重新导入。
+重新编译小程序后，从「学单词」进入路线选择页。后端接口保持兼容。新增课本词库需执行下方导入命令；原有账号与学习进度保留。
+
+## 课本词库
+
+已录入用户提供的课本第 86–88 页，包括 Welcome、Unit 1–6 的全部加粗词、非加粗词及短语。208 行课本词汇展开后共 **217 个可练习词条**：Welcome 35、Unit 1 40、Unit 2 28、Unit 3 28、Unit 4 33、Unit 5 25、Unit 6 28。
+
+- `be (am, is, are)`、`a (an)`、`let's = let us` 及四组家人称谓的括号形式分别练习。
+- `take care of sb / sth`、`look at sb / sth` 中的 `sb / sth` 是用法占位说明，练习词条使用 `take care of`、`look at`，并保留课本原文供核对。
+- 中文释义和单元保存在 `miniapp/data/textbook-words.js`，通过 `module.exports` 导出，供微信脚本包加载；不能在页面脚本中直接 `require` JSON 配置文件。每条都有简单例句及中文提示。原有 orange（橙子）与课本 orange（橙色）按释义匹配不同例句。
+- 新词归入三年级，与当前账号年级一致。已有三年级 umbrella、yellow 复用原词条，其余新增 215 条；原始 25 条均保留，种子库共 240 条。重复运行导入不会创建重复词或重置学习进度。
+
+```bash
+cd backend
+go run cmd/import/main.go
+```
+
+本地数据库已完成本次导入。其他环境运行同一导入命令后生效，或在部署时设置 `INIT_DATA=true`。词条按现有规则进入学习，学过后自动安排间隔复习；导入不会将新词标记为已经学会。
 
 ## 学习方式
 
@@ -40,32 +56,41 @@
 
 ## 发音资源
 
-- 初始词库 25 个词全部附带常速和慢速美式英语合成发音，共 50 个 MP3，合计约 571 KiB。
-- 发音随包存放于 `miniapp/audio/words/`，无须联网请求第三方 TTS，也无须新增数据库字段。
-- 来源为 Windows `System.Speech` 的 `Microsoft Zira Desktop`（en-US）。这是合成语音，不是真人录音。
-- 常速、慢速分别以语速 -1、-4 合成；慢速使用独立音频，避免变速导致音调变化。
-- `miniapp/data/word-content.js` 保存配套例句；`miniapp/utils/learning.js` 按规范化单词映射音频文件名。
+- 240 条种子记录包含 233 个不同英文词，全部附带常速和慢速美式英语合成发音，共 466 个 MP3。
+- 原有 25 词的 50 个 MP3 保留在 `miniapp/audio/words/`；新增 208 词的 416 个 MP3 放入 `miniapp/textbook-audio/words/` 分包。学习页预加载该分包，播放器在分包加载成功后播放，离开页面或换词会忽略过期回调；下载失败可重试。
+- 原始音频来自 Windows `System.Speech` 的 `Microsoft Zira Desktop`（en-US，常速 -1、慢速 -4）；新增音频来自 macOS 的 Eddy（en-US，常速 165、慢速 110 词／分钟），以 16 kHz 单声道、24 kbps MP3 编码。这些均为合成语音，慢速使用独立音频。
+- 音频随小程序资源包分发，无须请求第三方 TTS，也无须新增数据库字段。首次进入学习页需要下载课本发音分包。
+- `miniapp/data/word-content.js` 合并原始例句和课本内容；`miniapp/utils/learning.js` 按规范化单词映射音频文件名，`let's` 对应 `lets.mp3`。
 - 自定义单词如有 `audio_url`，可直接播放；没有音频时明确显示缺失状态，并跳过听力题。远端音频应使用可访问的 HTTPS 地址，并在小程序后台配置相应域名。
 - 关闭「加入听力和自动朗读」后，综合模式不安排听力题，也不自动读答案；仍可手动点击发音按钮。
 - 每页只持有一个播放器，切题、切后台或退出时销毁，播放失败可重听，听力题可切换为认词题。
 
-更新初始词库或语音时，在安装英语语音及 FFmpeg 的 Windows 环境运行：
+更新词库或语音时，在安装英语语音及 FFmpeg 的 Windows 环境运行：
 
 ```powershell
 powershell -NoProfile -ExecutionPolicy Bypass -File scripts/generate-word-audio.ps1 -Ffmpeg 'C:\path\to\ffmpeg.exe'
 ```
 
-脚本把 WAV 中间文件写入 `output/word-audio-source/`，把 48 kbps MP3 写入小程序资源目录。新增词条时同步补充 `word-content.js`，并提交生成的 MP3。
+Windows 脚本将 WAV 中间文件写入 `output/word-audio-source/`，把 24 kbps MP3 写入各自的资源包。macOS 可用以下命令补齐缺少的文件（默认保留现有音频，自动选择已安装的 Samantha 或 Eddy 美式英语语音）：
+
+```bash
+python3 scripts/generate-word-audio-macos.py --ffmpeg /path/to/ffmpeg
+```
+
+macOS 脚本使用临时目录存放中间音频，完成后自动清理。新增词条时同步补充课本内容与后端种子数据，并提交生成的 MP3；主包与每个分包均须小于 2 MiB。
 
 ## 验证
 
 ```powershell
 node --test scripts/learning-test.cjs
+node --test scripts/page-loading-test.cjs
 ```
 
-测试覆盖题型轮换、无歧义选项、自定义词降级、多词和重复字母拼写、完整学习流程、错词及配对不重复发奖、重复点击、保存失败、切后台、过期音频回调，以及 50 个音频资源的存在性与体积。
+测试覆盖课本单元及括号形式完整性、三年级词条可用性、同形词例句、题型轮换、无歧义选项、自定义词降级、多词和重复字母拼写、完整学习流程、错词及配对不重复发奖、重复点击、保存失败、切后台、过期音频回调、分包加载／取消／重试，以及全部音频资源与包体积。
 
-本次还使用本机微信开发者工具的 WXML/WXSS 编译器完成编译，渲染检查了 12 种页面状态，并用 FFmpeg 解码检查所有音频。浏览器布局预览不等于真机验证；仍需在 iOS / Android 微信中检查常速和慢速播放、静音开关、蓝牙耳机、切后台与恢复。
+词表模块回归测试按 `app.json` 的真实顺序加载所有页面，并模拟微信仅注册 JS 模块的规则，防止 Node 自动读取 JSON 掩盖运行时错误。此前直接 `require` JSON 词表会在第二个页面（学习页）中断，导致后续页面没有完成注册。
+
+课本更新通过 37 项学习测试，用本机 WXML 编译器校验了新增分包页面，并用 FFmpeg 解码检查全部 466 个音频文件。主包约 1.80 MiB，课本发音分包约 1.08 MiB。开发者工具 CLI 服务端口当前关闭，本次未通过 CLI 验证模拟器播放；仍需在 iOS / Android 微信中检查首次分包下载、常速和慢速播放、静音开关、蓝牙耳机、切后台与恢复。
 
 ## 设计参考
 

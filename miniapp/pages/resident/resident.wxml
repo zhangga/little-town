@@ -13,7 +13,11 @@
       <view class="resident-bubble">{{waving ? '一起把小镇慢慢建起来！' : '今天也一起学一点吧'}}</view>
     </view>
     <view class="resident-identity">
-      <view wx:if="{{editingName}}" class="resident-name-form"><input value="{{nameDraft}}" maxlength="12" bindinput="onNameInput" placeholder="给小镇长起个名字" disabled="{{busy}}" /><button bindtap="onSaveName" disabled="{{busy}}">保存</button><button bindtap="onCancelName" disabled="{{busy}}">取消</button></view>
+      <view wx:if="{{editingName}}" class="resident-name-form">
+        <input type="text" value="{{nameDraft}}" maxlength="12" focus="{{editingName}}" confirm-type="done" bindinput="onNameInput" bindconfirm="onSaveName" placeholder="给小镇长起个名字" disabled="{{busy}}" />
+        <button size="mini" bindtap="onSaveName" disabled="{{busy}}">保存</button>
+        <button size="mini" bindtap="onCancelName" disabled="{{busy}}">取消</button>
+      </view>
       <view wx:else class="resident-name-row"><text class="resident-name">{{state.resident.name}}</text><button bindtap="onEditName" aria-label="修改角色名字">改名字</button><text class="resident-level">Lv.{{state.resident.level}} {{state.resident.title}}</text></view>
       <view class="resident-xp-row"><text>{{state.resident.xp_needed ? '再积累 ' + (state.resident.xp_needed - state.resident.xp_current) + ' 成长，就能获得新称号' : '你已经是小镇守护者啦'}}</text><text>{{state.resident.xp_needed ? state.resident.xp_current + ' / ' + state.resident.xp_needed : '最高等级'}}</text></view>
       <view class="resident-meter"><view style="width: {{state.xpPercent}}%;" /></view>

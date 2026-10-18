@@ -4,11 +4,12 @@ const { townPlots } = require('../../utils/town')
 const { showError } = require('../../utils/util')
 const { presentResident, saveWallet } = require('../../utils/resident')
 const { presentLife, townScene } = require('../../utils/town-life')
+const { createStroll, strollingActors } = require('../../utils/town-stroll')
 
 Page({
   data: {
     town: { coins: 0, bricks: 0, level: 1, total_buildings: 0 },
-    buildings: [], plots: [], meadowTiles: [], selected: null, loading: true, failed: false, growth: null, growthFailed: false,
+    buildings: [], plots: [], meadowTiles: [], walkMap: null, walkers: [], selected: null, loading: true, failed: false, growth: null, growthFailed: false,
     brickSprite: townSprite('砖块'), coinSprite: townSprite('金币'),
     treeSprite: townSprite('树林'), flagSprite: townSprite('旗帜'),
     life: null, lifeFailed: false, lifeBusy: false, refreshing: false,
@@ -16,16 +17,32 @@ Page({
   },
 
   onLoad() {
+    this._stroll = createStroll(walkers => {
+      if (!this._disposed) this.setData({ walkers })
+    })
     if (!wx.getStorageSync('token')) wx.redirectTo({ url: '/pages/login/login' })
   },
 
   onShow() {
     this.setData({ sceneActive: true })
+    if (this._stroll) this._stroll.start()
     if (wx.getStorageSync('token')) this.loadTown()
   },
 
-  onHide() { this.setData({ sceneActive: false }) },
-  onUnload() { this._disposed = true },
+  onHide() {
+    this.setData({ sceneActive: false })
+    if (this._stroll) this._stroll.stop()
+  },
+  onUnload() {
+    this._disposed = true
+    if (this._stroll) this._stroll.destroy()
+  },
+
+  syncStroll() {
+    if (this._stroll && this.data.walkMap) {
+      this._stroll.sync(this.data.walkMap, strollingActors(this.data.growth, this.data.life))
+    }
+  },
 
   onPullDownRefresh() {
     return this.loadTown().finally(() => wx.stopPullDownRefresh())
@@ -58,6 +75,7 @@ Page({
       if (life) this.applyLife(life)
       else {
         this.setData({ life: null, selectedPet: null, scene: townScene(layout.buildings.map(item => item.name), new Date().getHours()) })
+        this.syncStroll()
         if (growth) saveWallet(growth.wallet)
       }
       if (recent && layout.buildings.some(item => item.isNew)) wx.removeStorageSync('lastBuiltBuilding')
@@ -75,6 +93,7 @@ Page({
     const growth = this.data.growth ? Object.assign({}, this.data.growth, { wallet: life.wallet }) : null
     this.setData({ life, lifeFailed: false, growth, selectedPet: selectedPet || null,
       town: Object.assign({}, this.data.town, life.wallet), scene: townScene(life.buildings, new Date().getHours()) })
+    this.syncStroll()
     saveWallet(life.wallet)
   },
 
@@ -88,13 +107,20 @@ Page({
   onGoLife() {
     this.setData({ townAnchor: '' }, () => { if (!this._disposed) this.setData({ townAnchor: 'town-life-panel' }) })
   },
+  async onGoPets() {
+    if (this.data.lifeBusy || this.data.refreshing) return
+    if (!this.data.life) await this.loadTown()
+    if (this._disposed) return
+    if (!this.data.life) { showError('宠物商店暂时没连上，请稍后再试'); return }
+    this.setData({ townAnchor: '' }, () => { if (!this._disposed) this.setData({ townAnchor: 'town-pets-panel' }) })
+  },
 
   async onBuyPet() {
     const pet = this.data.selectedPet
     if (!pet || this.data.lifeBusy || this.data.refreshing) return
     if (!pet.affordable) { this.onGoLearn(); return }
     await this.performLifeAction('/town-life/pets/purchase', { pet_id: pet.id }, {
-      icon: pet.icon, title: pet.name + '搬来啦', outcome: '以后回到小镇，就有一位毛茸茸的小伙伴等你。'
+      icon: pet.icon, art: pet.art, title: pet.name + '搬来啦', outcome: '小伙伴已经搬进小镇，和你一起生活啦。'
     })
   },
 
@@ -119,7 +145,12 @@ Page({
       showError(err.message || '小镇生活暂时没连上')
       // 结果不明时只读回状态，不重复提交消费。
       try { this.applyLife(await api.get('/town-life')) }
-      catch (_) { if (!this._disposed) this.setData({ lifeFailed: true, life: null, selectedPet: null }) }
+      catch (_) {
+        if (!this._disposed) {
+          this.setData({ lifeFailed: true, life: null, selectedPet: null })
+          this.syncStroll()
+        }
+      }
     } finally {
       if (!this._disposed) this.setData({ lifeBusy: false })
     }
@@ -136,7 +167,7 @@ Page({
   onNoop() {},
   onGoLearn() { wx.switchTab({ url: '/pages/learn/learn' }) },
   onGoBuild() { wx.switchTab({ url: '/pages/build/build' }) },
-  onGoResident() { wx.navigateTo({ url: '/pages/resident/resident' }) },
+  onGoResident() { wx.switchTab({ url: '/pages/resident/resident' }) },
   onDailyTask() { this.onGoLearn() },
   onShareAppMessage() {
     return { title: '学单词，建一座自己的方块小镇', path: '/pages/index/index' }

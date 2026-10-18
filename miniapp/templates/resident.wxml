@@ -1,1 +1,1 @@
-<template name="resident-art"><view class="art-sprite"><image class="art-atlas" src="{{art.src}}" mode="scaleToFill" style="width: {{art.scale}}%; height: {{art.scale}}%; left: {{art.x}}%; top: {{art.y}}%;" /></view></template>
+<template name="resident-art"><view class="art-sprite"><image class="art-atlas" src="{{art.src}}" mode="scaleToFill" style="width: {{art.scale}}%; height: {{art.scaleY || art.scale}}%; left: {{art.x}}%; top: {{art.y}}%;" /></view></template>

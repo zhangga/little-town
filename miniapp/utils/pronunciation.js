@@ -3,6 +3,7 @@ function createPronunciation(wxApi, onState) {
   let context = null
   let generation = 0
   let timer = null
+  const loadedPackages = new Set()
   function stop() {
     generation++
     clearTimeout(timer)
@@ -19,34 +20,49 @@ function createPronunciation(wxApi, onState) {
       return
     }
     const current = generation
-    try {
-      context = wxApi.createInnerAudioContext()
-      const player = context
-      player.obeyMuteSwitch = false
-      player.src = slow && word.slowAudio ? word.slowAudio : word.audio
-      player.playbackRate = slow && !word.slowAudio ? 0.75 : 1
-      onState({ audioState: 'loading' })
-      const fail = () => {
-        if (current !== generation) return
-        stop()
-        onState({ audioState: 'error' })
-      }
-      player.onPlay(() => {
-        if (current !== generation) return
-        clearTimeout(timer)
-        onState({ audioState: 'playing' })
-      })
-      player.onEnded(() => {
-        if (current !== generation) return
-        clearTimeout(timer)
-        onState({ audioState: 'idle', heardAudio: true })
-      })
-      player.onError(fail)
-      timer = setTimeout(fail, 10000)
-      player.play()
-    } catch (err) {
+    const fail = () => {
+      if (current !== generation) return
       stop()
       onState({ audioState: 'error' })
+    }
+    const start = () => {
+      if (current !== generation) return
+      try {
+        context = wxApi.createInnerAudioContext()
+        const player = context
+        player.obeyMuteSwitch = false
+        player.src = slow && word.slowAudio ? word.slowAudio : word.audio
+        player.playbackRate = slow && !word.slowAudio ? 0.75 : 1
+        player.onPlay(() => {
+          if (current !== generation) return
+          clearTimeout(timer)
+          onState({ audioState: 'playing' })
+        })
+        player.onEnded(() => {
+          if (current !== generation) return
+          clearTimeout(timer)
+          onState({ audioState: 'idle', heardAudio: true })
+        })
+        player.onError(fail)
+        player.play()
+      } catch (err) {
+        fail()
+      }
+    }
+    onState({ audioState: 'loading' })
+    timer = setTimeout(fail, 10000)
+    if (word.audioPackage && !loadedPackages.has(word.audioPackage)) {
+      try {
+        wxApi.loadSubpackage({
+          name: word.audioPackage,
+          success() { loadedPackages.add(word.audioPackage); start() },
+          fail
+        })
+      } catch (err) {
+        fail()
+      }
+    } else {
+      start()
     }
   }
   return { play, stop }

@@ -8,6 +8,7 @@ const { createRequire } = require('node:module')
 const { enrichWord, makeQuestion, makePlan, makePairs, normalize } = require('../miniapp/utils/learning')
 const { createPronunciation } = require('../miniapp/utils/pronunciation')
 const seed = require('../backend/data/words/grade-1-3.json')
+const textbook = require('../miniapp/data/textbook-words')
 const words = seed.map((word, index) => enrichWord({ ...word, id: index + 1, is_review: false }))
 const event = (data) => ({ currentTarget: { dataset: data } })
 const flush = () => new Promise((resolve) => setImmediate(resolve))
@@ -345,8 +346,43 @@ function completePairs(page) {
   }
 }
 
-test('all 25 seed words have examples and both packaged pronunciations', () => {
-  assert.equal(words.length, 25)
+test('the complete photographed textbook is available to grade-three learners without duplicate seed rows', () => {
+  assert.deepEqual(textbook.map(unit => [unit.unit, unit.words.length]), [
+    ['Welcome', 35], ['Unit 1', 40], ['Unit 2', 28], ['Unit 3', 28],
+    ['Unit 4', 33], ['Unit 5', 25], ['Unit 6', 28]
+  ])
+  const entries = textbook.flatMap(unit => unit.words)
+  assert.equal(entries.length, 217)
+  assert.equal(new Set(entries.map(word => normalize(word.word))).size, 217)
+  assert.equal(new Set(seed.map(word => word.grade + '|' + word.word)).size, seed.length)
+  for (const entry of entries) {
+    const word = seed.find(word => word.grade === 3 && word.word === entry.word)
+    assert.ok(word, entry.word + ' must be available to the current grade')
+    assert.ok(word.translation)
+    const enriched = enrichWord(word)
+    for (const mode of ['mixed', 'listen', 'spell', 'cloze']) {
+      const question = makePlan([enriched], mode, true)[0]
+      assert.equal(question.options.filter(option => option.correct).length, 1)
+    }
+  }
+  for (const word of ['be', 'am', 'is', 'are', 'a', 'an', "let's", 'let us', 'dad', 'father', 'mum', 'mother', 'grandpa', 'grandfather', 'grandma', 'grandmother']) {
+    assert.ok(entries.some(entry => entry.word === word), word)
+  }
+  assert.equal(entries.find(word => word.word === 'take care of').textbookForm, 'take care of sb / sth')
+  assert.equal(entries.find(word => word.word === 'look at').textbookForm, 'look at sb / sth')
+})
+
+test('homographs keep meaning-specific examples and apostrophes map to safe audio filenames', () => {
+  const fruit = enrichWord(seed.find(word => word.word === 'orange' && word.grade === 2))
+  const colour = enrichWord(seed.find(word => word.word === 'orange' && word.grade === 3))
+  assert.equal(fruit.fullSentence, 'I peel an orange.')
+  assert.equal(colour.fullSentence, 'The carrot is orange.')
+  assert.equal(enrichWord({word: "let's"}).audio, '/textbook-audio/words/lets.mp3')
+  assert.equal(enrichWord({word: 'I'}).audio, '/textbook-audio/words/i.mp3')
+})
+
+test('all seed words have examples and both packaged pronunciations within each package budget', () => {
+  assert.equal(words.length, 240)
   for (const word of words) {
     assert.equal(word.sentence.split('___').length, 2)
     assert.ok(word.fullSentence.includes(word.word))
@@ -356,8 +392,58 @@ test('all 25 seed words have examples and both packaged pronunciations', () => {
       assert.equal(raw.subarray(0, 3).toString(), 'ID3', asset)
     }
   }
-  const bytes = fs.readdirSync(path.join(__dirname, '../miniapp/audio/words')).reduce((sum, file) => sum + fs.statSync(path.join(__dirname, '../miniapp/audio/words', file)).size, 0)
-  assert.ok(bytes < 800000, 'audio should leave ample room in the main package')
+  const root = path.join(__dirname, '../miniapp')
+  function size(folder, excluded = []) {
+    return fs.readdirSync(folder, {withFileTypes: true}).reduce((sum, file) => {
+      if (excluded.includes(file.name)) return sum
+      const filename = path.join(folder, file.name)
+      return sum + (file.isDirectory() ? size(filename) : fs.statSync(filename).size)
+    }, 0)
+  }
+  const config = require('../miniapp/app.json')
+  assert.ok(config.subpackages.some(pkg => pkg.root === 'textbook-audio'))
+  assert.ok(config.preloadRule['pages/learn/learn'].packages.includes('textbook-audio'))
+  assert.ok(size(root, ['textbook-audio']) < 2 * 1024 * 1024, 'main package must stay within 2 MiB')
+  assert.ok(size(path.join(root, 'textbook-audio')) < 2 * 1024 * 1024, 'textbook audio must stay within 2 MiB')
+})
+
+test('textbook pronunciation waits for its package, caches successful loads and ignores cancelled callbacks', () => {
+  const wx = audioMock()
+  const loads = []
+  wx.loadSubpackage = options => loads.push(options)
+  const states = []
+  const audio = createPronunciation(wx, state => states.push(state))
+  const word = enrichWord({word: 'welcome'})
+  audio.play(word, false)
+  assert.equal(loads[0].name, 'textbook-audio')
+  assert.equal(wx.contexts.length, 0)
+  assert.equal(states.at(-1).audioState, 'loading')
+  audio.stop()
+  loads[0].success()
+  assert.equal(wx.contexts.length, 0)
+  audio.play(word, true)
+  assert.equal(loads.length, 1)
+  assert.equal(wx.contexts[0].src, word.slowAudio)
+  wx.contexts[0].callbacks.ended()
+  audio.stop()
+})
+
+test('a failed textbook package can be retried without unlocking a stale word', () => {
+  const wx = audioMock()
+  const loads = []
+  wx.loadSubpackage = options => loads.push(options)
+  const states = []
+  const audio = createPronunciation(wx, state => states.push(state))
+  const word = enrichWord({word: 'welcome'})
+  audio.play(word, false)
+  loads[0].fail()
+  assert.equal(states.at(-1).audioState, 'error')
+  audio.play(word, false)
+  loads[0].success()
+  assert.equal(wx.contexts.length, 0)
+  loads[1].success()
+  assert.equal(wx.contexts.length, 1)
+  audio.stop()
 })
 
 test('a mixed round offers five distinct activities, each with one unambiguous answer', () => {

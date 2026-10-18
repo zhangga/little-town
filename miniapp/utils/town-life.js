@@ -1,4 +1,4 @@
-const { residentArt } = require('./resident')
+const { strollArt } = require('./stroll-art')
 
 const buildingLife = {
   '医院': '建成后解锁居民感冒，呼叫小镇医生只需 1 金币。',
@@ -16,9 +16,14 @@ const buildingLife = {
 
 function presentLife(state) {
   const coins = state.wallet.coins
+  const pets = state.pets.map(pet => Object.assign({}, pet, {
+    art: strollArt({ type: 'pet', petId: pet.id }, 'down'),
+    affordable: coins >= pet.price,
+    missing: Math.max(0, pet.price - coins)
+  }))
   return Object.assign({}, state, {
-    pets: state.pets.map(pet => Object.assign({}, pet, { affordable: coins >= pet.price, missing: Math.max(0, pet.price - coins) })),
-    companions: state.pets.filter(pet => pet.owned),
+    pets,
+    companions: pets.filter(pet => pet.owned),
     petResting: !!state.event && state.event.kind === 'pet_sick',
     event: state.event ? Object.assign({}, state.event, { affordable: coins >= state.event.cost }) : null,
     hasVet: state.buildings.includes('宠物医院')
@@ -39,8 +44,7 @@ function townScene(buildings, hour) {
   return {
     evening, icon: evening ? '🌙' : hour < 11 ? '🌤️' : '☀️',
     label: evening ? '小镇的灯亮起来了' : hour < 11 ? '小镇醒来啦' : '小镇的悠闲午后',
-    description: activities.length ? activities[hour % activities.length] : evening ? '小屋亮起暖灯，晚风轻轻吹过门口。' : '阳光照进小院，邻居在路边向你挥手。',
-    walkers: [residentArt('everyday', 2), residentArt('gardener', 2)]
+    description: activities.length ? activities[hour % activities.length] : evening ? '小屋亮起暖灯，晚风轻轻吹过门口。' : '阳光照进小院，邻居在路边向你挥手。'
   }
 }
 

@@ -5,7 +5,7 @@ const { showConfirm, showError } = require('../../utils/util')
 const GRADE_LABELS = ['一年级', '二年级', '三年级', '四年级', '五年级', '六年级']
 
 Page({
-  onGoResident() { wx.navigateTo({ url: '/pages/resident/resident' }) },
+  onGoResident() { wx.switchTab({ url: '/pages/resident/resident' }) },
   data: {
     userInfo: null,
     gradeLabel: '',

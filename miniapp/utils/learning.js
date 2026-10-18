@@ -33,16 +33,20 @@ function shuffle(items, random = Math.random) {
 
 function enrichWord(word) {
   const key = normalize(word.word)
-  const extra = Object.prototype.hasOwnProperty.call(content, key) ? content[key] : null
-  const stem = key.replace(/ /g, '-')
+  const meaningKey = key + '|' + word.translation
+  const extra = Object.prototype.hasOwnProperty.call(content, meaningKey) ? content[meaningKey] :
+    (Object.prototype.hasOwnProperty.call(content, key) ? content[key] : null)
+  const stem = key.replace(/'/g, '').replace(/ /g, '-')
+  const audioRoot = extra && extra.audioPackage ? '/' + extra.audioPackage : '/audio'
   return Object.assign({}, word, {
     emoji: wordEmoji(word.word),
     sentence: extra ? extra.sentence : '',
     sentenceMeaning: extra ? extra.meaning : '',
     fullSentence: extra ? extra.sentence.replace('___', word.word) : '',
     // 优先使用内置音频，避免旧库里的远端地址影响已支持的单词。
-    audio: extra ? '/audio/words/' + stem + '.mp3' : (word.audio_url || ''),
-    slowAudio: extra ? '/audio/words/' + stem + '-slow.mp3' : ''
+    audio: extra ? audioRoot + '/words/' + stem + '.mp3' : (word.audio_url || ''),
+    slowAudio: extra ? audioRoot + '/words/' + stem + '-slow.mp3' : '',
+    audioPackage: extra ? extra.audioPackage || '' : ''
   })
 }
 

@@ -8,6 +8,18 @@
     "pages/parent/parent",
     "pages/login/login"
   ],
+  "subpackages": [
+    {
+      "root": "textbook-audio",
+      "pages": ["index/index"]
+    }
+  ],
+  "preloadRule": {
+    "pages/learn/learn": {
+      "network": "all",
+      "packages": ["textbook-audio"]
+    }
+  },
   "window": {
     "backgroundTextStyle": "dark",
     "backgroundColor": "#7FBF4D",
@@ -32,6 +44,10 @@
       {
         "pagePath": "pages/build/build",
         "text": "建造"
+      },
+      {
+        "pagePath": "pages/resident/resident",
+        "text": "我的家"
       },
       {
         "pagePath": "pages/profile/profile",

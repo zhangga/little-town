@@ -173,5 +173,1295 @@
     "grade": 3,
     "difficulty": 2,
     "image_url": "/images/words/zebra.png"
+  },
+  {
+    "word": "welcome",
+    "translation": "欢迎",
+    "grade": 3,
+    "difficulty": 1
+  },
+  {
+    "word": "to",
+    "translation": "向，到，往；用于使意思完整",
+    "grade": 3,
+    "difficulty": 1
+  },
+  {
+    "word": "school",
+    "translation": "学校",
+    "grade": 3,
+    "difficulty": 1
+  },
+  {
+    "word": "hi",
+    "translation": "嘿，喂，你好",
+    "grade": 3,
+    "difficulty": 1
+  },
+  {
+    "word": "I",
+    "translation": "我",
+    "grade": 3,
+    "difficulty": 1
+  },
+  {
+    "word": "be",
+    "translation": "是（am、is、are 的原形）",
+    "grade": 3,
+    "difficulty": 1
+  },
+  {
+    "word": "am",
+    "translation": "是（与 I 连用）",
+    "grade": 3,
+    "difficulty": 1
+  },
+  {
+    "word": "is",
+    "translation": "是（与 he、she、it 等连用）",
+    "grade": 3,
+    "difficulty": 1
+  },
+  {
+    "word": "are",
+    "translation": "是（与 you、we、they 等连用）",
+    "grade": 3,
+    "difficulty": 1
+  },
+  {
+    "word": "what",
+    "translation": "什么",
+    "grade": 3,
+    "difficulty": 1
+  },
+  {
+    "word": "your",
+    "translation": "你的；你们的",
+    "grade": 3,
+    "difficulty": 1
+  },
+  {
+    "word": "name",
+    "translation": "名字",
+    "grade": 3,
+    "difficulty": 1
+  },
+  {
+    "word": "hello",
+    "translation": "喂，哈啰，你好",
+    "grade": 3,
+    "difficulty": 1
+  },
+  {
+    "word": "my",
+    "translation": "我的",
+    "grade": 3,
+    "difficulty": 1
+  },
+  {
+    "word": "goodbye",
+    "translation": "再见",
+    "grade": 3,
+    "difficulty": 1
+  },
+  {
+    "word": "have",
+    "translation": "有，拥有",
+    "grade": 3,
+    "difficulty": 1
+  },
+  {
+    "word": "a",
+    "translation": "一（个）（用于辅音音素前）",
+    "grade": 3,
+    "difficulty": 1
+  },
+  {
+    "word": "an",
+    "translation": "一（个）（用于元音音素前）",
+    "grade": 3,
+    "difficulty": 1
+  },
+  {
+    "word": "nice",
+    "translation": "令人愉快的",
+    "grade": 3,
+    "difficulty": 1
+  },
+  {
+    "word": "day",
+    "translation": "一天",
+    "grade": 3,
+    "difficulty": 1
+  },
+  {
+    "word": "good",
+    "translation": "好的",
+    "grade": 3,
+    "difficulty": 1
+  },
+  {
+    "word": "morning",
+    "translation": "早晨，上午",
+    "grade": 3,
+    "difficulty": 1
+  },
+  {
+    "word": "Ms",
+    "translation": "女士",
+    "grade": 3,
+    "difficulty": 1
+  },
+  {
+    "word": "stand",
+    "translation": "站立",
+    "grade": 3,
+    "difficulty": 1
+  },
+  {
+    "word": "stand up",
+    "translation": "站起来",
+    "grade": 3,
+    "difficulty": 1
+  },
+  {
+    "word": "sit",
+    "translation": "坐",
+    "grade": 3,
+    "difficulty": 1
+  },
+  {
+    "word": "sit down",
+    "translation": "坐下",
+    "grade": 3,
+    "difficulty": 1
+  },
+  {
+    "word": "open",
+    "translation": "打开",
+    "grade": 3,
+    "difficulty": 1
+  },
+  {
+    "word": "book",
+    "translation": "书",
+    "grade": 3,
+    "difficulty": 1
+  },
+  {
+    "word": "close",
+    "translation": "合上",
+    "grade": 3,
+    "difficulty": 1
+  },
+  {
+    "word": "point",
+    "translation": "指",
+    "grade": 3,
+    "difficulty": 1
+  },
+  {
+    "word": "say",
+    "translation": "说",
+    "grade": 3,
+    "difficulty": 1
+  },
+  {
+    "word": "read",
+    "translation": "阅读",
+    "grade": 3,
+    "difficulty": 1
+  },
+  {
+    "word": "listen",
+    "translation": "听",
+    "grade": 3,
+    "difficulty": 1
+  },
+  {
+    "word": "write",
+    "translation": "写",
+    "grade": 3,
+    "difficulty": 1
+  },
+  {
+    "word": "let's",
+    "translation": "让我们（let us 的缩写）",
+    "grade": 3,
+    "difficulty": 1
+  },
+  {
+    "word": "let us",
+    "translation": "让我们",
+    "grade": 3,
+    "difficulty": 1
+  },
+  {
+    "word": "friend",
+    "translation": "朋友",
+    "grade": 3,
+    "difficulty": 1
+  },
+  {
+    "word": "meet",
+    "translation": "认识，结识",
+    "grade": 3,
+    "difficulty": 1
+  },
+  {
+    "word": "you",
+    "translation": "你；你们",
+    "grade": 3,
+    "difficulty": 1
+  },
+  {
+    "word": "play",
+    "translation": "玩，玩耍",
+    "grade": 3,
+    "difficulty": 1
+  },
+  {
+    "word": "happy",
+    "translation": "高兴的，快乐的",
+    "grade": 3,
+    "difficulty": 1
+  },
+  {
+    "word": "new",
+    "translation": "新的",
+    "grade": 3,
+    "difficulty": 1
+  },
+  {
+    "word": "do",
+    "translation": "做；构成疑问句或否定句",
+    "grade": 3,
+    "difficulty": 1
+  },
+  {
+    "word": "they",
+    "translation": "他们",
+    "grade": 3,
+    "difficulty": 1
+  },
+  {
+    "word": "everyone",
+    "translation": "每个人，人人",
+    "grade": 3,
+    "difficulty": 1
+  },
+  {
+    "word": "nine",
+    "translation": "九",
+    "grade": 3,
+    "difficulty": 1
+  },
+  {
+    "word": "she",
+    "translation": "她",
+    "grade": 3,
+    "difficulty": 1
+  },
+  {
+    "word": "too",
+    "translation": "也",
+    "grade": 3,
+    "difficulty": 1
+  },
+  {
+    "word": "we",
+    "translation": "我们",
+    "grade": 3,
+    "difficulty": 1
+  },
+  {
+    "word": "from",
+    "translation": "从",
+    "grade": 3,
+    "difficulty": 1
+  },
+  {
+    "word": "the",
+    "translation": "指已经提到、已经知道或唯一存在的人或物",
+    "grade": 3,
+    "difficulty": 1
+  },
+  {
+    "word": "twin",
+    "translation": "双胞胎中的一个",
+    "grade": 3,
+    "difficulty": 1
+  },
+  {
+    "word": "he",
+    "translation": "他",
+    "grade": 3,
+    "difficulty": 1
+  },
+  {
+    "word": "come",
+    "translation": "来；来到",
+    "grade": 3,
+    "difficulty": 1
+  },
+  {
+    "word": "and",
+    "translation": "然后，接着；和",
+    "grade": 3,
+    "difficulty": 1
+  },
+  {
+    "word": "oh",
+    "translation": "噢",
+    "grade": 3,
+    "difficulty": 1
+  },
+  {
+    "word": "no",
+    "translation": "不，不行",
+    "grade": 3,
+    "difficulty": 1
+  },
+  {
+    "word": "help",
+    "translation": "帮助，帮忙",
+    "grade": 3,
+    "difficulty": 1
+  },
+  {
+    "word": "here",
+    "translation": "在这里",
+    "grade": 3,
+    "difficulty": 1
+  },
+  {
+    "word": "here you are",
+    "translation": "给你",
+    "grade": 3,
+    "difficulty": 1
+  },
+  {
+    "word": "thank",
+    "translation": "感谢，向……表示谢意",
+    "grade": 3,
+    "difficulty": 1
+  },
+  {
+    "word": "together",
+    "translation": "一起，一块儿",
+    "grade": 3,
+    "difficulty": 1
+  },
+  {
+    "word": "OK",
+    "translation": "行，可以",
+    "grade": 3,
+    "difficulty": 1
+  },
+  {
+    "word": "great",
+    "translation": "极棒的，极好的",
+    "grade": 3,
+    "difficulty": 1
+  },
+  {
+    "word": "age",
+    "translation": "年龄",
+    "grade": 3,
+    "difficulty": 1
+  },
+  {
+    "word": "song",
+    "translation": "歌曲",
+    "grade": 3,
+    "difficulty": 1
+  },
+  {
+    "word": "dear",
+    "translation": "亲爱的",
+    "grade": 3,
+    "difficulty": 1
+  },
+  {
+    "word": "sing",
+    "translation": "唱，歌唱",
+    "grade": 3,
+    "difficulty": 1
+  },
+  {
+    "word": "now",
+    "translation": "现在",
+    "grade": 3,
+    "difficulty": 1
+  },
+  {
+    "word": "know",
+    "translation": "认识；知道，了解",
+    "grade": 3,
+    "difficulty": 1
+  },
+  {
+    "word": "our",
+    "translation": "我们的",
+    "grade": 3,
+    "difficulty": 1
+  },
+  {
+    "word": "everybody",
+    "translation": "每个人，人人",
+    "grade": 3,
+    "difficulty": 1
+  },
+  {
+    "word": "with",
+    "translation": "和……一起",
+    "grade": 3,
+    "difficulty": 1
+  },
+  {
+    "word": "me",
+    "translation": "我（宾格）",
+    "grade": 3,
+    "difficulty": 1
+  },
+  {
+    "word": "thing",
+    "translation": "东西",
+    "grade": 3,
+    "difficulty": 1
+  },
+  {
+    "word": "pack",
+    "translation": "收拾好",
+    "grade": 3,
+    "difficulty": 1
+  },
+  {
+    "word": "pen",
+    "translation": "钢笔",
+    "grade": 3,
+    "difficulty": 1
+  },
+  {
+    "word": "pencil",
+    "translation": "铅笔",
+    "grade": 3,
+    "difficulty": 1
+  },
+  {
+    "word": "pencil case",
+    "translation": "笔袋；铅笔盒",
+    "grade": 3,
+    "difficulty": 1
+  },
+  {
+    "word": "bag",
+    "translation": "袋；包",
+    "grade": 3,
+    "difficulty": 1
+  },
+  {
+    "word": "for",
+    "translation": "为了",
+    "grade": 3,
+    "difficulty": 1
+  },
+  {
+    "word": "ruler",
+    "translation": "尺子，直尺",
+    "grade": 3,
+    "difficulty": 1
+  },
+  {
+    "word": "eraser",
+    "translation": "橡皮",
+    "grade": 3,
+    "difficulty": 1
+  },
+  {
+    "word": "this",
+    "translation": "这，这个",
+    "grade": 3,
+    "difficulty": 1
+  },
+  {
+    "word": "in",
+    "translation": "在……里",
+    "grade": 3,
+    "difficulty": 1
+  },
+  {
+    "word": "schoolbag",
+    "translation": "书包",
+    "grade": 3,
+    "difficulty": 1
+  },
+  {
+    "word": "it",
+    "translation": "它",
+    "grade": 3,
+    "difficulty": 1
+  },
+  {
+    "word": "not",
+    "translation": "不，不是",
+    "grade": 3,
+    "difficulty": 1
+  },
+  {
+    "word": "that",
+    "translation": "那，那个",
+    "grade": 3,
+    "difficulty": 1
+  },
+  {
+    "word": "yes",
+    "translation": "是，对",
+    "grade": 3,
+    "difficulty": 1
+  },
+  {
+    "word": "guess",
+    "translation": "猜，猜测",
+    "grade": 3,
+    "difficulty": 1
+  },
+  {
+    "word": "find",
+    "translation": "发现，找到",
+    "grade": 3,
+    "difficulty": 1
+  },
+  {
+    "word": "lost and found",
+    "translation": "失物招领",
+    "grade": 3,
+    "difficulty": 1
+  },
+  {
+    "word": "bye",
+    "translation": "再见，拜拜",
+    "grade": 3,
+    "difficulty": 1
+  },
+  {
+    "word": "kid",
+    "translation": "小孩，儿童",
+    "grade": 3,
+    "difficulty": 1
+  },
+  {
+    "word": "take care of",
+    "translation": "照看（照料）某人／某物",
+    "grade": 3,
+    "difficulty": 1
+  },
+  {
+    "word": "there",
+    "translation": "在那里",
+    "grade": 3,
+    "difficulty": 1
+  },
+  {
+    "word": "please",
+    "translation": "请",
+    "grade": 3,
+    "difficulty": 1
+  },
+  {
+    "word": "back",
+    "translation": "回到原处",
+    "grade": 3,
+    "difficulty": 1
+  },
+  {
+    "word": "come back",
+    "translation": "回来",
+    "grade": 3,
+    "difficulty": 1
+  },
+  {
+    "word": "look",
+    "translation": "看，瞧，望",
+    "grade": 3,
+    "difficulty": 1
+  },
+  {
+    "word": "look at",
+    "translation": "看某人／某物",
+    "grade": 3,
+    "difficulty": 1
+  },
+  {
+    "word": "colourful",
+    "translation": "颜色鲜艳的，色彩丰富的",
+    "grade": 3,
+    "difficulty": 1
+  },
+  {
+    "word": "world",
+    "translation": "世界",
+    "grade": 3,
+    "difficulty": 1
+  },
+  {
+    "word": "hooray",
+    "translation": "好哇",
+    "grade": 3,
+    "difficulty": 1
+  },
+  {
+    "word": "clothes",
+    "translation": "衣服",
+    "grade": 3,
+    "difficulty": 1
+  },
+  {
+    "word": "red",
+    "translation": "红色（的）",
+    "grade": 3,
+    "difficulty": 1
+  },
+  {
+    "word": "pink",
+    "translation": "粉红色（的）",
+    "grade": 3,
+    "difficulty": 1
+  },
+  {
+    "word": "green",
+    "translation": "绿色（的）",
+    "grade": 3,
+    "difficulty": 1
+  },
+  {
+    "word": "orange",
+    "translation": "橙色（的）",
+    "grade": 3,
+    "difficulty": 1
+  },
+  {
+    "word": "blue",
+    "translation": "蓝色（的）",
+    "grade": 3,
+    "difficulty": 1
+  },
+  {
+    "word": "purple",
+    "translation": "紫色（的）",
+    "grade": 3,
+    "difficulty": 1
+  },
+  {
+    "word": "rainbow",
+    "translation": "彩虹",
+    "grade": 3,
+    "difficulty": 1
+  },
+  {
+    "word": "want",
+    "translation": "想要",
+    "grade": 3,
+    "difficulty": 1
+  },
+  {
+    "word": "balloon",
+    "translation": "气球",
+    "grade": 3,
+    "difficulty": 1
+  },
+  {
+    "word": "colour",
+    "translation": "颜色",
+    "grade": 3,
+    "difficulty": 1
+  },
+  {
+    "word": "can",
+    "translation": "能，会",
+    "grade": 3,
+    "difficulty": 1
+  },
+  {
+    "word": "see",
+    "translation": "看见，看到",
+    "grade": 3,
+    "difficulty": 1
+  },
+  {
+    "word": "right",
+    "translation": "正确的，对的",
+    "grade": 3,
+    "difficulty": 1
+  },
+  {
+    "word": "first",
+    "translation": "第一的",
+    "grade": 3,
+    "difficulty": 1
+  },
+  {
+    "word": "magical",
+    "translation": "神奇的；有魔力的",
+    "grade": 3,
+    "difficulty": 1
+  },
+  {
+    "word": "fun",
+    "translation": "有趣的，逗乐的",
+    "grade": 3,
+    "difficulty": 1
+  },
+  {
+    "word": "black",
+    "translation": "黑色（的）",
+    "grade": 3,
+    "difficulty": 1
+  },
+  {
+    "word": "so",
+    "translation": "这么，如此",
+    "grade": 3,
+    "difficulty": 1
+  },
+  {
+    "word": "many",
+    "translation": "许多；大量",
+    "grade": 3,
+    "difficulty": 1
+  },
+  {
+    "word": "picture",
+    "translation": "画，图画",
+    "grade": 3,
+    "difficulty": 1
+  },
+  {
+    "word": "today",
+    "translation": "今天",
+    "grade": 3,
+    "difficulty": 1
+  },
+  {
+    "word": "paint",
+    "translation": "画，作画",
+    "grade": 3,
+    "difficulty": 1
+  },
+  {
+    "word": "number",
+    "translation": "数，数字",
+    "grade": 3,
+    "difficulty": 1
+  },
+  {
+    "word": "count",
+    "translation": "数数",
+    "grade": 3,
+    "difficulty": 1
+  },
+  {
+    "word": "how",
+    "translation": "多少；怎样，如何",
+    "grade": 3,
+    "difficulty": 1
+  },
+  {
+    "word": "bird",
+    "translation": "鸟",
+    "grade": 3,
+    "difficulty": 1
+  },
+  {
+    "word": "one",
+    "translation": "一",
+    "grade": 3,
+    "difficulty": 1
+  },
+  {
+    "word": "two",
+    "translation": "二",
+    "grade": 3,
+    "difficulty": 1
+  },
+  {
+    "word": "three",
+    "translation": "三",
+    "grade": 3,
+    "difficulty": 1
+  },
+  {
+    "word": "four",
+    "translation": "四",
+    "grade": 3,
+    "difficulty": 1
+  },
+  {
+    "word": "five",
+    "translation": "五",
+    "grade": 3,
+    "difficulty": 1
+  },
+  {
+    "word": "six",
+    "translation": "六",
+    "grade": 3,
+    "difficulty": 1
+  },
+  {
+    "word": "seven",
+    "translation": "七",
+    "grade": 3,
+    "difficulty": 1
+  },
+  {
+    "word": "eight",
+    "translation": "八",
+    "grade": 3,
+    "difficulty": 1
+  },
+  {
+    "word": "ten",
+    "translation": "十",
+    "grade": 3,
+    "difficulty": 1
+  },
+  {
+    "word": "eleven",
+    "translation": "十一",
+    "grade": 3,
+    "difficulty": 1
+  },
+  {
+    "word": "twelve",
+    "translation": "十二",
+    "grade": 3,
+    "difficulty": 1
+  },
+  {
+    "word": "rope",
+    "translation": "绳",
+    "grade": 3,
+    "difficulty": 1
+  },
+  {
+    "word": "who",
+    "translation": "谁，什么人",
+    "grade": 3,
+    "difficulty": 1
+  },
+  {
+    "word": "make",
+    "translation": "制作",
+    "grade": 3,
+    "difficulty": 1
+  },
+  {
+    "word": "Chinese knot",
+    "translation": "中国结",
+    "grade": 3,
+    "difficulty": 1
+  },
+  {
+    "word": "beautiful",
+    "translation": "美丽的",
+    "grade": 3,
+    "difficulty": 1
+  },
+  {
+    "word": "only",
+    "translation": "仅仅",
+    "grade": 3,
+    "difficulty": 1
+  },
+  {
+    "word": "show",
+    "translation": "给……看",
+    "grade": 3,
+    "difficulty": 1
+  },
+  {
+    "word": "baby",
+    "translation": "幼崽；雏鸟",
+    "grade": 3,
+    "difficulty": 1
+  },
+  {
+    "word": "cheep",
+    "translation": "吱吱（或唧唧）的叫声",
+    "grade": 3,
+    "difficulty": 1
+  },
+  {
+    "word": "egg",
+    "translation": "蛋",
+    "grade": 3,
+    "difficulty": 1
+  },
+  {
+    "word": "hungry",
+    "translation": "饥饿的",
+    "grade": 3,
+    "difficulty": 1
+  },
+  {
+    "word": "around",
+    "translation": "环绕，在……周围",
+    "grade": 3,
+    "difficulty": 1
+  },
+  {
+    "word": "us",
+    "translation": "我们（宾格）",
+    "grade": 3,
+    "difficulty": 1
+  },
+  {
+    "word": "all",
+    "translation": "全部，所有",
+    "grade": 3,
+    "difficulty": 1
+  },
+  {
+    "word": "all around",
+    "translation": "处处，到处",
+    "grade": 3,
+    "difficulty": 1
+  },
+  {
+    "word": "big",
+    "translation": "大的",
+    "grade": 3,
+    "difficulty": 1
+  },
+  {
+    "word": "little",
+    "translation": "小的",
+    "grade": 3,
+    "difficulty": 1
+  },
+  {
+    "word": "everywhere",
+    "translation": "在各个地方；处处",
+    "grade": 3,
+    "difficulty": 1
+  },
+  {
+    "word": "family",
+    "translation": "家庭；家人",
+    "grade": 3,
+    "difficulty": 1
+  },
+  {
+    "word": "dad",
+    "translation": "爸爸",
+    "grade": 3,
+    "difficulty": 1
+  },
+  {
+    "word": "father",
+    "translation": "父亲",
+    "grade": 3,
+    "difficulty": 1
+  },
+  {
+    "word": "mum",
+    "translation": "妈妈",
+    "grade": 3,
+    "difficulty": 1
+  },
+  {
+    "word": "mother",
+    "translation": "母亲",
+    "grade": 3,
+    "difficulty": 1
+  },
+  {
+    "word": "brother",
+    "translation": "哥哥；弟弟",
+    "grade": 3,
+    "difficulty": 1
+  },
+  {
+    "word": "sister",
+    "translation": "姐姐；妹妹",
+    "grade": 3,
+    "difficulty": 1
+  },
+  {
+    "word": "grandpa",
+    "translation": "祖父；外祖父",
+    "grade": 3,
+    "difficulty": 1
+  },
+  {
+    "word": "grandfather",
+    "translation": "祖父；外祖父",
+    "grade": 3,
+    "difficulty": 1
+  },
+  {
+    "word": "grandma",
+    "translation": "祖母；外祖母",
+    "grade": 3,
+    "difficulty": 1
+  },
+  {
+    "word": "grandmother",
+    "translation": "祖母；外祖母",
+    "grade": 3,
+    "difficulty": 1
+  },
+  {
+    "word": "but",
+    "translation": "但是，然而",
+    "grade": 3,
+    "difficulty": 1
+  },
+  {
+    "word": "people",
+    "translation": "人；人们",
+    "grade": 3,
+    "difficulty": 1
+  },
+  {
+    "word": "story",
+    "translation": "故事",
+    "grade": 3,
+    "difficulty": 1
+  },
+  {
+    "word": "cap",
+    "translation": "帽子",
+    "grade": 3,
+    "difficulty": 1
+  },
+  {
+    "word": "worry",
+    "translation": "担心",
+    "grade": 3,
+    "difficulty": 1
+  },
+  {
+    "word": "on",
+    "translation": "在……上面",
+    "grade": 3,
+    "difficulty": 1
+  },
+  {
+    "word": "come on",
+    "translation": "快点；加油",
+    "grade": 3,
+    "difficulty": 1
+  },
+  {
+    "word": "photo",
+    "translation": "照片，相片",
+    "grade": 3,
+    "difficulty": 1
+  },
+  {
+    "word": "love",
+    "translation": "爱，关爱",
+    "grade": 3,
+    "difficulty": 1
+  },
+  {
+    "word": "daddy",
+    "translation": "爸爸（亲昵称呼）",
+    "grade": 3,
+    "difficulty": 1
+  },
+  {
+    "word": "mummy",
+    "translation": "妈妈（亲昵称呼）",
+    "grade": 3,
+    "difficulty": 1
+  },
+  {
+    "word": "where",
+    "translation": "在哪里",
+    "grade": 3,
+    "difficulty": 1
+  },
+  {
+    "word": "dog",
+    "translation": "狗",
+    "grade": 3,
+    "difficulty": 1
+  },
+  {
+    "word": "box",
+    "translation": "盒；箱",
+    "grade": 3,
+    "difficulty": 1
+  },
+  {
+    "word": "sweet",
+    "translation": "甜蜜的",
+    "grade": 3,
+    "difficulty": 1
+  },
+  {
+    "word": "home",
+    "translation": "家",
+    "grade": 3,
+    "difficulty": 1
+  },
+  {
+    "word": "game",
+    "translation": "游戏",
+    "grade": 3,
+    "difficulty": 1
+  },
+  {
+    "word": "room",
+    "translation": "房间",
+    "grade": 3,
+    "difficulty": 1
+  },
+  {
+    "word": "living room",
+    "translation": "客厅",
+    "grade": 3,
+    "difficulty": 1
+  },
+  {
+    "word": "bedroom",
+    "translation": "卧室",
+    "grade": 3,
+    "difficulty": 1
+  },
+  {
+    "word": "bathroom",
+    "translation": "浴室，卫生间",
+    "grade": 3,
+    "difficulty": 1
+  },
+  {
+    "word": "kitchen",
+    "translation": "厨房",
+    "grade": 3,
+    "difficulty": 1
+  },
+  {
+    "word": "dining room",
+    "translation": "餐厅",
+    "grade": 3,
+    "difficulty": 1
+  },
+  {
+    "word": "door",
+    "translation": "门",
+    "grade": 3,
+    "difficulty": 1
+  },
+  {
+    "word": "chair",
+    "translation": "椅子",
+    "grade": 3,
+    "difficulty": 1
+  },
+  {
+    "word": "think",
+    "translation": "想，认为",
+    "grade": 3,
+    "difficulty": 1
+  },
+  {
+    "word": "under",
+    "translation": "在……下面；在……底下",
+    "grade": 3,
+    "difficulty": 1
+  },
+  {
+    "word": "bed",
+    "translation": "床",
+    "grade": 3,
+    "difficulty": 1
+  },
+  {
+    "word": "toy",
+    "translation": "玩具",
+    "grade": 3,
+    "difficulty": 1
+  },
+  {
+    "word": "miaow",
+    "translation": "咪，喵（猫叫声）",
+    "grade": 3,
+    "difficulty": 1
+  },
+  {
+    "word": "table",
+    "translation": "桌子",
+    "grade": 3,
+    "difficulty": 1
+  },
+  {
+    "word": "cat",
+    "translation": "猫",
+    "grade": 3,
+    "difficulty": 1
+  },
+  {
+    "word": "ball",
+    "translation": "球",
+    "grade": 3,
+    "difficulty": 1
+  },
+  {
+    "word": "their",
+    "translation": "他们的",
+    "grade": 3,
+    "difficulty": 1
+  },
+  {
+    "word": "apple",
+    "translation": "苹果",
+    "grade": 3,
+    "difficulty": 1
+  },
+  {
+    "word": "share",
+    "translation": "共用；分享",
+    "grade": 3,
+    "difficulty": 1
+  },
+  {
+    "word": "put",
+    "translation": "放",
+    "grade": 3,
+    "difficulty": 1
+  },
+  {
+    "word": "cooking",
+    "translation": "做饭",
+    "grade": 3,
+    "difficulty": 1
+  },
+  {
+    "word": "sun",
+    "translation": "太阳",
+    "grade": 3,
+    "difficulty": 1
+  },
+  {
+    "word": "like",
+    "translation": "喜欢",
+    "grade": 3,
+    "difficulty": 1
+  },
+  {
+    "word": "run",
+    "translation": "跑",
+    "grade": 3,
+    "difficulty": 1
+  },
+  {
+    "word": "lucky",
+    "translation": "幸运的",
+    "grade": 3,
+    "difficulty": 1
   }
 ]

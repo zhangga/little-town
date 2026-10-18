@@ -8,7 +8,12 @@ Page({
     if (!wx.getStorageSync('token')) wx.redirectTo({ url: '/pages/login/login' })
   },
   onShow() { if (wx.getStorageSync('token')) this.loadResident() },
-  onHide() { clearTimeout(this._waveTimer); if (this.data.state) this.resetPose() },
+  onHide() {
+    clearTimeout(this._waveTimer)
+    // tab 页会缓存，离开时收起临时编辑和预览，返回后读取最新状态。
+    this.setData({ selected: null, editingName: false })
+    if (this.data.state) this.resetPose()
+  },
   onUnload() { this._disposed = true; clearTimeout(this._waveTimer) },
   onPullDownRefresh() { return this.loadResident().finally(() => wx.stopPullDownRefresh()) },
   applyState(response) {

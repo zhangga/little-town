@@ -7,6 +7,7 @@ const { createRequire } = require('node:module')
 const { fixture: residentFixture } = require('./resident-test.cjs')
 const { presentLife, townScene, buildingLife } = require('../miniapp/utils/town-life')
 const { townPlots, describeBuilding } = require('../miniapp/utils/town')
+const { fakeClock } = require('./town-stroll-test.cjs')
 
 const tap = dataset => ({ currentTarget: { dataset } })
 function fixture() {
@@ -18,6 +19,7 @@ function fixture() {
 }
 async function harness(options = {}) {
   const filename = path.resolve('miniapp/pages/index/index.js'), localRequire = createRequire(filename)
+  const strollClock = fakeClock()
   let definition
   const server = options.server || fixture(), calls = [], errors = [], navigation = []
   const storage = { token: 'test', userInfo: { coins: 999, bricks: 999, nickname: '账号' } }
@@ -44,7 +46,7 @@ async function harness(options = {}) {
     }
   }
   vm.runInNewContext(fs.readFileSync(filename, 'utf8'), {
-    require: name => name === '../../utils/api' ? api : name === '../../utils/util' ? { showError: message => errors.push(message) } : name === '../../utils/resident' ? { ...localRequire(name), saveWallet: wallet => Object.assign(storage.userInfo, wallet) } : localRequire(name),
+    require: name => name === '../../utils/api' ? api : name === '../../utils/util' ? { showError: message => errors.push(message) } : name === '../../utils/resident' ? { ...localRequire(name), saveWallet: wallet => Object.assign(storage.userInfo, wallet) } : name === '../../utils/town-stroll' ? { ...localRequire(name), createStroll: onChange => localRequire(name).createStroll(onChange, strollClock, () => .2) } : localRequire(name),
     Page: value => { definition = value }, wx: {
       getStorageSync: key => storage[key], setStorageSync: (key, value) => { storage[key] = value }, removeStorageSync: key => { delete storage[key] },
       redirectTo() {}, stopPullDownRefresh() {}, switchTab: options => navigation.push(options.url), navigateTo: options => navigation.push(options.url)
@@ -53,7 +55,7 @@ async function harness(options = {}) {
   const page = { ...definition, data: structuredClone(definition.data), setData(patch, done) { Object.assign(this.data, patch); if (done) done() } }
   page.onLoad(); page.onShow()
   if (!options.pending) await page._loadPromise
-  return { page, server, calls, errors, navigation, storage, api }
+  return { page, server, calls, errors, navigation, storage, api, strollClock }
 }
 module.exports = { fixture, harness, tap }
 
@@ -82,6 +84,30 @@ if (require.main === module) {
     assert.equal(h.page.data.selectedPet, null)
     assert.equal(h.page.data.life.companions[0].id, 'dog')
     assert.equal(h.storage.userInfo.coins, 5)
+  })
+  test('pet shop entry leads to the selected pet purchase and adds it to town immediately', async () => {
+    const h = await harness()
+    await h.page.onGoPets()
+    assert.equal(h.page.data.townAnchor, 'town-pets-panel')
+    assert.equal(h.calls.filter(call => call.method === 'POST').length, 0)
+    h.page.onSelectPet(tap({ id: 'cat' }))
+    assert.equal(h.page.data.selectedPet.name, '小猫团团')
+    assert.equal(h.page.data.selectedPet.art.y, -100)
+    await h.page.onBuyPet()
+    const purchases = h.calls.filter(call => call.method === 'POST')
+    assert.equal(purchases.length, 1)
+    assert.equal(purchases[0].url, '/town-life/pets/purchase')
+    assert.equal(purchases[0].body.pet_id, 'cat')
+    assert.equal(h.page.data.town.coins, 5)
+    assert.equal(h.page.data.life.pets.find(pet => pet.id === 'dog').owned, false)
+    assert.equal(h.page.data.life.companions[0].id, 'cat')
+    assert.equal(h.page.data.walkers.filter(actor => actor.type === 'pet').length, 1)
+    assert.equal(h.page.data.walkers.find(actor => actor.type === 'pet').id, 'pet-cat')
+    assert.equal(h.page.data.lifeFeedback.art.y, -100)
+    h.page.onCloseFeedback()
+    h.page.onSelectPet(tap({ id: 'cat' }))
+    assert.equal(h.page.data.selectedPet, null)
+    h.page.onUnload()
   })
   test('one event submits its ID once, uses server coins, and shows its outcome', async () => {
     const h = await harness()
@@ -134,8 +160,9 @@ if (require.main === module) {
     assert.equal(h.page.data.failed, false)
     assert.equal(h.page.data.buildings.length, 1)
     h.api.get = async url => url === '/town-life' ? fixture() : url === '/resident' ? residentFixture() : { buildings: [] }
-    await h.page.loadTown()
+    await h.page.onGoPets()
     assert.equal(h.page.data.lifeFailed, false)
+    assert.equal(h.page.data.townAnchor, 'town-pets-panel')
   })
   test('refreshes share a request and late results cannot update an unloaded page', async () => {
     let finish
@@ -167,5 +194,29 @@ if (require.main === module) {
     assert.equal(presentLife(sick).petResting, true)
     sick.event = null
     assert.equal(presentLife(sick).petResting, false)
+  })
+
+  test('map walking follows pet ownership and page visibility without changing resources', async () => {
+    const server = fixture(); server.pets.forEach(pet => { pet.owned = true })
+    const h = await harness({ server })
+    assert.equal(h.page.data.walkers.filter(a => a.type === 'pet').length, 2)
+    const before = structuredClone(h.page.data.walkers)
+    h.strollClock.tick(10000)
+    assert.notDeepEqual(h.page.data.walkers, before)
+    assert.equal(h.calls.filter(call => call.method === 'POST').length, 0)
+    assert.equal(h.page.data.town.coins, 25)
+    h.page.onHide()
+    assert.equal(h.strollClock.pending(), 0)
+    const hidden = structuredClone(h.page.data.walkers)
+    h.strollClock.tick(60000)
+    assert.deepEqual(h.page.data.walkers, hidden)
+    h.page.onShow(); await h.page._loadPromise
+    assert.ok(h.strollClock.pending() > 0)
+    server.event.kind = 'pet_sick'; h.page.applyLife(server)
+    assert.equal(h.page.data.walkers.filter(a => a.type === 'pet').length, 0)
+    server.event = null; h.page.applyLife(server)
+    assert.equal(h.page.data.walkers.filter(a => a.type === 'pet').length, 2)
+    h.page.onUnload()
+    assert.equal(h.strollClock.pending(), 0)
   })
 }

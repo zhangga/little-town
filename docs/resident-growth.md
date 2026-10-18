@@ -2,7 +2,7 @@
 
 ## 本版功能
 
-圆润卡通角色与方块建筑搭配。首页显示小镇长、等级、每日学习任务，并在地图中加入“我的家”；角色页也能从“我的”进入。角色名字与微信账号昵称独立，支持 1～12 个字符，点击角色可挥手。
+圆润卡通角色与方块建筑搭配。首页显示小镇长、等级、每日学习任务，并在地图中加入“我的家”；角色页也能从“我的”进入。底部原生导航新增“我的家”，小屋页面也保留导航，可直接切换小镇、学习、建造和个人页；离开时收起改名和物品预览，返回后刷新角色与余额。角色名字与微信账号昵称独立，支持 1～12 个字符，点击角色可挥手。
 
 衣橱有免费日常装，以及建造师 60、园丁 90、探险家 120 金币。庭院有免费清空，以及花箱 40、小旗 30、树林 70 金币；当前可同时使用一套衣服和一种庭院装饰。点物品先预览，确认按钮明确标价，购买后自动使用、永久拥有，重复购买不会再次扣款。
 
@@ -49,9 +49,15 @@
 | 文件 | 图集排列 | 大小 |
 | --- | --- | --- |
 | miniapp/images/resident/resident-atlas.png | 4×4：行是日常 / 建造师 / 园丁 / 探险家；列是站立 / 挥手 / 行走 / 庆祝 | 222,693 字节 |
-| miniapp/images/resident/home-atlas.png | 2×2：一级小屋 / 二级小屋 / 三级小屋 / 花箱 | 223,354 字节 |
+| miniapp/images/resident/home-atlas.png | 2×2：一级小屋 / 二级小屋 / 三级小屋 / 花箱，均已去掉草皮泥土底座 | 217,094 字节 |
+| miniapp/images/resident/walk-directions.png | 4×4：日常 / 建造师 / 园丁 / 探险家；列为向下 / 向上 / 向左 / 向右 | 174,714 字节 |
+| miniapp/images/resident/pet-directions.png | 4×2：小狗 / 小猫；列为向下 / 向上 / 向左 / 向右 | 112,734 字节 |
 
-原图：output/imagegen/resident-source.png、output/imagegen/home-source.png。小旗、树林复用已有原创 town/voxel-atlas.png。当前交互使用站立与挥手，行走和庆祝帧预留。图集映射在 miniapp/utils/resident.js，共享模板在 miniapp/templates/resident.wxml。小程序目录当前约 1.32 MiB（实际发布包由开发者工具计算）。
+原图：output/imagegen/resident-source.png、output/imagegen/home-source.png。小旗、树林复用已有原创 town/voxel-atlas.png。当前交互使用站立与挥手，行走和庆祝帧预留。图集映射在 miniapp/utils/resident.js，共享模板在 miniapp/templates/resident.wxml。小程序目录当前约 1.77 MiB（实际发布包由开发者工具计算）。
+
+住宅与花箱去底座的编辑源图为 `output/imagegen/home-grounded-source.png`，使用内置 imagegen 移除草皮和泥土台座，再分切、等比例缩放并排列为等分图集。对应提示词见 `output/imagegen/grounded-atlases-prompt.md`；地图上的“我的家”名称前增加 🏡 图标。小旗和树林也已同步去掉地块底座。
+
+地图散步改用四方向专用图集，普通角色预览、挥手等交互继续使用原角色图集。人物新素材保留已有四套服装；猫狗采用对应方向的全身造型。原始输出为 `output/imagegen/resident-directions-source.png`、`output/imagegen/pet-directions-source.png`，内置 imagegen 的完整提示词与打包参数见 `output/imagegen/walk-directions-prompt.md`。同一角色四个方向按相同比例缩放、对齐脚底，转身时保持体型和站位；宠物图集使用独立纵向比例 `scaleY`，共享模板对旧方形图集仍回退到 `scale`。
 
 ## 验证
 

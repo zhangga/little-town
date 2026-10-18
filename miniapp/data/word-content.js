@@ -1,6 +1,6 @@
-// 与初始词库配套的教学内容。音频随包分发，旧数据库无需重新导入。
-// sentence 的 ___ 是唯一的填空位置；新增词条时同步生成 pronunciation 文件。
-module.exports = {
+// sentence 的 ___ 是唯一的填空位置。课本词表保留单元，供核对和生成音频。
+const textbook = require('./textbook-words')
+const content = {
   apple: { sentence: 'I eat an ___.', meaning: '我吃一个苹果。' },
   book: { sentence: 'I read a ___.', meaning: '我读一本书。' },
   cat: { sentence: 'The ___ says meow.', meaning: '小猫喵喵叫。' },
@@ -27,3 +27,16 @@ module.exports = {
   yellow: { sentence: 'The banana is ___.', meaning: '香蕉是黄色的。' },
   zebra: { sentence: 'The ___ is black and white.', meaning: '斑马是黑白相间的。' }
 }
+
+textbook.forEach((unit) => unit.words.forEach((word) => {
+  const key = word.word.toLowerCase()
+  const extra = {
+    sentence: word.sentence, meaning: word.meaning,
+    audioPackage: Object.prototype.hasOwnProperty.call(content, key) ? content[key].audioPackage : 'textbook-audio'
+  }
+  // 按释义区分同形词，例如原有 orange（橙子）和课本 orange（橙色）。
+  content[key + '|' + word.translation] = extra
+  if (!Object.prototype.hasOwnProperty.call(content, key)) content[key] = extra
+}))
+
+module.exports = content

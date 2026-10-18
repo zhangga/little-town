@@ -17,8 +17,21 @@
 
 ## 素材
 
+### 建筑直接落在草地上
+
+建筑、公园、树林和小旗的草皮／泥土底座已从透明素材中移除。住宅的三个等级和花箱也同步去掉底座，保留建筑基础、门前台阶、树木、花箱等实际物体；在地图上直接露出连续草坪。
+
+地图名称统一使用 `buildingEmoji` 中的对应图标，例如 🏫 学校、🏪 商店、🏥 医院、🐾 宠物医院、🚒 消防站；我的家显示 🏡。图标在名称前独立排版，不改变点击建筑查看详情、点击空地建造的行为。
+
+- 内置 imagegen 编辑源图：`output/imagegen/town-grounded-source.png`、`output/imagegen/home-grounded-source.png`。
+- 完整提示词和图集打包记录：`output/imagegen/grounded-atlases-prompt.md`。移除底座后分切、等比例缩放、按等分网格排列并保留透明 alpha；砖块、金币和工具图标沿用原素材。
+- 地图效果：`output/town-grounded-preview.png`。
+- 验证：26 项建造、角色和生活测试通过；首页、建造页、角色页和共享模板 WXML 编译通过，首页与全局 WXSS 编译通过。浏览器检查 375px 地图及 320px 全部 11 种建筑、三级住宅：图片加载正常，名称图标无截断，页面无横向溢出，点击建筑可打开对应详情。尚未做微信真机验收。
+
+### 原始图集来源
+
 - 生成方式：内置 imagegen 工具，生成一次、调整图集排列一次。为本项目生成的方块风设计，未提取 Minecraft 原版素材。
-- 成品：`miniapp/images/town/voxel-atlas.png`，1024 × 1024 透明 PNG，192,942 字节（约 188 KiB）。保留 alpha，使用调色板压缩；无 CDN 依赖。
+- 当前成品：`miniapp/images/town/voxel-atlas.png`，1024 × 1024 透明 PNG，187,850 字节。保留 alpha，使用调色板压缩；无 CDN 依赖。原始图集的底座已按上文移除。
 - 源图副本：`output/imagegen/town-atlas-source.png`（本地输出目录）。
 - 4 × 4 图集，从左至右、从上至下：学校、商店、医院、公园；餐厅、电影院、图书馆、警察局；消防站、体育馆、空地、树林；砖块、金币、工具、旗帜。
 - 映射：`miniapp/utils/assets.js`；共享模板：`miniapp/templates/voxel.wxml`；图集样式：`miniapp/app.wxss`。

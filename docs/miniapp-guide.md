@@ -220,7 +220,8 @@ miniapp/
 │   ├── index/      # 小镇地图（tabBar 1）
 │   ├── learn/      # 答题（tabBar 2）
 │   ├── build/      # 建造（tabBar 3）
-│   ├── profile/    # 我的（tabBar 4）
+│   ├── resident/   # 小镇长的家（tabBar 4：我的家）
+│   ├── profile/    # 我的（tabBar 5）
 │   └── parent/     # 家长报告（从「我的」进入）
 ├── utils/
 │   ├── config.js   # 环境地址表（开发/体验/正式），改地址只改这里
