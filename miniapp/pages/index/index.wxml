@@ -57,6 +57,7 @@
         <view wx:for="{{walkers}}" wx:key="id" data-actor-id="{{item.id}}" data-direction="{{item.direction}}" class="stroll-actor {{item.moving ? 'stroll-moving' : 'stroll-idle'}} {{item.type === 'pet' ? 'stroll-pet' : ''}}" style="left: {{item.x}}%; top: {{item.y}}rpx; transition-duration: {{item.duration}}ms;">
           <view class="stroll-shadow" />
           <view class="stroll-facing"><view class="stroll-body"><template is="resident-art" data="{{art: item.art}}" /></view></view>
+          <text wx:if="{{item.isHost}}" class="stroll-host-mark">我</text>
           <text wx:if="{{item.bubble}}" class="stroll-bubble">{{item.bubble}}</text>
         </view>
       </view>

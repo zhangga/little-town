@@ -46,12 +46,16 @@ function stepDirection(dx, dy, previous = 'down') {
 function strollingActors(growth, life) {
   const people = []
   if (growth && !(life && life.event && life.event.kind === 'resident_sick')) {
-    people.push({ id: 'town-host', outfit: growth.resident.outfit_id || 'everyday' })
+    people.push({ id: 'town-host', outfit: growth.resident.outfit_id || 'everyday', isHost: true, speed: 27 })
   }
-  people.push({ id: 'neighbor-gardener', outfit: 'gardener' }, { id: 'neighbor-explorer', outfit: 'explorer' })
-  const actors = people.map((person, index) => Object.assign({}, person, {
-    type: 'person', speed: 27 + index * 3
-  }))
+  // 邻居使用独立身份和图集，不会与小镇长可购买的四套服装重复。
+  people.push(
+    { id: 'neighbor-grandpa', villager: 'grandpa', speed: 21 },
+    { id: 'neighbor-grandma', villager: 'grandma', speed: 23 },
+    { id: 'neighbor-adult', villager: 'adult', speed: 31 },
+    { id: 'neighbor-child', villager: 'child', speed: 37 }
+  )
+  const actors = people.map(person => Object.assign({ type: 'person' }, person))
   if (life && !life.petResting) life.companions.forEach((pet, index) => actors.push({
     id: 'pet-' + pet.id, petId: pet.id, type: 'pet', speed: 39 + index * 5,
     icon: pet.id === 'dog' ? '🐕' : pet.id === 'cat' ? '🐈' : pet.icon
@@ -69,6 +73,7 @@ function createStroll(onChange, clock = {
   const emit = () => {
     if (!disposed) onChange(actors.map(actor => ({
       id: actor.id, type: actor.type, icon: actor.icon || '',
+      isHost: !!actor.isHost,
       art: strollArt(actor, actor.direction),
       x: actor.x, y: actor.y, direction: actor.direction, moving: actor.moving,
       duration: actor.duration, bubble: actor.bubble
@@ -128,9 +133,14 @@ function createStroll(onChange, clock = {
       stop()
       signature = nextSignature
       map = nextMap
+      const startingStops = nextActors.map((actor, index) => map.stops[Math.floor(index * map.stops.length / nextActors.length)])
       actors = nextActors.map((actor, index) => {
-        const destination = map.stops[Math.floor(index * map.stops.length / nextActors.length)]
-        return Object.assign({}, actor, destination, { destination, route: [], moving: false, duration: 0, direction: 'down', bubble: '' })
+        const destination = startingStops[index]
+        const neighbors = startingStops.filter(stop => stop === destination).length
+        const order = startingStops.slice(0, index).filter(stop => stop === destination).length
+        // 地点较少时也分开站在同一条草地通道，避免新村民遮住小镇长。
+        const x = Math.max(5, Math.min(95, destination.x + (order - (neighbors - 1) / 2) * 8))
+        return Object.assign({}, actor, destination, { x, destination, route: [], moving: false, duration: 0, direction: 'down', bubble: '' })
       })
       emit()
       if (resume) start()

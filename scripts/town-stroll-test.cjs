@@ -55,7 +55,31 @@ if (require.main === module) {
     assert.equal(strollingActors(growth, { ...life, companions: [] }).filter(a => a.type === 'pet').length, 0)
     assert.equal(strollingActors(growth, { ...life, petResting: true }).filter(a => a.type === 'pet').length, 0)
     assert.equal(strollingActors(growth, { ...life, event: { kind: 'resident_sick' } }).some(a => a.id === 'town-host'), false)
-    assert.equal(strollingActors(null, null).length, 2)
+    assert.equal(strollingActors(null, null).length, 4)
+  })
+
+  test('elderly, adult and child neighbors keep their own identities across every player outfit', () => {
+    let expected
+    for (const outfit of ['everyday', 'builder', 'gardener', 'explorer']) {
+      const actors = strollingActors({resident:{outfit_id:outfit}}, life)
+      const host = actors.find(actor => actor.id === 'town-host')
+      const neighbors = actors.filter(actor => actor.villager)
+      assert.equal(host.outfit,outfit)
+      assert.equal(host.isHost,true)
+      assert.equal(actors.filter(actor => actor.isHost).length,1)
+      assert.deepEqual(neighbors.map(actor => actor.villager),['grandpa','grandma','adult','child'])
+      assert.ok(neighbors.every(actor => !actor.outfit))
+      assert.ok(neighbors.find(actor=>actor.villager==='grandpa').speed < neighbors.find(actor=>actor.villager==='child').speed)
+      if (expected) assert.deepEqual(neighbors,expected)
+      expected=neighbors
+      for (const neighbor of neighbors) for (const direction of ['down','up','left','right']) {
+        const art=strollArt(neighbor,direction)
+        assert.equal(art.src,'/images/resident/villager-directions.png')
+        assert.notDeepEqual(art,strollArt(host,direction))
+      }
+    }
+    const frames = expected.flatMap(actor => ['down','up','left','right'].map(direction => strollArt(actor,direction)))
+    assert.equal(new Set(frames.map(art=>JSON.stringify(art))).size,16)
   })
 
   test('neighbors and both pets travel between rows, pause, and turn independently', () => {
@@ -75,6 +99,19 @@ if (require.main === module) {
     assert.ok(frames.some(frame => frame.some(a => a.moving) && frame.some(a => !a.moving)), 'actors are not synchronized')
     stroll.destroy()
     assert.equal(clock.pending(), 0)
+  })
+
+  test('entering a small town keeps villagers apart and marks only the player', () => {
+    const frames=[]
+    const stroll=createStroll(actors=>frames.push(actors),fakeClock())
+    stroll.sync(walkingMap([{occupied:true,name:'我的家'}],false),strollingActors(growth,life))
+    const actors=frames.at(-1)
+    assert.equal(actors.length,7)
+    assert.equal(new Set(actors.map(actor=>actor.x+':'+actor.y)).size,actors.length)
+    assert.equal(actors.filter(actor=>actor.isHost).length,1)
+    assert.equal(actors.find(actor=>actor.isHost).id,'town-host')
+    assert.ok(actors.every(actor=>actor.x>=5&&actor.x<=95))
+    stroll.destroy()
   })
 
   test('vertical steps face up or down regardless of the previous horizontal direction', () => {
@@ -148,10 +185,10 @@ if (require.main === module) {
     stroll.sync(map, strollingActors(growth, null)); stroll.start(); clock.tick(1000)
     stroll.sync(map, strollingActors(growth, life))
     assert.equal(frames.at(-1).filter(a => a.type === 'pet').length, 2)
-    assert.equal(clock.pending(), 5)
+    assert.equal(clock.pending(), 7)
     stroll.sync(map, strollingActors(growth, { ...life, petResting: true }))
     assert.equal(frames.at(-1).filter(a => a.type === 'pet').length, 0)
-    assert.equal(clock.pending(), 3)
+    assert.equal(clock.pending(), 5)
     clock.tick(60000)
     assert.equal(frames.at(-1).filter(a => a.type === 'pet').length, 0)
     stroll.destroy()

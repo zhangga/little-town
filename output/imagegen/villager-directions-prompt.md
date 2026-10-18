@@ -1,0 +1,15 @@
+# 独立村民四方向图集
+
+生成工具：内置 ImageGen，使用现有 `miniapp/images/resident/walk-directions.png` 作为风格和四方向排列参考，透明背景。玩家图集保持原样，村民使用独立图集，不进入玩家装扮商店。
+
+- 成品：`miniapp/images/resident/villager-directions.png`，768×768，91,707 字节，保留 alpha 的 128 色 PNG。
+- 原始生成图：`output/imagegen/villager-directions-source.png`，1254×1254。
+- 四行：爷爷、奶奶、大人、小孩；四列：向下正面、向上背面、向左侧面、向右侧面。
+- 素材打包：Sharp 按独立人物轮廓裁切，每行统一比例，精确排列为 192×192 方格；脚底基线 y=168，大人及老人最高 156px，小孩最高 120px。只做图集排列、缩放和透明 PNG 压缩，没有改绘角色。
+- 接入：`miniapp/utils/stroll-art.js`；身份、步速及玩家标记：`miniapp/utils/town-stroll.js`。
+
+## 完整提示词
+
+```text
+Use case: stylized-concept. Asset type: production transparent four-direction character sprite atlas for the existing Little Town children's vocabulary game. The attached image is the reference grid and visual style. Create a NEW replacement-character atlas as a sibling asset: preserve exactly its square canvas, 4 columns x 4 rows of equally sized square cells, soft warm stylized 3D toy-game illustration style, lighting, high camera angle, and genuine transparent alpha background. Replace ALL 16 character frames with FOUR completely distinct fixed villagers, one identity per row. These must look clearly unlike the original curly brown-haired young player avatar and ALL of its costumes. Do not use a yellow hardhat, green gardener overalls/straw hat, teal explorer cap, or orange backpack. Row 1: a friendly elderly grandfather, short SILVER hair, silver moustache, round glasses, BURGUNDY cardigan over cream shirt, beige trousers, brown shoes, visibly older facial features. Row 2: an elderly grandmother, WHITE hair in a small bun, lavender cardigan, navy long skirt, brown low shoes, round spectacles, visibly older. Row 3: an adult woman, visibly adult longer torso and limbs and smaller head-to-body ratio than the child/player; straight BLACK hair tied into a ponytail, coral-orange tunic, plum trousers, cream shoes, no hat or backpack. Row 4: a small child girl, BLACK twin pigtails, RED dress with cream short sleeves, mustard leggings, red shoes, clearly shorter and more childlike than the adults. Each row must preserve exactly the same identity, hairstyle, clothing colors and body proportions across its four directions. Exact column order: col 1 FRONT facing down/toward camera; col 2 BACK facing up/away with back of head and clothing visible, NO face; col 3 LEFT profile actually facing left; col 4 RIGHT profile actually facing right. All are full-body relaxed walking poses, arms visible, feet fully visible and aligned near the same lower baseline within each cell. The child should be about 76% of the adult height, leaving more transparent space above her. Every character must fit wholly inside the central 78% width and 84% height of its own cell, with generous transparent gutters, never overlapping another cell. No ground, base, floor, cast shadow, grass, panel, grid lines, letters, text, labels, watermarks, or extra objects. Square canvas. Exact complete 4x4 atlas with 16 separate sprites. Do not retain any original player character.
+```
