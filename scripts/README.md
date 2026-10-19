@@ -4,6 +4,8 @@
 
 微信云托管源码包使用 `scripts\package-cloudrun.ps1` 生成，输出到 `output/cloudrun`。该命令不会发布线上服务。三种运行方式及生产配置见 [部署说明](../docs/deployment.md)。
 
+本地也可以将后端构建成容器，在 backend 目录执行 `docker compose -f docker-compose.yml -f docker-compose.app.yml up -d --build --wait app`。入口为 `http://localhost:18080`，使用现有开发 MySQL；构建、健康检查、日志和停止命令见 [Docker 本地运行说明](../docs/deployment.md#用-docker-构建并运行本地后端)。
+
 | 操作 | Windows | Linux / macOS |
 |------|---------|---------------|
 | 启动数据库 | `scripts\db-start.bat` | `./scripts/db-start.sh` |

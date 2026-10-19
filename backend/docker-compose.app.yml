@@ -1,0 +1,28 @@
+# 与 docker-compose.yml 一起使用，在已有开发数据库旁启动容器化后端。
+# docker compose -f docker-compose.yml -f docker-compose.app.yml up -d --build --wait app
+services:
+  app:
+    image: little-town-backend:local
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: little-town-backend-local
+    restart: unless-stopped
+    env_file:
+      - .env
+    environment:
+      ENV: ${LOCAL_BACKEND_ENV:-development}
+      DEPLOY_TARGET: local
+      SERVER_HOST: 0.0.0.0
+      SERVER_PORT: "8080"
+      # 容器通过 Compose 网络中的服务名连数据库。
+      DB_HOST: mysql
+      DB_PORT: "3306"
+      LOG_TO_FILE: "false"
+      PUSH_ENABLED: "false"
+      INIT_DATA: "false"
+    ports:
+      - "127.0.0.1:${LOCAL_BACKEND_PORT:-18080}:8080"
+    depends_on:
+      mysql:
+        condition: service_healthy

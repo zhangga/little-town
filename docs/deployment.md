@@ -50,6 +50,39 @@ Invoke-RestMethod http://localhost:8080/ready
 
 只有首次空库或更新词库、建筑数据时，才需要在 backend 目录运行 `go run ./cmd/import`。本地未配置微信凭证时允许开发模拟登录；生产环境禁止使用模拟登录。
 
+### 用 Docker 构建并运行本地后端
+
+先准备好 `backend/.env`，其中 DB_USER、DB_PASSWORD、DB_NAME 使用本地开发数据库的值。然后执行：
+
+```powershell
+cd C:\work\github\little-town\backend
+docker compose -f docker-compose.yml -f docker-compose.app.yml up -d --build --wait app
+Invoke-RestMethod http://localhost:18080/health
+Invoke-RestMethod http://localhost:18080/ready
+docker compose -f docker-compose.yml -f docker-compose.app.yml ps
+```
+
+`/health` 应返回 `status=ok, app=little-town`，`/ready` 应返回 `status=ready`。镜像使用同一个 Dockerfile；本地 Compose 会读取 `.env` 并覆盖容器内的监听地址、端口和数据库地址：后端监听 8080，通过服务名 `mysql:3306` 访问已有开发库，宿主机入口为 `http://localhost:18080`。首次执行时会启动 MySQL 并等待就绪，已运行的开发数据库会被复用，原有 8080 端口的本机 Go 进程可以继续使用。
+
+```powershell
+# 查看或持续跟踪后端日志
+docker compose -f docker-compose.yml -f docker-compose.app.yml logs --tail 100 app
+docker compose -f docker-compose.yml -f docker-compose.app.yml logs -f app
+
+# 更新代码后重新构建并启动
+docker compose -f docker-compose.yml -f docker-compose.app.yml up -d --build --wait app
+
+# 仅停止这个后端容器，保留数据库运行
+docker compose -f docker-compose.yml -f docker-compose.app.yml stop app
+
+# 首次空库需要导入初始数据时手动执行
+docker compose -f docker-compose.yml -f docker-compose.app.yml exec app /app/import
+```
+
+小程序开发者工具需要联调这个容器时，把 `miniapp/utils/config.js` 中 `TARGETS.local.baseURL` 改为 `http://localhost:18080/api/v1`。恢复测试本机 Go 服务时改回 8080。这里仍使用本地数据库，已有微信凭证时登录需要真实的 `wx.login()`；冒烟脚本使用开发模拟登录，仅适用于未配置微信凭证的开发实例，并会写入测试账号和学习记录。
+
+可在 `backend/.env` 中设置 `LOCAL_BACKEND_PORT` 改变宿主机端口，默认 18080。设置 `LOCAL_BACKEND_ENV=production` 可额外验证生产配置校验，此时 `.env` 必须包含真实微信凭证和至少 32 字符的随机 JWT_SECRET。云托管实例生命周期与流量切换仍需在云端验证。
+
 ## 微信云托管：复用当前环境
 
 1. 在项目根目录打包源代码：
