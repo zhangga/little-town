@@ -40,7 +40,12 @@ async function harness(options = {}) {
     post: async (url, body) => {
       calls.push({ method: 'POST', url, body })
       if (options.post) return options.post(url, body, server)
-      if (url.includes('/pets/')) {
+      if (url.includes('/supplies/')) {
+        const item = server.supplies.find(item => item.id === body.item_id)
+        server.wallet.coins -= item.price
+        server.needs.food = Math.min(100, server.needs.food + item.food)
+        server.needs.water = Math.min(100, server.needs.water + item.water)
+      } else if (url.includes('/pets/')) {
         const pet = server.pets.find(pet => pet.id === body.pet_id)
         if (!pet.owned) { server.wallet.coins -= pet.price; pet.owned = true }
       } else if (server.event) {
@@ -52,7 +57,7 @@ async function harness(options = {}) {
     }
   }
   vm.runInNewContext(fs.readFileSync(filename, 'utf8'), {
-    require: name => name === '../../utils/api' ? api : name === '../../utils/util' ? { showError: message => errors.push(message) } : name === '../../utils/resident' ? { ...localRequire(name), saveWallet: wallet => Object.assign(storage.userInfo, wallet) } : name === '../../utils/town-stroll' ? { ...localRequire(name), createStroll: onChange => localRequire(name).createStroll(onChange, strollClock, () => .2) } : name === '../../utils/town-layout-editor' ? { createLayoutEditor: (wxApi, api, showError) => localRequire(name).createLayoutEditor(wxApi, api, showError, strollClock) } : localRequire(name),
+    require: name => name === '../../utils/api' ? api : name === '../../utils/util' ? { showError: message => errors.push(message) } : name === '../../utils/resident' ? { ...localRequire(name), saveWallet: wallet => Object.assign(storage.userInfo, wallet) } : name === '../../utils/town-stroll' ? { ...localRequire(name), createStroll: onChange => localRequire(name).createStroll(onChange, strollClock, () => .2) } : name === '../../utils/town-shop' ? { ...localRequire(name), createTownShop: () => localRequire(name).createTownShop(strollClock) } : name === '../../utils/town-layout-editor' ? { createLayoutEditor: (wxApi, api, showError) => localRequire(name).createLayoutEditor(wxApi, api, showError, strollClock) } : localRequire(name),
     Page: value => { definition = value }, wx: {
       getStorageSync: key => storage[key], setStorageSync: (key, value) => { storage[key] = value }, removeStorageSync: key => { delete storage[key] },
       redirectTo() {}, stopPullDownRefresh() {}, switchTab: options => navigation.push(options.url), navigateTo: options => navigation.push(options.url)

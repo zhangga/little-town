@@ -39,6 +39,7 @@ function createLayoutEditor(wxApi, api, showError, clock = {setTimeout: (fn, del
       }
       this._layoutSnapshot = JSON.parse(JSON.stringify({buildings: this.data.buildings, layout: this.data.layout}))
       this.setData({editingLayout: true, layoutDirty: false, selected: null, moveSelection: '', townAnchor: ''}, () => this.measureLayout())
+      this.stopNeedsClock()
       if (this._stroll) this._stroll.stop()
     },
     finishLayoutEditing() {
@@ -46,6 +47,7 @@ function createLayoutEditor(wxApi, api, showError, clock = {setTimeout: (fn, del
       this.setData({editingLayout: false, layoutDirty: false, moveSelection: ''})
       this.syncStroll()
       if (this._stroll && this.data.sceneActive) this._stroll.start()
+      this.startNeedsClock()
     },
     onCancelLayout() {
       if (this.data.layoutSaving) return

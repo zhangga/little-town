@@ -101,12 +101,14 @@ func townEventView(event models.TownEvent) TownEventView {
 }
 
 type TownLifeState struct {
-	Wallet        ResidentWallet  `json:"wallet"`
-	Pets          []TownPetView   `json:"pets"`
-	Buildings     []string        `json:"buildings"`
-	Event         *TownEventView  `json:"event"`
-	Recent        []TownEventView `json:"recent"`
-	UnlockedCount int             `json:"unlocked_count"`
+	Needs         TownNeedsView    `json:"needs"`
+	Supplies      []TownSupplyView `json:"supplies"`
+	Wallet        ResidentWallet   `json:"wallet"`
+	Pets          []TownPetView    `json:"pets"`
+	Buildings     []string         `json:"buildings"`
+	Event         *TownEventView   `json:"event"`
+	Recent        []TownEventView  `json:"recent"`
+	UnlockedCount int              `json:"unlocked_count"`
 }
 
 type TownLifeService struct{ db *gorm.DB }
@@ -233,6 +235,15 @@ func (s *TownLifeService) Resolve(userID, eventID uint) (*TownLifeState, error) 
 func (s *TownLifeService) state(tx *gorm.DB, user *models.User, owned *townOwnership, generate bool) (*TownLifeState, error) {
 	rules := eligibleTownRules(owned.buildingMap, owned.hasPet)
 	state := &TownLifeState{Wallet: ResidentWallet{Coins: user.Coins, Bricks: user.Bricks}, Pets: owned.pets, Buildings: owned.buildings, Recent: []TownEventView{}, UnlockedCount: len(rules)}
+	needs, err := loadTownNeeds(tx, user.ID, owned, time.Now())
+	if err != nil {
+		return nil, err
+	}
+	state.Needs = TownNeedsView{Food: 100, Water: 100}
+	if needs != nil {
+		state.Needs = TownNeedsView{Enabled: true, Food: needs.Food, Water: needs.Water}
+	}
+	state.Supplies = townSuppliesView(owned)
 	var events []models.TownEvent
 	if err := tx.Where("user_id = ?", user.ID).Order("id DESC").Limit(4).Find(&events).Error; err != nil {
 		return nil, err

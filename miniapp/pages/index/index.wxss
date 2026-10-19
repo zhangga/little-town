@@ -159,3 +159,45 @@ page { background: #cfe4b0; }
 .life-alert text:nth-child(2) { flex: 1; min-width: 0; }
 .life-alert text:last-child { font-size: 20rpx; flex-shrink: 0; }
 @media (prefers-reduced-motion: reduce) { .stroll-body, .plot-event { animation: none !important; } .stroll-actor { transition: none !important; } }
+
+/* 吃喝和建筑内的服务。 */
+.town-needs { margin: 0 24rpx 24rpx; padding: 22rpx; border: 2rpx solid #d4cda6; border-radius: 18rpx; background: #fffaf0; }
+.needs-heading { display: flex; justify-content: space-between; align-items: center; gap: 14rpx; margin-bottom: 18rpx; font-size: 26rpx; font-weight: 800; }
+.needs-heading text { display: block; font-size: 20rpx; font-weight: 400; margin-top: 5rpx; color: #7b8166; }
+.town-page .needs-heading button { flex-shrink: 0; padding: 14rpx 16rpx; border-radius: 10rpx; background: #f8dfa0; color: #75592e; font-size: 22rpx; }
+.needs-meters { display: flex; gap: 22rpx; }
+.needs-stat { flex: 1; min-width: 0; color: #796140; }
+.needs-stat > view:first-child { display: flex; justify-content: space-between; gap: 6rpx; font-size: 22rpx; }
+.needs-track { height: 12rpx; margin-top: 9rpx; border-radius: 10rpx; overflow: hidden; background: #e6e6d5; }
+.needs-track > view { height: 100%; background: #d9ad50; border-radius: inherit; transition: width 350ms; }
+.needs-water .needs-track > view { background: #76abb5; }
+.needs-low .needs-track > view { background: #d77a4c; }
+.building-sheet { width: 100%; max-height: 86vh; display: flex; flex-direction: column; overflow: hidden; border: 3rpx solid #4b4935; border-radius: 24rpx; background: #fffaf0; box-shadow: 0 8rpx 0 #344330; }
+.building-awning { height: 18rpx; flex-shrink: 0; background: #829b64; }
+.building-awning-shop { height: 32rpx; background: repeating-linear-gradient(90deg,#648c5c 0,#648c5c 45rpx,#e7efd1 45rpx,#e7efd1 90rpx); border-bottom: 4rpx solid #aabd8a; }
+.building-body { flex: 1; min-height: 0; overflow: hidden; }
+.building-header { display: flex; align-items: center; gap: 12rpx; padding: 20rpx 24rpx 12rpx; }
+.building-header-art { width: 132rpx; height: 132rpx; flex-shrink: 0; }
+.building-kicker { display: block; font-size: 20rpx; color: #7d8b62; }
+.building-header .detail-title { margin: 6rpx 0; font-size: 34rpx; }
+.building-wallet { color: #956d2d; font-size: 23rpx; font-weight: 700; }
+.building-body .needs-meters { margin: 0 28rpx 22rpx; padding: 20rpx; background: #f0f1dd; border-radius: 12rpx; }
+.shop-intro { display: block; margin: 0 28rpx 14rpx; font-size: 22rpx; color: #7b8066; }
+.supply-row { display: flex; align-items: center; gap: 16rpx; padding: 20rpx 0; margin: 0 28rpx; border-top: 2rpx dashed #dcd6b7; }
+.supply-icon { font-size: 68rpx; width: 80rpx; text-align: center; flex-shrink: 0; }
+.supply-copy { flex: 1; min-width: 0; }
+.supply-copy > view { font-size: 26rpx; font-weight: 800; }
+.supply-copy > text { display: block; margin-top: 6rpx; font-size: 21rpx; color: #81906a; }
+.town-page .supply-buy { min-width: 146rpx; flex-shrink: 0; padding: 12rpx 14rpx; background: #f5d784; border: 2rpx solid #bca05e; border-radius: 12rpx; color: #6d5329; line-height: 1.6; }
+.supply-buy > view { font-size: 24rpx; font-weight: 800; }
+.supply-buy > text { font-size: 20rpx; }
+.town-page .supply-buy[disabled] { background: #e7e8d8; border-color: #c5c8b5; color: #8a927b; }
+.building-note, .building-service { margin: 16rpx 28rpx 24rpx; padding: 22rpx; background: #eef0da; border-radius: 12rpx; font-size: 25rpx; line-height: 1.8; }
+.building-service > view { font-weight: 800; }
+.building-service > text { display: block; margin: 8rpx 0 20rpx; font-size: 23rpx; color: #74845c; }
+.town-page .building-activity { width: calc(100% - 56rpx); margin: 24rpx 28rpx 12rpx; background: #527346; color: #fffaf0; border-radius: 12rpx; padding: 18rpx; font-size: 26rpx; }
+.building-free { display: block; margin: 12rpx 28rpx 24rpx; text-align: center; color: #8c9276; font-size: 20rpx; }
+.building-footer { flex-shrink: 0; padding: 18rpx 28rpx; border-top: 2rpx solid #e5dfc8; }
+.town-page .building-footer button { width: 100%; padding: 14rpx; color: #5f744b; font-size: 26rpx; background: #e8edda; border-radius: 12rpx; }
+.shop-unavailable { margin: 24rpx; font-size: 24rpx; }
+.town-page .shop-unavailable button { font-size: 24rpx; padding: 14rpx; margin-top: 16rpx; }

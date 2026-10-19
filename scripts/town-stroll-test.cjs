@@ -89,8 +89,8 @@ if (require.main === module) {
     stroll.sync(walkingMap(plots, true), strollingActors(growth, life)); stroll.start()
     const initial = frames[0]
     clock.tick(120000)
-    for (const actor of initial) {
-      const states = frames.map(frame => frame.find(a => a.id === actor.id))
+    for (const actor of initial.filter(actor => !actor.visitor)) {
+      const states = frames.map(frame => frame.find(a => a.id === actor.id)).filter(Boolean)
       assert.ok(states.some(a => a.y !== actor.y), actor.id + ' visits another row')
       assert.ok(states.some(a => a.moving && a.duration > 0))
       assert.ok(states.some(a => !a.moving && a.bubble))
@@ -107,10 +107,12 @@ if (require.main === module) {
     stroll.sync(walkingMap([{occupied:true,name:'我的家'}],false),strollingActors(growth,life))
     const actors=frames.at(-1)
     assert.equal(actors.length,7)
-    assert.equal(new Set(actors.map(actor=>actor.x+':'+actor.y)).size,actors.length)
+    const residents = actors.filter(actor=>!actor.visitor)
+    assert.equal(new Set(residents.map(actor=>actor.x+':'+actor.y)).size,residents.length)
     assert.equal(actors.filter(actor=>actor.isHost).length,1)
     assert.equal(actors.find(actor=>actor.isHost).id,'town-host')
-    assert.ok(actors.every(actor=>actor.x>=5&&actor.x<=95))
+    assert.ok(actors.filter(actor=>!actor.visitor).every(actor=>actor.x>=5&&actor.x<=95))
+    assert.ok(actors.filter(actor=>actor.visitor).every(actor=>actor.x<0||actor.x>100))
     stroll.destroy()
   })
 
@@ -133,11 +135,12 @@ if (require.main === module) {
     const seen = new Set()
     for (let frame = 1; frame < frames.length; frame++) for (const current of frames[frame]) {
       const previous = frames[frame - 1].find(a => a.id === current.id)
+      if (!previous) continue
       const dx = current.x - previous.x, dy = current.y - previous.y
       if (current.moving && (dx || dy)) {
         const expected = dy ? dy > 0 ? 'down' : 'up' : dx > 0 ? 'right' : 'left'
         assert.equal(current.direction, expected, current.id + ' faces its actual next step')
-        assert.deepEqual(current.art, strollArt(actors.find(a => a.id === current.id), expected))
+        assert.deepEqual(current.art, strollArt(current, expected))
         seen.add(current.type + ':' + expected)
       } else if (!current.moving && previous.moving) {
         assert.equal(current.direction, previous.direction, 'resting does not snap back to a front view')
@@ -193,4 +196,47 @@ if (require.main === module) {
     assert.equal(frames.at(-1).filter(a => a.type === 'pet').length, 0)
     stroll.destroy()
   })
+  test('visitors enter from outside, leave permanently, and are replaced without removing the host or pets', () => {
+    const clock=fakeClock(), frames=[]
+    const stroll=createStroll(actors=>frames.push(structuredClone(actors)),clock,()=>.2)
+    const map=walkingMap(plots,true)
+    stroll.sync(map,strollingActors(growth,life));stroll.start();clock.tick(20*60000)
+    const seen=new Set(), retired=new Set()
+    let previous=[]
+    for(const frame of frames) {
+      assert.equal(frame.filter(a=>a.visitor).length,4)
+      for(const id of ['town-host','pet-cat','pet-dog']) assert.ok(frame.some(a=>a.id===id))
+      for(const old of previous.filter(a=>a.visitor)) if(!frame.some(a=>a.id===old.id)) {
+        assert.equal(old.phase,'leaving');assert.ok(old.x<0||old.x>100)
+        retired.add(old.id)
+      }
+      for(const actor of frame.filter(a=>a.visitor)) {
+        assert.ok(!retired.has(actor.id),'departed identities never come back')
+        if(!seen.has(actor.id)) {assert.equal(actor.phase,'entering');assert.ok(actor.x<0||actor.x>100);seen.add(actor.id)}
+      }
+      previous=frame
+    }
+    assert.ok(retired.size>=4);assert.ok(seen.size>=8)
+    const before=frames.at(-1).filter(a=>a.visitor)
+    stroll.sync(map,strollingActors(growth,{...life,companions:[]}))
+    assert.deepEqual(frames.at(-1).filter(a=>a.visitor),before,'pet state changes preserve visitors and current routes')
+    stroll.stop();assert.equal(clock.pending(),0)
+    stroll.start();clock.tick(60000);stroll.destroy();assert.equal(clock.pending(),0)
+  })
+
+  test('a building activity sends the host to the selected building without cutting a moving step short',()=>{
+    const clock=fakeClock(),frames=[]
+    const stroll=createStroll(actors=>frames.push(structuredClone(actors)),clock,()=>.2)
+    const map=walkingMap(plots,true)
+    stroll.sync(map,strollingActors(growth,life));stroll.start();clock.tick(700)
+    const before=frames.at(-1).find(a=>a.isHost)
+    assert.equal(stroll.visitHost('公园'),true)
+    assert.deepEqual(frames.at(-1).find(a=>a.isHost),before)
+    clock.tick(120000)
+    const park=map.stops.find(stop=>stop.name==='公园')
+    assert.ok(frames.some(frame=>frame.some(a=>a.isHost&&!a.moving&&a.x===park.x&&a.y===park.y&&a.bubble==='看看花儿')))
+    assert.equal(stroll.visitHost('不存在的建筑'),false)
+    stroll.destroy()
+  })
+
 }

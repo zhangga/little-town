@@ -96,5 +96,7 @@ func AutoMigrate(db *gorm.DB) error {
 		&models.PracticeRound{},
 		&models.TownPet{},
 		&models.TownEvent{},
+		&models.TownNeeds{},
+		&models.TownSupplyPurchase{},
 	)
 }

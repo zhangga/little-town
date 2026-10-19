@@ -64,9 +64,10 @@ func TestPracticeRoutesRequireLogin(t *testing.T) {
 func TestTownLifeRoutesRequireLogin(t *testing.T) {
 	r := SetupRouter(nil, &config.Config{})
 	for path, method := range map[string]string{
-		"/api/v1/town-life":                "GET",
-		"/api/v1/town-life/pets/purchase":  "POST",
-		"/api/v1/town-life/events/resolve": "POST",
+		"/api/v1/town-life":                   "GET",
+		"/api/v1/town-life/pets/purchase":     "POST",
+		"/api/v1/town-life/supplies/purchase": "POST",
+		"/api/v1/town-life/events/resolve":    "POST",
 	} {
 		res := httptest.NewRecorder()
 		r.ServeHTTP(res, httptest.NewRequest(method, path, strings.NewReader(`{}`)))

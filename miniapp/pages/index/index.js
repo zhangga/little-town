@@ -6,6 +6,7 @@ const { presentResident, saveWallet } = require('../../utils/resident')
 const { presentLife, townScene } = require('../../utils/town-life')
 const { createStroll, strollingActors } = require('../../utils/town-stroll')
 const { createLayoutEditor } = require('../../utils/town-layout-editor')
+const { presentBuilding, createTownShop } = require('../../utils/town-shop')
 
 Page(Object.assign({
   data: {
@@ -30,14 +31,17 @@ Page(Object.assign({
     this.setData({ sceneActive: true })
     if (this._stroll && !this.data.editingLayout) this._stroll.start()
     if (wx.getStorageSync('token') && !this.data.editingLayout) this.loadTown()
+    this.startNeedsClock()
   },
 
   onHide() {
+    this.stopNeedsClock()
     this.setData({ sceneActive: false })
     this.stopLayoutDrag()
     if (this._stroll) this._stroll.stop()
   },
   onUnload() {
+    this.stopNeedsClock()
     this.stopLayoutDrag()
     this._disposed = true
     if (this._stroll) this._stroll.destroy()
@@ -46,6 +50,7 @@ Page(Object.assign({
   syncStroll() {
     if (this._stroll && this.data.walkMap && !this.data.editingLayout) {
       this._stroll.sync(this.data.walkMap, strollingActors(this.data.growth, this.data.life))
+      this._stroll.setNeeds(this.data.life && this.data.life.needs)
     }
   },
 
@@ -96,10 +101,12 @@ Page(Object.assign({
     const life = presentLife(raw)
     const selectedPet = this.data.selectedPet && life.pets.find(pet => pet.id === this.data.selectedPet.id && !pet.owned)
     const growth = this.data.growth ? Object.assign({}, this.data.growth, { wallet: life.wallet }) : null
-    this.setData({ life, lifeFailed: false, growth, selectedPet: selectedPet || null,
+    this.setData({ life, lifeFailed: false, growth, selected: presentBuilding(this.data.selected, life), selectedPet: selectedPet || null,
       town: Object.assign({}, this.data.town, life.wallet), scene: townScene(life.buildings, new Date().getHours()) })
     this.syncStroll()
     saveWallet(life.wallet)
+    if (!life.needs.enabled) this.stopNeedsClock()
+    else if (!this._needsTimer) this.startNeedsClock()
   },
 
   onSelectPet(e) {
@@ -144,7 +151,7 @@ Page(Object.assign({
       const state = await api.post(url, body)
       if (this._disposed) return
       this.applyLife(state)
-      this.setData({ selectedPet: null, lifeFeedback: feedback })
+      this.setData({ selectedPet: null, lifeFeedback: typeof feedback === 'function' ? feedback(this.data.life) : feedback })
     } catch (err) {
       if (this._disposed) return
       showError(err.message || '小镇生活暂时没连上')
@@ -167,10 +174,10 @@ Page(Object.assign({
     if (!plot) return
     if (plot.home) { this.onGoResident(); return }
     if (!plot.occupied) { this.onGoBuild(); return }
-    this.setData({ selected: plot })
+    this.setData({ selected: presentBuilding(plot, this.data.life) })
   },
 
-  onCloseDetail() { this.setData({ selected: null }) },
+  onCloseDetail() { if (!this.data.lifeBusy) this.setData({ selected: null }) },
   onNoop() {},
   onGoLearn() { wx.switchTab({ url: '/pages/learn/learn' }) },
   onGoBuild() { wx.switchTab({ url: '/pages/build/build' }) },
@@ -179,4 +186,4 @@ Page(Object.assign({
   onShareAppMessage() {
     return { title: '学单词，建一座自己的方块小镇', path: '/pages/index/index' }
   }
-}, createLayoutEditor(wx, api, showError)))
+}, createLayoutEditor(wx, api, showError), createTownShop()))

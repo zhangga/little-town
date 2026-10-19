@@ -17,3 +17,19 @@ type TownEvent struct {
 	ResolvedAt *time.Time `json:"resolved_at"`
 	CreatedAt  time.Time  `gorm:"index:idx_town_event_user,priority:2" json:"created_at"`
 }
+
+// TownNeeds 只在有补给建筑后启用；CheckedAt 保留不足一分钟的时间。
+type TownNeeds struct {
+	UserID    uint      `gorm:"primaryKey;autoIncrement:false"`
+	Food      int       `gorm:"not null"`
+	Water     int       `gorm:"not null"`
+	CheckedAt time.Time `gorm:"not null"`
+}
+
+// 同一账号同一请求只能消费一次，允许主动购买多份补给。
+type TownSupplyPurchase struct {
+	UserID    uint   `gorm:"primaryKey;autoIncrement:false"`
+	RequestID string `gorm:"primaryKey;size:80"`
+	ItemID    string `gorm:"size:32;not null"`
+	CreatedAt time.Time
+}
