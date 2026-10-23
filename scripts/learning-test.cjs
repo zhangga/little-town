@@ -63,7 +63,8 @@ function loadPronunciation(loadPackage = (name, success) => {
   const filename = path.resolve(__dirname, '../miniapp/utils/pronunciation.js')
   const module = { exports: {} }
   vm.runInNewContext(fs.readFileSync(filename, 'utf8'), {
-    module, exports: module.exports, require: loadPackage,
+    module, exports: module.exports,
+    require: (name, ...args) => name === './sound' ? { setSpeechActive() {} } : loadPackage(name, ...args),
     setTimeout, clearTimeout, console
   }, { filename })
   return module.exports.createPronunciation
@@ -465,8 +466,10 @@ test('all seed words have examples and both packaged pronunciations within each 
   const config = require('../miniapp/app.json')
   assert.ok(config.subpackages.some(pkg => pkg.root === 'textbook-audio'))
   assert.ok(config.preloadRule['pages/learn/learn'].packages.includes('textbook-audio'))
-  assert.ok(size(root, ['textbook-audio']) < 2 * 1024 * 1024, 'main package must stay within 2 MiB')
-  assert.ok(size(path.join(root, 'textbook-audio')) < 2 * 1024 * 1024, 'textbook audio must stay within 2 MiB')
+  assert.ok(size(root, config.subpackages.map(pkg => pkg.root)) < 2 * 1024 * 1024, 'main package must stay within 2 MiB')
+  for (const pkg of config.subpackages) {
+    assert.ok(size(path.join(root, pkg.root)) < 2 * 1024 * 1024, pkg.root + ' must stay within 2 MiB')
+  }
 })
 
 test('textbook pronunciation waits for its package, caches successful loads and ignores cancelled callbacks', () => {

@@ -64,7 +64,7 @@ function request(options) {
         resolve(res.data)
         return
       }
-      if (res.statusCode === 401) {
+      if (res.statusCode === 401 && options.needAuth !== false) {
         clearToken()
         wx.removeStorageSync('userInfo')
         const pages = getCurrentPages()

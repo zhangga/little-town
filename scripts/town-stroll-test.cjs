@@ -2,11 +2,13 @@ const test = require('node:test')
 const assert = require('node:assert/strict')
 const { walkingMap, routeBetween, strollingActors, stepDirection, createStroll } = require('../miniapp/utils/town-stroll')
 const { strollArt } = require('../miniapp/utils/stroll-art')
+const { townPlots } = require('../miniapp/utils/town')
 
 function fakeClock() {
   let now = 0, serial = 0
   const tasks = new Map()
   return {
+    now: () => now,
     setTimeout(fn, delay) { const id = ++serial; tasks.set(id, { fn, at: now + delay }); return id },
     clearTimeout(id) { tasks.delete(id) },
     pending() { return tasks.size },
@@ -44,6 +46,35 @@ if (require.main === module) {
           previous = next
         }
         assert.equal(previous.x, to.x); assert.equal(previous.y, to.y)
+      }
+    }
+  })
+
+  test('routes through a rearranged town keep the walking footprint in the narrow grass gaps', () => {
+    const town = townPlots([
+      { id: 1, name: '学校', position_x: 2, position_y: 0 },
+      { id: 2, name: '医院', position_x: 0, position_y: 3 },
+      { id: 3, name: '公园', position_x: 1, position_y: 5 }
+    ], '', true, { rows: 6, home: { position_x: 2, position_y: 4 } })
+    for (const stop of town.walkMap.stops) {
+      const plot = town.plots.find(plot => plot.name === stop.name)
+      assert.ok(Math.abs(stop.x - plot.left - 100 / 6) < .01)
+      assert.ok(stop.y > plot.top + 272 && stop.y < plot.top + 344)
+    }
+    for (const from of town.walkMap.stops) for (const to of town.walkMap.stops) for (const lane of [100 / 3, 200 / 3]) {
+      let previous = from
+      for (const next of routeBetween(from, to, lane)) {
+        assert.ok(previous.x === next.x || previous.y === next.y)
+        for (let step = 0; step <= 40; step++) {
+          const x = (previous.x + (next.x - previous.x) * step / 40) * 7.5
+          const y = previous.y + (next.y - previous.y) * step / 40
+          for (const plot of town.plots) {
+            const center = (plot.left + 100 / 6) * 7.5
+            const overlapsPlot = x + 14 > center - 107 && x - 14 < center + 107 && y + 5 > plot.top && y - 5 < plot.top + 272
+            assert.ok(!overlapsPlot, 'feet stay on grass beside ' + plot.id)
+          }
+        }
+        previous = next
       }
     }
   })
@@ -237,6 +268,27 @@ if (require.main === module) {
     assert.ok(frames.some(frame=>frame.some(a=>a.isHost&&!a.moving&&a.x===park.x&&a.y===park.y&&a.bubble==='看看花儿')))
     assert.equal(stroll.visitHost('不存在的建筑'),false)
     stroll.destroy()
+  })
+
+  test('resuming a moving actor waits for the unfinished leg before turning', () => {
+    const clock = fakeClock(), frames = []
+    const stroll = createStroll(actors => frames.push(structuredClone(actors)), clock, () => .2)
+    const map = walkingMap([
+      { occupied: true, name: '我的家' }, { occupied: true, name: '学校' },
+      { occupied: true, name: '医院' }, { occupied: true, name: '公园' }
+    ], false)
+    stroll.sync(map, [{ id: 'host', isHost: true, type: 'person', speed: 27 }])
+    stroll.start(); clock.tick(500)
+    const horizontal = frames.at(-1)[0]
+    assert.equal(horizontal.direction, 'right')
+    clock.tick(100)
+    stroll.stop(); stroll.start()
+    clock.tick(horizontal.duration - 101)
+    assert.deepEqual(frames.at(-1)[0], horizontal, 'the horizontal leg must finish before a vertical leg starts')
+    clock.tick(200)
+    assert.equal(frames.at(-1)[0].direction, 'down')
+    stroll.destroy()
+    assert.equal(clock.pending(), 0)
   })
 
 }

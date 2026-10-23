@@ -10,11 +10,19 @@
   ],
   "subpackages": [
     {
+      "root": "town-audio",
+      "pages": ["index/index"]
+    },
+    {
       "root": "textbook-audio",
       "pages": ["index/index"]
     }
   ],
   "preloadRule": {
+    "pages/index/index": {
+      "network": "all",
+      "packages": ["town-audio"]
+    },
     "pages/learn/learn": {
       "network": "all",
       "packages": ["textbook-audio"]

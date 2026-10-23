@@ -1,0 +1,61 @@
+<template name="building-room">
+  <view class="interior-room room-{{selected.interior.theme}}" aria-hidden="true">
+    <view class="room-window"><view /><view /></view><view class="room-lamp" />
+    <text class="room-sign">{{selected.interior.sign}}</text>
+    <view class="room-title">{{selected.interior.room}}</view>
+    <view class="room-furnishings"><view wx:for="{{selected.interior.props}}" wx:key="label" class="room-object"><text>{{item.icon}}</text><view>{{item.label}}</view></view></view>
+    <view class="room-floor" />
+  </view>
+  <view class="interior-greeting"><text class="greeting-avatar">{{selected.icon}}</text><view><text class="greeting-name">{{selected.interior.host}}</text><view>{{selected.interior.welcome}}</view></view></view>
+</template>
+
+<template name="building-lobby">
+  <view class="interior-section-title"><view>{{selected.interior.theme === 'cinema' ? '今日上映' : '今天想做点什么'}}</view><text>入场后，慢慢玩</text></view>
+  <view class="activity-menu">
+    <view wx:for="{{selected.activities}}" wx:key="id" class="activity-card activity-card-{{item.kind}}">
+      <view class="activity-card-top"><view class="activity-cover">{{item.icon}}</view><view class="activity-card-copy"><text class="activity-duration">{{item.duration}}</text><view>{{item.name}}</view><text class="activity-description">{{item.description}}</text></view></view>
+      <view class="activity-card-bottom"><text class="activity-price">{{item.receipt ? '✓ 已有入场票' : item.price + ' 金币 / 次'}}</text><button class="activity-enter" data-id="{{item.id}}" bindtap="onStartBuildingActivity" disabled="{{lifeBusy || refreshing || !life || !item.available || !item.supported}}" loading="{{lifeBusy && pendingActivity === item.id}}">{{!item.supported ? '稍后开放' : !item.available ? '待解锁' : pendingActivity === item.id ? '确认上次入场' : item.receipt ? '免费重玩 →' : item.affordable ? (item.kind === 'movie' ? '买票入场 →' : '开始体验 →') : '攒金币去 →'}}</button></view>
+      <text wx:if="{{!item.available}}" class="activity-card-note">{{item.locked_reason}}</text>
+      <text wx:elif="{{!item.affordable && !item.receipt && pendingActivity !== item.id}}" class="activity-card-note">还差 {{item.missing}} 金币，学单词就能攒到。</text>
+      <text wx:elif="{{pendingActivity === item.id}}" class="activity-card-note">继续确认同一张入场票，不会重复扣款。</text>
+    </view>
+  </view>
+  <view wx:if="{{!life || !selected.activities.length}}" class="interior-unavailable"><text>体验项目暂时没连上，重新确认一下入场记录。</text><button bindtap="loadTown" disabled="{{refreshing || lifeBusy}}">重新加载</button></view>
+  <view wx:if="{{selected.activities.length}}" class="interior-admission-note">选好项目才扣金币 · 最近 12 张入场票可免费重玩</view>
+  <view wx:if="{{selected.visits.length}}" class="interior-visits"><text>🎟️ 我的入场票</text><view wx:for="{{selected.visits}}" wx:key="request_id"><text>{{item.icon}} {{item.name}}</text><text>{{item.price}} 金币 · 已入场</text></view></view>
+</template>
+
+<template name="building-session">
+  <view class="activity-player {{session.kind === 'movie' ? 'movie-player' : ''}}">
+    <view class="activity-player-heading"><text>{{session.kind === 'movie' ? '小镇私人放映厅' : session.title}}</text><text>{{session.complete ? '已完成' : session.step + 1 + ' / ' + session.total}}</text></view>
+    <view class="activity-stage stage-theme-{{session.scene.theme}} {{session.kind === 'movie' ? 'movie-screen' : ''}} {{session.paused || !sceneActive || session.complete ? 'activity-paused' : 'activity-playing'}}" style="background-color: {{session.scene.sky}};">
+      <view class="stage-sun" /><view class="stage-cloud cloud-one" /><view class="stage-cloud cloud-two" />
+      <view class="stage-hill hill-far" /><view class="stage-hill hill-near" />
+      <text class="stage-eyebrow">{{session.scene.eyebrow}}</text>
+      <view wx:if="{{session.kind !== 'sport' || session.complete}}" class="stage-actors motion-{{session.scene.motion}}"><text class="stage-hero">{{session.scene.hero}}</text><text class="stage-prop">{{session.scene.prop}}</text></view>
+      <view wx:if="{{session.kind === 'sport' && !session.complete}}" class="sport-court">
+        <text class="sport-score">命中 {{session.score}} / {{session.total}}</text>
+        <view class="sport-targets"><button wx:for="{{session.choices}}" wx:key="id" class="sport-target {{session.scene.target === item.id ? 'sport-target-lit' : ''}}" data-id="{{item.id}}" data-step="{{session.step}}" bindtap="onActivityChoice" aria-label="{{item.label}}"><view wx:if="{{session.id === 'stadium_hoops'}}" class="sport-hoop"><view /></view><view wx:else class="sport-goal"><text>{{session.scene.target === item.id ? '⭐' : ''}}</text></view><text>{{session.scene.target === item.id ? '★ 瞄准这里' : item.label}}</text></button></view>
+        <text class="sport-ball">{{session.id === 'stadium_hoops' ? '🏀' : '⚽'}}</text>
+      </view>
+      <view wx:if="{{session.scene.items.length}}" class="stage-items"><view wx:for="{{session.scene.items}}" wx:key="id" class="stage-item {{item.selected ? 'stage-item-done' : ''}}" aria-label="{{item.label + (item.selected ? '，已完成' : '')}}"><text>{{item.icon}}</text><text>{{item.selected ? '✓' : ''}}</text></view></view>
+      <text wx:if="{{session.kind === 'movie' && session.paused && !session.complete}}" class="movie-pause-label">已暂停</text>
+      <view wx:if="{{session.complete}}" class="activity-finish-stamp">{{session.kind === 'movie' ? 'THE END' : '完成啦！'}}</view>
+    </view>
+    <view wx:if="{{session.kind === 'movie'}}" class="cinema-seats" aria-hidden="true"><view /><view /><view /><view /><view /><view /></view>
+    <view class="activity-progress"><view style="width: {{session.progress}}%;" /></view>
+    <view class="activity-caption">{{session.scene.caption}}</view>
+    <block wx:if="{{!session.complete}}">
+      <view wx:if="{{session.kind === 'movie'}}" class="movie-controls"><button bindtap="onActivityPause" class="activity-secondary">{{session.paused ? '▶ 继续播放' : 'Ⅱ 暂停一下'}}</button><button bindtap="onActivityNext" class="activity-secondary">下一幕 ›</button></view>
+      <block wx:else>
+        <view class="activity-prompt">{{session.scene.prompt}}</view>
+        <view wx:if="{{session.kind !== 'sport'}}" class="activity-choices choices-{{session.kind}}"><button wx:for="{{session.choices}}" wx:key="id" class="activity-choice {{item.selected ? 'choice-selected' : ''}}" data-id="{{item.id}}" data-step="{{session.step}}" bindtap="onActivityChoice" disabled="{{item.disabled || lifeBusy}}"><text class="choice-icon">{{item.icon}}</text><text>{{item.label}}</text></button></view>
+        <view wx:else class="sport-instruction">轻点球场上亮起的{{session.id === 'stadium_hoops' ? '篮筐' : '球门'}}，试试能不能命中</view>
+      </block>
+      <view class="activity-feedback" aria-live="polite">{{session.feedback || (session.kind === 'movie' ? '故事会自动播放，也可以自己翻到下一幕。' : '慢慢来，试一试就有新发现。')}}</view>
+    </block>
+    <view wx:else class="activity-result"><text class="activity-result-kicker">{{session.kind === 'movie' ? '谢谢观看' : '今天的小小成就'}}</text><view>{{session.result}}</view><button bindtap="onActivityReplay" class="activity-replay">{{session.kind === 'movie' ? '再看一遍 · 免费' : '再玩一次 · 免费'}}</button></view>
+    <view class="activity-ticket"><text>🎟️ {{session.receipt.name || session.title}}</text><text>已付 {{session.receipt.price}} 金币 · 重玩免费</text></view>
+    <button class="activity-back" bindtap="onActivityLobby">返回{{selected.name}}大厅</button>
+  </view>
+</template>

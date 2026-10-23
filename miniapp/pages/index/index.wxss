@@ -1,3 +1,4 @@
+@import "./building-interior.wxss";
 page { background: #cfe4b0; }
 .town-page { height: 100vh; display: flex; flex-direction: column; color: #344330; background: #e5edd3; }
 .town-page button { margin: 0; padding: 0; font-family: inherit; }
@@ -7,6 +8,12 @@ page { background: #cfe4b0; }
 .town-resource-art { width: 55rpx; height: 55rpx; }
 .town-resource-num { font-size: 29rpx; font-weight: 900; color: #473b2c; font-variant-numeric: tabular-nums; }
 .town-count { margin-left: auto; padding: 8rpx 16rpx; border-radius: 8rpx; background: #e5edda; font-size: 22rpx; font-weight: 700; }
+.town-soundbar { display: flex; align-items: center; gap: 12rpx; flex-shrink: 0; padding: 8rpx 24rpx; background: #f5f5e7; border-bottom: 2rpx solid #d1d9bd; }
+.soundbar-caption { flex: 1; min-width: 0; color: #697953; font-size: 21rpx; white-space: nowrap; }
+.soundbar-caption > text { color: #a4833c; font-size: 28rpx; }
+.town-page .sound-toggle { display: flex; align-items: center; justify-content: center; gap: 8rpx; width: auto; min-height: 64rpx; padding: 8rpx 14rpx; flex-shrink: 0; border: 2rpx solid #c9d1bb; border-radius: 12rpx; background: #f0f0e8; color: #737a68; font-size: 22rpx; line-height: 1.4; }
+.town-page .sound-enabled { color: #436036; background: #e5edcf; border-color: #adbd91; }
+.sound-toggle-state { padding: 2rpx 7rpx; border-radius: 6rpx; font-size: 18rpx; background: rgba(255,255,255,.65); }
 .town-scroll { flex: 1; min-height: 0; }
 .layout-toolbar { display: flex; align-items: center; gap: 12rpx; padding: 10rpx 20rpx; background: #fffcf3; border-bottom: 2rpx solid #cad5b5; flex-shrink: 0; }
 .layout-copy { flex: 1; min-width: 0; }
@@ -92,7 +99,7 @@ page { background: #cfe4b0; }
 .town-evening { background-color: #789746; border-color: #718b48; }
 .town-evening .land-meadow::after { content: ''; position: absolute; inset: 0; background: rgba(35,61,49,.12); }
 .town-strollers { position: absolute; inset: 0; pointer-events: none; z-index: 1; }
-.stroll-actor { position: absolute; width: 0; height: 0; transition-property: left, top; transition-timing-function: linear; pointer-events: none; }
+.stroll-actor { position: absolute; width: 0; height: 0; transition-property: none; transition-timing-function: linear; pointer-events: none; }
 .stroll-shadow { position: absolute; left: -14rpx; top: -5rpx; width: 28rpx; height: 8rpx; background: rgba(45,68,27,.22); border-radius: 50%; }
 .stroll-facing { position: absolute; left: -44rpx; top: -76rpx; width: 88rpx; height: 88rpx; }
 .stroll-body { width: 100%; height: 100%; transform-origin: 50% 85%; }
@@ -172,10 +179,11 @@ page { background: #cfe4b0; }
 .needs-track > view { height: 100%; background: #d9ad50; border-radius: inherit; transition: width 350ms; }
 .needs-water .needs-track > view { background: #76abb5; }
 .needs-low .needs-track > view { background: #d77a4c; }
-.building-sheet { width: 100%; max-height: 86vh; display: flex; flex-direction: column; overflow: hidden; border: 3rpx solid #4b4935; border-radius: 24rpx; background: #fffaf0; box-shadow: 0 8rpx 0 #344330; }
+.building-backdrop { position: absolute; inset: 0; }
+.building-sheet { position: relative; width: 100%; height: 86vh; max-height: 100%; display: flex; flex-direction: column; overflow: hidden; border: 3rpx solid #4b4935; border-radius: 24rpx; background: #fffaf0; box-shadow: 0 8rpx 0 #344330; }
 .building-awning { height: 18rpx; flex-shrink: 0; background: #829b64; }
 .building-awning-shop { height: 32rpx; background: repeating-linear-gradient(90deg,#648c5c 0,#648c5c 45rpx,#e7efd1 45rpx,#e7efd1 90rpx); border-bottom: 4rpx solid #aabd8a; }
-.building-body { flex: 1; min-height: 0; overflow: hidden; }
+.building-body { height: 0; flex: 1; min-height: 0; overflow: hidden; }
 .building-header { display: flex; align-items: center; gap: 12rpx; padding: 20rpx 24rpx 12rpx; }
 .building-header-art { width: 132rpx; height: 132rpx; flex-shrink: 0; }
 .building-kicker { display: block; font-size: 20rpx; color: #7d8b62; }
@@ -197,7 +205,8 @@ page { background: #cfe4b0; }
 .building-service > text { display: block; margin: 8rpx 0 20rpx; font-size: 23rpx; color: #74845c; }
 .town-page .building-activity { width: calc(100% - 56rpx); margin: 24rpx 28rpx 12rpx; background: #527346; color: #fffaf0; border-radius: 12rpx; padding: 18rpx; font-size: 26rpx; }
 .building-free { display: block; margin: 12rpx 28rpx 24rpx; text-align: center; color: #8c9276; font-size: 20rpx; }
-.building-footer { flex-shrink: 0; padding: 18rpx 28rpx; border-top: 2rpx solid #e5dfc8; }
-.town-page .building-footer button { width: 100%; padding: 14rpx; color: #5f744b; font-size: 26rpx; background: #e8edda; border-radius: 12rpx; }
+.building-footer { display: flex; gap: 14rpx; flex-shrink: 0; padding: 18rpx 28rpx; border-top: 2rpx solid #e5dfc8; }
+.town-page .building-footer button { flex: 1; min-width: 0; padding: 14rpx; color: #5f744b; font-size: 26rpx; background: #e8edda; border-radius: 12rpx; }
+.town-page .building-footer .building-lobby-return { background: #f5d784; color: #6d5329; }
 .shop-unavailable { margin: 24rpx; font-size: 24rpx; }
 .town-page .shop-unavailable button { font-size: 24rpx; padding: 14rpx; margin-top: 16rpx; }

@@ -1,3 +1,4 @@
+const { withTapSounds } = require('../../utils/sound-page')
 // pages/parent/parent.js
 const api = require('../../utils/api')
 const { showError, showSuccess } = require('../../utils/util')
@@ -9,7 +10,7 @@ function makeGate() {
   return { a, b, answer: a * b }
 }
 
-Page({
+Page(withTapSounds({
   data: {
     // 家长验证
     verified: false,
@@ -165,4 +166,4 @@ Page({
       path: '/pages/index/index'
     }
   }
-})
+}))

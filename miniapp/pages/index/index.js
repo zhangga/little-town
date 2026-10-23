@@ -7,20 +7,26 @@ const { presentLife, townScene } = require('../../utils/town-life')
 const { createStroll, strollingActors } = require('../../utils/town-stroll')
 const { createLayoutEditor } = require('../../utils/town-layout-editor')
 const { presentBuilding, createTownShop } = require('../../utils/town-shop')
+const { createBuildingInterior } = require('../../utils/building-interior')
+const sound = require('../../utils/sound')
+const { withTapSounds } = require('../../utils/sound-page')
 
-Page(Object.assign({
+Page(withTapSounds(Object.assign({
   data: {
+    soundSettings: { musicEnabled: true, effectsEnabled: true },
     town: { coins: 0, bricks: 0, level: 1, total_buildings: 0 },
     buildings: [], plots: [], meadowTiles: [], walkMap: null, walkers: [], selected: null, loading: true, failed: false, growth: null, growthFailed: false,
     brickSprite: townSprite('砖块'), coinSprite: townSprite('金币'),
     treeSprite: townSprite('树林'), flagSprite: townSprite('旗帜'),
     life: null, lifeFailed: false, lifeBusy: false, refreshing: false,
     selectedPet: null, lifeFeedback: null, townAnchor: '', scene: townScene([], new Date().getHours()), sceneActive: true,
+    activitySession: null, pendingActivity: '',
     layout: null, editingLayout: false, layoutDirty: false, layoutSaving: false,
     dragging: false, dragID: '', dragLeft: 0, dragTop: 0, dropSlot: -1, moveSelection: '', mapScrollTop: 0
   },
 
   onLoad() {
+    this.setData({ soundSettings: sound.getPreferences() })
     this._stroll = createStroll(walkers => {
       if (!this._disposed) this.setData({ walkers })
     })
@@ -28,23 +34,43 @@ Page(Object.assign({
   },
 
   onShow() {
-    this.setData({ sceneActive: true })
+    this.setData({ sceneActive: true, soundSettings: sound.getPreferences() })
+    if (wx.getStorageSync('token')) sound.enterTown()
+    this.startActivityClock()
     if (this._stroll && !this.data.editingLayout) this._stroll.start()
     if (wx.getStorageSync('token') && !this.data.editingLayout) this.loadTown()
     this.startNeedsClock()
   },
 
   onHide() {
+    sound.leaveTown()
+    this.stopActivityClock()
     this.stopNeedsClock()
     this.setData({ sceneActive: false })
     this.stopLayoutDrag()
     if (this._stroll) this._stroll.stop()
   },
   onUnload() {
+    sound.leaveTown()
+    this.stopActivityClock()
     this.stopNeedsClock()
     this.stopLayoutDrag()
     this._disposed = true
     if (this._stroll) this._stroll.destroy()
+  },
+
+  onToggleMusic() {
+    const enabled = !sound.getPreferences().musicEnabled
+    sound.setMusicEnabled(enabled)
+    this.setData({ soundSettings: sound.getPreferences() })
+    sound.playEffect('tap')
+  },
+
+  onToggleEffects() {
+    const enabled = !sound.getPreferences().effectsEnabled
+    sound.setEffectsEnabled(enabled)
+    this.setData({ soundSettings: sound.getPreferences() })
+    if (enabled) sound.playEffect('tap')
   },
 
   syncStroll() {
@@ -152,6 +178,7 @@ Page(Object.assign({
       if (this._disposed) return
       this.applyLife(state)
       this.setData({ selectedPet: null, lifeFeedback: typeof feedback === 'function' ? feedback(this.data.life) : feedback })
+      if (this.data.sceneActive) sound.playEffect('success')
     } catch (err) {
       if (this._disposed) return
       showError(err.message || '小镇生活暂时没连上')
@@ -174,10 +201,14 @@ Page(Object.assign({
     if (!plot) return
     if (plot.home) { this.onGoResident(); return }
     if (!plot.occupied) { this.onGoBuild(); return }
-    this.setData({ selected: presentBuilding(plot, this.data.life) })
+    this.openBuilding(plot)
   },
 
-  onCloseDetail() { if (!this.data.lifeBusy) this.setData({ selected: null }) },
+  onCloseDetail() {
+    if (this.data.lifeBusy) return
+    this.onActivityLobby()
+    this.setData({ selected: null })
+  },
   onNoop() {},
   onGoLearn() { wx.switchTab({ url: '/pages/learn/learn' }) },
   onGoBuild() { wx.switchTab({ url: '/pages/build/build' }) },
@@ -186,4 +217,4 @@ Page(Object.assign({
   onShareAppMessage() {
     return { title: '学单词，建一座自己的方块小镇', path: '/pages/index/index' }
   }
-}, createLayoutEditor(wx, api, showError), createTownShop()))
+}, createLayoutEditor(wx, api, showError), createTownShop(), createBuildingInterior(api, wx, showError)), { onPlotTap: 'open', onSelectPet: 'open' }))

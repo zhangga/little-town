@@ -55,6 +55,34 @@
 
 医院、消防站、宠物医院、警察局，以及其他建筑的对应待办可直接在建筑内处理，保留原来的拥有条件和费用。学校、图书馆可进入学习；公园、体育馆、影院等提供免费的到访入口，会让小镇长沿通道走到选中的建筑。访客的买面包等气泡只表现邻里活动，不消耗玩家金币。
 
+## 建筑里的付费体验
+
+11 座功能建筑各提供两项主动购买的体验，每次新购票花费 1–3 金币。电影放映、互动选择和操作在小程序内进行；购买成功后先保存入场凭据，再开始体验。普通到访、原有生活待办和补给继续使用各自规则。
+
+每座建筑有独立配色、室内布景和店员介绍。商店、餐厅先展示吃喝补给；对应生活待办优先展示，再列出两项可玩的体验。电影院的两部原创短片各有 6 幕，约 22 秒，包含角色运动、场景变化和字幕；支持暂停、下一幕和重播。投篮和射门直接点选场地目标，其余活动通过选择食材、工具、故事线索或寻找目标完成，选错会给出提示。玩法进度停留在本次页面会话中，离开页面暂停电影计时，卸载后从已购票据重新开始。
+
+玩法与内容位于 `miniapp/utils/building-activities.js`，入场、恢复和电影计时位于 `miniapp/utils/building-interior.js`。真实页面模板和样式可通过 `node scripts/building-preview.cjs --serve 9432` 本地编译预览；需安装微信开发者工具，也可用 `WECHAT_COMPILER_DIR` 指定其 `wcc` / `wcsc` 所在目录。生成页面使用演示数据，浏览器中的按钮不连接业务服务。
+
+| 建筑 | 体验 ID | 玩法 | 每项票价 |
+| --- | --- | --- | --- |
+| 电影院 | `cinema_cloud`、`cinema_space` | 《云朵快递员》《月亮的晚安灯》两部模拟小动画 | 3 金币 |
+| 学校 | `school_words`、`school_numbers` | 单词识别、数量课堂 | 1 金币 |
+| 图书馆 | `library_forest`、`library_ocean` | 森林和海洋故事互动 | 1 金币 |
+| 商店 | `shop_basket`、`shop_sort` | 按清单采购、整理货架 | 1 金币 |
+| 餐厅 | `restaurant_soup`、`restaurant_bento` | 做汤、搭配便当 | 2 金币 |
+| 公园 | `park_garden`、`park_birds` | 给口渴的花浇水、观察小鸟 | 1 金币 |
+| 体育馆 | `stadium_hoops`、`stadium_goal` | 投篮、点球 | 2 金币 |
+| 医院 | `hospital_checkup`、`hospital_bandage` | 模拟体检、玩偶护理 | 1 金币 |
+| 宠物医院 | `vet_checkup`、`vet_groom` | 宠物检查、梳毛护理；均需已有宠物 | 1 金币 |
+| 消防站 | `fire_drill`、`fire_rescue` | 安全演练、模拟救援 | 1 金币 |
+| 警察局 | `police_lost`、`police_traffic` | 失物配对、交通安全 | 1 金币 |
+
+目录同时返回解锁状态和未解锁原因；未拥有建筑不能购票，宠物医院还要检查宠物所有权。票价由服务器确定，客户端无法通过修改价格、金币或用户 ID 改变交易。
+
+最近 12 张入场凭据随生活状态保存，可免费重玩已经买过的体验；已支付但网络响应丢失时，用原请求标识恢复，不能重新生成标识重复购票。凭据不表示玩法已完成。体验不发放金币或砖块，也不恢复饱食、水分或处理生病事件；需求仍按原有时间规则自然变化。
+
+所有入场购买共用用户行锁，余额扣减、入场记录与响应读取在同一事务中完成，任一步失败都会回滚。同账号同请求只扣一次；同一标识用于另一项体验会被拒绝。新请求代表一张新票，可再次付费游玩；旧请求即使已不在最近 12 条中，仍可找回原凭据。
+
 ## 节奏与资源
 
 - 首次拥有可体验内容后，下次读取生活状态会随机出现一件符合条件的小事。
@@ -75,12 +103,17 @@
 | POST | `/town-life/pets/purchase` | `{"pet_id":"dog"}` 或 `{"pet_id":"cat"}` |
 | POST | `/town-life/supplies/purchase` | `{"item_id":"bread","request_id":"shop-request-123456"}`；同一购买重试须使用同一标识 |
 | POST | `/town-life/events/resolve` | `{"event_id":123}` |
+| POST | `/town-life/activities/start` | `{"activity_id":"cinema_cloud","request_id":"activity-request-123456"}`；同次购票重试使用原标识 |
 
-均返回 `needs`、`supplies`、`wallet`、`pets`、`buildings`、`event`（无待办时为 null）、`recent` 和 `unlocked_count`。补给写操作接收物品和请求标识，客户端不能指定消费价格或恢复数值。
+均返回 `needs`、`supplies`、`wallet`、`pets`、`buildings`、`event`（无待办时为 null）、`recent`、`unlocked_count`、`activities` 和 `activity_visits`。补给写操作接收物品和请求标识，客户端不能指定消费价格或恢复数值。
+
+活动目录每项为 `{id,name,building,icon,description,price,available,locked_reason}`，`available` 表示建筑和宠物条件满足，余额通过钱包另行判断。最近入场凭据每项为 `{activity_id,request_id,name,building,icon,price,created_at}`。`activities/start` 成功后额外返回同结构的 `activity_receipt`。活动 `request_id` 须为 16–80 位字母、数字或连字符。无记录时 `activity_visits` 返回空数组。
 
 新增 `town_pets`、`town_events` 两张表。`town_pets` 使用 `user_id + pet_id` 复合主键；事件索引为 `user_id + created_at`，`resolved_at` 为可空时间，未处理时保存 SQL NULL。
 
 吃喝功能另外新增 `town_needs` 与 `town_supply_purchases`。需求按用户保存，购买记录使用 `user_id + request_id` 复合主键；重复请求返回最新状态，复用同一标识购买另一种物品会被拒绝。
+
+建筑体验新增 `town_activity_visits`，使用 `user_id + request_id` 唯一索引。记录保存购买时的活动 ID、名称、建筑、图标、价格和时间，不会随目录调整改写旧票；按用户查询最近 12 条。新表已加入 `AutoMigrate`，无需新增建筑种子。
 
 发布时同步更新后端和小程序，并执行迁移与建筑种子导入：
 
@@ -93,6 +126,10 @@ go run cmd/import/main.go
 
 ## 验证
 
+- 2026-10-23 建筑室内玩法：前端 144 项测试通过，包含全部 22 项玩法、错误提示、上一步排队点击、电影播放/暂停/隐藏清理、重复入场拦截、0 金币重玩、网络响应丢失及双失败后恢复。原生 WXML/WXSS 编译通过；44 个状态在 375×812 和 320×568 两种视口共 88 次布局检查通过，验证电影角色实际运动与暂停、长内容滚动、餐厅补给和服务入口可达。浏览器使用 mock 数据，尚未进行微信真机验收或发布。
+- 新玩法没有新增位图素材；5 张现有 PNG 仅重排无损编码并逐像素验证，尺寸、RGBA 与透明度一致，共节省 40,837 字节。主包原始文件合计约 1.955 MiB（不含教材音频分包）；实际发布包仍以微信开发者工具打包结果为准。复现脚本为 `scripts/optimize-town-png.py`，校验报告见 `output/building-preview/asset-compression.json`。
+- 2026-10-23 建筑体验后端：`cd backend && go test ./...` 通过；指定独立 `MYSQL_TEST_DB=littletown_test_activities` 后，`go test -count=1 -p 1 ./...` 全量通过，`go test -count=1 -race ./internal/handlers -run '^TestTownActivityMySQLLifecycle$' -v` 通过。覆盖 11 座建筑各两项与价格、建筑/宠物条件、登录鉴权、伪造价格和账号无效、零余额拒绝、8 次并发重放只扣一次、不同并发请求不能透支、请求冲突与账号隔离、写入凭据失败/组装响应失败整体回滚、最近 12 条及较早凭据恢复。集成测试需要 MySQL 和以 `littletown_test_` 开头的专用数据库，并通过 `DB_HOST/DB_PORT/DB_USER/DB_PASSWORD` 配置连接；未指定 `MYSQL_TEST_DB` 时跳过，不会使用业务库。
+- 2026-10-23 行走回归修复：恢复散步时保留当前路段的剩余时间，每段结束增加 64ms 渲染余量；首页按朝向只对 `left` 或 `top` 做过渡，避免渲染延迟时同时改变两个坐标、斜切房角。寻路与建筑摆放共用行距和列数。新增暂停恢复与重新摆放后的草地通道检查，`node --test scripts/*test.cjs` 共 109 项通过，首页 WXML/WXSS 编译通过。375px／320px 地图浏览器预览在 140ms 渲染延迟及暂停恢复场景下均无斜向帧；七名角色的 13,055 次逐帧采样未发现斜走或脚下范围进入建筑地块。尚未做微信真机验收。
 - 商店与居民往来：`node --test scripts/*test.cjs` 共 107 项通过；Go 全量测试通过。独立 `littletown_test_shop` MySQL 库验证商店和餐厅拥有条件、需求持久化、时间递减、饱食上限、零余额回滚、伪造价格无效、账号隔离及 8 次并发重放只扣一次。
 - 20 分钟假时钟回归覆盖访客从界外进入、离开后身份不再出现、持续补充新居民、四名访客上限、常住小镇长/宠物保留、四方向朝向及隐藏/卸载清理。建筑间活动会走到指定地点，当前路段不会被截断。
 - 微信 WXML/WXSS 编译通过；375px／320px 浏览器检查商店、餐厅、购买反馈、余额不足和居民进出。演示从 25 金币买面包到 23，再买水到 22；饱食 30→70、水分 25→75，快速连点只购买一份。浏览器加速预览观察到居民离场和替换，图片加载正常，无控制台错误或横向溢出。主包约 1.93 MiB（不含教材音频分包），未做微信真机验收。截图：`output/town-shop-preview.png`、`output/town-visitors-preview.png`。

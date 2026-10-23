@@ -54,6 +54,7 @@
   </view>
 
   <view class="submit-wrap">
+    <view wx:if="{{errorMessage}}" class="login-error" role="alert">{{errorMessage}}</view>
     <button class="btn btn-primary btn-block" bindtap="onStart" disabled="{{submitting}}">
       {{submitting ? '正在进镇…' : '开始建镇'}}
     </button>

@@ -1,0 +1,2402 @@
+[
+  {
+    "scene": "01-电影院",
+    "viewport": 375,
+    "height": 812,
+    "width": 375,
+    "bodyOverflow": false,
+    "sheet": {
+      "x": 20,
+      "y": 56.84375,
+      "width": 335,
+      "height": 698.3125,
+      "bottom": 755.15625
+    },
+    "scroll": {
+      "clientHeight": 621,
+      "scrollHeight": 753
+    },
+    "failedImages": [],
+    "overflow": [],
+    "text": "小镇光影俱乐部\n🎬 电影院\n口袋里有 38 金币\nNOW SHOWING\n今晚，去故事里旅行\n🎟️\n售票处\n🍿\n爆米花台\n🎞️\n放映室\n🎬\n放映员小光\n挑一部喜欢的电影，灯暗下来，故事就开始了。\n今日上映\n入场后，慢慢玩\n☁️\n约 22 秒\n云朵快递员\n灯光暗下来啦！看小兔驾驶云朵车，给干渴的花园送来一场雨。\n3 金币 / 次\n买票入场 →\n🚀\n约 22 秒\n月亮的晚安灯\n跟小熊乘上纸火箭，去找一颗迷路的小星星。\n3 金币 / 次\n买票入场 →\n选好项目才扣金币 · 最近 12 张入场票可免费重玩\n去影院门口走走 →\n走到门口逛逛，免费。\n走出电影院",
+    "scrolled": {
+      "scrollTop": 132,
+      "expected": 132,
+      "lastBottom": 676.0625,
+      "visibleBottom": 687.9375
+    }
+  },
+  {
+    "scene": "02-餐厅",
+    "viewport": 375,
+    "height": 812,
+    "width": 375,
+    "bodyOverflow": false,
+    "sheet": {
+      "x": 20,
+      "y": 56.84375,
+      "width": 335,
+      "height": 698.3125,
+      "bottom": 755.15625
+    },
+    "scroll": {
+      "clientHeight": 614,
+      "scrollHeight": 881
+    },
+    "failedImages": [],
+    "overflow": [],
+    "text": "围上围裙，今天你当主厨\n🍜 餐厅\n口袋里有 38 金币\nTOWN KITCHEN\n有烟火气的小厨房\n🥕\n新鲜菜篮\n🍲\n料理台\n🪑\n窗边餐桌\n🍜\n厨师阿米\n食材都备好啦！来做一份热腾腾的小镇料理。\n今天想做点什么\n入场后，慢慢玩\n🍲\n1–2 分钟\n主厨的彩虹汤\n在小游戏厨房里，按主厨的食谱选食材，做出一碗彩虹蔬菜汤。\n2 金币 / 次\n开始体验 →\n🍱\n1–2 分钟\n我的缤纷便当\n按订单给便当盒填满四个格子，主食、蔬菜和水果都要有。\n2 金币 / 次\n开始体验 →\n选好项目才扣金币 · 最近 12 张入场票可免费重玩\n肚子饿了？吃点热乎的\n买好就吃喝\n🥖 饱食\n30 / 100\n💧 水分\n25 / 100\n买完马上吃喝，补充好再出发。\n🍲\n热乎乎的套餐\n饱食 +60 · 水分 +30\n3 金币\n买来吃\n走出餐厅",
+    "scrolled": {
+      "scrollTop": 267,
+      "expected": 267,
+      "lastBottom": 687.765625,
+      "visibleBottom": 687.9375
+    }
+  },
+  {
+    "scene": "03-学校",
+    "viewport": 375,
+    "height": 812,
+    "width": 375,
+    "bodyOverflow": false,
+    "sheet": {
+      "x": 20,
+      "y": 56.84375,
+      "width": 335,
+      "height": 698.3125,
+      "bottom": 755.15625
+    },
+    "scroll": {
+      "clientHeight": 621,
+      "scrollHeight": 742
+    },
+    "failedImages": [],
+    "overflow": [],
+    "text": "小镇课堂 · 欢迎新同学\n🏫 学校\n口袋里有 38 金币\nHELLO, CLASS!\n今天，也发现一点新知识\n🎒\n书包柜\n📝\n小课桌\n🔔\n上课铃\n🏫\n老师阿禾\n黑板上有新问题，带着好奇心来试一试。\n今天想做点什么\n入场后，慢慢玩\n🔤\n1–2 分钟\n动物单词课堂\n看单词卡，把英文单词和可爱的小动物配成一对。\n1 金币 / 次\n开始体验 →\n🧮\n1–2 分钟\n水果数学课\n数水果、帮同桌分点心，完成三道生活里的小算题。\n1 金币 / 次\n开始体验 →\n选好项目才扣金币 · 最近 12 张入场票可免费重玩\n去上一堂单词课 →\n走出学校",
+    "scrolled": {
+      "scrollTop": 121,
+      "expected": 121,
+      "lastBottom": 681.75,
+      "visibleBottom": 687.9375
+    }
+  },
+  {
+    "scene": "04-图书馆",
+    "viewport": 375,
+    "height": 812,
+    "width": 375,
+    "bodyOverflow": false,
+    "sheet": {
+      "x": 20,
+      "y": 56.84375,
+      "width": 335,
+      "height": 698.3125,
+      "bottom": 755.15625
+    },
+    "scroll": {
+      "clientHeight": 621,
+      "scrollHeight": 742
+    },
+    "failedImages": [],
+    "overflow": [],
+    "text": "窗边的故事屋\n📚 图书馆\n口袋里有 38 金币\nONCE UPON A TIME\n翻开书，就是另一片天地\n📚\n故事书架\n🪴\n阳光窗台\n🛋️\n阅读角\n📚\n馆员知知\n书页里藏着森林和大海，你想先去哪里？\n今天想做点什么\n入场后，慢慢玩\n📗\n2–3 分钟\n森林里的借书卡\n一边读故事，一边寻找画面里的线索，帮小狐狸办好借书卡。\n1 金币 / 次\n开始体验 →\n📘\n2–3 分钟\n小海龟找朋友\n翻开蓝色故事书，沿着海底线索，找到小海龟的朋友。\n1 金币 / 次\n开始体验 →\n选好项目才扣金币 · 最近 12 张入场票可免费重玩\n去读单词、学知识 →\n走出图书馆",
+    "scrolled": {
+      "scrollTop": 121,
+      "expected": 121,
+      "lastBottom": 681.75,
+      "visibleBottom": 687.9375
+    }
+  },
+  {
+    "scene": "05-体育馆",
+    "viewport": 375,
+    "height": 812,
+    "width": 375,
+    "bodyOverflow": false,
+    "sheet": {
+      "x": 20,
+      "y": 56.84375,
+      "width": 335,
+      "height": 698.3125,
+      "bottom": 755.15625
+    },
+    "scroll": {
+      "clientHeight": 621,
+      "scrollHeight": 769
+    },
+    "failedImages": [],
+    "overflow": [],
+    "text": "小镇运动俱乐部\n⚽ 体育馆\n口袋里有 38 金币\nLET’S PLAY\n每一球，都值得欢呼\n🏀\n篮球场\n🥅\n足球场\n🏅\n荣誉墙\n⚽\n教练阿跃\n热身完毕！看准目标，来一场友好的练习。\n今天想做点什么\n入场后，慢慢玩\n🏀\n约 1 分钟\n三球投篮挑战\n观察每回合篮筐亮起的位置，选准方向，把三个篮球送进篮筐。\n2 金币 / 次\n开始体验 →\n⚽\n约 1 分钟\n小镇点球练习\n看球门里的星星标记，选择射门方向，完成三次定点练习。\n2 金币 / 次\n开始体验 →\n选好项目才扣金币 · 最近 12 张入场票可免费重玩\n去球场活动 →\n走到门口逛逛，免费。\n走出体育馆",
+    "scrolled": {
+      "scrollTop": 148,
+      "expected": 148,
+      "lastBottom": 675.75,
+      "visibleBottom": 687.9375
+    }
+  },
+  {
+    "scene": "06-公园",
+    "viewport": 375,
+    "height": 812,
+    "width": 375,
+    "bodyOverflow": false,
+    "sheet": {
+      "x": 20,
+      "y": 56.84375,
+      "width": 335,
+      "height": 698.3125,
+      "bottom": 755.15625
+    },
+    "scroll": {
+      "clientHeight": 621,
+      "scrollHeight": 769
+    },
+    "failedImages": [],
+    "overflow": [],
+    "text": "慢慢走，发现身边的小生命\n🌳 公园\n口袋里有 38 金币\nA LITTLE GREEN\n把好心情种在这里\n🌷\n花圃\n⛲\n小喷泉\n🌳\n观鸟树\n🌳\n园丁小叶\n给口渴的小花浇浇水，再去树梢找找小鸟。\n今天想做点什么\n入场后，慢慢玩\n🌻\n约 1 分钟\n花园浇水日\n观察花园里的小标牌，只给标着“口渴”的花朵浇水。\n1 金币 / 次\n开始体验 →\n🔎\n约 1 分钟\n树梢观察家\n安静观察公园，在树梢和草地的小伙伴里找到三种鸟。\n1 金币 / 次\n开始体验 →\n选好项目才扣金币 · 最近 12 张入场票可免费重玩\n去公园散步 →\n走到门口逛逛，免费。\n走出公园",
+    "scrolled": {
+      "scrollTop": 148,
+      "expected": 148,
+      "lastBottom": 675.75,
+      "visibleBottom": 687.9375
+    }
+  },
+  {
+    "scene": "07-商店",
+    "viewport": 375,
+    "height": 812,
+    "width": 375,
+    "bodyOverflow": false,
+    "sheet": {
+      "x": 20,
+      "y": 56.84375,
+      "width": 335,
+      "height": 698.3125,
+      "bottom": 755.15625
+    },
+    "scroll": {
+      "clientHeight": 614,
+      "scrollHeight": 964
+    },
+    "failedImages": [],
+    "overflow": [],
+    "text": "街角杂货铺 · 今日营业中\n🏪 商店\n口袋里有 38 金币\nCORNER SHOP\n装满日常的小货架\n🥖\n面包架\n🧃\n饮品柜\n🧺\n购物篮\n🏪\n店主栗栗\n买点吃喝，也来帮我照着清单挑东西吧。\n今天想做点什么\n入场后，慢慢玩\n🧺\n约 1 分钟\n周末采购清单\n看着购物清单，找齐野餐需要的三件商品，装进自己的小篮子。\n1 金币 / 次\n开始体验 →\n📦\n1–2 分钟\n小小理货员\n新货到店啦！把水果、文具和清洁用品放回正确的货架。\n1 金币 / 次\n开始体验 →\n选好项目才扣金币 · 最近 12 张入场票可免费重玩\n随手买点补给\n买好就吃喝\n🥖 饱食\n30 / 100\n💧 水分\n25 / 100\n买完马上吃喝，补充好再出发。\n🥖\n新鲜面包\n饱食 +40\n2 金币\n买来吃\n💧\n清凉饮用水\n水分 +50\n1 金币\n买来喝\n走出商店",
+    "scrolled": {
+      "scrollTop": 350,
+      "expected": 350,
+      "lastBottom": 687.75,
+      "visibleBottom": 687.9375
+    }
+  },
+  {
+    "scene": "08-医院",
+    "viewport": 375,
+    "height": 812,
+    "width": 375,
+    "bodyOverflow": false,
+    "sheet": {
+      "x": 20,
+      "y": 56.84375,
+      "width": 335,
+      "height": 698.3125,
+      "bottom": 755.15625
+    },
+    "scroll": {
+      "clientHeight": 621,
+      "scrollHeight": 769
+    },
+    "failedImages": [],
+    "overflow": [],
+    "text": "温柔照顾每一位小镇居民\n🏥 医院\n口袋里有 38 金币\nTAKE GOOD CARE\n安心的小镇诊室\n🩺\n检查台\n🧸\n玩偶角\n🪴\n候诊区\n🏥\n医生安安\n跟着小镇医生认识检查工具，照顾玩偶朋友。\n今天想做点什么\n入场后，慢慢玩\n🧸\n1–2 分钟\n玩偶体检日\n在玩偶体验区帮医生整理体检道具，给紧张的小熊送上鼓励。\n1 金币 / 次\n开始体验 →\n🩹\n1–2 分钟\n玩偶贴纸工坊\n给布偶的游戏护理贴挑选图案，再配一条小毯子。这是玩偶角色扮演。\n1 金币 / 次\n开始体验 →\n选好项目才扣金币 · 最近 12 张入场票可免费重玩\n到医院探望 →\n走到门口逛逛，免费。\n走出医院",
+    "scrolled": {
+      "scrollTop": 148,
+      "expected": 148,
+      "lastBottom": 675.75,
+      "visibleBottom": 687.9375
+    }
+  },
+  {
+    "scene": "09-宠物医院",
+    "viewport": 375,
+    "height": 812,
+    "width": 375,
+    "bodyOverflow": false,
+    "sheet": {
+      "x": 20,
+      "y": 56.84375,
+      "width": 335,
+      "height": 698.3125,
+      "bottom": 755.15625
+    },
+    "scroll": {
+      "clientHeight": 621,
+      "scrollHeight": 769
+    },
+    "failedImages": [],
+    "overflow": [],
+    "text": "毛茸茸伙伴的安心小屋\n🐾 宠物医院\n口袋里有 38 金币\nHAPPY PAWS\n每一只小爪子都被照顾\n🐾\n小爪印\n🧴\n护理台\n🧺\n软软小窝\n🐾\n宠物医生绒绒\n带上你的伙伴，一起检查身体、梳理毛发吧。\n今天想做点什么\n入场后，慢慢玩\n🐾\n1–2 分钟\n毛茸茸体检室\n扮演宠物医生的小助手，核对预约、准备道具，陪伴游戏里的小动物。\n1 金币 / 次\n开始体验 →\n🎀\n1–2 分钟\n宠物造型工作室\n为游戏里的毛绒小狗选梳子、毛巾和蝴蝶结，拍一张造型纪念照。\n1 金币 / 次\n开始体验 →\n选好项目才扣金币 · 最近 12 张入场票可免费重玩\n到宠物医院看看 →\n走到门口逛逛，免费。\n走出宠物医院",
+    "scrolled": {
+      "scrollTop": 148,
+      "expected": 148,
+      "lastBottom": 675.75,
+      "visibleBottom": 687.9375
+    }
+  },
+  {
+    "scene": "10-消防站",
+    "viewport": 375,
+    "height": 812,
+    "width": 375,
+    "bodyOverflow": false,
+    "sheet": {
+      "x": 20,
+      "y": 56.84375,
+      "width": 335,
+      "height": 698.3125,
+      "bottom": 755.15625
+    },
+    "scroll": {
+      "clientHeight": 621,
+      "scrollHeight": 769
+    },
+    "failedImages": [],
+    "overflow": [],
+    "text": "小小体验员 · 安全训练日\n🚒 消防站\n口袋里有 38 金币\nREADY TO HELP\n准备好了，平安出发\n🚒\n消防车库\n🧯\n装备墙\n🪖\n头盔柜\n🚒\n消防员小焰\n在模拟训练场认识装备，陪消防员完成任务。\n今天想做点什么\n入场后，慢慢玩\n🧯\n1–2 分钟\n安全小课堂\n阅读消防安全故事，练习远离危险、及时求助和听从疏散指引。\n1 金币 / 次\n开始体验 →\n🚒\n1–2 分钟\n消防队模拟出勤\n在模拟指挥台为专业消防员配齐出勤图卡，跟随故事完成一次救援。\n1 金币 / 次\n开始体验 →\n选好项目才扣金币 · 最近 12 张入场票可免费重玩\n去认识消防员 →\n走到门口逛逛，免费。\n走出消防站",
+    "scrolled": {
+      "scrollTop": 148,
+      "expected": 148,
+      "lastBottom": 675.75,
+      "visibleBottom": 687.9375
+    }
+  },
+  {
+    "scene": "11-警察局",
+    "viewport": 375,
+    "height": 812,
+    "width": 375,
+    "bodyOverflow": false,
+    "sheet": {
+      "x": 20,
+      "y": 56.84375,
+      "width": 335,
+      "height": 698.3125,
+      "bottom": 755.15625
+    },
+    "scroll": {
+      "clientHeight": 621,
+      "scrollHeight": 769
+    },
+    "failedImages": [],
+    "overflow": [],
+    "text": "小镇邻里服务站\n🚓 警察局\n口袋里有 38 金币\nHERE TO HELP\n街坊的小事，我们一起帮\n🎒\n失物架\n🚦\n交通角\n📋\n服务台\n🚓\n警员蓝蓝\n一起找回失物，也学着看懂路口的信号。\n今天想做点什么\n入场后，慢慢玩\n🔍\n1–2 分钟\n失物招领小侦探\n根据居民提供的颜色和图案线索，帮警员找回三件丢失的物品。\n1 金币 / 次\n开始体验 →\n🚦\n1–2 分钟\n交通灯小课堂\n跟警员观察红绿灯和人行横道，完成三道出行安全小题。\n1 金币 / 次\n开始体验 →\n选好项目才扣金币 · 最近 12 张入场票可免费重玩\n去和警员打招呼 →\n走到门口逛逛，免费。\n走出警察局",
+    "scrolled": {
+      "scrollTop": 148,
+      "expected": 148,
+      "lastBottom": 675.75,
+      "visibleBottom": 687.9375
+    }
+  },
+  {
+    "scene": "play-cinema_cloud",
+    "viewport": 375,
+    "height": 812,
+    "width": 375,
+    "bodyOverflow": false,
+    "sheet": {
+      "x": 20,
+      "y": 98.25,
+      "width": 335,
+      "height": 615.484375,
+      "bottom": 713.734375
+    },
+    "scroll": {
+      "clientHeight": 538,
+      "scrollHeight": 538
+    },
+    "failedImages": [],
+    "overflow": [],
+    "text": "小镇光影俱乐部\n🎬 电影院\n口袋里有 38 金币\n小镇私人放映厅\n1 / 6\n第 1 / 6 幕\n🐰\n✉️\n清晨，小兔收到一封信：“花园好渴呀，你能来吗？”\nⅡ 暂停一下\n下一幕 ›\n故事会自动播放，也可以自己翻到下一幕。\n🎟️ 云朵快递员\n已付 3 金币 · 重玩免费\n返回电影院大厅\n走出电影院",
+    "animation": {
+      "first": {
+        "name": "interior-bounce",
+        "state": "running",
+        "transform": "matrix(1.02993, 0, 0, 0.970066, 0, -0.0191249)"
+      },
+      "second": {
+        "name": "interior-bounce",
+        "state": "running",
+        "transform": "matrix(0.997531, 0, 0, 1.00247, 0, -9.47007)"
+      }
+    },
+    "scrolled": {
+      "scrollTop": 0,
+      "expected": 0,
+      "lastBottom": 636.515625,
+      "visibleBottom": 646.515625
+    }
+  },
+  {
+    "scene": "paused-cinema_cloud",
+    "viewport": 375,
+    "height": 812,
+    "width": 375,
+    "bodyOverflow": false,
+    "sheet": {
+      "x": 20,
+      "y": 98.25,
+      "width": 335,
+      "height": 615.484375,
+      "bottom": 713.734375
+    },
+    "scroll": {
+      "clientHeight": 538,
+      "scrollHeight": 538
+    },
+    "failedImages": [],
+    "overflow": [],
+    "text": "小镇光影俱乐部\n🎬 电影院\n口袋里有 38 金币\n小镇私人放映厅\n1 / 6\n第 1 / 6 幕\n🐰\n✉️\n已暂停\n清晨，小兔收到一封信：“花园好渴呀，你能来吗？”\n▶ 继续播放\n下一幕 ›\n放映已暂停，准备好后可以继续。\n🎟️ 云朵快递员\n已付 3 金币 · 重玩免费\n返回电影院大厅\n走出电影院",
+    "animation": {
+      "first": {
+        "name": "none",
+        "state": "paused",
+        "transform": "none"
+      },
+      "second": {
+        "name": "none",
+        "state": "paused",
+        "transform": "none"
+      }
+    },
+    "scrolled": {
+      "scrollTop": 0,
+      "expected": 0,
+      "lastBottom": 636.515625,
+      "visibleBottom": 646.515625
+    }
+  },
+  {
+    "scene": "done-cinema_cloud",
+    "viewport": 375,
+    "height": 812,
+    "width": 375,
+    "bodyOverflow": false,
+    "sheet": {
+      "x": 20,
+      "y": 56.84375,
+      "width": 335,
+      "height": 698.3125,
+      "bottom": 755.15625
+    },
+    "scroll": {
+      "clientHeight": 621,
+      "scrollHeight": 630
+    },
+    "failedImages": [],
+    "overflow": [],
+    "text": "小镇光影俱乐部\n🎬 电影院\n口袋里有 38 金币\n小镇私人放映厅\n已完成\n体验完成\n🐰\n🌈\nTHE END\n小兔送到了第一场春雨。谢谢你陪它完成这趟云朵旅行！\n谢谢观看\n小兔送到了第一场春雨。谢谢你陪它完成这趟云朵旅行！\n再看一遍 · 免费\n🎟️ 云朵快递员\n已付 3 金币 · 重玩免费\n返回电影院大厅\n走出电影院",
+    "scrolled": {
+      "scrollTop": 9,
+      "expected": 9,
+      "lastBottom": 677.6875,
+      "visibleBottom": 687.9375
+    }
+  },
+  {
+    "scene": "play-cinema_space",
+    "viewport": 375,
+    "height": 812,
+    "width": 375,
+    "bodyOverflow": false,
+    "sheet": {
+      "x": 20,
+      "y": 98.25,
+      "width": 335,
+      "height": 615.484375,
+      "bottom": 713.734375
+    },
+    "scroll": {
+      "clientHeight": 538,
+      "scrollHeight": 538
+    },
+    "failedImages": [],
+    "overflow": [],
+    "text": "小镇光影俱乐部\n🎬 电影院\n口袋里有 38 金币\n小镇私人放映厅\n1 / 6\n第 1 / 6 幕\n🐻\n⭐\n窗台上，一颗小星星小声说：“我找不到回家的路了。”\nⅡ 暂停一下\n下一幕 ›\n故事会自动播放，也可以自己翻到下一幕。\n🎟️ 月亮的晚安灯\n已付 3 金币 · 重玩免费\n返回电影院大厅\n走出电影院",
+    "scrolled": {
+      "scrollTop": 0,
+      "expected": 0,
+      "lastBottom": 636.515625,
+      "visibleBottom": 646.515625
+    }
+  },
+  {
+    "scene": "done-cinema_space",
+    "viewport": 375,
+    "height": 812,
+    "width": 375,
+    "bodyOverflow": false,
+    "sheet": {
+      "x": 20,
+      "y": 56.84375,
+      "width": 335,
+      "height": 698.3125,
+      "bottom": 755.15625
+    },
+    "scroll": {
+      "clientHeight": 621,
+      "scrollHeight": 630
+    },
+    "failedImages": [],
+    "overflow": [],
+    "text": "小镇光影俱乐部\n🎬 电影院\n口袋里有 38 金币\n小镇私人放映厅\n已完成\n体验完成\n🐻\n🌙\nTHE END\n小星星回家了，月亮亮起晚安灯。今晚做一个甜甜的太空梦。\n谢谢观看\n小星星回家了，月亮亮起晚安灯。今晚做一个甜甜的太空梦。\n再看一遍 · 免费\n🎟️ 月亮的晚安灯\n已付 3 金币 · 重玩免费\n返回电影院大厅\n走出电影院",
+    "scrolled": {
+      "scrollTop": 9,
+      "expected": 9,
+      "lastBottom": 677.6875,
+      "visibleBottom": 687.9375
+    }
+  },
+  {
+    "scene": "play-school_words",
+    "viewport": 375,
+    "height": 812,
+    "width": 375,
+    "bodyOverflow": false,
+    "sheet": {
+      "x": 20,
+      "y": 73.859375,
+      "width": 335,
+      "height": 664.28125,
+      "bottom": 738.140625
+    },
+    "scroll": {
+      "clientHeight": 587,
+      "scrollHeight": 587
+    },
+    "failedImages": [],
+    "overflow": [],
+    "text": "小镇课堂 · 欢迎新同学\n🏫 学校\n口袋里有 38 金币\n动物单词课堂\n1 / 3\n第 1 / 3 题\n🧑‍🏫\n🔤\n第一张单词卡：cat\n哪个小动物是 cat？\n🐶\n小狗\n🐱\n小猫\n🐦\n小鸟\n慢慢来，试一试就有新发现。\n🎟️ 动物单词课堂\n已付 1 金币 · 重玩免费\n返回学校大厅\n走出学校",
+    "scrolled": {
+      "scrollTop": 0,
+      "expected": 0,
+      "lastBottom": 660.921875,
+      "visibleBottom": 670.921875
+    }
+  },
+  {
+    "scene": "play-school_numbers",
+    "viewport": 375,
+    "height": 812,
+    "width": 375,
+    "bodyOverflow": false,
+    "sheet": {
+      "x": 20,
+      "y": 73.859375,
+      "width": 335,
+      "height": 664.28125,
+      "bottom": 738.140625
+    },
+    "scroll": {
+      "clientHeight": 587,
+      "scrollHeight": 587
+    },
+    "failedImages": [],
+    "overflow": [],
+    "text": "小镇课堂 · 欢迎新同学\n🏫 学校\n口袋里有 38 金币\n水果数学课\n1 / 3\n第 1 / 3 题\n🧑‍🏫\n🍓\n🍓 🍓 🍓 · 一颗一颗慢慢数。\n盘子里有几颗草莓？\n2️⃣\n2 颗\n3️⃣\n3 颗\n4️⃣\n4 颗\n慢慢来，试一试就有新发现。\n🎟️ 水果数学课\n已付 1 金币 · 重玩免费\n返回学校大厅\n走出学校",
+    "scrolled": {
+      "scrollTop": 0,
+      "expected": 0,
+      "lastBottom": 660.921875,
+      "visibleBottom": 670.921875
+    }
+  },
+  {
+    "scene": "play-library_forest",
+    "viewport": 375,
+    "height": 812,
+    "width": 375,
+    "bodyOverflow": false,
+    "sheet": {
+      "x": 20,
+      "y": 73.859375,
+      "width": 335,
+      "height": 664.28125,
+      "bottom": 738.140625
+    },
+    "scroll": {
+      "clientHeight": 587,
+      "scrollHeight": 587
+    },
+    "failedImages": [],
+    "overflow": [],
+    "text": "窗边的故事屋\n📚 图书馆\n口袋里有 38 金币\n森林里的借书卡\n1 / 4\n第 1 / 4 页\n🦊\n📚\n小狐狸抱着一只空书袋，走进树洞里的图书馆。\n谁来森林图书馆借书？\n🐻\n小熊\n🦊\n小狐狸\n🐰\n小兔\n慢慢来，试一试就有新发现。\n🎟️ 森林里的借书卡\n已付 1 金币 · 重玩免费\n返回图书馆大厅\n走出图书馆",
+    "scrolled": {
+      "scrollTop": 0,
+      "expected": 0,
+      "lastBottom": 660.921875,
+      "visibleBottom": 670.921875
+    }
+  },
+  {
+    "scene": "play-library_ocean",
+    "viewport": 375,
+    "height": 812,
+    "width": 375,
+    "bodyOverflow": false,
+    "sheet": {
+      "x": 20,
+      "y": 73.859375,
+      "width": 335,
+      "height": 664.28125,
+      "bottom": 738.140625
+    },
+    "scroll": {
+      "clientHeight": 587,
+      "scrollHeight": 587
+    },
+    "failedImages": [],
+    "overflow": [],
+    "text": "窗边的故事屋\n📚 图书馆\n口袋里有 38 金币\n小海龟找朋友\n1 / 4\n第 1 / 4 页\n🐢\n🌊\n清晨，小海龟从沙滩出发，游进蓝色的大海。\n小海龟要去哪里找朋友？\n🌊\n蓝色大海\n🏔️\n高高雪山\n🚉\n热闹车站\n慢慢来，试一试就有新发现。\n🎟️ 小海龟找朋友\n已付 1 金币 · 重玩免费\n返回图书馆大厅\n走出图书馆",
+    "scrolled": {
+      "scrollTop": 0,
+      "expected": 0,
+      "lastBottom": 660.921875,
+      "visibleBottom": 670.921875
+    }
+  },
+  {
+    "scene": "play-shop_basket",
+    "viewport": 375,
+    "height": 812,
+    "width": 375,
+    "bodyOverflow": false,
+    "sheet": {
+      "x": 20,
+      "y": 56.84375,
+      "width": 335,
+      "height": 698.3125,
+      "bottom": 755.15625
+    },
+    "scroll": {
+      "clientHeight": 614,
+      "scrollHeight": 669
+    },
+    "failedImages": [],
+    "overflow": [],
+    "text": "街角杂货铺 · 今日营业中\n🏪 商店\n口袋里有 38 金币\n周末采购清单\n1 / 3\n已完成 0 / 3 个\n🧑‍🍳\n🧺\n🥛\n🥖\n🧼\n🍎\n💧\n⚽\n野餐清单：面包、饮用水、苹果。只拿清单上的商品哦。\n点选清单上的 3 件商品\n🥛\n牛奶\n🥖\n面包\n🧼\n香皂\n🍎\n苹果\n💧\n饮用水\n⚽\n皮球\n慢慢来，试一试就有新发现。\n🎟️ 周末采购清单\n已付 1 金币 · 重玩免费\n返回商店大厅\n走出商店",
+    "scrolled": {
+      "scrollTop": 55,
+      "expected": 55,
+      "lastBottom": 678.296875,
+      "visibleBottom": 687.9375
+    }
+  },
+  {
+    "scene": "play-shop_sort",
+    "viewport": 375,
+    "height": 812,
+    "width": 375,
+    "bodyOverflow": false,
+    "sheet": {
+      "x": 20,
+      "y": 70.359375,
+      "width": 335,
+      "height": 671.28125,
+      "bottom": 741.640625
+    },
+    "scroll": {
+      "clientHeight": 587,
+      "scrollHeight": 587
+    },
+    "failedImages": [],
+    "overflow": [],
+    "text": "街角杂货铺 · 今日营业中\n🏪 商店\n口袋里有 38 金币\n小小理货员\n1 / 4\n第 1 / 4 步\n🧑‍💼\n🍎\n第一箱新货是红红的苹果。\n苹果应该放在哪个货架？\n🍊\n水果架\n✏️\n文具架\n🧼\n清洁用品架\n慢慢来，试一试就有新发现。\n🎟️ 小小理货员\n已付 1 金币 · 重玩免费\n返回商店大厅\n走出商店",
+    "scrolled": {
+      "scrollTop": 0,
+      "expected": 0,
+      "lastBottom": 664.421875,
+      "visibleBottom": 674.421875
+    }
+  },
+  {
+    "scene": "play-restaurant_soup",
+    "viewport": 375,
+    "height": 812,
+    "width": 375,
+    "bodyOverflow": false,
+    "sheet": {
+      "x": 20,
+      "y": 70.359375,
+      "width": 335,
+      "height": 671.28125,
+      "bottom": 741.640625
+    },
+    "scroll": {
+      "clientHeight": 587,
+      "scrollHeight": 587
+    },
+    "failedImages": [],
+    "overflow": [],
+    "text": "围上围裙，今天你当主厨\n🍜 餐厅\n口袋里有 38 金币\n主厨的彩虹汤\n1 / 4\n第 1 / 4 步\n🧑‍🍳\n🍲\n主厨打开食谱：“先找橙色的蔬菜。”\n食谱第一样：橙色的胡萝卜\n🥕\n胡萝卜\n🍰\n蛋糕\n🍇\n葡萄\n慢慢来，试一试就有新发现。\n🎟️ 主厨的彩虹汤\n已付 2 金币 · 重玩免费\n返回餐厅大厅\n走出餐厅",
+    "scrolled": {
+      "scrollTop": 0,
+      "expected": 0,
+      "lastBottom": 664.421875,
+      "visibleBottom": 674.421875
+    }
+  },
+  {
+    "scene": "hint-restaurant_soup",
+    "viewport": 375,
+    "height": 812,
+    "width": 375,
+    "bodyOverflow": false,
+    "sheet": {
+      "x": 20,
+      "y": 70.359375,
+      "width": 335,
+      "height": 671.28125,
+      "bottom": 741.640625
+    },
+    "scroll": {
+      "clientHeight": 587,
+      "scrollHeight": 587
+    },
+    "failedImages": [],
+    "overflow": [],
+    "text": "围上围裙，今天你当主厨\n🍜 餐厅\n口袋里有 38 金币\n主厨的彩虹汤\n1 / 4\n第 1 / 4 步\n🧑‍🍳\n🍲\n主厨打开食谱：“先找橙色的蔬菜。”\n食谱第一样：橙色的胡萝卜\n🥕\n胡萝卜\n🍰\n蛋糕\n🍇\n葡萄\n长长的、橙色的蔬菜是胡萝卜。\n🎟️ 主厨的彩虹汤\n已付 2 金币 · 重玩免费\n返回餐厅大厅\n走出餐厅",
+    "scrolled": {
+      "scrollTop": 0,
+      "expected": 0,
+      "lastBottom": 664.421875,
+      "visibleBottom": 674.421875
+    }
+  },
+  {
+    "scene": "done-restaurant_soup",
+    "viewport": 375,
+    "height": 812,
+    "width": 375,
+    "bodyOverflow": false,
+    "sheet": {
+      "x": 20,
+      "y": 56.84375,
+      "width": 335,
+      "height": 698.3125,
+      "bottom": 755.15625
+    },
+    "scroll": {
+      "clientHeight": 614,
+      "scrollHeight": 616
+    },
+    "failedImages": [],
+    "overflow": [],
+    "text": "围上围裙，今天你当主厨\n🍜 餐厅\n口袋里有 38 金币\n主厨的彩虹汤\n已完成\n体验完成\n🧑‍🍳\n🍲\n完成啦！\n胡萝卜、玉米和青菜变成了一碗彩虹汤。主厨为你点了一个赞！\n今天的小小成就\n胡萝卜、玉米和青菜变成了一碗彩虹汤。主厨为你点了一个赞！\n再玩一次 · 免费\n🎟️ 主厨的彩虹汤\n已付 2 金币 · 重玩免费\n返回餐厅大厅\n走出餐厅",
+    "scrolled": {
+      "scrollTop": 2,
+      "expected": 2,
+      "lastBottom": 677.6875,
+      "visibleBottom": 687.9375
+    }
+  },
+  {
+    "scene": "play-restaurant_bento",
+    "viewport": 375,
+    "height": 812,
+    "width": 375,
+    "bodyOverflow": false,
+    "sheet": {
+      "x": 20,
+      "y": 70.359375,
+      "width": 335,
+      "height": 671.28125,
+      "bottom": 741.640625
+    },
+    "scroll": {
+      "clientHeight": 587,
+      "scrollHeight": 587
+    },
+    "failedImages": [],
+    "overflow": [],
+    "text": "围上围裙，今天你当主厨\n🍜 餐厅\n口袋里有 38 金币\n我的缤纷便当\n1 / 4\n第 1 / 4 步\n🧑‍🍳\n🍱\n客人点了一份四格便当，先放主食。\n第一格的订单是：米饭\n🍓\n草莓\n🍚\n米饭\n🥦\n西兰花\n慢慢来，试一试就有新发现。\n🎟️ 我的缤纷便当\n已付 2 金币 · 重玩免费\n返回餐厅大厅\n走出餐厅",
+    "scrolled": {
+      "scrollTop": 0,
+      "expected": 0,
+      "lastBottom": 664.421875,
+      "visibleBottom": 674.421875
+    }
+  },
+  {
+    "scene": "play-park_garden",
+    "viewport": 375,
+    "height": 812,
+    "width": 375,
+    "bodyOverflow": false,
+    "sheet": {
+      "x": 20,
+      "y": 56.84375,
+      "width": 335,
+      "height": 698.3125,
+      "bottom": 755.15625
+    },
+    "scroll": {
+      "clientHeight": 621,
+      "scrollHeight": 669
+    },
+    "failedImages": [],
+    "overflow": [],
+    "text": "慢慢走，发现身边的小生命\n🌳 公园\n口袋里有 38 金币\n花园浇水日\n1 / 3\n已完成 0 / 3 个\n🧑‍🌾\n🚿\n🌷\n🌼\n🌻\n🌺\n🌹\n☘️\n园丁留下标牌：口渴的花需要水；已经喝饱的花，先让它休息。\n点选 3 朵标着“口渴”的花\n🌷\n郁金香 · 口渴\n🌼\n小雏菊 · 喝饱了\n🌻\n向日葵 · 口渴\n🌺\n木槿花 · 喝饱了\n🌹\n小玫瑰 · 口渴\n☘️\n幸运草 · 喝饱了\n慢慢来，试一试就有新发现。\n🎟️ 花园浇水日\n已付 1 金币 · 重玩免费\n返回公园大厅\n走出公园",
+    "scrolled": {
+      "scrollTop": 48,
+      "expected": 48,
+      "lastBottom": 678.296875,
+      "visibleBottom": 687.9375
+    }
+  },
+  {
+    "scene": "done-park_garden",
+    "viewport": 375,
+    "height": 812,
+    "width": 375,
+    "bodyOverflow": false,
+    "sheet": {
+      "x": 20,
+      "y": 59.46875,
+      "width": 335,
+      "height": 693.0625,
+      "bottom": 752.53125
+    },
+    "scroll": {
+      "clientHeight": 616,
+      "scrollHeight": 616
+    },
+    "failedImages": [],
+    "overflow": [],
+    "text": "慢慢走，发现身边的小生命\n🌳 公园\n口袋里有 38 金币\n花园浇水日\n已完成\n体验完成\n🧑‍🌾\n🚿\n🌷\n✓\n🌼\n🌻\n✓\n🌺\n🌹\n✓\n☘️\n完成啦！\n三朵口渴的小花都喝到水了，花园开出一片明亮的颜色！\n今天的小小成就\n三朵口渴的小花都喝到水了，花园开出一片明亮的颜色！\n再玩一次 · 免费\n🎟️ 花园浇水日\n已付 1 金币 · 重玩免费\n返回公园大厅\n走出公园",
+    "scrolled": {
+      "scrollTop": 0,
+      "expected": 0,
+      "lastBottom": 675.3125,
+      "visibleBottom": 685.3125
+    }
+  },
+  {
+    "scene": "play-park_birds",
+    "viewport": 375,
+    "height": 812,
+    "width": 375,
+    "bodyOverflow": false,
+    "sheet": {
+      "x": 20,
+      "y": 56.84375,
+      "width": 335,
+      "height": 698.3125,
+      "bottom": 755.15625
+    },
+    "scroll": {
+      "clientHeight": 621,
+      "scrollHeight": 669
+    },
+    "failedImages": [],
+    "overflow": [],
+    "text": "慢慢走，发现身边的小生命\n🌳 公园\n口袋里有 38 金币\n树梢观察家\n1 / 3\n已完成 0 / 3 个\n🧒\n🔎\n🦋\n🐦\n🐰\n🦆\n🦉\n🐌\n保持安静，用眼睛观察。看看哪些朋友长着羽毛和翅膀？\n找到画面中的 3 种鸟\n🦋\n蝴蝶\n🐦\n小鸟\n🐰\n兔子\n🦆\n鸭子\n🦉\n猫头鹰\n🐌\n蜗牛\n慢慢来，试一试就有新发现。\n🎟️ 树梢观察家\n已付 1 金币 · 重玩免费\n返回公园大厅\n走出公园",
+    "scrolled": {
+      "scrollTop": 48,
+      "expected": 48,
+      "lastBottom": 678.296875,
+      "visibleBottom": 687.9375
+    }
+  },
+  {
+    "scene": "play-stadium_hoops",
+    "viewport": 375,
+    "height": 812,
+    "width": 375,
+    "bodyOverflow": false,
+    "sheet": {
+      "x": 20,
+      "y": 98.421875,
+      "width": 335,
+      "height": 615.140625,
+      "bottom": 713.5625
+    },
+    "scroll": {
+      "clientHeight": 538,
+      "scrollHeight": 538
+    },
+    "failedImages": [],
+    "overflow": [],
+    "text": "小镇运动俱乐部\n⚽ 体育馆\n口袋里有 38 金币\n三球投篮挑战\n1 / 3\n第 1 / 3 球\n命中 0 / 3\n★ 瞄准这里\n向中投\n向右投\n🏀\n第一球：← 左侧篮筐亮起来了。\n篮筐在左边，选择投球方向\n轻点球场上亮起的篮筐，试试能不能命中\n慢慢来，试一试就有新发现。\n🎟️ 三球投篮挑战\n已付 2 金币 · 重玩免费\n返回体育馆大厅\n走出体育馆",
+    "scrolled": {
+      "scrollTop": 0,
+      "expected": 0,
+      "lastBottom": 636.34375,
+      "visibleBottom": 646.34375
+    }
+  },
+  {
+    "scene": "play-stadium_goal",
+    "viewport": 375,
+    "height": 812,
+    "width": 375,
+    "bodyOverflow": false,
+    "sheet": {
+      "x": 20,
+      "y": 98.421875,
+      "width": 335,
+      "height": 615.140625,
+      "bottom": 713.5625
+    },
+    "scroll": {
+      "clientHeight": 538,
+      "scrollHeight": 538
+    },
+    "failedImages": [],
+    "overflow": [],
+    "text": "小镇运动俱乐部\n⚽ 体育馆\n口袋里有 38 金币\n小镇点球练习\n1 / 3\n第 1 / 3 球\n命中 0 / 3\n向左踢\n向中踢\n⭐\n★ 瞄准这里\n⚽\n第一轮：星星在球门右侧 ⭐ →\n射向右边的星星靶\n轻点球场上亮起的球门，试试能不能命中\n慢慢来，试一试就有新发现。\n🎟️ 小镇点球练习\n已付 2 金币 · 重玩免费\n返回体育馆大厅\n走出体育馆",
+    "scrolled": {
+      "scrollTop": 0,
+      "expected": 0,
+      "lastBottom": 636.34375,
+      "visibleBottom": 646.34375
+    }
+  },
+  {
+    "scene": "play-hospital_checkup",
+    "viewport": 375,
+    "height": 812,
+    "width": 375,
+    "bodyOverflow": false,
+    "sheet": {
+      "x": 20,
+      "y": 73.859375,
+      "width": 335,
+      "height": 664.28125,
+      "bottom": 738.140625
+    },
+    "scroll": {
+      "clientHeight": 587,
+      "scrollHeight": 587
+    },
+    "failedImages": [],
+    "overflow": [],
+    "text": "温柔照顾每一位小镇居民\n🏥 医院\n口袋里有 38 金币\n玩偶体检日\n1 / 4\n第 1 / 4 步\n🧑‍⚕️\n🪪\n玩偶体验区开放啦！今天来体检的是小熊。\n先帮小熊找到自己的预约卡\n🐰\n小兔预约卡\n🐻\n小熊预约卡\n🐱\n小猫预约卡\n慢慢来，试一试就有新发现。\n🎟️ 玩偶体检日\n已付 1 金币 · 重玩免费\n返回医院大厅\n走出医院",
+    "scrolled": {
+      "scrollTop": 0,
+      "expected": 0,
+      "lastBottom": 660.921875,
+      "visibleBottom": 670.921875
+    }
+  },
+  {
+    "scene": "play-hospital_bandage",
+    "viewport": 375,
+    "height": 812,
+    "width": 375,
+    "bodyOverflow": false,
+    "sheet": {
+      "x": 20,
+      "y": 73.859375,
+      "width": 335,
+      "height": 664.28125,
+      "bottom": 738.140625
+    },
+    "scroll": {
+      "clientHeight": 587,
+      "scrollHeight": 587
+    },
+    "failedImages": [],
+    "overflow": [],
+    "text": "温柔照顾每一位小镇居民\n🏥 医院\n口袋里有 38 金币\n玩偶贴纸工坊\n1 / 4\n第 1 / 4 步\n🧸\n🩹\n这是给布偶用的装饰贴。小熊说：“我最喜欢星星！”\n小熊喜欢星星，选哪张装饰护理贴？\n🌷\n花朵图案\n⭐\n星星图案\n🌙\n月亮图案\n慢慢来，试一试就有新发现。\n🎟️ 玩偶贴纸工坊\n已付 1 金币 · 重玩免费\n返回医院大厅\n走出医院",
+    "scrolled": {
+      "scrollTop": 0,
+      "expected": 0,
+      "lastBottom": 660.921875,
+      "visibleBottom": 670.921875
+    }
+  },
+  {
+    "scene": "play-vet_checkup",
+    "viewport": 375,
+    "height": 812,
+    "width": 375,
+    "bodyOverflow": false,
+    "sheet": {
+      "x": 20,
+      "y": 73.859375,
+      "width": 335,
+      "height": 664.28125,
+      "bottom": 738.140625
+    },
+    "scroll": {
+      "clientHeight": 587,
+      "scrollHeight": 587
+    },
+    "failedImages": [],
+    "overflow": [],
+    "text": "毛茸茸伙伴的安心小屋\n🐾 宠物医院\n口袋里有 38 金币\n毛茸茸体检室\n1 / 4\n第 1 / 4 步\n🧑‍⚕️\n🐱\n宠物医生在游戏里迎接第一位小客人。\n今天先来的是猫咪，找到它的预约卡\n🐶\n小狗预约卡\n🐰\n小兔预约卡\n🐱\n猫咪预约卡\n慢慢来，试一试就有新发现。\n🎟️ 毛茸茸体检室\n已付 1 金币 · 重玩免费\n返回宠物医院大厅\n走出宠物医院",
+    "scrolled": {
+      "scrollTop": 0,
+      "expected": 0,
+      "lastBottom": 660.921875,
+      "visibleBottom": 670.921875
+    }
+  },
+  {
+    "scene": "play-vet_groom",
+    "viewport": 375,
+    "height": 812,
+    "width": 375,
+    "bodyOverflow": false,
+    "sheet": {
+      "x": 20,
+      "y": 73.859375,
+      "width": 335,
+      "height": 664.28125,
+      "bottom": 738.140625
+    },
+    "scroll": {
+      "clientHeight": 587,
+      "scrollHeight": 587
+    },
+    "failedImages": [],
+    "overflow": [],
+    "text": "毛茸茸伙伴的安心小屋\n🐾 宠物医院\n口袋里有 38 金币\n宠物造型工作室\n1 / 4\n第 1 / 4 步\n🐶\n🧺\n这里是毛绒玩偶造型室，小狗准备换个新造型。\n毛绒小狗想梳毛，选哪个玩具道具？\n🥄\n汤勺\n🪮\n柔软小梳子\n✏️\n铅笔\n慢慢来，试一试就有新发现。\n🎟️ 宠物造型工作室\n已付 1 金币 · 重玩免费\n返回宠物医院大厅\n走出宠物医院",
+    "scrolled": {
+      "scrollTop": 0,
+      "expected": 0,
+      "lastBottom": 660.921875,
+      "visibleBottom": 670.921875
+    }
+  },
+  {
+    "scene": "play-fire_drill",
+    "viewport": 375,
+    "height": 812,
+    "width": 375,
+    "bodyOverflow": false,
+    "sheet": {
+      "x": 20,
+      "y": 64.65625,
+      "width": 335,
+      "height": 682.671875,
+      "bottom": 747.328125
+    },
+    "scroll": {
+      "clientHeight": 605,
+      "scrollHeight": 605
+    },
+    "failedImages": [],
+    "overflow": [],
+    "text": "小小体验员 · 安全训练日\n🚒 消防站\n口袋里有 38 金币\n安全小课堂\n1 / 3\n第 1 / 3 题\n🧑‍🚒\n🧯\n消防员在课堂上讲故事：“安全永远排在第一位。”\n发现烟雾和危险时，小朋友应该怎么做？\n🔎\n走近看看\n🧑‍🚒\n远离危险并告诉大人\n📦\n躲起来不告诉别人\n慢慢来，试一试就有新发现。\n🎟️ 安全小课堂\n已付 1 金币 · 重玩免费\n返回消防站大厅\n走出消防站",
+    "scrolled": {
+      "scrollTop": 0,
+      "expected": 0,
+      "lastBottom": 670.109375,
+      "visibleBottom": 680.109375
+    }
+  },
+  {
+    "scene": "play-fire_rescue",
+    "viewport": 375,
+    "height": 812,
+    "width": 375,
+    "bodyOverflow": false,
+    "sheet": {
+      "x": 20,
+      "y": 68.859375,
+      "width": 335,
+      "height": 674.28125,
+      "bottom": 743.140625
+    },
+    "scroll": {
+      "clientHeight": 597,
+      "scrollHeight": 597
+    },
+    "failedImages": [],
+    "overflow": [],
+    "text": "小小体验员 · 安全训练日\n🚒 消防站\n口袋里有 38 金币\n消防队模拟出勤\n1 / 4\n第 1 / 4 步\n🧑‍🚒\n📻\n模拟演练开始。你负责匹配图卡，救援由故事里的专业人员完成。\n模拟指挥台要派出哪支专业队伍？\n🧑‍🍳\n面包师队伍\n🧑‍🚒\n专业消防队\n⚽\n足球队\n慢慢来，试一试就有新发现。\n🎟️ 消防队模拟出勤\n已付 1 金币 · 重玩免费\n返回消防站大厅\n走出消防站",
+    "scrolled": {
+      "scrollTop": 0,
+      "expected": 0,
+      "lastBottom": 665.921875,
+      "visibleBottom": 675.921875
+    }
+  },
+  {
+    "scene": "play-police_lost",
+    "viewport": 375,
+    "height": 812,
+    "width": 375,
+    "bodyOverflow": false,
+    "sheet": {
+      "x": 20,
+      "y": 73.859375,
+      "width": 335,
+      "height": 664.28125,
+      "bottom": 738.140625
+    },
+    "scroll": {
+      "clientHeight": 587,
+      "scrollHeight": 587
+    },
+    "failedImages": [],
+    "overflow": [],
+    "text": "小镇邻里服务站\n🚓 警察局\n口袋里有 38 金币\n失物招领小侦探\n1 / 3\n第 1 / 3 步\n👮\n📋\n小兔说：“我把紫色的雨伞落在公园长椅上了。”\n第一条线索：一把紫色的雨伞\n🧢\n蓝色帽子\n☂️\n紫色雨伞\n👜\n黄色手袋\n慢慢来，试一试就有新发现。\n🎟️ 失物招领小侦探\n已付 1 金币 · 重玩免费\n返回警察局大厅\n走出警察局",
+    "scrolled": {
+      "scrollTop": 0,
+      "expected": 0,
+      "lastBottom": 660.921875,
+      "visibleBottom": 670.921875
+    }
+  },
+  {
+    "scene": "play-police_traffic",
+    "viewport": 375,
+    "height": 812,
+    "width": 375,
+    "bodyOverflow": false,
+    "sheet": {
+      "x": 20,
+      "y": 64.65625,
+      "width": 335,
+      "height": 682.671875,
+      "bottom": 747.328125
+    },
+    "scroll": {
+      "clientHeight": 605,
+      "scrollHeight": 605
+    },
+    "failedImages": [],
+    "overflow": [],
+    "text": "小镇邻里服务站\n🚓 警察局\n口袋里有 38 金币\n交通灯小课堂\n1 / 3\n第 1 / 3 题\n👮\n🔴\n警员指向行人信号灯：“看，红灯亮了。”\n行人红灯亮起时，应该怎么做？\n🏃\n赶快冲过去\n🛑\n在人行道安全位置等待\n⚽\n走到路上玩球\n慢慢来，试一试就有新发现。\n🎟️ 交通灯小课堂\n已付 1 金币 · 重玩免费\n返回警察局大厅\n走出警察局",
+    "scrolled": {
+      "scrollTop": 0,
+      "expected": 0,
+      "lastBottom": 670.109375,
+      "visibleBottom": 680.109375
+    }
+  },
+  {
+    "scene": "empty-wallet-cinema",
+    "viewport": 375,
+    "height": 812,
+    "width": 375,
+    "bodyOverflow": false,
+    "sheet": {
+      "x": 20,
+      "y": 56.84375,
+      "width": 335,
+      "height": 698.3125,
+      "bottom": 755.15625
+    },
+    "scroll": {
+      "clientHeight": 621,
+      "scrollHeight": 795
+    },
+    "failedImages": [],
+    "overflow": [],
+    "text": "小镇光影俱乐部\n🎬 电影院\n口袋里有 0 金币\nNOW SHOWING\n今晚，去故事里旅行\n🎟️\n售票处\n🍿\n爆米花台\n🎞️\n放映室\n🎬\n放映员小光\n挑一部喜欢的电影，灯暗下来，故事就开始了。\n今日上映\n入场后，慢慢玩\n☁️\n约 22 秒\n云朵快递员\n灯光暗下来啦！看小兔驾驶云朵车，给干渴的花园送来一场雨。\n3 金币 / 次\n攒金币去 →\n还差 3 金币，学单词就能攒到。\n🚀\n约 22 秒\n月亮的晚安灯\n跟小熊乘上纸火箭，去找一颗迷路的小星星。\n3 金币 / 次\n攒金币去 →\n还差 3 金币，学单词就能攒到。\n选好项目才扣金币 · 最近 12 张入场票可免费重玩\n去影院门口走走 →\n走到门口逛逛，免费。\n走出电影院",
+    "scrolled": {
+      "scrollTop": 174,
+      "expected": 174,
+      "lastBottom": 676.0625,
+      "visibleBottom": 687.9375
+    }
+  },
+  {
+    "scene": "locked-vet",
+    "viewport": 375,
+    "height": 812,
+    "width": 375,
+    "bodyOverflow": false,
+    "sheet": {
+      "x": 20,
+      "y": 56.84375,
+      "width": 335,
+      "height": 698.3125,
+      "bottom": 755.15625
+    },
+    "scroll": {
+      "clientHeight": 621,
+      "scrollHeight": 811
+    },
+    "failedImages": [],
+    "overflow": [],
+    "text": "毛茸茸伙伴的安心小屋\n🐾 宠物医院\n口袋里有 0 金币\nHAPPY PAWS\n每一只小爪子都被照顾\n🐾\n小爪印\n🧴\n护理台\n🧺\n软软小窝\n🐾\n宠物医生绒绒\n带上你的伙伴，一起检查身体、梳理毛发吧。\n今天想做点什么\n入场后，慢慢玩\n🐾\n1–2 分钟\n毛茸茸体检室\n扮演宠物医生的小助手，核对预约、准备道具，陪伴游戏里的小动物。\n1 金币 / 次\n待解锁\n先领养一位宠物伙伴，再一起来体验吧\n🎀\n1–2 分钟\n宠物造型工作室\n为游戏里的毛绒小狗选梳子、毛巾和蝴蝶结，拍一张造型纪念照。\n1 金币 / 次\n待解锁\n先领养一位宠物伙伴，再一起来体验吧\n选好项目才扣金币 · 最近 12 张入场票可免费重玩\n到宠物医院看看 →\n走到门口逛逛，免费。\n走出宠物医院",
+    "scrolled": {
+      "scrollTop": 190,
+      "expected": 190,
+      "lastBottom": 675.75,
+      "visibleBottom": 687.9375
+    }
+  },
+  {
+    "scene": "service-fire",
+    "viewport": 375,
+    "height": 812,
+    "width": 375,
+    "bodyOverflow": false,
+    "sheet": {
+      "x": 20,
+      "y": 56.84375,
+      "width": 335,
+      "height": 698.3125,
+      "bottom": 755.15625
+    },
+    "scroll": {
+      "clientHeight": 621,
+      "scrollHeight": 920
+    },
+    "failedImages": [],
+    "overflow": [],
+    "text": "小小体验员 · 安全训练日\n🚒 消防站\n口袋里有 38 金币\nREADY TO HELP\n准备好了，平安出发\n🚒\n消防车库\n🧯\n装备墙\n🪖\n头盔柜\n🚒\n消防员小焰\n在模拟训练场认识装备，陪消防员完成任务。\n今天想做点什么\n入场后，慢慢玩\n🧯\n1–2 分钟\n安全小课堂\n阅读消防安全故事，练习远离危险、及时求助和听从疏散指引。\n1 金币 / 次\n开始体验 →\n🚒\n1–2 分钟\n消防队模拟出勤\n在模拟指挥台为专业消防员配齐出勤图卡，跟随故事完成一次救援。\n1 金币 / 次\n开始体验 →\n选好项目才扣金币 · 最近 12 张入场票可免费重玩\n🚒 厨房冒出一阵烟\n邻居做饭时发现锅边有小火苗，大家已离开厨房，等消防员来帮忙。\n拨打小镇消防电话 · 1 金币\n去认识消防员 →\n走到门口逛逛，免费。\n走出消防站",
+    "scrolled": {
+      "scrollTop": 299,
+      "expected": 299,
+      "lastBottom": 675.625,
+      "visibleBottom": 687.9375
+    }
+  },
+  {
+    "scene": "ticket-cinema",
+    "viewport": 375,
+    "height": 812,
+    "width": 375,
+    "bodyOverflow": false,
+    "sheet": {
+      "x": 20,
+      "y": 56.84375,
+      "width": 335,
+      "height": 698.3125,
+      "bottom": 755.15625
+    },
+    "scroll": {
+      "clientHeight": 621,
+      "scrollHeight": 856
+    },
+    "failedImages": [],
+    "overflow": [],
+    "text": "小镇光影俱乐部\n🎬 电影院\n口袋里有 0 金币\nNOW SHOWING\n今晚，去故事里旅行\n🎟️\n售票处\n🍿\n爆米花台\n🎞️\n放映室\n🎬\n放映员小光\n挑一部喜欢的电影，灯暗下来，故事就开始了。\n今日上映\n入场后，慢慢玩\n☁️\n约 22 秒\n云朵快递员\n灯光暗下来啦！看小兔驾驶云朵车，给干渴的花园送来一场雨。\n✓ 已有入场票\n免费重玩 →\n🚀\n约 22 秒\n月亮的晚安灯\n跟小熊乘上纸火箭，去找一颗迷路的小星星。\n3 金币 / 次\n攒金币去 →\n还差 3 金币，学单词就能攒到。\n选好项目才扣金币 · 最近 12 张入场票可免费重玩\n🎟️ 我的入场票\n☁️ 云朵快递员\n3 金币 · 已入场\n去影院门口走走 →\n走到门口逛逛，免费。\n走出电影院",
+    "scrolled": {
+      "scrollTop": 235,
+      "expected": 235,
+      "lastBottom": 676.0625,
+      "visibleBottom": 687.9375
+    }
+  },
+  {
+    "scene": "pending-cinema",
+    "viewport": 375,
+    "height": 812,
+    "width": 375,
+    "bodyOverflow": false,
+    "sheet": {
+      "x": 20,
+      "y": 56.84375,
+      "width": 335,
+      "height": 698.3125,
+      "bottom": 755.15625
+    },
+    "scroll": {
+      "clientHeight": 621,
+      "scrollHeight": 856
+    },
+    "failedImages": [],
+    "overflow": [],
+    "text": "小镇光影俱乐部\n🎬 电影院\n口袋里有 0 金币\nNOW SHOWING\n今晚，去故事里旅行\n🎟️\n售票处\n🍿\n爆米花台\n🎞️\n放映室\n🎬\n放映员小光\n挑一部喜欢的电影，灯暗下来，故事就开始了。\n今日上映\n入场后，慢慢玩\n☁️\n约 22 秒\n云朵快递员\n灯光暗下来啦！看小兔驾驶云朵车，给干渴的花园送来一场雨。\n✓ 已有入场票\n免费重玩 →\n🚀\n约 22 秒\n月亮的晚安灯\n跟小熊乘上纸火箭，去找一颗迷路的小星星。\n3 金币 / 次\n确认上次入场\n继续确认同一张入场票，不会重复扣款。\n选好项目才扣金币 · 最近 12 张入场票可免费重玩\n🎟️ 我的入场票\n☁️ 云朵快递员\n3 金币 · 已入场\n去影院门口走走 →\n走到门口逛逛，免费。\n走出电影院",
+    "scrolled": {
+      "scrollTop": 235,
+      "expected": 235,
+      "lastBottom": 676.0625,
+      "visibleBottom": 687.9375
+    }
+  },
+  {
+    "scene": "01-电影院",
+    "viewport": 320,
+    "height": 568,
+    "width": 320,
+    "bodyOverflow": false,
+    "sheet": {
+      "x": 17.0625,
+      "y": 39.765625,
+      "width": 285.875,
+      "height": 488.46875,
+      "bottom": 528.234375
+    },
+    "scroll": {
+      "clientHeight": 422,
+      "scrollHeight": 644
+    },
+    "failedImages": [],
+    "overflow": [],
+    "text": "小镇光影俱乐部\n🎬 电影院\n口袋里有 38 金币\nNOW SHOWING\n今晚，去故事里旅行\n🎟️\n售票处\n🍿\n爆米花台\n🎞️\n放映室\n🎬\n放映员小光\n挑一部喜欢的电影，灯暗下来，故事就开始了。\n今日上映\n入场后，慢慢玩\n☁️\n约 22 秒\n云朵快递员\n灯光暗下来啦！看小兔驾驶云朵车，给干渴的花园送来一场雨。\n3 金币 / 次\n买票入场 →\n🚀\n约 22 秒\n月亮的晚安灯\n跟小熊乘上纸火箭，去找一颗迷路的小星星。\n3 金币 / 次\n买票入场 →\n选好项目才扣金币 · 最近 12 张入场票可免费重玩\n去影院门口走走 →\n走到门口逛逛，免费。\n走出电影院",
+    "scrolled": {
+      "scrollTop": 222,
+      "expected": 222,
+      "lastBottom": 460.671875,
+      "visibleBottom": 470.609375
+    }
+  },
+  {
+    "scene": "02-餐厅",
+    "viewport": 320,
+    "height": 568,
+    "width": 320,
+    "bodyOverflow": false,
+    "sheet": {
+      "x": 17.0625,
+      "y": 39.765625,
+      "width": 285.875,
+      "height": 488.46875,
+      "bottom": 528.234375
+    },
+    "scroll": {
+      "clientHeight": 416,
+      "scrollHeight": 758
+    },
+    "failedImages": [],
+    "overflow": [],
+    "text": "围上围裙，今天你当主厨\n🍜 餐厅\n口袋里有 38 金币\nTOWN KITCHEN\n有烟火气的小厨房\n🥕\n新鲜菜篮\n🍲\n料理台\n🪑\n窗边餐桌\n🍜\n厨师阿米\n食材都备好啦！来做一份热腾腾的小镇料理。\n今天想做点什么\n入场后，慢慢玩\n🍲\n1–2 分钟\n主厨的彩虹汤\n在小游戏厨房里，按主厨的食谱选食材，做出一碗彩虹蔬菜汤。\n2 金币 / 次\n开始体验 →\n🍱\n1–2 分钟\n我的缤纷便当\n按订单给便当盒填满四个格子，主食、蔬菜和水果都要有。\n2 金币 / 次\n开始体验 →\n选好项目才扣金币 · 最近 12 张入场票可免费重玩\n肚子饿了？吃点热乎的\n买好就吃喝\n🥖 饱食\n30 / 100\n💧 水分\n25 / 100\n买完马上吃喝，补充好再出发。\n🍲\n热乎乎的套餐\n饱食 +60 · 水分 +30\n3 金币\n买来吃\n走出餐厅",
+    "scrolled": {
+      "scrollTop": 342,
+      "expected": 342,
+      "lastBottom": 470.46875,
+      "visibleBottom": 470.609375
+    }
+  },
+  {
+    "scene": "03-学校",
+    "viewport": 320,
+    "height": 568,
+    "width": 320,
+    "bodyOverflow": false,
+    "sheet": {
+      "x": 17.0625,
+      "y": 39.765625,
+      "width": 285.875,
+      "height": 488.46875,
+      "bottom": 528.234375
+    },
+    "scroll": {
+      "clientHeight": 422,
+      "scrollHeight": 635
+    },
+    "failedImages": [],
+    "overflow": [],
+    "text": "小镇课堂 · 欢迎新同学\n🏫 学校\n口袋里有 38 金币\nHELLO, CLASS!\n今天，也发现一点新知识\n🎒\n书包柜\n📝\n小课桌\n🔔\n上课铃\n🏫\n老师阿禾\n黑板上有新问题，带着好奇心来试一试。\n今天想做点什么\n入场后，慢慢玩\n🔤\n1–2 分钟\n动物单词课堂\n看单词卡，把英文单词和可爱的小动物配成一对。\n1 金币 / 次\n开始体验 →\n🧮\n1–2 分钟\n水果数学课\n数水果、帮同桌分点心，完成三道生活里的小算题。\n1 金币 / 次\n开始体验 →\n选好项目才扣金币 · 最近 12 张入场票可免费重玩\n去上一堂单词课 →\n走出学校",
+    "scrolled": {
+      "scrollTop": 213,
+      "expected": 213,
+      "lastBottom": 465.15625,
+      "visibleBottom": 470.609375
+    }
+  },
+  {
+    "scene": "04-图书馆",
+    "viewport": 320,
+    "height": 568,
+    "width": 320,
+    "bodyOverflow": false,
+    "sheet": {
+      "x": 17.0625,
+      "y": 39.765625,
+      "width": 285.875,
+      "height": 488.46875,
+      "bottom": 528.234375
+    },
+    "scroll": {
+      "clientHeight": 422,
+      "scrollHeight": 635
+    },
+    "failedImages": [],
+    "overflow": [],
+    "text": "窗边的故事屋\n📚 图书馆\n口袋里有 38 金币\nONCE UPON A TIME\n翻开书，就是另一片天地\n📚\n故事书架\n🪴\n阳光窗台\n🛋️\n阅读角\n📚\n馆员知知\n书页里藏着森林和大海，你想先去哪里？\n今天想做点什么\n入场后，慢慢玩\n📗\n2–3 分钟\n森林里的借书卡\n一边读故事，一边寻找画面里的线索，帮小狐狸办好借书卡。\n1 金币 / 次\n开始体验 →\n📘\n2–3 分钟\n小海龟找朋友\n翻开蓝色故事书，沿着海底线索，找到小海龟的朋友。\n1 金币 / 次\n开始体验 →\n选好项目才扣金币 · 最近 12 张入场票可免费重玩\n去读单词、学知识 →\n走出图书馆",
+    "scrolled": {
+      "scrollTop": 213,
+      "expected": 213,
+      "lastBottom": 465.15625,
+      "visibleBottom": 470.609375
+    }
+  },
+  {
+    "scene": "05-体育馆",
+    "viewport": 320,
+    "height": 568,
+    "width": 320,
+    "bodyOverflow": false,
+    "sheet": {
+      "x": 17.0625,
+      "y": 39.765625,
+      "width": 285.875,
+      "height": 488.46875,
+      "bottom": 528.234375
+    },
+    "scroll": {
+      "clientHeight": 422,
+      "scrollHeight": 658
+    },
+    "failedImages": [],
+    "overflow": [],
+    "text": "小镇运动俱乐部\n⚽ 体育馆\n口袋里有 38 金币\nLET’S PLAY\n每一球，都值得欢呼\n🏀\n篮球场\n🥅\n足球场\n🏅\n荣誉墙\n⚽\n教练阿跃\n热身完毕！看准目标，来一场友好的练习。\n今天想做点什么\n入场后，慢慢玩\n🏀\n约 1 分钟\n三球投篮挑战\n观察每回合篮筐亮起的位置，选准方向，把三个篮球送进篮筐。\n2 金币 / 次\n开始体验 →\n⚽\n约 1 分钟\n小镇点球练习\n看球门里的星星标记，选择射门方向，完成三次定点练习。\n2 金币 / 次\n开始体验 →\n选好项目才扣金币 · 最近 12 张入场票可免费重玩\n去球场活动 →\n走到门口逛逛，免费。\n走出体育馆",
+    "scrolled": {
+      "scrollTop": 236,
+      "expected": 236,
+      "lastBottom": 460.0625,
+      "visibleBottom": 470.609375
+    }
+  },
+  {
+    "scene": "06-公园",
+    "viewport": 320,
+    "height": 568,
+    "width": 320,
+    "bodyOverflow": false,
+    "sheet": {
+      "x": 17.0625,
+      "y": 39.765625,
+      "width": 285.875,
+      "height": 488.46875,
+      "bottom": 528.234375
+    },
+    "scroll": {
+      "clientHeight": 422,
+      "scrollHeight": 658
+    },
+    "failedImages": [],
+    "overflow": [],
+    "text": "慢慢走，发现身边的小生命\n🌳 公园\n口袋里有 38 金币\nA LITTLE GREEN\n把好心情种在这里\n🌷\n花圃\n⛲\n小喷泉\n🌳\n观鸟树\n🌳\n园丁小叶\n给口渴的小花浇浇水，再去树梢找找小鸟。\n今天想做点什么\n入场后，慢慢玩\n🌻\n约 1 分钟\n花园浇水日\n观察花园里的小标牌，只给标着“口渴”的花朵浇水。\n1 金币 / 次\n开始体验 →\n🔎\n约 1 分钟\n树梢观察家\n安静观察公园，在树梢和草地的小伙伴里找到三种鸟。\n1 金币 / 次\n开始体验 →\n选好项目才扣金币 · 最近 12 张入场票可免费重玩\n去公园散步 →\n走到门口逛逛，免费。\n走出公园",
+    "scrolled": {
+      "scrollTop": 236,
+      "expected": 236,
+      "lastBottom": 460.0625,
+      "visibleBottom": 470.609375
+    }
+  },
+  {
+    "scene": "07-商店",
+    "viewport": 320,
+    "height": 568,
+    "width": 320,
+    "bodyOverflow": false,
+    "sheet": {
+      "x": 17.0625,
+      "y": 39.765625,
+      "width": 285.875,
+      "height": 488.46875,
+      "bottom": 528.234375
+    },
+    "scroll": {
+      "clientHeight": 416,
+      "scrollHeight": 834
+    },
+    "failedImages": [],
+    "overflow": [],
+    "text": "街角杂货铺 · 今日营业中\n🏪 商店\n口袋里有 38 金币\nCORNER SHOP\n装满日常的小货架\n🥖\n面包架\n🧃\n饮品柜\n🧺\n购物篮\n🏪\n店主栗栗\n买点吃喝，也来帮我照着清单挑东西吧。\n今天想做点什么\n入场后，慢慢玩\n🧺\n约 1 分钟\n周末采购清单\n看着购物清单，找齐野餐需要的三件商品，装进自己的小篮子。\n1 金币 / 次\n开始体验 →\n📦\n1–2 分钟\n小小理货员\n新货到店啦！把水果、文具和清洁用品放回正确的货架。\n1 金币 / 次\n开始体验 →\n选好项目才扣金币 · 最近 12 张入场票可免费重玩\n随手买点补给\n买好就吃喝\n🥖 饱食\n30 / 100\n💧 水分\n25 / 100\n买完马上吃喝，补充好再出发。\n🥖\n新鲜面包\n饱食 +40\n2 金币\n买来吃\n💧\n清凉饮用水\n水分 +50\n1 金币\n买来喝\n走出商店",
+    "scrolled": {
+      "scrollTop": 418,
+      "expected": 418,
+      "lastBottom": 469.921875,
+      "visibleBottom": 470.609375
+    }
+  },
+  {
+    "scene": "08-医院",
+    "viewport": 320,
+    "height": 568,
+    "width": 320,
+    "bodyOverflow": false,
+    "sheet": {
+      "x": 17.0625,
+      "y": 39.765625,
+      "width": 285.875,
+      "height": 488.46875,
+      "bottom": 528.234375
+    },
+    "scroll": {
+      "clientHeight": 422,
+      "scrollHeight": 658
+    },
+    "failedImages": [],
+    "overflow": [],
+    "text": "温柔照顾每一位小镇居民\n🏥 医院\n口袋里有 38 金币\nTAKE GOOD CARE\n安心的小镇诊室\n🩺\n检查台\n🧸\n玩偶角\n🪴\n候诊区\n🏥\n医生安安\n跟着小镇医生认识检查工具，照顾玩偶朋友。\n今天想做点什么\n入场后，慢慢玩\n🧸\n1–2 分钟\n玩偶体检日\n在玩偶体验区帮医生整理体检道具，给紧张的小熊送上鼓励。\n1 金币 / 次\n开始体验 →\n🩹\n1–2 分钟\n玩偶贴纸工坊\n给布偶的游戏护理贴挑选图案，再配一条小毯子。这是玩偶角色扮演。\n1 金币 / 次\n开始体验 →\n选好项目才扣金币 · 最近 12 张入场票可免费重玩\n到医院探望 →\n走到门口逛逛，免费。\n走出医院",
+    "scrolled": {
+      "scrollTop": 236,
+      "expected": 236,
+      "lastBottom": 460.0625,
+      "visibleBottom": 470.609375
+    }
+  },
+  {
+    "scene": "09-宠物医院",
+    "viewport": 320,
+    "height": 568,
+    "width": 320,
+    "bodyOverflow": false,
+    "sheet": {
+      "x": 17.0625,
+      "y": 39.765625,
+      "width": 285.875,
+      "height": 488.46875,
+      "bottom": 528.234375
+    },
+    "scroll": {
+      "clientHeight": 422,
+      "scrollHeight": 658
+    },
+    "failedImages": [],
+    "overflow": [],
+    "text": "毛茸茸伙伴的安心小屋\n🐾 宠物医院\n口袋里有 38 金币\nHAPPY PAWS\n每一只小爪子都被照顾\n🐾\n小爪印\n🧴\n护理台\n🧺\n软软小窝\n🐾\n宠物医生绒绒\n带上你的伙伴，一起检查身体、梳理毛发吧。\n今天想做点什么\n入场后，慢慢玩\n🐾\n1–2 分钟\n毛茸茸体检室\n扮演宠物医生的小助手，核对预约、准备道具，陪伴游戏里的小动物。\n1 金币 / 次\n开始体验 →\n🎀\n1–2 分钟\n宠物造型工作室\n为游戏里的毛绒小狗选梳子、毛巾和蝴蝶结，拍一张造型纪念照。\n1 金币 / 次\n开始体验 →\n选好项目才扣金币 · 最近 12 张入场票可免费重玩\n到宠物医院看看 →\n走到门口逛逛，免费。\n走出宠物医院",
+    "scrolled": {
+      "scrollTop": 236,
+      "expected": 236,
+      "lastBottom": 460.0625,
+      "visibleBottom": 470.609375
+    }
+  },
+  {
+    "scene": "10-消防站",
+    "viewport": 320,
+    "height": 568,
+    "width": 320,
+    "bodyOverflow": false,
+    "sheet": {
+      "x": 17.0625,
+      "y": 39.765625,
+      "width": 285.875,
+      "height": 488.46875,
+      "bottom": 528.234375
+    },
+    "scroll": {
+      "clientHeight": 422,
+      "scrollHeight": 658
+    },
+    "failedImages": [],
+    "overflow": [],
+    "text": "小小体验员 · 安全训练日\n🚒 消防站\n口袋里有 38 金币\nREADY TO HELP\n准备好了，平安出发\n🚒\n消防车库\n🧯\n装备墙\n🪖\n头盔柜\n🚒\n消防员小焰\n在模拟训练场认识装备，陪消防员完成任务。\n今天想做点什么\n入场后，慢慢玩\n🧯\n1–2 分钟\n安全小课堂\n阅读消防安全故事，练习远离危险、及时求助和听从疏散指引。\n1 金币 / 次\n开始体验 →\n🚒\n1–2 分钟\n消防队模拟出勤\n在模拟指挥台为专业消防员配齐出勤图卡，跟随故事完成一次救援。\n1 金币 / 次\n开始体验 →\n选好项目才扣金币 · 最近 12 张入场票可免费重玩\n去认识消防员 →\n走到门口逛逛，免费。\n走出消防站",
+    "scrolled": {
+      "scrollTop": 236,
+      "expected": 236,
+      "lastBottom": 460.0625,
+      "visibleBottom": 470.609375
+    }
+  },
+  {
+    "scene": "11-警察局",
+    "viewport": 320,
+    "height": 568,
+    "width": 320,
+    "bodyOverflow": false,
+    "sheet": {
+      "x": 17.0625,
+      "y": 39.765625,
+      "width": 285.875,
+      "height": 488.46875,
+      "bottom": 528.234375
+    },
+    "scroll": {
+      "clientHeight": 422,
+      "scrollHeight": 658
+    },
+    "failedImages": [],
+    "overflow": [],
+    "text": "小镇邻里服务站\n🚓 警察局\n口袋里有 38 金币\nHERE TO HELP\n街坊的小事，我们一起帮\n🎒\n失物架\n🚦\n交通角\n📋\n服务台\n🚓\n警员蓝蓝\n一起找回失物，也学着看懂路口的信号。\n今天想做点什么\n入场后，慢慢玩\n🔍\n1–2 分钟\n失物招领小侦探\n根据居民提供的颜色和图案线索，帮警员找回三件丢失的物品。\n1 金币 / 次\n开始体验 →\n🚦\n1–2 分钟\n交通灯小课堂\n跟警员观察红绿灯和人行横道，完成三道出行安全小题。\n1 金币 / 次\n开始体验 →\n选好项目才扣金币 · 最近 12 张入场票可免费重玩\n去和警员打招呼 →\n走到门口逛逛，免费。\n走出警察局",
+    "scrolled": {
+      "scrollTop": 236,
+      "expected": 236,
+      "lastBottom": 460.0625,
+      "visibleBottom": 470.609375
+    }
+  },
+  {
+    "scene": "play-cinema_cloud",
+    "viewport": 320,
+    "height": 568,
+    "width": 320,
+    "bodyOverflow": false,
+    "sheet": {
+      "x": 17.0625,
+      "y": 39.765625,
+      "width": 285.875,
+      "height": 488.46875,
+      "bottom": 528.234375
+    },
+    "scroll": {
+      "clientHeight": 422,
+      "scrollHeight": 459
+    },
+    "failedImages": [],
+    "overflow": [],
+    "text": "小镇光影俱乐部\n🎬 电影院\n口袋里有 38 金币\n小镇私人放映厅\n1 / 6\n第 1 / 6 幕\n🐰\n✉️\n清晨，小兔收到一封信：“花园好渴呀，你能来吗？”\nⅡ 暂停一下\n下一幕 ›\n故事会自动播放，也可以自己翻到下一幕。\n🎟️ 云朵快递员\n已付 3 金币 · 重玩免费\n返回电影院大厅\n走出电影院",
+    "scrolled": {
+      "scrollTop": 37,
+      "expected": 37,
+      "lastBottom": 462.3125,
+      "visibleBottom": 470.609375
+    }
+  },
+  {
+    "scene": "paused-cinema_cloud",
+    "viewport": 320,
+    "height": 568,
+    "width": 320,
+    "bodyOverflow": false,
+    "sheet": {
+      "x": 17.0625,
+      "y": 39.765625,
+      "width": 285.875,
+      "height": 488.46875,
+      "bottom": 528.234375
+    },
+    "scroll": {
+      "clientHeight": 422,
+      "scrollHeight": 459
+    },
+    "failedImages": [],
+    "overflow": [],
+    "text": "小镇光影俱乐部\n🎬 电影院\n口袋里有 38 金币\n小镇私人放映厅\n1 / 6\n第 1 / 6 幕\n🐰\n✉️\n已暂停\n清晨，小兔收到一封信：“花园好渴呀，你能来吗？”\n▶ 继续播放\n下一幕 ›\n放映已暂停，准备好后可以继续。\n🎟️ 云朵快递员\n已付 3 金币 · 重玩免费\n返回电影院大厅\n走出电影院",
+    "scrolled": {
+      "scrollTop": 37,
+      "expected": 37,
+      "lastBottom": 462.3125,
+      "visibleBottom": 470.609375
+    }
+  },
+  {
+    "scene": "done-cinema_cloud",
+    "viewport": 320,
+    "height": 568,
+    "width": 320,
+    "bodyOverflow": false,
+    "sheet": {
+      "x": 17.0625,
+      "y": 39.765625,
+      "width": 285.875,
+      "height": 488.46875,
+      "bottom": 528.234375
+    },
+    "scroll": {
+      "clientHeight": 422,
+      "scrollHeight": 538
+    },
+    "failedImages": [],
+    "overflow": [],
+    "text": "小镇光影俱乐部\n🎬 电影院\n口袋里有 38 金币\n小镇私人放映厅\n已完成\n体验完成\n🐰\n🌈\nTHE END\n小兔送到了第一场春雨。谢谢你陪它完成这趟云朵旅行！\n谢谢观看\n小兔送到了第一场春雨。谢谢你陪它完成这趟云朵旅行！\n再看一遍 · 免费\n🎟️ 云朵快递员\n已付 3 金币 · 重玩免费\n返回电影院大厅\n走出电影院",
+    "scrolled": {
+      "scrollTop": 116,
+      "expected": 116,
+      "lastBottom": 461.78125,
+      "visibleBottom": 470.609375
+    }
+  },
+  {
+    "scene": "play-cinema_space",
+    "viewport": 320,
+    "height": 568,
+    "width": 320,
+    "bodyOverflow": false,
+    "sheet": {
+      "x": 17.0625,
+      "y": 39.765625,
+      "width": 285.875,
+      "height": 488.46875,
+      "bottom": 528.234375
+    },
+    "scroll": {
+      "clientHeight": 422,
+      "scrollHeight": 459
+    },
+    "failedImages": [],
+    "overflow": [],
+    "text": "小镇光影俱乐部\n🎬 电影院\n口袋里有 38 金币\n小镇私人放映厅\n1 / 6\n第 1 / 6 幕\n🐻\n⭐\n窗台上，一颗小星星小声说：“我找不到回家的路了。”\nⅡ 暂停一下\n下一幕 ›\n故事会自动播放，也可以自己翻到下一幕。\n🎟️ 月亮的晚安灯\n已付 3 金币 · 重玩免费\n返回电影院大厅\n走出电影院",
+    "scrolled": {
+      "scrollTop": 37,
+      "expected": 37,
+      "lastBottom": 462.3125,
+      "visibleBottom": 470.609375
+    }
+  },
+  {
+    "scene": "done-cinema_space",
+    "viewport": 320,
+    "height": 568,
+    "width": 320,
+    "bodyOverflow": false,
+    "sheet": {
+      "x": 17.0625,
+      "y": 39.765625,
+      "width": 285.875,
+      "height": 488.46875,
+      "bottom": 528.234375
+    },
+    "scroll": {
+      "clientHeight": 422,
+      "scrollHeight": 538
+    },
+    "failedImages": [],
+    "overflow": [],
+    "text": "小镇光影俱乐部\n🎬 电影院\n口袋里有 38 金币\n小镇私人放映厅\n已完成\n体验完成\n🐻\n🌙\nTHE END\n小星星回家了，月亮亮起晚安灯。今晚做一个甜甜的太空梦。\n谢谢观看\n小星星回家了，月亮亮起晚安灯。今晚做一个甜甜的太空梦。\n再看一遍 · 免费\n🎟️ 月亮的晚安灯\n已付 3 金币 · 重玩免费\n返回电影院大厅\n走出电影院",
+    "scrolled": {
+      "scrollTop": 116,
+      "expected": 116,
+      "lastBottom": 461.78125,
+      "visibleBottom": 470.609375
+    }
+  },
+  {
+    "scene": "play-school_words",
+    "viewport": 320,
+    "height": 568,
+    "width": 320,
+    "bodyOverflow": false,
+    "sheet": {
+      "x": 17.0625,
+      "y": 39.765625,
+      "width": 285.875,
+      "height": 488.46875,
+      "bottom": 528.234375
+    },
+    "scroll": {
+      "clientHeight": 422,
+      "scrollHeight": 501
+    },
+    "failedImages": [],
+    "overflow": [],
+    "text": "小镇课堂 · 欢迎新同学\n🏫 学校\n口袋里有 38 金币\n动物单词课堂\n1 / 3\n第 1 / 3 题\n🧑‍🏫\n🔤\n第一张单词卡：cat\n哪个小动物是 cat？\n🐶\n小狗\n🐱\n小猫\n🐦\n小鸟\n慢慢来，试一试就有新发现。\n🎟️ 动物单词课堂\n已付 1 金币 · 重玩免费\n返回学校大厅\n走出学校",
+    "scrolled": {
+      "scrollTop": 79,
+      "expected": 79,
+      "lastBottom": 462.265625,
+      "visibleBottom": 470.609375
+    }
+  },
+  {
+    "scene": "play-school_numbers",
+    "viewport": 320,
+    "height": 568,
+    "width": 320,
+    "bodyOverflow": false,
+    "sheet": {
+      "x": 17.0625,
+      "y": 39.765625,
+      "width": 285.875,
+      "height": 488.46875,
+      "bottom": 528.234375
+    },
+    "scroll": {
+      "clientHeight": 422,
+      "scrollHeight": 501
+    },
+    "failedImages": [],
+    "overflow": [],
+    "text": "小镇课堂 · 欢迎新同学\n🏫 学校\n口袋里有 38 金币\n水果数学课\n1 / 3\n第 1 / 3 题\n🧑‍🏫\n🍓\n🍓 🍓 🍓 · 一颗一颗慢慢数。\n盘子里有几颗草莓？\n2️⃣\n2 颗\n3️⃣\n3 颗\n4️⃣\n4 颗\n慢慢来，试一试就有新发现。\n🎟️ 水果数学课\n已付 1 金币 · 重玩免费\n返回学校大厅\n走出学校",
+    "scrolled": {
+      "scrollTop": 79,
+      "expected": 79,
+      "lastBottom": 462.265625,
+      "visibleBottom": 470.609375
+    }
+  },
+  {
+    "scene": "play-library_forest",
+    "viewport": 320,
+    "height": 568,
+    "width": 320,
+    "bodyOverflow": false,
+    "sheet": {
+      "x": 17.0625,
+      "y": 39.765625,
+      "width": 285.875,
+      "height": 488.46875,
+      "bottom": 528.234375
+    },
+    "scroll": {
+      "clientHeight": 422,
+      "scrollHeight": 501
+    },
+    "failedImages": [],
+    "overflow": [],
+    "text": "窗边的故事屋\n📚 图书馆\n口袋里有 38 金币\n森林里的借书卡\n1 / 4\n第 1 / 4 页\n🦊\n📚\n小狐狸抱着一只空书袋，走进树洞里的图书馆。\n谁来森林图书馆借书？\n🐻\n小熊\n🦊\n小狐狸\n🐰\n小兔\n慢慢来，试一试就有新发现。\n🎟️ 森林里的借书卡\n已付 1 金币 · 重玩免费\n返回图书馆大厅\n走出图书馆",
+    "scrolled": {
+      "scrollTop": 79,
+      "expected": 79,
+      "lastBottom": 462.265625,
+      "visibleBottom": 470.609375
+    }
+  },
+  {
+    "scene": "play-library_ocean",
+    "viewport": 320,
+    "height": 568,
+    "width": 320,
+    "bodyOverflow": false,
+    "sheet": {
+      "x": 17.0625,
+      "y": 39.765625,
+      "width": 285.875,
+      "height": 488.46875,
+      "bottom": 528.234375
+    },
+    "scroll": {
+      "clientHeight": 422,
+      "scrollHeight": 501
+    },
+    "failedImages": [],
+    "overflow": [],
+    "text": "窗边的故事屋\n📚 图书馆\n口袋里有 38 金币\n小海龟找朋友\n1 / 4\n第 1 / 4 页\n🐢\n🌊\n清晨，小海龟从沙滩出发，游进蓝色的大海。\n小海龟要去哪里找朋友？\n🌊\n蓝色大海\n🏔️\n高高雪山\n🚉\n热闹车站\n慢慢来，试一试就有新发现。\n🎟️ 小海龟找朋友\n已付 1 金币 · 重玩免费\n返回图书馆大厅\n走出图书馆",
+    "scrolled": {
+      "scrollTop": 79,
+      "expected": 79,
+      "lastBottom": 462.265625,
+      "visibleBottom": 470.609375
+    }
+  },
+  {
+    "scene": "play-shop_basket",
+    "viewport": 320,
+    "height": 568,
+    "width": 320,
+    "bodyOverflow": false,
+    "sheet": {
+      "x": 17.0625,
+      "y": 39.765625,
+      "width": 285.875,
+      "height": 488.46875,
+      "bottom": 528.234375
+    },
+    "scroll": {
+      "clientHeight": 416,
+      "scrollHeight": 572
+    },
+    "failedImages": [],
+    "overflow": [],
+    "text": "街角杂货铺 · 今日营业中\n🏪 商店\n口袋里有 38 金币\n周末采购清单\n1 / 3\n已完成 0 / 3 个\n🧑‍🍳\n🧺\n🥛\n🥖\n🧼\n🍎\n💧\n⚽\n野餐清单：面包、饮用水、苹果。只拿清单上的商品哦。\n点选清单上的 3 件商品\n🥛\n牛奶\n🥖\n面包\n🧼\n香皂\n🍎\n苹果\n💧\n饮用水\n⚽\n皮球\n慢慢来，试一试就有新发现。\n🎟️ 周末采购清单\n已付 1 金币 · 重玩免费\n返回商店大厅\n走出商店",
+    "scrolled": {
+      "scrollTop": 156,
+      "expected": 156,
+      "lastBottom": 461.8125,
+      "visibleBottom": 470.609375
+    }
+  },
+  {
+    "scene": "play-shop_sort",
+    "viewport": 320,
+    "height": 568,
+    "width": 320,
+    "bodyOverflow": false,
+    "sheet": {
+      "x": 17.0625,
+      "y": 39.765625,
+      "width": 285.875,
+      "height": 488.46875,
+      "bottom": 528.234375
+    },
+    "scroll": {
+      "clientHeight": 416,
+      "scrollHeight": 501
+    },
+    "failedImages": [],
+    "overflow": [],
+    "text": "街角杂货铺 · 今日营业中\n🏪 商店\n口袋里有 38 金币\n小小理货员\n1 / 4\n第 1 / 4 步\n🧑‍💼\n🍎\n第一箱新货是红红的苹果。\n苹果应该放在哪个货架？\n🍊\n水果架\n✏️\n文具架\n🧼\n清洁用品架\n慢慢来，试一试就有新发现。\n🎟️ 小小理货员\n已付 1 金币 · 重玩免费\n返回商店大厅\n走出商店",
+    "scrolled": {
+      "scrollTop": 85,
+      "expected": 85,
+      "lastBottom": 462.234375,
+      "visibleBottom": 470.609375
+    }
+  },
+  {
+    "scene": "play-restaurant_soup",
+    "viewport": 320,
+    "height": 568,
+    "width": 320,
+    "bodyOverflow": false,
+    "sheet": {
+      "x": 17.0625,
+      "y": 39.765625,
+      "width": 285.875,
+      "height": 488.46875,
+      "bottom": 528.234375
+    },
+    "scroll": {
+      "clientHeight": 416,
+      "scrollHeight": 501
+    },
+    "failedImages": [],
+    "overflow": [],
+    "text": "围上围裙，今天你当主厨\n🍜 餐厅\n口袋里有 38 金币\n主厨的彩虹汤\n1 / 4\n第 1 / 4 步\n🧑‍🍳\n🍲\n主厨打开食谱：“先找橙色的蔬菜。”\n食谱第一样：橙色的胡萝卜\n🥕\n胡萝卜\n🍰\n蛋糕\n🍇\n葡萄\n慢慢来，试一试就有新发现。\n🎟️ 主厨的彩虹汤\n已付 2 金币 · 重玩免费\n返回餐厅大厅\n走出餐厅",
+    "scrolled": {
+      "scrollTop": 85,
+      "expected": 85,
+      "lastBottom": 462.234375,
+      "visibleBottom": 470.609375
+    }
+  },
+  {
+    "scene": "hint-restaurant_soup",
+    "viewport": 320,
+    "height": 568,
+    "width": 320,
+    "bodyOverflow": false,
+    "sheet": {
+      "x": 17.0625,
+      "y": 39.765625,
+      "width": 285.875,
+      "height": 488.46875,
+      "bottom": 528.234375
+    },
+    "scroll": {
+      "clientHeight": 416,
+      "scrollHeight": 501
+    },
+    "failedImages": [],
+    "overflow": [],
+    "text": "围上围裙，今天你当主厨\n🍜 餐厅\n口袋里有 38 金币\n主厨的彩虹汤\n1 / 4\n第 1 / 4 步\n🧑‍🍳\n🍲\n主厨打开食谱：“先找橙色的蔬菜。”\n食谱第一样：橙色的胡萝卜\n🥕\n胡萝卜\n🍰\n蛋糕\n🍇\n葡萄\n长长的、橙色的蔬菜是胡萝卜。\n🎟️ 主厨的彩虹汤\n已付 2 金币 · 重玩免费\n返回餐厅大厅\n走出餐厅",
+    "scrolled": {
+      "scrollTop": 85,
+      "expected": 85,
+      "lastBottom": 462.234375,
+      "visibleBottom": 470.609375
+    }
+  },
+  {
+    "scene": "done-restaurant_soup",
+    "viewport": 320,
+    "height": 568,
+    "width": 320,
+    "bodyOverflow": false,
+    "sheet": {
+      "x": 17.0625,
+      "y": 39.765625,
+      "width": 285.875,
+      "height": 488.46875,
+      "bottom": 528.234375
+    },
+    "scroll": {
+      "clientHeight": 416,
+      "scrollHeight": 526
+    },
+    "failedImages": [],
+    "overflow": [],
+    "text": "围上围裙，今天你当主厨\n🍜 餐厅\n口袋里有 38 金币\n主厨的彩虹汤\n已完成\n体验完成\n🧑‍🍳\n🍲\n完成啦！\n胡萝卜、玉米和青菜变成了一碗彩虹汤。主厨为你点了一个赞！\n今天的小小成就\n胡萝卜、玉米和青菜变成了一碗彩虹汤。主厨为你点了一个赞！\n再玩一次 · 免费\n🎟️ 主厨的彩虹汤\n已付 2 金币 · 重玩免费\n返回餐厅大厅\n走出餐厅",
+    "scrolled": {
+      "scrollTop": 110,
+      "expected": 110,
+      "lastBottom": 461.8125,
+      "visibleBottom": 470.609375
+    }
+  },
+  {
+    "scene": "play-restaurant_bento",
+    "viewport": 320,
+    "height": 568,
+    "width": 320,
+    "bodyOverflow": false,
+    "sheet": {
+      "x": 17.0625,
+      "y": 39.765625,
+      "width": 285.875,
+      "height": 488.46875,
+      "bottom": 528.234375
+    },
+    "scroll": {
+      "clientHeight": 416,
+      "scrollHeight": 501
+    },
+    "failedImages": [],
+    "overflow": [],
+    "text": "围上围裙，今天你当主厨\n🍜 餐厅\n口袋里有 38 金币\n我的缤纷便当\n1 / 4\n第 1 / 4 步\n🧑‍🍳\n🍱\n客人点了一份四格便当，先放主食。\n第一格的订单是：米饭\n🍓\n草莓\n🍚\n米饭\n🥦\n西兰花\n慢慢来，试一试就有新发现。\n🎟️ 我的缤纷便当\n已付 2 金币 · 重玩免费\n返回餐厅大厅\n走出餐厅",
+    "scrolled": {
+      "scrollTop": 85,
+      "expected": 85,
+      "lastBottom": 462.234375,
+      "visibleBottom": 470.609375
+    }
+  },
+  {
+    "scene": "play-park_garden",
+    "viewport": 320,
+    "height": 568,
+    "width": 320,
+    "bodyOverflow": false,
+    "sheet": {
+      "x": 17.0625,
+      "y": 39.765625,
+      "width": 285.875,
+      "height": 488.46875,
+      "bottom": 528.234375
+    },
+    "scroll": {
+      "clientHeight": 422,
+      "scrollHeight": 572
+    },
+    "failedImages": [],
+    "overflow": [],
+    "text": "慢慢走，发现身边的小生命\n🌳 公园\n口袋里有 38 金币\n花园浇水日\n1 / 3\n已完成 0 / 3 个\n🧑‍🌾\n🚿\n🌷\n🌼\n🌻\n🌺\n🌹\n☘️\n园丁留下标牌：口渴的花需要水；已经喝饱的花，先让它休息。\n点选 3 朵标着“口渴”的花\n🌷\n郁金香 · 口渴\n🌼\n小雏菊 · 喝饱了\n🌻\n向日葵 · 口渴\n🌺\n木槿花 · 喝饱了\n🌹\n小玫瑰 · 口渴\n☘️\n幸运草 · 喝饱了\n慢慢来，试一试就有新发现。\n🎟️ 花园浇水日\n已付 1 金币 · 重玩免费\n返回公园大厅\n走出公园",
+    "scrolled": {
+      "scrollTop": 150,
+      "expected": 150,
+      "lastBottom": 461.84375,
+      "visibleBottom": 470.609375
+    }
+  },
+  {
+    "scene": "done-park_garden",
+    "viewport": 320,
+    "height": 568,
+    "width": 320,
+    "bodyOverflow": false,
+    "sheet": {
+      "x": 17.0625,
+      "y": 39.765625,
+      "width": 285.875,
+      "height": 488.46875,
+      "bottom": 528.234375
+    },
+    "scroll": {
+      "clientHeight": 422,
+      "scrollHeight": 526
+    },
+    "failedImages": [],
+    "overflow": [],
+    "text": "慢慢走，发现身边的小生命\n🌳 公园\n口袋里有 38 金币\n花园浇水日\n已完成\n体验完成\n🧑‍🌾\n🚿\n🌷\n✓\n🌼\n🌻\n✓\n🌺\n🌹\n✓\n☘️\n完成啦！\n三朵口渴的小花都喝到水了，花园开出一片明亮的颜色！\n今天的小小成就\n三朵口渴的小花都喝到水了，花园开出一片明亮的颜色！\n再玩一次 · 免费\n🎟️ 花园浇水日\n已付 1 金币 · 重玩免费\n返回公园大厅\n走出公园",
+    "scrolled": {
+      "scrollTop": 104,
+      "expected": 104,
+      "lastBottom": 461.84375,
+      "visibleBottom": 470.609375
+    }
+  },
+  {
+    "scene": "play-park_birds",
+    "viewport": 320,
+    "height": 568,
+    "width": 320,
+    "bodyOverflow": false,
+    "sheet": {
+      "x": 17.0625,
+      "y": 39.765625,
+      "width": 285.875,
+      "height": 488.46875,
+      "bottom": 528.234375
+    },
+    "scroll": {
+      "clientHeight": 422,
+      "scrollHeight": 572
+    },
+    "failedImages": [],
+    "overflow": [],
+    "text": "慢慢走，发现身边的小生命\n🌳 公园\n口袋里有 38 金币\n树梢观察家\n1 / 3\n已完成 0 / 3 个\n🧒\n🔎\n🦋\n🐦\n🐰\n🦆\n🦉\n🐌\n保持安静，用眼睛观察。看看哪些朋友长着羽毛和翅膀？\n找到画面中的 3 种鸟\n🦋\n蝴蝶\n🐦\n小鸟\n🐰\n兔子\n🦆\n鸭子\n🦉\n猫头鹰\n🐌\n蜗牛\n慢慢来，试一试就有新发现。\n🎟️ 树梢观察家\n已付 1 金币 · 重玩免费\n返回公园大厅\n走出公园",
+    "scrolled": {
+      "scrollTop": 150,
+      "expected": 150,
+      "lastBottom": 461.84375,
+      "visibleBottom": 470.609375
+    }
+  },
+  {
+    "scene": "play-stadium_hoops",
+    "viewport": 320,
+    "height": 568,
+    "width": 320,
+    "bodyOverflow": false,
+    "sheet": {
+      "x": 17.0625,
+      "y": 39.765625,
+      "width": 285.875,
+      "height": 488.46875,
+      "bottom": 528.234375
+    },
+    "scroll": {
+      "clientHeight": 422,
+      "scrollHeight": 459
+    },
+    "failedImages": [],
+    "overflow": [],
+    "text": "小镇运动俱乐部\n⚽ 体育馆\n口袋里有 38 金币\n三球投篮挑战\n1 / 3\n第 1 / 3 球\n命中 0 / 3\n★ 瞄准这里\n向中投\n向右投\n🏀\n第一球：← 左侧篮筐亮起来了。\n篮筐在左边，选择投球方向\n轻点球场上亮起的篮筐，试试能不能命中\n慢慢来，试一试就有新发现。\n🎟️ 三球投篮挑战\n已付 2 金币 · 重玩免费\n返回体育馆大厅\n走出体育馆",
+    "scrolled": {
+      "scrollTop": 37,
+      "expected": 37,
+      "lastBottom": 462.0625,
+      "visibleBottom": 470.609375
+    }
+  },
+  {
+    "scene": "play-stadium_goal",
+    "viewport": 320,
+    "height": 568,
+    "width": 320,
+    "bodyOverflow": false,
+    "sheet": {
+      "x": 17.0625,
+      "y": 39.765625,
+      "width": 285.875,
+      "height": 488.46875,
+      "bottom": 528.234375
+    },
+    "scroll": {
+      "clientHeight": 422,
+      "scrollHeight": 459
+    },
+    "failedImages": [],
+    "overflow": [],
+    "text": "小镇运动俱乐部\n⚽ 体育馆\n口袋里有 38 金币\n小镇点球练习\n1 / 3\n第 1 / 3 球\n命中 0 / 3\n向左踢\n向中踢\n⭐\n★ 瞄准这里\n⚽\n第一轮：星星在球门右侧 ⭐ →\n射向右边的星星靶\n轻点球场上亮起的球门，试试能不能命中\n慢慢来，试一试就有新发现。\n🎟️ 小镇点球练习\n已付 2 金币 · 重玩免费\n返回体育馆大厅\n走出体育馆",
+    "scrolled": {
+      "scrollTop": 37,
+      "expected": 37,
+      "lastBottom": 462.0625,
+      "visibleBottom": 470.609375
+    }
+  },
+  {
+    "scene": "play-hospital_checkup",
+    "viewport": 320,
+    "height": 568,
+    "width": 320,
+    "bodyOverflow": false,
+    "sheet": {
+      "x": 17.0625,
+      "y": 39.765625,
+      "width": 285.875,
+      "height": 488.46875,
+      "bottom": 528.234375
+    },
+    "scroll": {
+      "clientHeight": 422,
+      "scrollHeight": 501
+    },
+    "failedImages": [],
+    "overflow": [],
+    "text": "温柔照顾每一位小镇居民\n🏥 医院\n口袋里有 38 金币\n玩偶体检日\n1 / 4\n第 1 / 4 步\n🧑‍⚕️\n🪪\n玩偶体验区开放啦！今天来体检的是小熊。\n先帮小熊找到自己的预约卡\n🐰\n小兔预约卡\n🐻\n小熊预约卡\n🐱\n小猫预约卡\n慢慢来，试一试就有新发现。\n🎟️ 玩偶体检日\n已付 1 金币 · 重玩免费\n返回医院大厅\n走出医院",
+    "scrolled": {
+      "scrollTop": 79,
+      "expected": 79,
+      "lastBottom": 462.265625,
+      "visibleBottom": 470.609375
+    }
+  },
+  {
+    "scene": "play-hospital_bandage",
+    "viewport": 320,
+    "height": 568,
+    "width": 320,
+    "bodyOverflow": false,
+    "sheet": {
+      "x": 17.0625,
+      "y": 39.765625,
+      "width": 285.875,
+      "height": 488.46875,
+      "bottom": 528.234375
+    },
+    "scroll": {
+      "clientHeight": 422,
+      "scrollHeight": 501
+    },
+    "failedImages": [],
+    "overflow": [],
+    "text": "温柔照顾每一位小镇居民\n🏥 医院\n口袋里有 38 金币\n玩偶贴纸工坊\n1 / 4\n第 1 / 4 步\n🧸\n🩹\n这是给布偶用的装饰贴。小熊说：“我最喜欢星星！”\n小熊喜欢星星，选哪张装饰护理贴？\n🌷\n花朵图案\n⭐\n星星图案\n🌙\n月亮图案\n慢慢来，试一试就有新发现。\n🎟️ 玩偶贴纸工坊\n已付 1 金币 · 重玩免费\n返回医院大厅\n走出医院",
+    "scrolled": {
+      "scrollTop": 79,
+      "expected": 79,
+      "lastBottom": 462.265625,
+      "visibleBottom": 470.609375
+    }
+  },
+  {
+    "scene": "play-vet_checkup",
+    "viewport": 320,
+    "height": 568,
+    "width": 320,
+    "bodyOverflow": false,
+    "sheet": {
+      "x": 17.0625,
+      "y": 39.765625,
+      "width": 285.875,
+      "height": 488.46875,
+      "bottom": 528.234375
+    },
+    "scroll": {
+      "clientHeight": 422,
+      "scrollHeight": 501
+    },
+    "failedImages": [],
+    "overflow": [],
+    "text": "毛茸茸伙伴的安心小屋\n🐾 宠物医院\n口袋里有 38 金币\n毛茸茸体检室\n1 / 4\n第 1 / 4 步\n🧑‍⚕️\n🐱\n宠物医生在游戏里迎接第一位小客人。\n今天先来的是猫咪，找到它的预约卡\n🐶\n小狗预约卡\n🐰\n小兔预约卡\n🐱\n猫咪预约卡\n慢慢来，试一试就有新发现。\n🎟️ 毛茸茸体检室\n已付 1 金币 · 重玩免费\n返回宠物医院大厅\n走出宠物医院",
+    "scrolled": {
+      "scrollTop": 79,
+      "expected": 79,
+      "lastBottom": 462.265625,
+      "visibleBottom": 470.609375
+    }
+  },
+  {
+    "scene": "play-vet_groom",
+    "viewport": 320,
+    "height": 568,
+    "width": 320,
+    "bodyOverflow": false,
+    "sheet": {
+      "x": 17.0625,
+      "y": 39.765625,
+      "width": 285.875,
+      "height": 488.46875,
+      "bottom": 528.234375
+    },
+    "scroll": {
+      "clientHeight": 422,
+      "scrollHeight": 501
+    },
+    "failedImages": [],
+    "overflow": [],
+    "text": "毛茸茸伙伴的安心小屋\n🐾 宠物医院\n口袋里有 38 金币\n宠物造型工作室\n1 / 4\n第 1 / 4 步\n🐶\n🧺\n这里是毛绒玩偶造型室，小狗准备换个新造型。\n毛绒小狗想梳毛，选哪个玩具道具？\n🥄\n汤勺\n🪮\n柔软小梳子\n✏️\n铅笔\n慢慢来，试一试就有新发现。\n🎟️ 宠物造型工作室\n已付 1 金币 · 重玩免费\n返回宠物医院大厅\n走出宠物医院",
+    "scrolled": {
+      "scrollTop": 79,
+      "expected": 79,
+      "lastBottom": 462.265625,
+      "visibleBottom": 470.609375
+    }
+  },
+  {
+    "scene": "play-fire_drill",
+    "viewport": 320,
+    "height": 568,
+    "width": 320,
+    "bodyOverflow": false,
+    "sheet": {
+      "x": 17.0625,
+      "y": 39.765625,
+      "width": 285.875,
+      "height": 488.46875,
+      "bottom": 528.234375
+    },
+    "scroll": {
+      "clientHeight": 422,
+      "scrollHeight": 517
+    },
+    "failedImages": [],
+    "overflow": [],
+    "text": "小小体验员 · 安全训练日\n🚒 消防站\n口袋里有 38 金币\n安全小课堂\n1 / 3\n第 1 / 3 题\n🧑‍🚒\n🧯\n消防员在课堂上讲故事：“安全永远排在第一位。”\n发现烟雾和危险时，小朋友应该怎么做？\n🔎\n走近看看\n🧑‍🚒\n远离危险并告诉大人\n📦\n躲起来不告诉别人\n慢慢来，试一试就有新发现。\n🎟️ 安全小课堂\n已付 1 金币 · 重玩免费\n返回消防站大厅\n走出消防站",
+    "scrolled": {
+      "scrollTop": 95,
+      "expected": 95,
+      "lastBottom": 461.953125,
+      "visibleBottom": 470.609375
+    }
+  },
+  {
+    "scene": "play-fire_rescue",
+    "viewport": 320,
+    "height": 568,
+    "width": 320,
+    "bodyOverflow": false,
+    "sheet": {
+      "x": 17.0625,
+      "y": 39.765625,
+      "width": 285.875,
+      "height": 488.46875,
+      "bottom": 528.234375
+    },
+    "scroll": {
+      "clientHeight": 422,
+      "scrollHeight": 510
+    },
+    "failedImages": [],
+    "overflow": [],
+    "text": "小小体验员 · 安全训练日\n🚒 消防站\n口袋里有 38 金币\n消防队模拟出勤\n1 / 4\n第 1 / 4 步\n🧑‍🚒\n📻\n模拟演练开始。你负责匹配图卡，救援由故事里的专业人员完成。\n模拟指挥台要派出哪支专业队伍？\n🧑‍🍳\n面包师队伍\n🧑‍🚒\n专业消防队\n⚽\n足球队\n慢慢来，试一试就有新发现。\n🎟️ 消防队模拟出勤\n已付 1 金币 · 重玩免费\n返回消防站大厅\n走出消防站",
+    "scrolled": {
+      "scrollTop": 88,
+      "expected": 88,
+      "lastBottom": 461.8125,
+      "visibleBottom": 470.609375
+    }
+  },
+  {
+    "scene": "play-police_lost",
+    "viewport": 320,
+    "height": 568,
+    "width": 320,
+    "bodyOverflow": false,
+    "sheet": {
+      "x": 17.0625,
+      "y": 39.765625,
+      "width": 285.875,
+      "height": 488.46875,
+      "bottom": 528.234375
+    },
+    "scroll": {
+      "clientHeight": 422,
+      "scrollHeight": 501
+    },
+    "failedImages": [],
+    "overflow": [],
+    "text": "小镇邻里服务站\n🚓 警察局\n口袋里有 38 金币\n失物招领小侦探\n1 / 3\n第 1 / 3 步\n👮\n📋\n小兔说：“我把紫色的雨伞落在公园长椅上了。”\n第一条线索：一把紫色的雨伞\n🧢\n蓝色帽子\n☂️\n紫色雨伞\n👜\n黄色手袋\n慢慢来，试一试就有新发现。\n🎟️ 失物招领小侦探\n已付 1 金币 · 重玩免费\n返回警察局大厅\n走出警察局",
+    "scrolled": {
+      "scrollTop": 79,
+      "expected": 79,
+      "lastBottom": 462.265625,
+      "visibleBottom": 470.609375
+    }
+  },
+  {
+    "scene": "play-police_traffic",
+    "viewport": 320,
+    "height": 568,
+    "width": 320,
+    "bodyOverflow": false,
+    "sheet": {
+      "x": 17.0625,
+      "y": 39.765625,
+      "width": 285.875,
+      "height": 488.46875,
+      "bottom": 528.234375
+    },
+    "scroll": {
+      "clientHeight": 422,
+      "scrollHeight": 517
+    },
+    "failedImages": [],
+    "overflow": [],
+    "text": "小镇邻里服务站\n🚓 警察局\n口袋里有 38 金币\n交通灯小课堂\n1 / 3\n第 1 / 3 题\n👮\n🔴\n警员指向行人信号灯：“看，红灯亮了。”\n行人红灯亮起时，应该怎么做？\n🏃\n赶快冲过去\n🛑\n在人行道安全位置等待\n⚽\n走到路上玩球\n慢慢来，试一试就有新发现。\n🎟️ 交通灯小课堂\n已付 1 金币 · 重玩免费\n返回警察局大厅\n走出警察局",
+    "scrolled": {
+      "scrollTop": 95,
+      "expected": 95,
+      "lastBottom": 461.953125,
+      "visibleBottom": 470.609375
+    }
+  },
+  {
+    "scene": "empty-wallet-cinema",
+    "viewport": 320,
+    "height": 568,
+    "width": 320,
+    "bodyOverflow": false,
+    "sheet": {
+      "x": 17.0625,
+      "y": 39.765625,
+      "width": 285.875,
+      "height": 488.46875,
+      "bottom": 528.234375
+    },
+    "scroll": {
+      "clientHeight": 422,
+      "scrollHeight": 680
+    },
+    "failedImages": [],
+    "overflow": [],
+    "text": "小镇光影俱乐部\n🎬 电影院\n口袋里有 0 金币\nNOW SHOWING\n今晚，去故事里旅行\n🎟️\n售票处\n🍿\n爆米花台\n🎞️\n放映室\n🎬\n放映员小光\n挑一部喜欢的电影，灯暗下来，故事就开始了。\n今日上映\n入场后，慢慢玩\n☁️\n约 22 秒\n云朵快递员\n灯光暗下来啦！看小兔驾驶云朵车，给干渴的花园送来一场雨。\n3 金币 / 次\n攒金币去 →\n还差 3 金币，学单词就能攒到。\n🚀\n约 22 秒\n月亮的晚安灯\n跟小熊乘上纸火箭，去找一颗迷路的小星星。\n3 金币 / 次\n攒金币去 →\n还差 3 金币，学单词就能攒到。\n选好项目才扣金币 · 最近 12 张入场票可免费重玩\n去影院门口走走 →\n走到门口逛逛，免费。\n走出电影院",
+    "scrolled": {
+      "scrollTop": 258,
+      "expected": 258,
+      "lastBottom": 460.484375,
+      "visibleBottom": 470.609375
+    }
+  },
+  {
+    "scene": "locked-vet",
+    "viewport": 320,
+    "height": 568,
+    "width": 320,
+    "bodyOverflow": false,
+    "sheet": {
+      "x": 17.0625,
+      "y": 39.765625,
+      "width": 285.875,
+      "height": 488.46875,
+      "bottom": 528.234375
+    },
+    "scroll": {
+      "clientHeight": 422,
+      "scrollHeight": 694
+    },
+    "failedImages": [],
+    "overflow": [],
+    "text": "毛茸茸伙伴的安心小屋\n🐾 宠物医院\n口袋里有 0 金币\nHAPPY PAWS\n每一只小爪子都被照顾\n🐾\n小爪印\n🧴\n护理台\n🧺\n软软小窝\n🐾\n宠物医生绒绒\n带上你的伙伴，一起检查身体、梳理毛发吧。\n今天想做点什么\n入场后，慢慢玩\n🐾\n1–2 分钟\n毛茸茸体检室\n扮演宠物医生的小助手，核对预约、准备道具，陪伴游戏里的小动物。\n1 金币 / 次\n待解锁\n先领养一位宠物伙伴，再一起来体验吧\n🎀\n1–2 分钟\n宠物造型工作室\n为游戏里的毛绒小狗选梳子、毛巾和蝴蝶结，拍一张造型纪念照。\n1 金币 / 次\n待解锁\n先领养一位宠物伙伴，再一起来体验吧\n选好项目才扣金币 · 最近 12 张入场票可免费重玩\n到宠物医院看看 →\n走到门口逛逛，免费。\n走出宠物医院",
+    "scrolled": {
+      "scrollTop": 272,
+      "expected": 272,
+      "lastBottom": 459.875,
+      "visibleBottom": 470.609375
+    }
+  },
+  {
+    "scene": "service-fire",
+    "viewport": 320,
+    "height": 568,
+    "width": 320,
+    "bodyOverflow": false,
+    "sheet": {
+      "x": 17.0625,
+      "y": 39.765625,
+      "width": 285.875,
+      "height": 488.46875,
+      "bottom": 528.234375
+    },
+    "scroll": {
+      "clientHeight": 422,
+      "scrollHeight": 787
+    },
+    "failedImages": [],
+    "overflow": [],
+    "text": "小小体验员 · 安全训练日\n🚒 消防站\n口袋里有 38 金币\nREADY TO HELP\n准备好了，平安出发\n🚒\n消防车库\n🧯\n装备墙\n🪖\n头盔柜\n🚒\n消防员小焰\n在模拟训练场认识装备，陪消防员完成任务。\n今天想做点什么\n入场后，慢慢玩\n🧯\n1–2 分钟\n安全小课堂\n阅读消防安全故事，练习远离危险、及时求助和听从疏散指引。\n1 金币 / 次\n开始体验 →\n🚒\n1–2 分钟\n消防队模拟出勤\n在模拟指挥台为专业消防员配齐出勤图卡，跟随故事完成一次救援。\n1 金币 / 次\n开始体验 →\n选好项目才扣金币 · 最近 12 张入场票可免费重玩\n🚒 厨房冒出一阵烟\n邻居做饭时发现锅边有小火苗，大家已离开厨房，等消防员来帮忙。\n拨打小镇消防电话 · 1 金币\n去认识消防员 →\n走到门口逛逛，免费。\n走出消防站",
+    "scrolled": {
+      "scrollTop": 365,
+      "expected": 365,
+      "lastBottom": 459.765625,
+      "visibleBottom": 470.609375
+    }
+  },
+  {
+    "scene": "ticket-cinema",
+    "viewport": 320,
+    "height": 568,
+    "width": 320,
+    "bodyOverflow": false,
+    "sheet": {
+      "x": 17.0625,
+      "y": 39.765625,
+      "width": 285.875,
+      "height": 488.46875,
+      "bottom": 528.234375
+    },
+    "scroll": {
+      "clientHeight": 422,
+      "scrollHeight": 732
+    },
+    "failedImages": [],
+    "overflow": [],
+    "text": "小镇光影俱乐部\n🎬 电影院\n口袋里有 0 金币\nNOW SHOWING\n今晚，去故事里旅行\n🎟️\n售票处\n🍿\n爆米花台\n🎞️\n放映室\n🎬\n放映员小光\n挑一部喜欢的电影，灯暗下来，故事就开始了。\n今日上映\n入场后，慢慢玩\n☁️\n约 22 秒\n云朵快递员\n灯光暗下来啦！看小兔驾驶云朵车，给干渴的花园送来一场雨。\n✓ 已有入场票\n免费重玩 →\n🚀\n约 22 秒\n月亮的晚安灯\n跟小熊乘上纸火箭，去找一颗迷路的小星星。\n3 金币 / 次\n攒金币去 →\n还差 3 金币，学单词就能攒到。\n选好项目才扣金币 · 最近 12 张入场票可免费重玩\n🎟️ 我的入场票\n☁️ 云朵快递员\n3 金币 · 已入场\n去影院门口走走 →\n走到门口逛逛，免费。\n走出电影院",
+    "scrolled": {
+      "scrollTop": 310,
+      "expected": 310,
+      "lastBottom": 460.46875,
+      "visibleBottom": 470.609375
+    }
+  },
+  {
+    "scene": "pending-cinema",
+    "viewport": 320,
+    "height": 568,
+    "width": 320,
+    "bodyOverflow": false,
+    "sheet": {
+      "x": 17.0625,
+      "y": 39.765625,
+      "width": 285.875,
+      "height": 488.46875,
+      "bottom": 528.234375
+    },
+    "scroll": {
+      "clientHeight": 422,
+      "scrollHeight": 732
+    },
+    "failedImages": [],
+    "overflow": [],
+    "text": "小镇光影俱乐部\n🎬 电影院\n口袋里有 0 金币\nNOW SHOWING\n今晚，去故事里旅行\n🎟️\n售票处\n🍿\n爆米花台\n🎞️\n放映室\n🎬\n放映员小光\n挑一部喜欢的电影，灯暗下来，故事就开始了。\n今日上映\n入场后，慢慢玩\n☁️\n约 22 秒\n云朵快递员\n灯光暗下来啦！看小兔驾驶云朵车，给干渴的花园送来一场雨。\n✓ 已有入场票\n免费重玩 →\n🚀\n约 22 秒\n月亮的晚安灯\n跟小熊乘上纸火箭，去找一颗迷路的小星星。\n3 金币 / 次\n确认上次入场\n继续确认同一张入场票，不会重复扣款。\n选好项目才扣金币 · 最近 12 张入场票可免费重玩\n🎟️ 我的入场票\n☁️ 云朵快递员\n3 金币 · 已入场\n去影院门口走走 →\n走到门口逛逛，免费。\n走出电影院",
+    "scrolled": {
+      "scrollTop": 310,
+      "expected": 310,
+      "lastBottom": 460.46875,
+      "visibleBottom": 470.609375
+    }
+  }
+]

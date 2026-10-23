@@ -1,5 +1,6 @@
 // app.js
 const api = require('./utils/api')
+const sound = require('./utils/sound')
 
 App({
   globalData: {
@@ -26,6 +27,9 @@ App({
       console.warn('获取系统信息失败', err)
     }
   },
+
+  onShow() { sound.setAppVisible(true) },
+  onHide() { sound.setAppVisible(false) },
 
   // 供各页面调用的登录态判断
   isLoggedIn() {

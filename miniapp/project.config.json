@@ -3,6 +3,7 @@
   "packOptions": {
     "ignore": [],
     "include": [
+      { "type": "folder", "value": "town-audio/audio" },
       { "type": "folder", "value": "audio/words" },
       { "type": "folder", "value": "textbook-audio/words" }
     ]

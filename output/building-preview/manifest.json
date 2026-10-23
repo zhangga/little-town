@@ -1,0 +1,266 @@
+[
+  {
+    "name": "01-电影院",
+    "file": "01-电影院.html",
+    "building": "电影院",
+    "session": null
+  },
+  {
+    "name": "02-餐厅",
+    "file": "02-餐厅.html",
+    "building": "餐厅",
+    "session": null
+  },
+  {
+    "name": "03-学校",
+    "file": "03-学校.html",
+    "building": "学校",
+    "session": null
+  },
+  {
+    "name": "04-图书馆",
+    "file": "04-图书馆.html",
+    "building": "图书馆",
+    "session": null
+  },
+  {
+    "name": "05-体育馆",
+    "file": "05-体育馆.html",
+    "building": "体育馆",
+    "session": null
+  },
+  {
+    "name": "06-公园",
+    "file": "06-公园.html",
+    "building": "公园",
+    "session": null
+  },
+  {
+    "name": "07-商店",
+    "file": "07-商店.html",
+    "building": "商店",
+    "session": null
+  },
+  {
+    "name": "08-医院",
+    "file": "08-医院.html",
+    "building": "医院",
+    "session": null
+  },
+  {
+    "name": "09-宠物医院",
+    "file": "09-宠物医院.html",
+    "building": "宠物医院",
+    "session": null
+  },
+  {
+    "name": "10-消防站",
+    "file": "10-消防站.html",
+    "building": "消防站",
+    "session": null
+  },
+  {
+    "name": "11-警察局",
+    "file": "11-警察局.html",
+    "building": "警察局",
+    "session": null
+  },
+  {
+    "name": "play-cinema_cloud",
+    "file": "play-cinema_cloud.html",
+    "building": "电影院",
+    "session": "movie"
+  },
+  {
+    "name": "paused-cinema_cloud",
+    "file": "paused-cinema_cloud.html",
+    "building": "电影院",
+    "session": "movie"
+  },
+  {
+    "name": "done-cinema_cloud",
+    "file": "done-cinema_cloud.html",
+    "building": "电影院",
+    "session": "movie"
+  },
+  {
+    "name": "play-cinema_space",
+    "file": "play-cinema_space.html",
+    "building": "电影院",
+    "session": "movie"
+  },
+  {
+    "name": "done-cinema_space",
+    "file": "done-cinema_space.html",
+    "building": "电影院",
+    "session": "movie"
+  },
+  {
+    "name": "play-school_words",
+    "file": "play-school_words.html",
+    "building": "学校",
+    "session": "quiz"
+  },
+  {
+    "name": "play-school_numbers",
+    "file": "play-school_numbers.html",
+    "building": "学校",
+    "session": "quiz"
+  },
+  {
+    "name": "play-library_forest",
+    "file": "play-library_forest.html",
+    "building": "图书馆",
+    "session": "story"
+  },
+  {
+    "name": "play-library_ocean",
+    "file": "play-library_ocean.html",
+    "building": "图书馆",
+    "session": "story"
+  },
+  {
+    "name": "play-shop_basket",
+    "file": "play-shop_basket.html",
+    "building": "商店",
+    "session": "targets"
+  },
+  {
+    "name": "play-shop_sort",
+    "file": "play-shop_sort.html",
+    "building": "商店",
+    "session": "sequence"
+  },
+  {
+    "name": "play-restaurant_soup",
+    "file": "play-restaurant_soup.html",
+    "building": "餐厅",
+    "session": "sequence"
+  },
+  {
+    "name": "hint-restaurant_soup",
+    "file": "hint-restaurant_soup.html",
+    "building": "餐厅",
+    "session": "sequence"
+  },
+  {
+    "name": "done-restaurant_soup",
+    "file": "done-restaurant_soup.html",
+    "building": "餐厅",
+    "session": "sequence"
+  },
+  {
+    "name": "play-restaurant_bento",
+    "file": "play-restaurant_bento.html",
+    "building": "餐厅",
+    "session": "sequence"
+  },
+  {
+    "name": "play-park_garden",
+    "file": "play-park_garden.html",
+    "building": "公园",
+    "session": "targets"
+  },
+  {
+    "name": "done-park_garden",
+    "file": "done-park_garden.html",
+    "building": "公园",
+    "session": "targets"
+  },
+  {
+    "name": "play-park_birds",
+    "file": "play-park_birds.html",
+    "building": "公园",
+    "session": "targets"
+  },
+  {
+    "name": "play-stadium_hoops",
+    "file": "play-stadium_hoops.html",
+    "building": "体育馆",
+    "session": "sport"
+  },
+  {
+    "name": "play-stadium_goal",
+    "file": "play-stadium_goal.html",
+    "building": "体育馆",
+    "session": "sport"
+  },
+  {
+    "name": "play-hospital_checkup",
+    "file": "play-hospital_checkup.html",
+    "building": "医院",
+    "session": "sequence"
+  },
+  {
+    "name": "play-hospital_bandage",
+    "file": "play-hospital_bandage.html",
+    "building": "医院",
+    "session": "sequence"
+  },
+  {
+    "name": "play-vet_checkup",
+    "file": "play-vet_checkup.html",
+    "building": "宠物医院",
+    "session": "sequence"
+  },
+  {
+    "name": "play-vet_groom",
+    "file": "play-vet_groom.html",
+    "building": "宠物医院",
+    "session": "sequence"
+  },
+  {
+    "name": "play-fire_drill",
+    "file": "play-fire_drill.html",
+    "building": "消防站",
+    "session": "quiz"
+  },
+  {
+    "name": "play-fire_rescue",
+    "file": "play-fire_rescue.html",
+    "building": "消防站",
+    "session": "sequence"
+  },
+  {
+    "name": "play-police_lost",
+    "file": "play-police_lost.html",
+    "building": "警察局",
+    "session": "sequence"
+  },
+  {
+    "name": "play-police_traffic",
+    "file": "play-police_traffic.html",
+    "building": "警察局",
+    "session": "quiz"
+  },
+  {
+    "name": "empty-wallet-cinema",
+    "file": "empty-wallet-cinema.html",
+    "building": "电影院",
+    "session": null
+  },
+  {
+    "name": "locked-vet",
+    "file": "locked-vet.html",
+    "building": "宠物医院",
+    "session": null
+  },
+  {
+    "name": "service-fire",
+    "file": "service-fire.html",
+    "building": "消防站",
+    "session": null
+  },
+  {
+    "name": "ticket-cinema",
+    "file": "ticket-cinema.html",
+    "building": "电影院",
+    "session": null
+  },
+  {
+    "name": "pending-cinema",
+    "file": "pending-cinema.html",
+    "building": "电影院",
+    "session": null
+  }
+]

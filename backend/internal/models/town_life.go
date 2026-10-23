@@ -33,3 +33,16 @@ type TownSupplyPurchase struct {
 	ItemID    string `gorm:"size:32;not null"`
 	CreatedAt time.Time
 }
+
+// TownActivityVisit 是已付费入场凭据；保存购买时的内容和价格，重试只返回原凭据。
+type TownActivityVisit struct {
+	ID         uint   `gorm:"primaryKey"`
+	UserID     uint   `gorm:"not null;uniqueIndex:idx_town_activity_request,priority:1;index"`
+	RequestID  string `gorm:"size:80;not null;uniqueIndex:idx_town_activity_request,priority:2"`
+	ActivityID string `gorm:"size:32;not null"`
+	Name       string `gorm:"size:80;not null"`
+	Building   string `gorm:"size:40;not null"`
+	Icon       string `gorm:"size:16;not null"`
+	Price      int    `gorm:"not null"`
+	CreatedAt  time.Time
+}

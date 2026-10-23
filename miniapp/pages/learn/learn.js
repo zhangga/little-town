@@ -1,10 +1,11 @@
+const { withTapSounds } = require('../../utils/sound-page')
 const api = require('../../utils/api')
 const { showError } = require('../../utils/util')
 const { enrichWord, normalize, makePlan, makeQuestion, makePairs } = require('../../utils/learning')
 const { createPronunciation } = require('../../utils/pronunciation')
 const { makeRewardHeader, makeDailyRewardQuota } = require('../../utils/learning-rewards')
 
-Page({
+Page(withTapSounds({
   data: {
     loading: true, failed: false, phase: 'ready', words: [], index: 0,
     question: null, picked: -1, answered: false, isCorrect: false,
@@ -477,4 +478,4 @@ Page({
   onShareAppMessage() {
     return { title: '听一听、拼一拼，我在小小镇学单词', path: '/pages/index/index' }
   }
-})
+}))

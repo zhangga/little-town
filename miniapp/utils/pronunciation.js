@@ -1,12 +1,19 @@
+const sound = require('./sound')
+
 // 一个页面持有一个播放器。换题、离开页面时销毁，避免串音和过期回调。
 function createPronunciation(wxApi, onState) {
   let context = null
   let generation = 0
   let timer = null
   const loadedPackages = new Set()
+  function setSpeechActive(active) {
+    // 环境音故障不能影响单词朗读和学习流程。
+    try { sound.setSpeechActive(active) } catch (_) {}
+  }
   function stop() {
     generation++
     clearTimeout(timer)
+    setSpeechActive(false)
     if (context) {
       context.destroy()
       context = null
@@ -41,6 +48,7 @@ function createPronunciation(wxApi, onState) {
         player.onEnded(() => {
           if (current !== generation) return
           clearTimeout(timer)
+          setSpeechActive(false)
           onState({ audioState: 'idle', heardAudio: true })
         })
         player.onError(fail)
@@ -49,6 +57,7 @@ function createPronunciation(wxApi, onState) {
         fail()
       }
     }
+    setSpeechActive(true)
     onState({ audioState: 'loading' })
     timer = setTimeout(fail, 10000)
     if (word.audioPackage && !loadedPackages.has(word.audioPackage)) {

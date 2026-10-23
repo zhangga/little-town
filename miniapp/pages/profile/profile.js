@@ -1,10 +1,11 @@
+const { withTapSounds } = require('../../utils/sound-page')
 // pages/profile/profile.js
 const api = require('../../utils/api')
 const { showConfirm, showError } = require('../../utils/util')
 
 const GRADE_LABELS = ['一年级', '二年级', '三年级', '四年级', '五年级', '六年级']
 
-Page({
+Page(withTapSounds({
   onGoResident() { wx.switchTab({ url: '/pages/resident/resident' }) },
   data: {
     userInfo: null,
@@ -97,4 +98,4 @@ Page({
       path: '/pages/index/index'
     }
   }
-})
+}))

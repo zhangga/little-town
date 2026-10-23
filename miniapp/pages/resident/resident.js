@@ -1,20 +1,24 @@
+const { withTapSounds } = require('../../utils/sound-page')
+const sound = require('../../utils/sound')
 const api = require('../../utils/api')
 const { showError, showSuccess } = require('../../utils/util')
 const { presentResident, residentArt, saveWallet } = require('../../utils/resident')
 
-Page({
+Page(withTapSounds({
   data: { loading: true, failed: false, busy: false, state: null, tab: 'outfit', items: [], selected: null, editingName: false, nameDraft: '', waving: false },
   onLoad() {
+    this._visible = true
     if (!wx.getStorageSync('token')) wx.redirectTo({ url: '/pages/login/login' })
   },
-  onShow() { if (wx.getStorageSync('token')) this.loadResident() },
+  onShow() { this._visible = true; if (wx.getStorageSync('token')) this.loadResident() },
   onHide() {
+    this._visible = false
     clearTimeout(this._waveTimer)
     // tab 页会缓存，离开时收起临时编辑和预览，返回后读取最新状态。
     this.setData({ selected: null, editingName: false })
     if (this.data.state) this.resetPose()
   },
-  onUnload() { this._disposed = true; clearTimeout(this._waveTimer) },
+  onUnload() { this._visible = false; this._disposed = true; clearTimeout(this._waveTimer) },
   onPullDownRefresh() { return this.loadResident().finally(() => wx.stopPullDownRefresh()) },
   applyState(response) {
     if (this._disposed) return
@@ -80,6 +84,7 @@ Page({
       if (this._disposed) return
       this.applyState(res)
       this.setData({ selected: null, editingName: false })
+      if (this._visible) { try { sound.playEffect('success') } catch (_) {} }
       showSuccess(message)
     } catch (err) {
       if (this._disposed) return
@@ -89,4 +94,4 @@ Page({
     } finally { if (!this._disposed) this.setData({ busy: false }) }
   },
   onGoLearn() { if (!this.data.busy) { this.setData({ selected: null }); wx.switchTab({ url: '/pages/learn/learn' }) } }
-})
+}))

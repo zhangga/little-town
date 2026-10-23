@@ -64,6 +64,7 @@ func SetupRouter(db *gorm.DB, cfg *config.Config) *gin.Engine {
 			authorized.POST("/town-life/pets/purchase", lifeHandler.PurchasePet)
 			authorized.POST("/town-life/supplies/purchase", lifeHandler.PurchaseSupply)
 			authorized.POST("/town-life/events/resolve", lifeHandler.Resolve)
+			authorized.POST("/town-life/activities/start", lifeHandler.StartActivity)
 
 			// 学习
 			learnHandler := handlers.NewLearnHandler(db, cfg)

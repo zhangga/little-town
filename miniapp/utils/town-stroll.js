@@ -1,9 +1,11 @@
 const { strollArt } = require('./stroll-art')
+const { COLUMNS, ROW_STEP } = require('./town-layout')
 
 // 与首页的 272rpx 地块 + 72rpx 行间距一致，脚下路线位于名称牌下方。
-const ROW_STEP = 344
 const LANE_Y = 322
 const MAP_WIDTH = 750
+// 留出一帧以上的渲染余量；视图还会按行走方向锁住另一个坐标。
+const TURN_SETTLE = 64
 const visits = {
   '我的家': '歇一会儿', '学校': '打个招呼', '商店': '买点面包',
   '医院': '问声好', '宠物医院': '看看伙伴', '公园': '看看花儿',
@@ -13,9 +15,9 @@ const visits = {
 
 function walkingMap(plots, withHome) {
   const slots = withHome ? [{ occupied: true, name: '我的家' }].concat(plots) : plots
-  const rows = Math.max(2, Math.ceil(slots.length / 3))
+  const rows = Math.max(2, Math.ceil(slots.length / COLUMNS))
   const stops = slots.reduce((result, plot, index) => {
-    if (plot.occupied) result.push({ name: plot.name, x: (index % 3 + .5) * 100 / 3, y: Math.floor(index / 3) * ROW_STEP + LANE_Y })
+    if (plot.occupied) result.push({ name: plot.name, x: (index % COLUMNS + .5) * 100 / COLUMNS, y: Math.floor(index / COLUMNS) * ROW_STEP + LANE_Y })
     return result
   }, [])
   // 尚未建起邻里时，也可以去草坪另一边逛逛。
@@ -26,7 +28,7 @@ function walkingMap(plots, withHome) {
   return { height: rows * ROW_STEP, stops }
 }
 
-function routeBetween(from, to, lane = 100 / 3) {
+function routeBetween(from, to, lane = 100 / COLUMNS) {
   // 横向走行间草地，纵向走列间空隙，不斜穿建筑。
   const points = from.y === to.y ? [to] : [{ x: lane, y: from.y }, { x: lane, y: to.y }, to]
   let previous = from
@@ -78,6 +80,7 @@ function createStroll(onChange, clock = {
   let actors = [], map = null, signature = '', running = false, disposed = false, serial = 0, needs = null
   const visitPrefix = Date.now().toString(36)
   const timers = new Set()
+  const now = () => clock.now ? clock.now() : Date.now()
   const pick = list => list[Math.min(list.length - 1, Math.floor(random() * list.length))]
   const emit = () => {
     if (!disposed) onChange(actors.map(actor => ({
@@ -95,6 +98,7 @@ function createStroll(onChange, clock = {
   function later(actor, delay) {
     cancel(actor)
     if (!running || disposed) return
+    actor.dueAt = now() + delay
     const timer = clock.setTimeout(() => {
       timers.delete(timer); actor.timer = null
       if (running && !disposed && actors.includes(actor)) advance(actor)
@@ -110,7 +114,7 @@ function createStroll(onChange, clock = {
     return Object.assign({}, source, kind, start, {
       id: 'visitor-' + visitPrefix + '-' + id, sourceID: source.sourceID || source.id,
       name: kind.names[id % kind.names.length], destination,
-      route: routeBetween(start, destination, id % 2 ? 100 / 3 : 200 / 3),
+      route: routeBetween(start, destination, id % 2 ? 100 / COLUMNS : 200 / COLUMNS),
       moving: false, duration: 0, direction: start.x < 0 ? 'right' : 'left', bubble: '',
       phase: 'entering', visitsLeft: 2 + Math.floor(random() * 2),
       wait: previousKind ? 5000 + random() * 7000 : 500 + index * 6500, timer: null
@@ -120,7 +124,7 @@ function createStroll(onChange, clock = {
     if (actor.requestedDestination) {
       actor.destination = actor.requestedDestination
       actor.requestedDestination = null
-      actor.route = routeBetween(actor, actor.destination, random() < .5 ? 100 / 3 : 200 / 3)
+      actor.route = routeBetween(actor, actor.destination, random() < .5 ? 100 / COLUMNS : 200 / COLUMNS)
       if (!actor.route.length) {
         actor.moving = false; actor.duration = 0; actor.bubble = visits[actor.destination.name] || '休息一会儿'
         emit(); later(actor, 4000); return
@@ -148,7 +152,7 @@ function createStroll(onChange, clock = {
         const otherRows = choices.filter(stop => stop.y !== actor.y)
         if (otherRows.length && random() < .7) choices = otherRows
         actor.destination = pick(choices) || map.stops[0]
-        actor.route = routeBetween(actor, actor.destination, random() < .5 ? 100 / 3 : 200 / 3)
+        actor.route = routeBetween(actor, actor.destination, random() < .5 ? 100 / COLUMNS : 200 / COLUMNS)
       }
     }
     const point = actor.route.shift()
@@ -158,19 +162,23 @@ function createStroll(onChange, clock = {
     actor.direction = stepDirection(dx, dy, actor.direction)
     actor.x = point.x; actor.y = point.y; actor.moving = true
     actor.bubble = actor.phase === 'leaving' ? '下次再逛别处啦' : ''
-    emit(); later(actor, actor.duration)
+    emit(); later(actor, actor.duration + TURN_SETTLE)
   }
   function stop() {
     running = false
-    actors.forEach(cancel)
+    actors.forEach(actor => {
+      // x/y 已是这一段的终点；恢复时必须等完余下时间，不能直接推进到下一个拐点。
+      if (actor.timer != null) actor.wait = Math.max(0, actor.dueAt - now())
+      cancel(actor)
+    })
     timers.forEach(timer => clock.clearTimeout(timer)); timers.clear()
   }
   function start() {
     if (running || disposed) return
     running = true
     actors.forEach((actor, index) => {
-      later(actor, actor.wait || 500 + index * 700)
-      actor.wait = 0
+      later(actor, actor.wait == null ? 500 + index * 700 : actor.wait)
+      actor.wait = null
     })
   }
   return {

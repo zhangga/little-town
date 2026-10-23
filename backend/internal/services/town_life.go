@@ -101,14 +101,17 @@ func townEventView(event models.TownEvent) TownEventView {
 }
 
 type TownLifeState struct {
-	Needs         TownNeedsView    `json:"needs"`
-	Supplies      []TownSupplyView `json:"supplies"`
-	Wallet        ResidentWallet   `json:"wallet"`
-	Pets          []TownPetView    `json:"pets"`
-	Buildings     []string         `json:"buildings"`
-	Event         *TownEventView   `json:"event"`
-	Recent        []TownEventView  `json:"recent"`
-	UnlockedCount int              `json:"unlocked_count"`
+	Needs           TownNeedsView         `json:"needs"`
+	Supplies        []TownSupplyView      `json:"supplies"`
+	Wallet          ResidentWallet        `json:"wallet"`
+	Pets            []TownPetView         `json:"pets"`
+	Buildings       []string              `json:"buildings"`
+	Event           *TownEventView        `json:"event"`
+	Recent          []TownEventView       `json:"recent"`
+	UnlockedCount   int                   `json:"unlocked_count"`
+	Activities      []TownActivityView    `json:"activities"`
+	ActivityVisits  []TownActivityReceipt `json:"activity_visits"`
+	ActivityReceipt *TownActivityReceipt  `json:"activity_receipt,omitempty"`
 }
 
 type TownLifeService struct{ db *gorm.DB }
@@ -244,6 +247,15 @@ func (s *TownLifeService) state(tx *gorm.DB, user *models.User, owned *townOwner
 		state.Needs = TownNeedsView{Enabled: true, Food: needs.Food, Water: needs.Water}
 	}
 	state.Supplies = townSuppliesView(owned)
+	state.Activities = townActivitiesView(owned)
+	state.ActivityVisits = []TownActivityReceipt{}
+	var visits []models.TownActivityVisit
+	if err := tx.Where("user_id = ?", user.ID).Order("id DESC").Limit(12).Find(&visits).Error; err != nil {
+		return nil, err
+	}
+	for _, visit := range visits {
+		state.ActivityVisits = append(state.ActivityVisits, townActivityReceipt(visit))
+	}
 	var events []models.TownEvent
 	if err := tx.Where("user_id = ?", user.ID).Order("id DESC").Limit(4).Find(&events).Error; err != nil {
 		return nil, err

@@ -1,9 +1,11 @@
+const { withTapSounds } = require('../../utils/sound-page')
+const sound = require('../../utils/sound')
 const api = require('../../utils/api')
 const { townSprite } = require('../../utils/assets')
 const { catalogState } = require('../../utils/town')
 const { showError } = require('../../utils/util')
 
-Page({
+Page(withTapSounds({
   data: {
     loading: true, refreshing: false, failed: false,
     buildings: [], visibleBuildings: [],
@@ -14,14 +16,17 @@ Page({
   },
 
   onLoad() {
+    this._visible = true
     if (!wx.getStorageSync('token')) wx.redirectTo({ url: '/pages/login/login' })
   },
 
   onShow() {
+    this._visible = true
     if (wx.getStorageSync('token') && !this.data.building) this.loadBuildings()
   },
 
-  onUnload() { this._disposed = true },
+  onHide() { this._visible = false },
+  onUnload() { this._visible = false; this._disposed = true },
 
   onPullDownRefresh() {
     return this.loadBuildings().finally(() => wx.stopPullDownRefresh())
@@ -89,6 +94,7 @@ Page({
         is_built: building.id === item.id || building.is_built
       }))
       this.setData(Object.assign({ user, completed: item }, catalogState(raw, user, this.data.filter, item.id)))
+      if (this._visible) { try { sound.playEffect('success') } catch (_) {} }
       wx.vibrateShort({ type: 'medium' })
     } catch (err) {
       if (this._disposed) return
@@ -107,4 +113,4 @@ Page({
   onShareAppMessage() {
     return { title: '学单词，建一座自己的方块小镇', path: '/pages/index/index' }
   }
-})
+}))

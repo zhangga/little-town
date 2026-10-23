@@ -117,6 +117,40 @@ test('login requests omit the cached authorization header in either transport', 
   }
 })
 
+test('unauthenticated 401 preserves the backend error and cached session in either transport', async () => {
+  for (const version of ['develop', 'trial']) {
+    const h = harness(version)
+    h.api.initialize()
+    h.api.setToken('existing-token')
+    h.storage.userInfo = { id: 1 }
+    h.respond({ statusCode: 401, data: { error: '登录凭证已失效，请重新进入' } })
+
+    await assert.rejects(h.api.post('/auth/login', { code: 'one-use-code' }, false), /登录凭证已失效，请重新进入/)
+    assert.equal(h.storage.token, 'existing-token')
+    assert.equal(h.storage.userInfo.id, 1)
+    assert.equal(h.redirects.length, 0)
+
+    h.respond({ statusCode: 401, data: {} })
+    await assert.rejects(h.api.post('/auth/login', { code: 'one-use-code' }, false), /请求失败（401）/)
+    assert.equal(h.redirects.length, 0)
+  }
+})
+
+test('authenticated 401 still clears the session and redirects in either transport', async () => {
+  for (const version of ['develop', 'trial']) {
+    const h = harness(version)
+    h.api.initialize()
+    h.api.setToken('expired-token')
+    h.storage.userInfo = { id: 1 }
+    h.respond({ statusCode: 401, data: { error: 'invalid token' } })
+
+    await assert.rejects(h.api.get('/user/profile', {}, true), /登录已过期，请重新进镇/)
+    assert.equal(h.storage.token, undefined)
+    assert.equal(h.storage.userInfo, undefined)
+    assert.equal(h.redirects[0], '/pages/login/login')
+  }
+})
+
 test('a phone with unreadable environment metadata never connects to localhost', async () => {
   const h = harness('release')
   h.wx.getAccountInfoSync = () => { throw new Error('SDK error') }

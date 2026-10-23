@@ -23,7 +23,7 @@ func townLifeResponse(c *gin.Context, state *services.TownLifeState, err error) 
 		c.JSON(http.StatusNotFound, gin.H{"error": "用户不存在"})
 		return
 	}
-	for _, expected := range []error{services.ErrTownPet, services.ErrTownCoins, services.ErrTownEvent, services.ErrTownLocked, services.ErrTownSupply, services.ErrTownSupplyRequest, services.ErrTownFull} {
+	for _, expected := range []error{services.ErrTownPet, services.ErrTownCoins, services.ErrTownEvent, services.ErrTownLocked, services.ErrTownSupply, services.ErrTownSupplyRequest, services.ErrTownFull, services.ErrTownActivity, services.ErrTownActivityRequest} {
 		if errors.Is(err, expected) {
 			c.JSON(http.StatusBadRequest, gin.H{"error": expected.Error()})
 			return
@@ -69,5 +69,18 @@ func (h *TownLifeHandler) PurchaseSupply(c *gin.Context) {
 		return
 	}
 	state, err := h.service.PurchaseSupply(getCurrentUserID(c), req.ItemID, req.RequestID)
+	townLifeResponse(c, state, err)
+}
+
+func (h *TownLifeHandler) StartActivity(c *gin.Context) {
+	var req struct {
+		ActivityID string `json:"activity_id" binding:"required"`
+		RequestID  string `json:"request_id" binding:"required"`
+	}
+	if err := c.ShouldBindJSON(&req); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "请选择建筑体验并重新购票"})
+		return
+	}
+	state, err := h.service.StartActivity(getCurrentUserID(c), req.ActivityID, req.RequestID)
 	townLifeResponse(c, state, err)
 }

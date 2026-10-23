@@ -68,6 +68,7 @@ func TestTownLifeRoutesRequireLogin(t *testing.T) {
 		"/api/v1/town-life/pets/purchase":     "POST",
 		"/api/v1/town-life/supplies/purchase": "POST",
 		"/api/v1/town-life/events/resolve":    "POST",
+		"/api/v1/town-life/activities/start":  "POST",
 	} {
 		res := httptest.NewRecorder()
 		r.ServeHTTP(res, httptest.NewRequest(method, path, strings.NewReader(`{}`)))

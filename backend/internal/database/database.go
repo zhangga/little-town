@@ -98,5 +98,6 @@ func AutoMigrate(db *gorm.DB) error {
 		&models.TownEvent{},
 		&models.TownNeeds{},
 		&models.TownSupplyPurchase{},
+		&models.TownActivityVisit{},
 	)
 }

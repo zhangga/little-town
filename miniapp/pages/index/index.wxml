@@ -1,5 +1,6 @@
 <import src="../../templates/voxel.wxml" />
 <import src="../../templates/resident.wxml" />
+<import src="../../templates/building-interior.wxml" />
 <template name="town-plot-content">
   <block wx:if="{{item.home}}">
     <view class="plot-art"><template wx:if="{{growth.homeArt}}" is="resident-art" data="{{art: growth.homeArt}}" /><text wx:else class="home-fallback">🏡</text></view>
@@ -30,6 +31,11 @@
     <view class="town-resource"><view class="town-resource-art"><template is="voxel" data="{{sprite: coinSprite}}" /></view><text class="town-resource-num">{{town.coins}}</text><text>金币</text></view>
     <view class="town-count">{{buildings.length}} 座建筑</view>
   </view>
+  <view class="town-soundbar">
+    <view class="soundbar-caption"><text aria-hidden="true">♫</text> 小镇好心情</view>
+    <button class="sound-toggle {{soundSettings.musicEnabled ? 'sound-enabled' : ''}}" bindtap="onToggleMusic" aria-label="{{'背景音乐已' + (soundSettings.musicEnabled ? '开启，点击关闭' : '关闭，点击开启')}}"><text aria-hidden="true">♪</text> 音乐<text class="sound-toggle-state">{{soundSettings.musicEnabled ? '开' : '关'}}</text></button>
+    <button class="sound-toggle {{soundSettings.effectsEnabled ? 'sound-enabled' : ''}}" bindtap="onToggleEffects" aria-label="{{'按钮音效已' + (soundSettings.effectsEnabled ? '开启，点击关闭' : '关闭，点击开启')}}"><text aria-hidden="true">♬</text> 音效<text class="sound-toggle-state">{{soundSettings.effectsEnabled ? '开' : '关'}}</text></button>
+  </view>
   <view wx:if="{{loading}}" class="loading"><view class="town-loading-art"><template is="voxel" data="{{sprite: flagSprite}}" /></view><text>正在打开小镇大门…</text></view>
   <view wx:elif="{{failed}}" class="panel empty"><text>小镇暂时没连上，再试一次吧。</text><button class="btn btn-sun" bindtap="loadTown">重新加载</button></view>
   <view wx:if="{{!loading && !failed}}" class="layout-toolbar {{editingLayout ? 'layout-toolbar-editing' : ''}}">
@@ -37,7 +43,7 @@
     <button wx:if="{{editingLayout}}" class="layout-cancel" size="mini" disabled="{{layoutSaving}}" bindtap="onCancelLayout">取消</button>
     <button class="layout-toggle" size="mini" disabled="{{layoutSaving || dragging || refreshing || lifeBusy}}" loading="{{layoutSaving}}" bindtap="onToggleLayout">{{editingLayout ? (layoutSaving ? '保存中' : '完成摆放') : '自由摆放'}}</button>
   </view>
-  <scroll-view wx:if="{{!loading && !failed}}" class="town-scroll" scroll-y scroll-top="{{mapScrollTop}}" bindscroll="onTownScroll" scroll-into-view="{{townAnchor}}" scroll-with-animation="{{!dragging}}">
+  <scroll-view wx:if="{{!loading && !failed}}" class="town-scroll" scroll-y="{{!selected && !selectedPet && !lifeFeedback}}" scroll-top="{{mapScrollTop}}" bindscroll="onTownScroll" scroll-into-view="{{townAnchor}}" scroll-with-animation="{{!dragging}}">
     <view wx:if="{{growth}}" class="town-welcome"><view class="welcome-character"><template is="resident-art" data="{{art: growth.characterArt}}" /></view><view class="welcome-copy"><view class="welcome-name">你好，{{growth.resident.name}}</view><text>Lv.{{growth.resident.level}} · {{growth.resident.title}}</text><view class="welcome-meter"><view style="width: {{growth.xpPercent}}%;" /></view></view><button bindtap="onGoResident">装扮角色 ›</button></view>
     <view wx:else class="town-intro"><view class="town-title">我的方块小镇</view><button wx:if="{{growthFailed}}" class="growth-retry" bindtap="loadTown">角色暂未连上 · 点此重试</button></view>
     <view wx:if="{{growth}}" class="town-task"><view><view class="task-title">{{growth.daily.done ? '今日任务完成啦！' : '今天的小目标'}}<text>{{growth.daily.completed}} / {{growth.daily.goal}} 词</text></view><text class="task-caption">{{growth.daily.done ? '小目标已完成，还可以继续学或自由复习。' : '学新词或复习旧词，让小镇长一起成长。'}}</text></view><button bindtap="onDailyTask">{{growth.daily.done ? '继续学习' : '开始学习'}} →</button></view>
@@ -64,7 +70,7 @@
         </block>
       </view>
       <view wx:if="{{!editingLayout}}" class="town-strollers" aria-hidden="true">
-        <view wx:for="{{walkers}}" wx:key="id" data-actor-id="{{item.id}}" data-direction="{{item.direction}}" class="stroll-actor {{item.moving ? 'stroll-moving' : 'stroll-idle'}} {{item.type === 'pet' ? 'stroll-pet' : ''}}" style="left: {{item.x}}%; top: {{item.y}}rpx; transition-duration: {{item.duration}}ms;">
+        <view wx:for="{{walkers}}" wx:key="id" data-actor-id="{{item.id}}" data-direction="{{item.direction}}" class="stroll-actor {{item.moving ? 'stroll-moving' : 'stroll-idle'}} {{item.type === 'pet' ? 'stroll-pet' : ''}}" style="left: {{item.x}}%; top: {{item.y}}rpx; transition-property: {{item.direction === 'left' || item.direction === 'right' ? 'left' : 'top'}}; transition-duration: {{item.duration}}ms;">
           <view class="stroll-shadow" />
           <view class="stroll-facing"><view class="stroll-body"><template is="resident-art" data="{{art: item.art}}" /></view></view>
           <text wx:if="{{item.isHost}}" class="stroll-host-mark">我</text>
@@ -95,12 +101,16 @@
     <view wx:if="{{!buildings.length}}" class="town-first-plan"><view><text class="first-plan-title">第一座建筑，等你动工</text><text class="first-plan-caption">去工坊挑一张喜欢的图纸，看看需要多少砖</text></view><button bindtap="onGoBuild">去看看 →</button></view>
   </scroll-view>
   <view wx:if="{{!loading && !failed && !editingLayout}}" class="town-dock"><button class="town-learn" bindtap="onGoLearn">📖 学单词</button><button class="town-build" bindtap="onGoBuild">＋ 建造</button><button class="town-pets" bindtap="onGoPets" disabled="{{lifeBusy || refreshing}}" aria-label="打开宠物商店，购买宠物">🐾 买宠物</button></view>
-  <view wx:if="{{selected}}" class="town-mask" bindtap="onCloseDetail" catchtouchmove="onNoop">
-    <view class="building-sheet" catchtap="onNoop">
+  <view wx:if="{{selected}}" class="town-mask">
+    <view class="building-backdrop" bindtap="onCloseDetail" catchtouchmove="onNoop" />
+    <view class="building-sheet interior-{{selected.interior.theme}}" catchtap="onNoop">
       <view class="building-awning {{selected.isShop ? 'building-awning-shop' : ''}}" />
-      <scroll-view class="building-body" scroll-y>
-        <view class="building-header"><view class="building-header-art"><template is="voxel" data="{{sprite: selected.sprite}}" /></view><view><text class="building-kicker">{{selected.isShop ? '欢迎光临 · 今日营业中' : '推开门，加入小镇生活'}}</text><view class="detail-title">{{selected.icon}} {{selected.name}}</view><text class="building-wallet">口袋里有 {{town.coins}} 金币</text></view></view>
+      <scroll-view class="building-body" scroll-y scroll-into-view="{{activitySession ? 'building-session-top' : 'building-lobby-top'}}">
+        <view id="{{activitySession ? 'building-session-top' : 'building-lobby-top'}}" class="building-header"><view class="building-header-art"><template is="voxel" data="{{sprite: selected.sprite}}" /></view><view><text class="building-kicker">{{selected.interior.kicker}}</text><view class="detail-title">{{selected.icon}} {{selected.name}}</view><text class="building-wallet">口袋里有 {{town.coins}} 金币</text></view></view>
+        <template wx:if="{{activitySession}}" is="building-session" data="{{session: activitySession, selected, sceneActive, lifeBusy}}" />
+        <block wx:else>
         <block wx:if="{{selected.isShop}}">
+          <view class="interior-section-title"><view>{{selected.name === '餐厅' ? '肚子饿了？吃点热乎的' : '喝点水，吃点东西'}}</view><text>买好就吃喝</text></view>
           <template wx:if="{{life.needs.enabled}}" is="town-needs" data="{{needs: life.needs}}" />
           <text class="shop-intro">买完马上吃喝，补充好再出发。</text>
           <view wx:for="{{selected.supplies}}" wx:key="id" class="supply-row">
@@ -109,12 +119,14 @@
           </view>
           <view wx:if="{{!selected.supplies.length}}" class="shop-unavailable"><text>补给暂时没连上，重新看看吧。</text><button bindtap="loadTown" disabled="{{refreshing || lifeBusy}}">重新加载</button></view>
         </block>
-        <view wx:else class="building-note">{{selected.activity.note}}</view>
+        <template is="building-room" data="{{selected}}" />
         <view wx:if="{{selected.serviceEvent}}" class="building-service"><view>{{selected.serviceEvent.icon}} {{selected.serviceEvent.title}}</view><text>{{selected.serviceEvent.description}}</text><button class="life-action" disabled="{{lifeBusy || refreshing || !life}}" loading="{{lifeBusy}}" bindtap="onResolveLife">{{selected.serviceEvent.affordable ? selected.serviceEvent.action + (selected.serviceEvent.cost ? ' · 1 金币' : ' · 免费') : '还差 1 金币 · 去学习'}}</button></view>
+        <template is="building-lobby" data="{{selected, life, lifeBusy, refreshing, pendingActivity}}" />
         <button wx:if="{{!selected.isShop}}" class="building-activity" bindtap="onBuildingActivity" disabled="{{lifeBusy || refreshing}}">{{selected.activity.label}} →</button>
-        <text wx:if="{{!selected.isShop && !selected.activity.learn}}" class="building-free">逛逛免费，发生事情时才需要帮忙。</text>
+        <text wx:if="{{!selected.isShop && !selected.activity.learn}}" class="building-free">走到门口逛逛，免费。</text>
+        </block>
       </scroll-view>
-      <view class="building-footer"><button bindtap="onCloseDetail" disabled="{{lifeBusy}}">{{lifeBusy ? '正在安排…' : '走出' + selected.name}}</button></view>
+      <view class="building-footer"><button wx:if="{{activitySession}}" class="building-lobby-return" bindtap="onActivityLobby" disabled="{{lifeBusy}}">{{selected.isShop ? '返回大厅 · 买点吃喝' : '返回大厅'}}</button><button bindtap="onCloseDetail" disabled="{{lifeBusy}}">{{lifeBusy ? '正在安排…' : '走出' + selected.name}}</button></view>
     </view>
   </view>
   <view wx:if="{{selectedPet}}" class="town-mask" bindtap="onClosePet" catchtouchmove="onNoop"><view class="pet-sheet" catchtap="onNoop"><scroll-view class="pet-sheet-body" scroll-y><view class="pet-preview-art"><template is="resident-art" data="{{art: selectedPet.art}}" /></view><view class="detail-title">带{{selectedPet.name}}回家</view><text class="detail-description">{{selectedPet.description}}</text><view class="detail-memory"><view>{{selectedPet.price}} 金币 · 永久拥有</view><view>{{life.hasVet ? '宠物医院也准备好啦，生病时看医生只需 1 金币。' : '还没有宠物医院时，小伙伴不会生病。'}}</view></view></scroll-view><view class="pet-sheet-actions"><button class="life-action" disabled="{{lifeBusy || refreshing}}" loading="{{lifeBusy}}" bindtap="onBuyPet">{{lifeBusy ? '正在准备小窝…' : selectedPet.affordable ? '花 ' + selectedPet.price + ' 金币购买' : '还差 ' + selectedPet.missing + ' 金币 · 去学习'}}</button><button class="life-dismiss" disabled="{{lifeBusy}}" bindtap="onClosePet">再想一想</button></view></view></view>

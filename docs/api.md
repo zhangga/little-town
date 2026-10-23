@@ -545,11 +545,19 @@ Authorization: Bearer <your_jwt_token>
 | --- | --- | --- |
 | GET | `/town-life` | 无 |
 | POST | `/town-life/pets/purchase` | `{"pet_id":"dog"}` 或 `{"pet_id":"cat"}` |
+| POST | `/town-life/supplies/purchase` | `{"item_id":"bread","request_id":"shop-request-123456"}` |
 | POST | `/town-life/events/resolve` | `{"event_id":123}` |
+| POST | `/town-life/activities/start` | `{"activity_id":"cinema_cloud","request_id":"activity-request-123456"}` |
 
-均返回 `wallet`（coins/bricks）、`pets`（id/name/icon/description/price/owned）、已建建筑名 `buildings`、待办 `event`（无待办时为 null）、最近三条已处理事件 `recent`、`unlocked_count`。事件含 id/kind/building/icon/title/description/action/outcome/cost/created_at/resolved_at。
+均返回 `needs`（enabled/food/water）、`supplies`、`wallet`（coins/bricks）、`pets`（id/name/icon/description/price/owned）、已建建筑名 `buildings`、待办 `event`（无待办时为 null）、最近三条已处理事件 `recent`、`unlocked_count`，以及以下建筑体验字段。事件含 id/kind/building/icon/title/description/action/outcome/cost/created_at/resolved_at。
 
-GET 会按节奏生成符合已拥有条件的事件；同时最多一件，每日最多三件，处理后至少间隔两小时。宠物各 20 金币，服务每次 1 金币，日常活动免费。购买和处理都由服务端校验价格、所有权和余额，重复请求不重复消费。余额不足、条件未满足、物品/事件不存在返回 400。完整规则及发布步骤见 [小镇生活](town-life.md)。
+`activities` 为固定的 22 项体验目录，每项包含 `id/name/building/icon/description/price/available/locked_reason`。`available` 只表示已拥有对应建筑及所需宠物；余额需与 `wallet.coins` 比较。未解锁时 `locked_reason` 提供原因，已解锁时为空字符串。11 座功能建筑各两项，价格 1–3 金币。宠物医院的两项体验均需拥有宠物。
+
+`activity_visits` 为当前账号最近 12 张入场凭据，按购买顺序倒序排列，每项含 `activity_id/request_id/name/building/icon/price/created_at`，无记录时为 `[]`。成功调用 `activities/start` 额外返回 `activity_receipt`（同样结构），用于启动或恢复体验。凭据保存购票时的内容和价格；它代表已付费入场，不是完成记录或奖励。客户端可从最近记录免费重玩，不需要新购票；玩法完成不发放金币、砖块或恢复需求数值。
+
+`request_id` 为 16–80 位大小写字母、数字或连字符；同一次购买重试必须沿用同一标识。活动购买在用户行锁事务内校验建筑、宠物及余额、扣款并保存凭据。同账号同请求只扣一次，相同请求更换活动返回 400；即使余额后来不足或原凭据已不在最近 12 条中，重复原请求仍返回原凭据及最新状态。其他账号不能复用此凭据。客户端传入的价格、奖励和用户 ID 不参与交易。
+
+GET 会按节奏生成符合已拥有条件的生活事件；同时最多一件，每日最多三件，处理后至少间隔两小时。宠物各 20 金币，事件中的服务每次 1 金币，普通日常事件免费；主动购买的建筑体验使用独立目录和入场费用，不受事件生成节奏限制。余额不足、条件未满足、物品/事件/体验不存在或请求标识无效返回 400。完整规则及发布步骤见 [小镇生活](town-life.md)。
 
 ## 错误码
 
