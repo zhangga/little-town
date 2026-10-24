@@ -8,7 +8,7 @@ import (
 
 func cleanEnv(t *testing.T) {
 	t.Helper()
-	for _, key := range []string{"ENV", "DEPLOY_TARGET", "SERVER_PORT", "PORT", "DB_HOST", "DB_PORT", "DB_USER", "DB_PASSWORD", "DB_NAME", "MYSQL_ADDRESS", "MYSQL_USERNAME", "MYSQL_PASSWORD", "MYSQL_DATABASE", "DB_TLS", "DB_TIMEZONE", "APP_TIMEZONE", "DB_MAX_OPEN", "DB_MAX_IDLE", "DB_CONN_MAX_LIFETIME", "JWT_SECRET", "WECHAT_APPID", "WECHAT_SECRET", "LOG_TO_FILE", "PUSH_ENABLED", "JOB_TOKEN", "AUTO_MIGRATE"} {
+	for _, key := range []string{"ENV", "DEPLOY_TARGET", "SERVER_PORT", "PORT", "DB_HOST", "DB_PORT", "DB_USER", "DB_PASSWORD", "DB_NAME", "MYSQL_ADDRESS", "MYSQL_USERNAME", "MYSQL_PASSWORD", "MYSQL_DATABASE", "DB_TLS", "DB_TIMEZONE", "APP_TIMEZONE", "DB_MAX_OPEN", "DB_MAX_IDLE", "DB_CONN_MAX_LIFETIME", "JWT_SECRET", "WECHAT_APPID", "WECHAT_SECRET", "LOG_TO_FILE", "PUSH_ENABLED", "JOB_TOKEN", "AUTO_MIGRATE", "DAILY_WORD_COUNT"} {
 		t.Setenv(key, "")
 	}
 }
@@ -21,6 +21,9 @@ func TestLocalDefaults(t *testing.T) {
 	}
 	if cfg.ServerPort != "8080" || cfg.DBPort != "3306" || cfg.DBName != "littletown_db" || !cfg.LogToFile || !cfg.PushEnabled {
 		t.Fatalf("local defaults changed: port=%s db=%s logs=%t push=%t", cfg.ServerPort, cfg.DBName, cfg.LogToFile, cfg.PushEnabled)
+	}
+	if cfg.DailyWordCount != 10 {
+		t.Fatalf("default learning round must contain ten words: %d", cfg.DailyWordCount)
 	}
 }
 

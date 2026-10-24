@@ -17,7 +17,7 @@ import (
 const (
 	PracticeBricksPerRound = 4
 	PracticeCoinsPerRound  = 12
-	PracticeDailyRounds    = 3
+	PracticeDailyRounds    = 12
 )
 
 var (

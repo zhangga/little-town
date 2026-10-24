@@ -9,6 +9,8 @@ import (
 	"time"
 )
 
+const DefaultDailyWordCount = 10
+
 type Config struct {
 	ServerPort   string
 	ServerHost   string
@@ -97,7 +99,7 @@ func Load() *Config {
 		JobToken:            getEnv("JOB_TOKEN", ""),
 
 		ReviewIntervals: parseIntSlice(getEnv("REVIEW_INTERVALS", "5,30,720,1440,2880,5760,10080,21600,43200")),
-		DailyWordCount:  getEnvInt("DAILY_WORD_COUNT", 5),
+		DailyWordCount:  getEnvInt("DAILY_WORD_COUNT", DefaultDailyWordCount),
 		LogToFile:       getEnvBool("LOG_TO_FILE", env != "production"),
 		LogDir:          getEnv("LOG_DIR", "./logs"),
 		LogKeepDays:     getEnvInt("LOG_KEEP_DAYS", 7),

@@ -24,9 +24,9 @@ func TestLearningContinuesAfterDailyGoal(t *testing.T) {
 	if !strings.HasPrefix(name, "littletown_test_") {
 		t.Fatal("MYSQL_TEST_DB must start with littletown_test_")
 	}
+	t.Setenv("DAILY_WORD_COUNT", "")
 	cfg := config.Load()
 	cfg.DBName = name
-	cfg.DailyWordCount = 2
 	db, err := database.InitDBSilent(cfg)
 	if err != nil {
 		t.Fatal(err)
@@ -41,6 +41,9 @@ func TestLearningContinuesAfterDailyGoal(t *testing.T) {
 		t.Fatal(err)
 	}
 	words := []models.Word{{Word: "apple", Translation: "苹果", Grade: 91}, {Word: "zebra", Translation: "斑马", Grade: 91}, {Word: "water", Translation: "水", Grade: 91}}
+	for _, word := range []string{"banana", "cat", "dog", "egg", "fish", "grape", "hat", "ice"} {
+		words = append(words, models.Word{Word: word, Translation: word, Grade: 91})
+	}
 	if err := db.Create(&words).Error; err != nil {
 		t.Fatal(err)
 	}
@@ -57,11 +60,6 @@ func TestLearningContinuesAfterDailyGoal(t *testing.T) {
 			t.Fatal(err)
 		}
 	}
-	for _, word := range words {
-		if err := db.Create(&models.ReviewSchedule{UserID: user.ID, WordID: word.ID, NextReviewAt: time.Now().Add(time.Hour), LastReviewedAt: time.Now()}).Error; err != nil {
-			t.Fatal(err)
-		}
-	}
 	gin.SetMode(gin.TestMode)
 	router := gin.New()
 	router.Use(func(c *gin.Context) { c.Set("user_id", user.ID) })
@@ -73,6 +71,7 @@ func TestLearningContinuesAfterDailyGoal(t *testing.T) {
 		}
 		SessionKind      string                    `json:"session_kind"`
 		Next             uint                      `json:"practice_next_id"`
+		DailyGoal        int                       `json:"daily_goal"`
 		BonusClaimed     bool                      `json:"bonus_claimed"`
 		BricksToday      int                       `json:"bricks_today"`
 		DailyBrickCap    int                       `json:"daily_brick_cap"`
@@ -90,13 +89,22 @@ func TestLearningContinuesAfterDailyGoal(t *testing.T) {
 		if err := json.Unmarshal(w.Body.Bytes(), &res); err != nil {
 			t.Fatal(err)
 		}
-		if res.PracticeRewards == nil || res.PracticeRewards.RemainingRounds != 2 || res.PracticeRewards.DailyRoundCap != 3 || res.DailyBrickCap != 20 || res.BricksPerCorrect != 1 {
+		if res.PracticeRewards == nil || res.PracticeRewards.RemainingRounds != 11 || res.PracticeRewards.DailyRoundCap != 12 || res.DailyBrickCap != 20 || res.BricksPerCorrect != 1 || res.DailyGoal != 10 {
 			t.Fatalf("all learning modes must include daily reward status: %+v", res)
 		}
 		return res
 	}
+	learning := get("")
+	if len(learning.Words) != 10 || learning.SessionKind != "learning" {
+		t.Fatalf("normal learning must use the larger round: %+v", learning)
+	}
+	for _, word := range words {
+		if err := db.Create(&models.ReviewSchedule{UserID: user.ID, WordID: word.ID, NextReviewAt: time.Now().Add(time.Hour), LastReviewedAt: time.Now()}).Error; err != nil {
+			t.Fatal(err)
+		}
+	}
 	first := get("")
-	if len(first.Words) != 2 || first.SessionKind != "practice" {
+	if len(first.Words) != 10 || first.SessionKind != "practice" {
 		t.Fatalf("learner with completed goal and learned words cannot continue: %+v", first)
 	}
 	if !first.BonusClaimed || !first.Words[0].IsReview {
@@ -106,7 +114,7 @@ func TestLearningContinuesAfterDailyGoal(t *testing.T) {
 		t.Fatal("yesterday's answer quota must not count toward today")
 	}
 	next := get(fmt.Sprintf("?practice_after=%d", first.Next))
-	if len(next.Words) != 2 || next.Words[0].ID != words[2].ID || next.Words[1].ID != words[0].ID {
+	if len(next.Words) != 10 || next.Words[0].ID != words[10].ID || next.Words[1].ID != words[0].ID {
 		t.Fatalf("practice must rotate and wrap without duplicates: %+v", next)
 	}
 	// Fetching free practice does not change due times, awards or study records.

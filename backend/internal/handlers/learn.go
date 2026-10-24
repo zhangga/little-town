@@ -46,7 +46,7 @@ func (h *LearnHandler) GetDailyWords(c *gin.Context) {
 	}
 	goal := h.cfg.DailyWordCount
 	if goal < 1 {
-		goal = 5
+		goal = config.DefaultDailyWordCount
 	}
 	// 每日目标是每轮题量和奖励目标，不是每天最多能学的词数。
 	dueSchedules, err := h.reviewService.GetDueWords(userID, min(3, goal))

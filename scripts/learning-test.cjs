@@ -15,10 +15,10 @@ const event = (data) => ({ currentTarget: { dataset: data } })
 const flush = () => new Promise((resolve) => setImmediate(resolve))
 
 test('daily reward counts distinguish answer bricks, practice rounds and the one-time goal bonus', () => {
-  assert.deepEqual(makeDailyRewardQuota({dailyBrickCap:20,bricksToday:7,bricksPerCorrect:1,goalDone:false,practiceRewards:{daily_round_cap:3,remaining_rounds:2}}), {
-    answerRemaining:13,answerCap:20,practiceRemaining:2,practiceCap:3,completionRemaining:1
+  assert.deepEqual(makeDailyRewardQuota({dailyBrickCap:20,bricksToday:7,bricksPerCorrect:1,goalDone:false,practiceRewards:{daily_round_cap:12,remaining_rounds:11}}), {
+    answerRemaining:13,answerCap:20,practiceRemaining:11,practiceCap:12,completionRemaining:1
   })
-  const capped = makeDailyRewardQuota({dailyBrickCap:20,bricksToday:25,bricksPerCorrect:1,goalDone:true,practiceRewards:{daily_round_cap:3,remaining_rounds:0}})
+  const capped = makeDailyRewardQuota({dailyBrickCap:20,bricksToday:25,bricksPerCorrect:1,goalDone:true,practiceRewards:{daily_round_cap:12,remaining_rounds:0}})
   assert.equal(capped.answerRemaining,0)
   assert.equal(capped.practiceRemaining,0)
   assert.equal(capped.completionRemaining,0)
@@ -28,7 +28,7 @@ test('daily reward counts distinguish answer bricks, practice rounds and the one
 
 test('daily counts update only from saved answers and exclude completion bonus bricks', async () => {
   const h = await pageHarness(words.slice(0,3))
-  h.api.get = async () => ({words:words.slice(0,3),daily_brick_cap:20,bricks_today:6,bricks_per_correct:1,bonus_claimed:false,practice_rewards:{daily_round_cap:3,remaining_rounds:2}})
+  h.api.get = async () => ({words:words.slice(0,3),daily_brick_cap:20,bricks_today:6,bricks_per_correct:1,bonus_claimed:false,practice_rewards:{daily_round_cap:12,remaining_rounds:2}})
   await h.page.loadDaily()
   assert.equal(h.page.data.dailyRewardQuota.answerRemaining,14)
   assert.equal(h.page.data.dailyRewardQuota.practiceRemaining,2)
@@ -87,16 +87,17 @@ test('returning to a completed or empty tab loads another round without losing a
 })
 
 test('free practice saves answers and awards four bricks and twelve coins only after completing the round', async () => {
-  const h = await pageHarness([words[0]])
+  const round = words.slice(0, 10).map(word => ({...word,is_review:true}))
+  const h = await pageHarness(round)
   let query
-  h.api.get = async (url, params) => { query = params; return { words: [{...words[0],is_review:true}], session_kind:'practice', practice_next_id:42, practice_token:'round-one', practice_rewards:{bricks_per_round:4,coins_per_round:12,remaining_rounds:3,daily_round_cap:3}, bonus_claimed:true } }
+  h.api.get = async (url, params) => { query = params; return { words: round, daily_goal:10, session_kind:'practice', practice_next_id:42, practice_token:'round-one', practice_rewards:{bricks_per_round:4,coins_per_round:12,remaining_rounds:12,daily_round_cap:12}, bonus_claimed:true } }
   const calls = []
   h.api.post = async (url, data) => {
     calls.push({url,data})
-    return url.endsWith('/complete') ? {round_bricks:4,round_coins:12,total_bricks:4,total_coins:12,practice_rewards:{remaining_rounds:2}} : {saved:true}
+    return url.endsWith('/complete') ? {round_bricks:4,round_coins:12,total_bricks:4,total_coins:12,practice_rewards:{daily_round_cap:12,remaining_rounds:11}} : {saved:true}
   }
   await h.page.loadDaily()
-  assert.equal(h.page.data.dailyRewardQuota.practiceRemaining,3)
+  assert.equal(h.page.data.dailyRewardQuota.practiceRemaining,12)
   h.page.setData({listening:false}); h.page.onMode(event({mode:'spell'})); h.page.onStart()
   await answerQuestion(h.page, true, h.mockAudio)
   assert.equal(h.page.data.stats.right, 1)
@@ -104,7 +105,16 @@ test('free practice saves answers and awards four bricks and twelve coins only a
   assert.equal(calls[0].url, '/learn/practice/answer')
   assert.equal(h.page.data.earned.bricks, 0)
   assert.equal(h.page.data.earnedXP, 0)
-  h.clock.advance(1600); completePairs(h.page); await flush()
+  h.clock.advance(1600)
+  for (let i = 1; i < round.length; i++) {
+    await answerQuestion(h.page, true, h.mockAudio)
+    h.clock.advance(1600)
+  }
+  assert.equal(calls.length,10)
+  assert.equal(h.page.data.phase,'match')
+  assert.equal(h.page.data.pairBatches,2)
+  assert.equal(h.page.data.earned.bricks,0)
+  completePairs(h.page); await flush()
   assert.equal(h.page.data.phase, 'done')
   assert.equal(h.page.data.earned.bricks,4)
   assert.equal(h.page.data.earned.coins,12)
@@ -112,15 +122,15 @@ test('free practice saves answers and awards four bricks and twelve coins only a
   assert.equal(h.page.data.rewardHeader.bricks,'4')
   assert.equal(h.page.data.rewardHeader.coins,'12')
   assert.equal(h.storage.userInfo.coins,12)
-  assert.equal(h.page.data.practiceRewards.remaining_rounds,2)
-  assert.equal(h.page.data.dailyRewardQuota.practiceRemaining,2)
+  assert.equal(h.page.data.practiceRewards.remaining_rounds,11)
+  assert.equal(h.page.data.dailyRewardQuota.practiceRemaining,11)
   h.page.finish(); h.page.onMatchNext(); await flush()
   assert.equal(calls.filter(c=>c.url.endsWith('/complete')).length,1)
   await h.page.onRetry()
   assert.equal(query.practice_after, 42)
   assert.equal(h.page.data.phase, 'ready')
   assert.equal(h.page.data.rewardHeader.title,'完成本轮可得')
-  assert.equal(h.page.data.rewardHeader.progress,'已答 0/1 · 答对 0')
+  assert.equal(h.page.data.rewardHeader.progress,'已答 0/10 · 答对 0')
   h.page.onUnload()
 })
 

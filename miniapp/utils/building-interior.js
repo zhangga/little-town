@@ -38,6 +38,11 @@ function createBuildingInterior(api, wxApi, showError, clock = { setTimeout: (fn
   function readPending() { return wxApi.getStorageSync(storageKey()) || {} }
   function savePending(value) { wxApi.setStorageSync(storageKey(), value) }
   return {
+    onOpenBentoKitchen() {
+      if (this.data.lifeBusy || this.data.refreshing || !this.data.selected || this.data.selected.name !== '餐厅') return
+      this.stopActivityClock()
+      wxApi.navigateTo({ url: '/kitchen/pages/restaurant/restaurant' })
+    },
     openBuilding(plot) {
       if (this.data.lifeBusy || this.data.refreshing || this.data.lifeFeedback) return
       this.stopActivityClock()

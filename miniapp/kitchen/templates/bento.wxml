@@ -1,0 +1,45 @@
+<!-- Canonical dish data renders the same food, positions and box in every preview. -->
+<template name="bento-food">
+  <view class="food-art food-{{portion.ingredient}} food-style-{{portion.style}}">
+    <block wx:if="{{portion.ingredient === 'rice'}}">
+      <view wx:if="{{portion.style === 'bear'}}" class="rice-ear rice-ear-left"></view>
+      <view wx:if="{{portion.style === 'bear'}}" class="rice-ear rice-ear-right"></view>
+      <view class="rice-grain rice-grain-one"></view><view class="rice-grain rice-grain-two"></view><view class="rice-grain rice-grain-three"></view>
+      <view wx:if="{{portion.style === 'bear'}}" class="rice-face"><text>• ᴥ •</text></view>
+      <view wx:else class="rice-nori"></view>
+    </block>
+    <block wx:elif="{{portion.ingredient === 'egg'}}"><view class="egg-yolk"></view><text wx:if="{{portion.style === 'star'}}" class="egg-star">★</text></block>
+    <block wx:elif="{{portion.ingredient === 'broccoli'}}"><view class="broccoli-stem"></view><view class="broccoli-floret broccoli-floret-left"></view><view class="broccoli-floret broccoli-floret-right"></view><view class="broccoli-floret broccoli-floret-top"></view></block>
+    <block wx:elif="{{portion.ingredient === 'corn'}}"><view class="corn-leaf corn-leaf-left"></view><view class="corn-leaf corn-leaf-right"></view><view class="corn-cob"></view></block>
+    <block wx:elif="{{portion.ingredient === 'carrot'}}"><view class="carrot-leaf carrot-leaf-left"></view><view class="carrot-leaf carrot-leaf-right"></view><view class="carrot-root"><view class="carrot-mark carrot-mark-one"></view><view class="carrot-mark carrot-mark-two"></view></view></block>
+    <block wx:elif="{{portion.ingredient === 'strawberry'}}"><view class="strawberry-fruit"><text class="strawberry-seeds">· ·<text> · </text>· ·</text></view><view class="strawberry-crown">✦</view></block>
+  </view>
+</template>
+
+<template name="bento-one-portion">
+    <view wx:if="{{editable}}" class="bento-portion {{selectedPortionIndex === portionIndex ? 'portion-selected' : ''}}" style="left: {{portion.x}}%; top: {{portion.y}}%;" data-index="{{portionIndex}}" catchtap="onPortionTap" catchtouchstart="onPortionTouchStart" catchtouchmove="onPortionTouchMove" catchtouchend="onPortionTouchEnd" catchtouchcancel="onTouchCancel" aria-label="{{portion.ingredient === 'rice' ? '米饭' : portion.ingredient === 'egg' ? '鸡蛋' : portion.ingredient === 'broccoli' ? '西兰花' : portion.ingredient === 'corn' ? '玉米' : portion.ingredient === 'carrot' ? '胡萝卜' : '草莓'}}，点选或拖动">
+      <template is="bento-food" data="{{portion}}" />
+      <view wx:if="{{selectedPortionIndex === portionIndex}}" class="portion-selection-dot"></view>
+    </view>
+    <view wx:else class="bento-portion" style="left: {{portion.x}}%; top: {{portion.y}}%;"><template is="bento-food" data="{{portion}}" /></view>
+</template>
+
+<template name="bento-portions">
+  <block wx:for="{{[0, 1, 2, 3, 4, 5, 6, 7]}}" wx:key="*this" wx:for-item="portionIndex">
+    <template wx:if="{{dish.portions[portionIndex]}}" is="bento-one-portion" data="{{portion: dish.portions[portionIndex], portionIndex, editable, selectedPortionIndex}}" />
+  </block>
+  <view wx:if="{{dish.decoration === 'sesame'}}" class="bento-decoration decoration-sesame"><text>•</text><text>•</text><text>•</text><text>•</text><text>•</text><text>•</text><text>•</text><text>•</text></view>
+  <view wx:elif="{{dish.decoration === 'flower'}}" class="bento-decoration decoration-flower"><text>✿</text><text>✿</text><text>✿</text></view>
+  <view wx:elif="{{dish.decoration === 'star'}}" class="bento-decoration decoration-star"><text>★</text><text>★</text><text>★</text></view>
+</template>
+
+<template name="bento-preview">
+  <view class="bento-shell box-{{dish.box_shape}} box-{{dish.box_color}} {{editable ? 'bento-editable' : 'bento-static'}}">
+    <view wx:if="{{editable}}" id="bento-board" class="bento-board" bindtap="onBoardTap">
+      <view wx:if="{{!dish.portions.length}}" class="bento-empty"><text class="bento-empty-mark">＋</text><text>选好食材，点这里摆进去</text></view>
+      <template is="bento-portions" data="{{dish, editable, selectedPortionIndex}}" />
+    </view>
+    <view wx:else class="bento-board"><template is="bento-portions" data="{{dish, editable: false}}" /></view>
+    <view class="bento-rim-shine"></view>
+  </view>
+</template>

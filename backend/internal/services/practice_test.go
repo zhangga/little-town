@@ -137,12 +137,12 @@ func TestPracticeRewardsMySQL(t *testing.T) {
 	if r := complete(first); r.BricksEarned != 0 || !r.AlreadyCompleted {
 		t.Fatalf("replayed round: %+v", r)
 	}
-	for i := 0; i < 2; i++ {
+	for i := 0; i < 11; i++ {
 		token := ticket()
 		answer(token, 11)
 		answer(token, 12)
 		r := complete(token)
-		if r.BricksEarned != 4 || r.CoinsEarned != 12 {
+		if r.BricksEarned != 4 || r.CoinsEarned != 12 || r.PracticeRewards.RemainingRounds != 10-i || r.PracticeRewards.DailyRoundCap != 12 {
 			t.Fatalf("reward: %+v", r)
 		}
 	}
@@ -154,7 +154,7 @@ func TestPracticeRewardsMySQL(t *testing.T) {
 	}
 	var stored models.User
 	db.First(&stored, user.ID)
-	if stored.Bricks != 62 || stored.Coins != 136 || stored.RewardBricks != 20 || stored.DailyBonusDate != "" {
+	if stored.Bricks != 98 || stored.Coins != 244 || stored.RewardBricks != 20 || stored.DailyBonusDate != "" {
 		t.Fatalf("wallet or ordinary rewards changed: %+v", stored)
 	}
 	var studies int64
@@ -172,7 +172,7 @@ func TestPracticeRewardsMySQL(t *testing.T) {
 		t.Fatal(err)
 	}
 	status, err := s.Status(user.ID)
-	if err != nil || status.RemainingRounds != 3 {
+	if err != nil || status.RemainingRounds != 12 {
 		t.Fatalf("new day: %+v %v", status, err)
 	}
 	// The persisted date must still agree with its signed ticket.
@@ -196,7 +196,7 @@ func TestPracticeRewardsMySQL(t *testing.T) {
 		db.Unscoped().Delete(&second)
 	})
 	var total atomic.Int64
-	for i := 0; i < 8; i++ {
+	for i := 0; i < 16; i++ {
 		token, err := s.NewTicket(second.ID, []uint{11})
 		if err != nil {
 			t.Fatal(err)
@@ -216,7 +216,7 @@ func TestPracticeRewardsMySQL(t *testing.T) {
 		}(token)
 	}
 	wg.Wait()
-	if total.Load() != 12 {
+	if total.Load() != 48 {
 		t.Fatalf("concurrent daily cap: %d", total.Load())
 	}
 }

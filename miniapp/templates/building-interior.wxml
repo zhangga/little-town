@@ -10,6 +10,11 @@
 </template>
 
 <template name="building-lobby">
+  <view wx:if="{{selected.name === '餐厅'}}" class="bento-entry">
+    <view class="bento-entry-stamp">🍱</view>
+    <view class="bento-entry-copy"><view>我的便当厨房</view><text>自由摆盘 · 招待熟客 · 做出招牌菜</text></view>
+    <button bindtap="onOpenBentoKitchen" disabled="{{lifeBusy || refreshing}}">免费开做 →</button>
+  </view>
   <view class="interior-section-title"><view>{{selected.interior.theme === 'cinema' ? '今日上映' : '今天想做点什么'}}</view><text>入场后，慢慢玩</text></view>
   <view class="activity-menu">
     <view wx:for="{{selected.activities}}" wx:key="id" class="activity-card activity-card-{{item.kind}}">

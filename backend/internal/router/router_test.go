@@ -86,3 +86,19 @@ func TestTownLayoutRequiresLogin(t *testing.T) {
 		t.Fatalf("layout must require login, got %d", res.Code)
 	}
 }
+
+func TestRestaurantRoutesRequireLogin(t *testing.T) {
+	r := SetupRouter(nil, &config.Config{})
+	for path, method := range map[string]string{
+		"/api/v1/restaurant":            "GET",
+		"/api/v1/restaurant/recipes":    "POST",
+		"/api/v1/restaurant/signatures": "PUT",
+		"/api/v1/restaurant/serve":      "POST",
+	} {
+		res := httptest.NewRecorder()
+		r.ServeHTTP(res, httptest.NewRequest(method, path, strings.NewReader(`{}`)))
+		if res.Code != 401 {
+			t.Fatalf("%s must require login, got %d", path, res.Code)
+		}
+	}
+}

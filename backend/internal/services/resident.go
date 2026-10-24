@@ -6,6 +6,7 @@ import (
 	"unicode"
 	"unicode/utf8"
 
+	"github.com/zhangga/little-town/backend/internal/config"
 	"github.com/zhangga/little-town/backend/internal/models"
 	"gorm.io/gorm"
 	"gorm.io/gorm/clause"
@@ -133,7 +134,7 @@ type ResidentService struct {
 
 func NewResidentService(db *gorm.DB, dailyGoal int) *ResidentService {
 	if dailyGoal < 1 {
-		dailyGoal = 5
+		dailyGoal = config.DefaultDailyWordCount
 	}
 	return &ResidentService{db: db, dailyGoal: dailyGoal}
 }

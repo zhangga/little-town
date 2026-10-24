@@ -1,0 +1,89 @@
+<import src="../../templates/bento.wxml" />
+
+<view class="restaurant-page">
+  <view class="restaurant-heading">
+    <view><text class="restaurant-eyebrow">小镇餐厅 · 欢迎开饭</text><text class="restaurant-title">小镇便当屋<text class="heading-flower">✿</text></text><text class="restaurant-subtitle">一盒好吃的，留给老朋友。</text></view>
+    <view class="shop-sign"><text class="shop-sign-icon">🍱</text><text>今日营业</text></view>
+  </view>
+
+  <view class="restaurant-tabs">
+    <button class="restaurant-tab {{tab === 'kitchen' ? 'restaurant-tab-active' : ''}}" data-tab="kitchen" bindtap="onTabChange">我的厨房</button>
+    <button class="restaurant-tab {{tab === 'menu' ? 'restaurant-tab-active' : ''}}" data-tab="menu" bindtap="onTabChange">食谱与招牌<text wx:if="{{recipes.length}}" class="tab-count">{{recipes.length}}</text></button>
+  </view>
+
+  <view wx:if="{{pending}}" class="status-note pending-note"><text class="status-icon">⌛</text><view class="status-copy"><text class="status-title">这份心意还在送达</text><text>{{pending.message || '上次操作的结果还未确认，请继续确认。'}}</text></view><button class="note-button" bindtap="onRetryPending" disabled="{{busy}}" loading="{{busy}}">继续确认</button></view>
+  <view wx:if="{{error}}" class="status-note error-note"><text class="status-icon">!</text><view class="status-copy"><text class="status-title">稍等一下</text><text>{{error}}</text></view><button class="note-button" bindtap="onRetry" disabled="{{busy}}">再试一次</button></view>
+
+  <view wx:if="{{loading}}" class="loading-card"><text class="loading-icon">🍱</text><text class="loading-title">正在准备今天的厨房…</text><text>食材、菜单，还有老朋友们。</text></view>
+
+  <block wx:else>
+    <view wx:if="{{tab === 'kitchen'}}" class="kitchen-content">
+      <view class="section-heading"><text class="section-label">今天招待谁</text><text class="section-aside">慢慢做，大家都愿意等</text></view>
+      <view class="resident-tables">
+        <button wx:for="{{residents}}" wx:key="id" class="resident-table {{selectedResident.id === item.id ? 'resident-table-selected' : ''}}" data-id="{{item.id}}" bindtap="onResidentSelect" disabled="{{busy || !!pending || failed}}">
+          <view class="resident-portrait resident-{{item.id}}"><text>{{item.icon}}</text><text wx:if="{{selectedResident.id === item.id}}" class="resident-check">✓</text></view>
+          <text class="resident-name">{{item.name}}</text><text class="resident-relation">{{item.visits ? '来过 ' + item.visits + ' 次' : '初次来做客'}}</text>
+        </button>
+      </view>
+      <view wx:if="{{selectedResident}}" class="resident-wish">
+        <view class="wish-heading"><text class="wish-badge">{{selectedResident.order.kind === 'signature' ? '还想吃这道' : selectedResident.order.kind === 'surprise' ? '主厨来决定' : '今天的小愿望'}}</text><text class="wish-guest">{{selectedResident.name}}说</text></view>
+        <text class="wish-text">“{{selectedResident.order.text}}”</text>
+        <button wx:if="{{selectedResident.order.kind === 'signature'}}" class="load-order-button" data-id="{{selectedResident.order.recipe_id}}" bindtap="onLoadOrderRecipe" disabled="{{busy || !!pending || failed}}">取出这道招牌菜的配方 <text>↗</text></button>
+        <view wx:if="{{selectedResident.last_dish_name}}" class="resident-memory"><text class="memory-flower">✿</text><text>上次一起吃了「{{selectedResident.last_dish_name}}」<text wx:if="{{selectedResident.last_feedback}}" class="memory-quote">{{selectedResident.last_feedback}}</text></text></view>
+      </view>
+
+      <view class="kitchen-counter">
+        <view class="counter-heading"><view><text class="counter-title">今天的主厨是你</text><text class="counter-subtitle">选食材，再点盒子摆放；也可以拖进来</text></view><text class="portion-count">{{dish.portions.length}} / 8 份</text></view>
+        <view class="worktop">
+          <view class="counter-napkin"></view><view class="counter-chopstick chopstick-one"></view><view class="counter-chopstick chopstick-two"></view>
+          <view class="bento-stage"><template is="bento-preview" data="{{dish, editable: true, selectedPortionIndex}}" /></view>
+          <view class="counter-caption"><text>{{dish.name || '等你起一个好名字'}}</text><text>手作 · 每一盒都不一样</text></view>
+        </view>
+        <view class="ingredient-shelf">
+          <button wx:for="{{ingredientOptions}}" wx:key="id" class="ingredient-basket {{selectedIngredient === item.id ? 'ingredient-basket-selected' : ''}}" data-id="{{item.id}}" bindtap="onIngredientSelect" bindtouchstart="onIngredientTouchStart" catchtouchmove="onPortionTouchMove" bindtouchend="onPortionTouchEnd" bindtouchcancel="onTouchCancel" disabled="{{busy || !!pending || failed}}"><text class="ingredient-icon">{{item.icon}}</text><text class="ingredient-name">{{item.name}}</text><text wx:if="{{selectedIngredient === item.id}}" class="ingredient-check">✓</text></button>
+        </view>
+        <view class="kitchen-hint"><text>✦</text><text>{{dish.portions.length >= 8 ? '便当装满啦，选一份食物可以移动或拿走' : selectedIngredient ? '点一下便当盒，把选好的食材放进去' : '同一种食材也可以多放几份哦'}}</text></view>
+      </view>
+
+      <view wx:if="{{selectedPortion}}" class="portion-tools">
+        <text class="tools-label">这份食物</text>
+        <view class="portion-style-buttons"><button class="tiny-button {{selectedPortion.style === 'plain' ? 'tiny-button-selected' : ''}}" data-style="plain" bindtap="onPortionStyleChange" disabled="{{busy || !!pending || failed}}">原本的样子</button><button wx:if="{{selectedPortion.ingredient === 'rice'}}" class="tiny-button {{selectedPortion.style === 'bear' ? 'tiny-button-selected' : ''}}" data-style="bear" bindtap="onPortionStyleChange" disabled="{{busy || !!pending || failed}}">🐻 小熊饭团</button><button wx:if="{{selectedPortion.ingredient === 'egg'}}" class="tiny-button {{selectedPortion.style === 'star' ? 'tiny-button-selected' : ''}}" data-style="star" bindtap="onPortionStyleChange" disabled="{{busy || !!pending || failed}}">★ 星星鸡蛋</button></view>
+        <button class="remove-portion" bindtap="onRemovePortion" disabled="{{busy || !!pending || failed}}">拿走</button>
+      </view>
+
+      <view class="finishing-card">
+        <view class="section-heading"><text class="section-label">再加一点你的心意</text><text class="section-aside">盒子 · 点缀 · 名字</text></view>
+        <view class="option-row"><text class="option-label">挑盒子</text><view class="option-values"><button wx:for="{{boxShapes}}" wx:key="id" class="option-chip {{dish.box_shape === item.id ? 'option-chip-active' : ''}}" data-id="{{item.id}}" bindtap="onBoxShapeChange" disabled="{{busy || !!pending || failed}}"><text class="box-shape-icon shape-{{item.id}}"></text>{{item.name}}</button><view class="color-options"><button wx:for="{{boxColors}}" wx:key="id" class="color-swatch swatch-{{item.id}} {{dish.box_color === item.id ? 'color-swatch-selected' : ''}}" data-id="{{item.id}}" bindtap="onBoxColorChange" disabled="{{busy || !!pending || failed}}" aria-label="{{item.name}}"><text wx:if="{{dish.box_color === item.id}}">✓</text></button></view></view></view>
+        <view class="option-row decoration-row"><text class="option-label">小点缀</text><view class="option-values"><button wx:for="{{decorations}}" wx:key="id" class="option-chip {{dish.decoration === item.id ? 'option-chip-active' : ''}}" data-id="{{item.id}}" bindtap="onDecorationChange" disabled="{{busy || !!pending || failed}}"><text wx:if="{{item.icon}}">{{item.icon}} </text>{{item.name}}</button></view></view>
+        <view class="dish-name-section"><text class="option-label">给这盒便当起个名字</text><view class="dish-name-field"><text>✎</text><input class="dish-name-input" value="{{dish.name}}" maxlength="32" placeholder="比如：小熊春游便当" placeholder-class="dish-name-placeholder" bindinput="onNameInput" disabled="{{busy || !!pending || failed}}" aria-label="便当名字，最多16个字" /><text class="name-length">最多16字</text></view><view class="name-suggestions"><button wx:for="{{nameSuggestions}}" wx:key="*this" class="name-suggestion" data-name="{{item}}" bindtap="onNameSuggestion" disabled="{{busy || !!pending || failed}}">{{item}}</button></view></view>
+      </view>
+
+      <view class="save-row"><button class="secondary-button save-recipe" bindtap="onSaveRecipe" disabled="{{busy || !!pending || failed || !dish.portions.length}}">{{editingRecipeID ? '更新这份食谱' : '♡ 收进食谱本'}}</button><button wx:if="{{editingRecipeID}}" class="text-button" bindtap="onSaveAsNew" disabled="{{busy || !!pending || failed || !dish.portions.length}}">另存一道</button><button class="text-button new-dish-button" bindtap="onNewDish" disabled="{{busy || !!pending || failed}}">做一盒新的</button></view>
+      <view class="serve-dock"><view class="serve-dock-copy"><text>准备好开饭了吗？</text><text>{{selectedResident ? selectedResident.name + '会记住你的这份心意' : '先选一位来做客的居民'}}</text></view><button class="primary-button serve-button" bindtap="onServe" disabled="{{busy || !!pending || failed || !dish.portions.length || !selectedResident}}" loading="{{busy}}">{{busy ? '稍等一下' : '端给' + (selectedResident.name || '朋友') + ' 🍱'}}</button></view>
+    </view>
+
+    <view wx:else class="recipe-book">
+      <view class="signature-board">
+        <view class="signature-heading"><view><text class="signature-eyebrow">本店推荐</text><text class="signature-title">我们的招牌便当</text></view><text class="signature-flower">✿</text></view>
+        <text class="signature-subtitle">把喜欢的作品挂上菜单，熟客会回来点它。</text>
+        <view class="signature-slots"><view wx:for="{{signatureSlots}}" wx:key="slot" class="signature-slot"><view class="signature-clip"></view><block wx:if="{{item.recipe}}"><view class="signature-preview" data-id="{{item.recipe.id}}" bindtap="onLoadRecipe"><template is="bento-preview" data="{{dish: item.recipe.dish, editable: false}}" /></view><text class="signature-name">{{item.recipe.dish.name}}</text><button class="signature-remove" data-id="{{item.recipe.id}}" bindtap="onToggleSignature" disabled="{{busy || !!pending || failed}}">收回食谱本</button></block><block wx:else><text class="signature-empty-icon">＋</text><text class="signature-empty-title">第 {{item.slot}} 道招牌</text><text class="signature-empty-caption">从食谱本选一道</text></block></view></view>
+      </view>
+
+      <view class="section-heading recipe-heading"><text class="section-label">我的食谱本</text><text class="section-aside">{{recipes.length}} / 24 道心意</text></view>
+      <view wx:if="{{!recipes.length}}" class="recipe-empty"><text class="recipe-empty-icon">📖</text><text class="recipe-empty-title">第一页，留给你的拿手菜</text><text>做一盒便当，收进食谱本。<text class="empty-newline">食材、摆盘和名字都会好好留下。</text></text><button class="primary-button" data-tab="kitchen" bindtap="onTabChange">去做第一盒便当</button></view>
+      <view wx:else class="recipe-grid"><view wx:for="{{recipes}}" wx:key="id" class="recipe-card"><view class="recipe-art" data-id="{{item.id}}" bindtap="onLoadRecipe"><text wx:if="{{item.signature}}" class="recipe-signature-badge">★ 招牌</text><template is="bento-preview" data="{{dish: item.dish, editable: false}}" /></view><view class="recipe-card-body"><text class="recipe-name">{{item.dish.name}}</text><text class="recipe-story">{{item.first_taster ? item.first_taster + '第一个尝过' : '等一位朋友来品尝'}}<text wx:if="{{item.served_count}}"> · 上桌 {{item.served_count}} 次</text></text><text wx:if="{{item.last_feedback}}" class="recipe-feedback">“{{item.last_feedback}}”</text><view class="recipe-actions"><button class="recipe-cook" data-id="{{item.id}}" bindtap="onLoadRecipe" disabled="{{busy || !!pending || failed}}">做这道</button><button class="recipe-signature-toggle {{item.signature ? 'is-signature' : ''}}" data-id="{{item.id}}" bindtap="onToggleSignature" disabled="{{busy || !!pending || failed}}">{{item.signature ? '★ 已挂招牌' : '☆ 设为招牌'}}</button></view></view></view></view>
+      <text wx:if="{{recipes.length}}" class="book-footer">每一道菜，都是和朋友一起留下的小故事。</text>
+    </view>
+  </block>
+
+  <view wx:if="{{dragging}}" class="ingredient-drag-ghost" style="left: {{dragX}}px; top: {{dragY}}px;">{{dragIcon}}</view>
+
+  <view wx:if="{{serviceResult}}" class="dialog-scrim"><view class="memory-card"><view class="memory-card-stamp">✿ 今日小记</view><text class="memory-card-heading">{{serviceResult.resident_name}}吃到啦！</text><view class="memory-card-bento"><template is="bento-preview" data="{{dish: serviceResult.dish, editable: false}}" /></view><text class="memory-card-dish">{{serviceResult.dish.name}}</text><text class="memory-card-feedback">“{{serviceResult.feedback}}”</text><text class="memory-card-caption">这份心意，会留在你们的小故事里。</text>
+      <view wx:if="{{pending}}" class="memory-pending"><text>{{pending.message || '这道菜的保存结果还在确认，便当已经为你留好。'}}</text><button class="note-button" bindtap="onRetryPending" disabled="{{busy}}" loading="{{busy}}">继续确认</button></view>
+      <text wx:if="{{error}}" class="memory-error">{{error}}</text>
+      <button wx:if="{{serviceResult.recipe_id}}" class="primary-button" bindtap="onOpenRecipeBook" disabled="{{busy}}">去设为招牌菜 →</button>
+      <button wx:else class="primary-button" bindtap="onSaveRecipe" disabled="{{busy || !!pending || failed}}" loading="{{busy}}">{{editingRecipeID ? '♡ 更新这道食谱' : '♡ 把这道菜收进食谱本'}}</button>
+      <button class="memory-save-button" bindtap="onDismissResult">记住这一刻，回到厨房</button></view></view>
+
+  <view wx:if="{{replacingRecipe}}" class="dialog-scrim"><view class="replace-card"><text class="replace-flower">✿</text><text class="replace-title">给新招牌腾个位置</text><text class="replace-description">把「{{replacingRecipe.dish.name}}」挂上菜单，替换哪一道？原来的菜仍留在食谱本里。</text><button wx:for="{{signatureSlots}}" wx:key="slot" class="replace-choice" data-id="{{item.id}}" bindtap="onReplaceSignature" disabled="{{busy || !!pending || failed}}"><text>{{item.recipe.dish.name}}</text><text>替换 ↗</text></button><button class="text-button replace-cancel" bindtap="onCancelReplace" disabled="{{busy}}">这次先不换</button></view></view>
+</view>

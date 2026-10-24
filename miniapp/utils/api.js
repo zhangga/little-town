@@ -73,7 +73,9 @@ function request(options) {
         reject(new Error('登录已过期，请重新进镇'))
         return
       }
-      reject(new Error((res.data && res.data.error) || '请求失败（' + res.statusCode + '）'))
+      const error = new Error((res.data && res.data.error) || '请求失败（' + res.statusCode + '）')
+      error.statusCode = res.statusCode
+      reject(error)
     }
     const fail = err => {
       const raw = (err && err.errMsg) || (err && err.message) || ''

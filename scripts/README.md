@@ -56,6 +56,10 @@ Adminer 登录时：系统选 `MySQL`，服务器填 `mysql`（Compose 服务名
 
 MySQL 使用独立的 `little-town-mysqldata` 数据卷。原 PostgreSQL 容器和数据卷不会被这些脚本自动删除；切换前应备份旧数据，已有用户及学习进度需要迁移，不能通过重新导入词库替代。
 
+## 餐厅布局预览
+
+`node scripts/restaurant-preview.cjs --serve 9433` 编译实际厨房 WXML/WXSS，提供空厨房、成品、熟客点单、招牌菜单、回忆卡和错误恢复等演示状态。需要安装微信开发者工具，或通过 `WECHAT_COMPILER_DIR` 指定包含 `wcc`、`wcsc` 的目录；生成文件在 `output/restaurant-preview`（已忽略）。这是静态布局预览，业务行为由 `node --test scripts/restaurant-test.cjs` 与后端 `TestRestaurantMySQLLifecycle` 验证。
+
 ## 前置要求
 
 Docker Desktop（Windows/macOS）或 docker engine（Linux）。脚本会检查三件事并给出对应提示：Docker 是否安装、compose 命令是否可用、守护进程是否运行。

@@ -18,7 +18,7 @@ Page(withTapSounds({
     pairs: { left: [], right: [] }, pairLeft: -1, pairRight: -1,
     pairCount: 0, matchWrong: false, matchMessage: '', matchDone: false,
     pairBatch: 0, pairBatches: 0, finished: false, autoAdvancePaused: false,
-    freePractice: false, dailyGoal: 5, goalDone: false,
+    freePractice: false, dailyGoal: 10, goalDone: false,
     dailyBrickCap: null, bricksToday: null, bricksPerCorrect: null, dailyRewardQuota: makeDailyRewardQuota({}),
     practiceRewards: null, practiceSettling: false, practiceSettled: false,
     practiceSettlementError: false, practiceError: '', rewardHeader: makeRewardHeader({})
@@ -119,7 +119,7 @@ Page(withTapSounds({
       this._mistakes = []
       this.setRewardState({
         loading: false, phase: words.length ? 'ready' : 'done', words, index: 0,
-        freePractice, dailyGoal: Number(res.daily_goal) || 5, goalDone: !!res.bonus_claimed,
+        freePractice, dailyGoal: Number(res.daily_goal) || 10, goalDone: !!res.bonus_claimed,
         dailyBrickCap: res.daily_brick_cap == null ? null : res.daily_brick_cap,
         bricksToday: res.bricks_today == null ? null : res.bricks_today,
         bricksPerCorrect: res.bricks_per_correct == null ? null : res.bricks_per_correct,

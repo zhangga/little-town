@@ -47,6 +47,7 @@ backend/server
 backend/import
 backend/tmp/
 output/cloudrun/
+output/restaurant-preview/
 
 # Miniapp specific
 miniapp/project.private.config.json

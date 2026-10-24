@@ -132,3 +132,8 @@
 @keyframes interior-orbit { 0%,100% { transform: translate(-25rpx,14rpx) rotate(-16deg); } 50% { transform: translate(35rpx,-25rpx) rotate(18deg); } }
 @keyframes interior-wave { 0%,100% { transform: rotate(-8deg); } 50% { transform: rotate(8deg) translateY(-12rpx); } }
 @media (prefers-reduced-motion: reduce) { .activity-stage .stage-hero, .activity-stage .stage-prop { animation: none !important; } .activity-progress > view { transition: none; } }
+.bento-entry { display: flex; align-items: center; flex-wrap: wrap; gap: 16rpx; margin: 20rpx 0 26rpx; padding: 22rpx; border: 3rpx solid #b8573c; border-radius: 18rpx; background: #fff2d6; box-shadow: 0 6rpx 0 #e3c99a; }
+.bento-entry-stamp { font-size: 60rpx; }
+.bento-entry-copy { flex: 1; min-width: 230rpx; color: #704333; font-size: 28rpx; font-weight: 800; }
+.bento-entry-copy text { display: block; margin-top: 6rpx; font-size: 21rpx; font-weight: 400; color: #82694b; }
+.town-page .bento-entry button { width: 100%; min-height: 76rpx; padding: 12rpx; border-radius: 12rpx; background: #b8573c; color: #fffbed; font-size: 26rpx; font-weight: 800; line-height: 1.6; }

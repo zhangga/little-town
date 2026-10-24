@@ -99,5 +99,7 @@ func AutoMigrate(db *gorm.DB) error {
 		&models.TownNeeds{},
 		&models.TownSupplyPurchase{},
 		&models.TownActivityVisit{},
+		&models.Restaurant{},
+		&models.RestaurantRequest{},
 	)
 }

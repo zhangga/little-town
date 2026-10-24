@@ -107,7 +107,7 @@ Authorization: Bearer <your_jwt_token>
 
 **GET** `/learn/daily-words`
 
-需要认证。返回今日需要学习的单词,包括复习词和新词。
+需要认证。返回本轮需要学习的单词，包括复习词和新词。每轮默认 10 词（由 `DAILY_WORD_COUNT` 配置），词库不足时按实际可用数量下发；完成后可以继续下一轮。
 
 #### 响应示例
 ```json
@@ -191,9 +191,9 @@ Authorization: Bearer <your_jwt_token>
   "practice_rewards": {
     "bricks_per_round": 4,
     "coins_per_round": 12,
-    "daily_round_cap": 3,
+    "daily_round_cap": 12,
     "rewarded_rounds": 0,
-    "remaining_rounds": 3
+    "remaining_rounds": 12
   }
 }
 ```
@@ -202,7 +202,7 @@ Authorization: Bearer <your_jwt_token>
 
 `POST /learn/practice/answer`：每答完一个词，发送 `{"practice_token":"...","word_id":5}`，成功返回 `{"saved":true}`。同一词重复提交不会增加本轮进度；这里只保存进度，不发单题奖励、不修改间隔复习和成长。
 
-`POST /learn/practice/complete`：完成本轮全部题目、巩固与配对后发送 `{"practice_token":"..."}`。服务端检查每个题组单词都已保存，再结算 **4 砖、12 金币，每日最多 3 轮**。额外字段中的客户端金额会被忽略。
+`POST /learn/practice/complete`：完成本轮全部题目、巩固与配对后发送 `{"practice_token":"..."}`。服务端检查每个题组单词都已保存，再结算 **4 砖、12 金币，每日最多 12 轮**。额外字段中的客户端金额会被忽略。
 
 ```json
 {
@@ -217,14 +217,14 @@ Authorization: Bearer <your_jwt_token>
   "practice_rewards": {
     "bricks_per_round": 4,
     "coins_per_round": 12,
-    "daily_round_cap": 3,
+    "daily_round_cap": 12,
     "rewarded_rounds": 1,
-    "remaining_rounds": 2
+    "remaining_rounds": 11
   }
 }
 ```
 
-重复结算同一票据返回 `already_completed: true`，`*_earned` 为 0；`round_bricks / round_coins` 返回本轮原有奖励，供网络响应丢失后恢复展示。第 4 轮及以后仍可完成，`capped: true` 且本轮奖励为 0。额度独立于普通答题砖块上限。票据仅对本人、当天和该题组有效，未答完或票据失效返回 400；不能用题组票据代替登录凭证。
+重复结算同一票据返回 `already_completed: true`，`*_earned` 为 0；`round_bricks / round_coins` 返回本轮原有奖励，供网络响应丢失后恢复展示。第 13 轮及以后仍可完成，`capped: true` 且本轮奖励为 0。额度独立于普通答题砖块上限。票据仅对本人、当天和该题组有效，未答完或票据失效返回 400；不能用题组票据代替登录凭证。
 
 ### 3.3 获取学习统计
 
@@ -558,6 +558,48 @@ Authorization: Bearer <your_jwt_token>
 `request_id` 为 16–80 位大小写字母、数字或连字符；同一次购买重试必须沿用同一标识。活动购买在用户行锁事务内校验建筑、宠物及余额、扣款并保存凭据。同账号同请求只扣一次，相同请求更换活动返回 400；即使余额后来不足或原凭据已不在最近 12 条中，重复原请求仍返回原凭据及最新状态。其他账号不能复用此凭据。客户端传入的价格、奖励和用户 ID 不参与交易。
 
 GET 会按节奏生成符合已拥有条件的生活事件；同时最多一件，每日最多三件，处理后至少间隔两小时。宠物各 20 金币，事件中的服务每次 1 金币，普通日常事件免费；主动购买的建筑体验使用独立目录和入场费用，不受事件生成节奏限制。余额不足、条件未满足、物品/事件/体验不存在或请求标识无效返回 400。完整规则及发布步骤见 [小镇生活](town-life.md)。
+
+## 7. 餐厅便当厨房
+
+以下路径使用 `/api/v1` 前缀，需要登录且已拥有餐厅。读写均校验账号和餐厅所有权；新厨房免费，不变更钱包或小镇需求值。
+
+| 方法 | 路径 | 请求 |
+| --- | --- | --- |
+| GET | `/restaurant` | 无 |
+| POST | `/restaurant/recipes` | `{request_id, recipe_id, dish}`；新建时 `recipe_id` 为空，更新时为已有食谱 ID |
+| PUT | `/restaurant/signatures` | `{request_id, recipe_ids}`；完整替换菜单，0–3 个不同的本人食谱 ID |
+| POST | `/restaurant/serve` | `{request_id, resident_id, order_id, recipe_id, dish}`；自由作品的 `recipe_id` 可为空 |
+
+便当格式：
+
+```json
+{
+  "name": "小熊春游便当",
+  "box_shape": "square",
+  "box_color": "peach",
+  "decoration": "flower",
+  "portions": [
+    {"ingredient": "rice", "x": 32, "y": 32, "style": "bear"},
+    {"ingredient": "corn", "x": 70, "y": 65, "style": "plain"}
+  ]
+}
+```
+
+`name` 为去除首尾空格后的 1–16 个 Unicode 字符，不允许控制字符。`box_shape` 为 `square/round`；`box_color` 为 `peach/mint/sunshine`；`decoration` 为 `none/sesame/flower/star`。食材为 `rice/egg/broccoli/corn/carrot/strawberry`，每盒 1–8 份，允许重复；`style` 默认 `plain`，米饭还可用 `bear`，鸡蛋还可用 `star`。坐标为盒内百分比 15–85，圆盒还要求中心到 `(50,50)` 的距离不超过 35。服务端保留合法坐标的精度。
+
+全部成功响应均包含：
+
+- `recipes`：`{id, dish, served_count, first_taster, last_feedback}`；最多 24 道，ID 为不透明字符串。
+- `signature_ids`：菜单上的食谱 ID，最多 3 道。
+- `residents`：`{id, name, icon, preference, visits, last_dish_name, last_feedback, order}`。固定居民为 `abu`、`taotao`、`lin`。
+- `order`：`{id, kind, text, preferred_ingredient, recipe_id}`；`kind` 为 `wish/surprise/signature`。提交出餐时使用最新 `order.id`；招牌订单要求与指定配方的组成相同，允许名字不同。
+- `recent_services`：最近 12 次招待，元素为 `{request_id, resident_id, resident_name, dish, recipe_id, feedback, preferred}`。
+
+保存食谱的响应额外包含 `saved_recipe_id`；出餐响应额外包含 `service_result`，结构同近期招待记录。普通 GET 不包含这两个写入结果字段。先招待再新建或更新匹配食谱，会关联近期尚未归属食谱的品尝记录，保持首位品尝者并避免重复计数。
+
+`request_id` 必须为 16–80 位字母、数字或连字符。同账号同请求只执行一次，重复确认返回当前餐厅状态及该请求最初的结果；同一标识搭配不同操作或内容会返回 400。网络响应不明时保留原请求，继续确认不得生成新标识。仅看到相同食谱内容不能证明保存请求已经成功，因为保存还会关联品尝历史。
+
+400 表示未建餐厅、无效便当、食谱不属于当前用户、菜单／容量超限、过期订单或请求标识冲突；401 表示未登录，404 表示账号不存在，500 表示服务错误。数据迁移包含 `restaurants` 与 `restaurant_requests`，无需重新导入建筑目录。
 
 ## 错误码
 
