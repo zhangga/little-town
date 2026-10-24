@@ -1,4 +1,4 @@
-<!-- 建筑共用透明图集，资源图标可使用独立小图。 -->
+<!-- 建筑和资源图标可使用透明图集或独立图片。 -->
 <template name="voxel">
   <view class="voxel-sprite">
     <image wx:if="{{sprite.image}}" class="voxel-icon" src="{{sprite.image}}" mode="aspectFit" aria-hidden="true" />

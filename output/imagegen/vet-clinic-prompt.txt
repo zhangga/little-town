@@ -1,0 +1,13 @@
+Generated with the built-in image_gen tool.
+Reference: miniapp/images/town/voxel-atlas.png
+Final asset: miniapp/images/town/vet-clinic.png
+Packaging: resized to 220x220 within a 256x256 transparent canvas, 128-color PNG; 18,470 bytes.
+
+Use case: precise-object-edit
+Asset type: a single transparent-background game building sprite for the Little Town mobile game.
+Edit target: the cream-walled, teal-roofed hospital in row 1, column 3 of the attached 4x4 voxel atlas. Reimagine that building as a distinctly PET veterinary clinic, and output ONLY the new single building, not the atlas.
+Primary request: make the pet hospital immediately distinguishable from a human hospital even at a 72px thumbnail.
+Style: faithfully match the reference atlas's chunky cubic voxel construction, warm toy-block materials, crisp edges, simple stepped roofs, small saturated blue glass windows, isometric camera with front and right facades visible, and soft upper-left lighting.
+Design: a compact cream-colored pet-care cottage with a warm apricot-orange stepped gable roof. Place a very large, unmistakable white paw-print emblem on a warm terracotta circular sign centered high on the front facade. The paw has one large pad and four distinct toe pads, readable at tiny size. Add two friendly blocky pet mascots at the entrance, an orange cat and a tan floppy-eared dog, small but clearly recognizable. A blue glass entrance, low ivory doorstep, and two small green shrubs with white daisies tie it into the other town buildings.
+Composition: one isolated building centered in a SQUARE canvas, entire building and animals visible, occupying approximately 80% of canvas width and height, compact footprint matching the atlas buildings. No large platform. Keep a modest transparent margin all around.
+Constraints: genuine transparent background with alpha; no ground plane or solid colored background; no text, letters, watermark, red or green medical cross, emergency lights, tall hospital tower, extra building, extra icon sheet, grids or borders. Avoid fine detail that disappears at thumbnail size. Output a polished standalone PNG sprite, 512x512 if available.

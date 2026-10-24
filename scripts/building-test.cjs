@@ -60,9 +60,14 @@ if (require.main === module) {
     assert.equal(catalogState(raw, { bricks: 0 }, 'ready').visibleBuildings.length, 0)
   })
 
-  test('seeded buildings use local art, the vet reuses clinic art, and unknown names safely fall back', () => {
-    assert.equal(new Set(seed.map(item => JSON.stringify(townSprite(item.name)))).size, 10)
-    assert.deepEqual(townSprite('宠物医院'), townSprite('医院'))
+  test('all eleven seeded buildings have distinct local art and unknown names safely fall back', () => {
+    assert.equal(new Set(seed.map(item => JSON.stringify(townSprite(item.name)))).size, 11)
+    assert.equal(townSprite('宠物医院').image, '/images/town/vet-clinic.png')
+    assert.notDeepEqual(townSprite('宠物医院'), townSprite('医院'))
+    for (const item of seed) {
+      const source = townSprite(item.name).image || '/images/town/voxel-atlas.png'
+      assert.ok(fs.existsSync(path.resolve(__dirname, '../miniapp' + source)), item.name + ' art must exist locally')
+    }
     assert.deepEqual(townSprite('constructor'), townSprite('空地'))
     assert.deepEqual(townSprite('新建筑'), townSprite('空地'))
   })
