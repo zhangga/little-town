@@ -180,10 +180,11 @@ page { background: #f8eed8; color: #463728; }
 .signature-preview .bento-board { border-width: 1rpx; border-radius: 9rpx; }.signature-preview .box-round .bento-board { border-radius: 50%; }
 .signature-preview .food-art, .signature-preview .food-art view { border-width: 1rpx; }
 .signature-name { width: 100%; text-align: center; font-size: 21rpx; line-height: 1.4; font-weight: 800; overflow-wrap: anywhere; }
-.restaurant-page .signature-remove { margin-top: auto; min-height: 54rpx; padding: 10rpx 0; font-size: 17rpx; color: #a08969; }
+.restaurant-page .signature-remove { width: 100%; margin-top: auto; min-height: 88rpx; padding: 18rpx 4rpx; border-radius: 10rpx; background: #f0d9cb; color: #874a35; font-size: 24rpx; font-weight: 700; }
+.restaurant-page .signature-add { display: flex; flex: 1; width: 100%; flex-direction: column; align-items: center; gap: 10rpx; }
+.signature-add-label { display: flex; align-items: center; justify-content: center; width: 100%; min-height: 88rpx; margin-top: auto; padding: 18rpx 4rpx; box-sizing: border-box; border-radius: 10rpx; background: #596d45; color: #fff9e8; font-size: 24rpx; font-weight: 700; }
 .signature-empty-icon { margin-top: 18rpx; font-size: 47rpx; line-height: 1.4; color: #c4b18b; }
 .signature-empty-title { margin-top: 8rpx; font-size: 21rpx; font-weight: 700; color: #a18b64; }
-.signature-empty-caption { font-size: 17rpx; color: #b6a17f; margin-top: 7rpx; text-align: center; }
 .recipe-heading { margin-top: 35rpx; }
 .recipe-grid { display: flex; flex-wrap: wrap; gap: 18rpx; }
 .recipe-card { width: calc((100% - 18rpx) / 2); border: 2rpx solid #dac6a5; border-bottom-width: 5rpx; border-radius: 19rpx; overflow: hidden; box-sizing: border-box; background: #fffaed; }
@@ -194,10 +195,10 @@ page { background: #f8eed8; color: #463728; }
 .recipe-name { display: block; color: #5b4730; font-size: 26rpx; font-weight: 800; line-height: 1.4; overflow-wrap: anywhere; }
 .recipe-story { display: block; color: #9f8968; font-size: 18rpx; margin-top: 7rpx; line-height: 1.5; }
 .recipe-feedback { display: block; margin-top: 10rpx; font-size: 20rpx; line-height: 1.5; color: #7d8961; }
-.recipe-actions { display: flex; align-items: center; gap: 8rpx; margin-top: 16rpx; }
-.restaurant-page .recipe-cook { flex-shrink: 0; min-height: 61rpx; padding: 13rpx 17rpx; border-radius: 10rpx; background: #ecdfc4; color: #7c6242; font-size: 22rpx; font-weight: 700; }
-.restaurant-page .recipe-signature-toggle { flex: 1; min-height: 61rpx; padding: 13rpx 0; color: #a77d40; font-size: 19rpx; text-align: right; }
-.restaurant-page .is-signature { color: #71854f; }
+.recipe-actions { display: flex; flex-direction: column; gap: 10rpx; margin-top: 16rpx; }
+.restaurant-page .recipe-cook { width: 100%; min-height: 80rpx; padding: 18rpx 17rpx; border-radius: 10rpx; background: #ecdfc4; color: #7c6242; font-size: 24rpx; font-weight: 700; }
+.restaurant-page .recipe-signature-toggle { width: 100%; min-height: 88rpx; padding: 22rpx 8rpx; border-radius: 10rpx; background: #596d45; color: #fff9e8; font-size: 26rpx; font-weight: 700; text-align: center; }
+.restaurant-page .is-signature { background: #f0d9cb; color: #874a35; }
 .book-footer { display: block; margin-top: 27rpx; color: #a28b6a; text-align: center; font-size: 20rpx; }
 .recipe-empty { display: flex; align-items: center; flex-direction: column; padding: 46rpx 20rpx 35rpx; border: 2rpx dashed #d8c5a1; border-radius: 20rpx; color: #a08b69; font-size: 24rpx; text-align: center; line-height: 1.7; }
 .recipe-empty-icon { font-size: 69rpx; }
@@ -220,6 +221,15 @@ page { background: #f8eed8; color: #463728; }
 @media (prefers-reduced-motion: reduce) { .loading-icon { animation: none; } }
 
 .memory-pending { display: flex; align-items: center; gap: 14rpx; padding: 16rpx; margin-top: 16rpx; border: 2rpx solid #d7bc82; border-radius: 12rpx; background: #fff1d0; color: #9b7c50; font-size: 21rpx; text-align: left; }.memory-pending > text { flex: 1; min-width: 0; }.memory-error { display: block; margin-top: 14rpx; color: #a5654c; font-size: 21rpx; line-height: 1.6; }
+.signature-picker-list { height: 50vh; max-height: 650rpx; }
+.restaurant-page .signature-picker-choice { display: flex; align-items: center; gap: 24rpx; width: 100%; min-height: 136rpx; margin-bottom: 14rpx; padding: 18rpx; border: 2rpx solid #ddc9a6; border-radius: 15rpx; background: #f5ecd5; text-align: left; }
+.signature-picker-preview { flex-shrink: 0; width: 100rpx; font-size: 9rpx; }
+.signature-picker-preview .bento-shell { font-size: 9rpx; }
+.signature-picker-copy { flex: 1; min-width: 0; }
+.signature-picker-name { display: block; font-size: 26rpx; font-weight: 700; overflow-wrap: anywhere; }
+.signature-picker-action { display: block; margin-top: 10rpx; color: #596d45; font-size: 24rpx; font-weight: 700; }
+.signature-picker-empty { color: #806c51; font-size: 26rpx; line-height: 1.7; }
+.signature-picker-empty .primary-button { width: 100%; margin-top: 24rpx; }
 .signature-preview .box-mint { box-shadow: 0 4rpx 0 #60774e; }.signature-preview .box-sunshine { box-shadow: 0 4rpx 0 #a17e36; }.recipe-art .box-mint { box-shadow: 0 7rpx 0 #60774e; }.recipe-art .box-sunshine { box-shadow: 0 7rpx 0 #a17e36; }
 /* Give small decorative controls a generous touch area on children's phones. */
 .restaurant-page .tiny-button { min-height: 88rpx; padding: 20rpx 15rpx; display: flex; align-items: center; justify-content: center; }

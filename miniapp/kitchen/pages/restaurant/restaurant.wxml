@@ -65,13 +65,25 @@
     <view wx:else class="recipe-book">
       <view class="signature-board">
         <view class="signature-heading"><view><text class="signature-eyebrow">本店推荐</text><text class="signature-title">我们的招牌便当</text></view><text class="signature-flower">✿</text></view>
-        <text class="signature-subtitle">把喜欢的作品挂上菜单，熟客会回来点它。</text>
-        <view class="signature-slots"><view wx:for="{{signatureSlots}}" wx:key="slot" class="signature-slot"><view class="signature-clip"></view><block wx:if="{{item.recipe}}"><view class="signature-preview" data-id="{{item.recipe.id}}" bindtap="onLoadRecipe"><template is="bento-preview" data="{{dish: item.recipe.dish, editable: false}}" /></view><text class="signature-name">{{item.recipe.dish.name}}</text><button class="signature-remove" data-id="{{item.recipe.id}}" bindtap="onToggleSignature" disabled="{{busy || !!pending || failed}}">收回食谱本</button></block><block wx:else><text class="signature-empty-icon">＋</text><text class="signature-empty-title">第 {{item.slot}} 道招牌</text><text class="signature-empty-caption">从食谱本选一道</text></block></view></view>
+        <text class="signature-subtitle">点空位设置招牌菜；移除后，食谱和回忆仍保留。</text>
+        <view class="signature-slots">
+          <view wx:for="{{signatureSlots}}" wx:key="slot" class="signature-slot">
+            <view class="signature-clip"></view>
+            <block wx:if="{{item.recipe}}">
+              <view class="signature-preview" data-id="{{item.recipe.id}}" bindtap="onLoadRecipe"><template is="bento-preview" data="{{dish: item.recipe.dish, editable: false}}" /></view>
+              <text class="signature-name">{{item.recipe.dish.name}}</text>
+              <button class="signature-remove" data-id="{{item.recipe.id}}" bindtap="onRemoveSignature" disabled="{{busy || !!pending || failed}}">移除招牌菜</button>
+            </block>
+            <button wx:else class="signature-add" bindtap="onOpenSignaturePicker" disabled="{{busy || !!pending || failed}}" aria-label="设置第{{item.slot}}道招牌菜">
+              <text class="signature-empty-icon">＋</text><text class="signature-empty-title">第 {{item.slot}} 道招牌</text><text class="signature-add-label">设置招牌菜</text>
+            </button>
+          </view>
+        </view>
       </view>
 
       <view class="section-heading recipe-heading"><text class="section-label">我的食谱本</text><text class="section-aside">{{recipes.length}} / 24 道心意</text></view>
       <view wx:if="{{!recipes.length}}" class="recipe-empty"><text class="recipe-empty-icon">📖</text><text class="recipe-empty-title">第一页，留给你的拿手菜</text><text>做一盒便当，收进食谱本。<text class="empty-newline">食材、摆盘和名字都会好好留下。</text></text><button class="primary-button" data-tab="kitchen" bindtap="onTabChange">去做第一盒便当</button></view>
-      <view wx:else class="recipe-grid"><view wx:for="{{recipes}}" wx:key="id" class="recipe-card"><view class="recipe-art" data-id="{{item.id}}" bindtap="onLoadRecipe"><text wx:if="{{item.signature}}" class="recipe-signature-badge">★ 招牌</text><template is="bento-preview" data="{{dish: item.dish, editable: false}}" /></view><view class="recipe-card-body"><text class="recipe-name">{{item.dish.name}}</text><text class="recipe-story">{{item.first_taster ? item.first_taster + '第一个尝过' : '等一位朋友来品尝'}}<text wx:if="{{item.served_count}}"> · 上桌 {{item.served_count}} 次</text></text><text wx:if="{{item.last_feedback}}" class="recipe-feedback">“{{item.last_feedback}}”</text><view class="recipe-actions"><button class="recipe-cook" data-id="{{item.id}}" bindtap="onLoadRecipe" disabled="{{busy || !!pending || failed}}">做这道</button><button class="recipe-signature-toggle {{item.signature ? 'is-signature' : ''}}" data-id="{{item.id}}" bindtap="onToggleSignature" disabled="{{busy || !!pending || failed}}">{{item.signature ? '★ 已挂招牌' : '☆ 设为招牌'}}</button></view></view></view></view>
+      <view wx:else class="recipe-grid"><view wx:for="{{recipes}}" wx:key="id" class="recipe-card"><view class="recipe-art" data-id="{{item.id}}" bindtap="onLoadRecipe"><text wx:if="{{item.signature}}" class="recipe-signature-badge">★ 招牌</text><template is="bento-preview" data="{{dish: item.dish, editable: false}}" /></view><view class="recipe-card-body"><text class="recipe-name">{{item.dish.name}}</text><text class="recipe-story">{{item.first_taster ? item.first_taster + '第一个尝过' : '等一位朋友来品尝'}}<text wx:if="{{item.served_count}}"> · 上桌 {{item.served_count}} 次</text></text><text wx:if="{{item.last_feedback}}" class="recipe-feedback">“{{item.last_feedback}}”</text><view class="recipe-actions"><button wx:if="{{item.signature}}" class="recipe-signature-toggle is-signature" data-id="{{item.id}}" bindtap="onRemoveSignature" disabled="{{busy || !!pending || failed}}">移除招牌菜</button><button wx:else class="recipe-signature-toggle" data-id="{{item.id}}" bindtap="onToggleSignature" disabled="{{busy || !!pending || failed}}">☆ 设为招牌菜</button><button class="recipe-cook" data-id="{{item.id}}" bindtap="onLoadRecipe" disabled="{{busy || !!pending || failed}}">做这道</button></view></view></view></view>
       <text wx:if="{{recipes.length}}" class="book-footer">每一道菜，都是和朋友一起留下的小故事。</text>
     </view>
   </block>
@@ -84,6 +96,21 @@
       <button wx:if="{{serviceResult.recipe_id}}" class="primary-button" bindtap="onOpenRecipeBook" disabled="{{busy}}">去设为招牌菜 →</button>
       <button wx:else class="primary-button" bindtap="onSaveRecipe" disabled="{{busy || !!pending || failed}}" loading="{{busy}}">{{editingRecipeID ? '♡ 更新这道食谱' : '♡ 把这道菜收进食谱本'}}</button>
       <button class="memory-save-button" bindtap="onDismissResult">记住这一刻，回到厨房</button></view></view>
+
+  <view wx:if="{{selectingSignature}}" class="dialog-scrim">
+    <view class="replace-card signature-picker">
+      <text class="replace-title">选一道招牌菜</text>
+      <text class="replace-description">从保存的食谱里选一道，熟客就能照着菜单点单。</text>
+      <scroll-view wx:if="{{recipes.length}}" scroll-y class="signature-picker-list">
+        <button wx:for="{{recipes}}" wx:key="id" class="signature-picker-choice" data-id="{{item.id}}" bindtap="onChooseSignature" disabled="{{item.signature || busy || !!pending || failed}}">
+          <view class="signature-picker-preview"><template is="bento-preview" data="{{dish: item.dish, editable: false}}" /></view>
+          <view class="signature-picker-copy"><text class="signature-picker-name">{{item.dish.name}}</text><text class="signature-picker-action">{{item.signature ? '已是招牌菜' : '设为招牌菜 →'}}</text></view>
+        </button>
+      </scroll-view>
+      <view wx:else class="signature-picker-empty"><text>先做一盒便当并收进食谱本，就能在这里设置招牌菜。</text><button class="primary-button" data-tab="kitchen" bindtap="onTabChange">去做一道菜</button></view>
+      <button class="text-button replace-cancel" bindtap="onCloseSignaturePicker">先不设置</button>
+    </view>
+  </view>
 
   <view wx:if="{{replacingRecipe}}" class="dialog-scrim"><view class="replace-card"><text class="replace-flower">✿</text><text class="replace-title">给新招牌腾个位置</text><text class="replace-description">把「{{replacingRecipe.dish.name}}」挂上菜单，替换哪一道？原来的菜仍留在食谱本里。</text><button wx:for="{{signatureSlots}}" wx:key="slot" class="replace-choice" data-id="{{item.id}}" bindtap="onReplaceSignature" disabled="{{busy || !!pending || failed}}"><text>{{item.recipe.dish.name}}</text><text>替换 ↗</text></button><button class="text-button replace-cancel" bindtap="onCancelReplace" disabled="{{busy}}">这次先不换</button></view></view>
 </view>

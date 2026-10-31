@@ -17,7 +17,7 @@ function createRestaurantPage(api, wxApi, showError = () => {}, showSuccess = ()
       dish: bento.freshDish(), ingredientOptions: bento.clone(bento.ingredients), boxShapes: bento.clone(bento.boxShapes), boxColors: bento.clone(bento.boxColors), decorations: bento.clone(bento.decorations),
       selectedIngredient: '', selectedPortionIndex: -1, selectedPortion: null, residents: [], selectedResident: null,
       recipes: [], signatureSlots: [1, 2, 3].map(slot => ({ slot, id: '', recipe: null })),
-      nameSuggestions: bento.suggestions(bento.freshDish()), serviceResult: null, editingRecipeID: '', replacingRecipe: null,
+      nameSuggestions: bento.suggestions(bento.freshDish()), serviceResult: null, editingRecipeID: '', replacingRecipe: null, selectingSignature: false,
       dragging: false, dragIcon: '', dragX: 0, dragY: 0
     },
     onLoad() {
@@ -35,7 +35,7 @@ function createRestaurantPage(api, wxApi, showError = () => {}, showSuccess = ()
         this._identity = identity(); this._selectedResidentID = ''
         this._identityEpoch = (this._identityEpoch || 0) + 1
         this._loadPromise = null
-        this.setData({ loading: true, busy: false, dish: bento.freshDish(), pending: null, editingRecipeID: '', state: null, serviceResult: null, recipes: [], residents: [], signatureSlots: [1, 2, 3].map(slot => ({ slot, id: '', recipe: null })), selectedResident: null, selectedPortionIndex: -1, selectedPortion: null, selectedIngredient: '', ingredientOptions: bento.clone(bento.ingredients), replacingRecipe: null })
+        this.setData({ loading: true, busy: false, dish: bento.freshDish(), pending: null, editingRecipeID: '', state: null, serviceResult: null, recipes: [], residents: [], signatureSlots: [1, 2, 3].map(slot => ({ slot, id: '', recipe: null })), selectedResident: null, selectedPortionIndex: -1, selectedPortion: null, selectedIngredient: '', ingredientOptions: bento.clone(bento.ingredients), replacingRecipe: null, selectingSignature: false })
         this.restoreDraft()
       }
       return this.loadRestaurant()
@@ -100,7 +100,7 @@ function createRestaurantPage(api, wxApi, showError = () => {}, showSuccess = ()
     explain(message) { if (this.current()) { this.setData({ error: message }); showError(message) } },
     onTabChange(event) {
       const tab = eventID(event).tab
-      if (['kitchen', 'menu'].includes(tab) && !this.data.busy) { this.stopDrag(); this.setData({ tab }); this._boardRect = null }
+      if (['kitchen', 'menu'].includes(tab) && !this.data.busy) { this.stopDrag(); this.setData({ tab, selectingSignature: false }); this._boardRect = null }
     },
     onResidentSelect(event) {
       if (!this.canEdit()) return
@@ -233,14 +233,31 @@ function createRestaurantPage(api, wxApi, showError = () => {}, showSuccess = ()
       this.setDish(dish)
       return this.mutate({ kind: 'serve', method: 'post', path: '/restaurant/serve', body: { request_id: supplyRequestID(), resident_id: resident.id, order_id: resident.order.id, recipe_id: recipeID, dish } })
     },
+    onOpenSignaturePicker() {
+      if (this.canEdit() && !this._loadPromise) this.setData({ selectingSignature: true, error: '' })
+    },
+    onCloseSignaturePicker() { this.setData({ selectingSignature: false }) },
+    onChooseSignature(event) {
+      if (!this.canEdit() || this._loadPromise || !this.data.selectingSignature) return
+      const id = eventID(event).id
+      if (!this.data.recipes.some(recipe => recipe.id === id) || (this.data.state.signature_ids || []).includes(id)) return
+      this.setData({ selectingSignature: false })
+      return this.onToggleSignature(event)
+    },
     onToggleSignature(event) {
       if (!this.canEdit() || this._loadPromise) return
       const recipe = this.data.recipes.find(item => item.id === eventID(event).id)
       if (!recipe) return
       const ids = this.data.state.signature_ids || []
-      if (ids.includes(recipe.id)) return this.saveSignatures(ids.filter(id => id !== recipe.id))
+      if (ids.includes(recipe.id)) return this.onRemoveSignature(event)
       if (ids.length < 3) return this.saveSignatures(ids.concat(recipe.id))
       this.setData({ replacingRecipe: recipe })
+    },
+    onRemoveSignature(event) {
+      if (!this.canEdit() || this._loadPromise) return
+      const id = eventID(event).id, ids = this.data.state.signature_ids || []
+      if (!ids.includes(id)) return
+      return this.saveSignatures(ids.filter(value => value !== id), '已移除招牌，食谱仍保留')
     },
     onReplaceSignature(event) {
       if (!this.canEdit() || !this.data.replacingRecipe) return
@@ -249,7 +266,7 @@ function createRestaurantPage(api, wxApi, showError = () => {}, showSuccess = ()
       return this.saveSignatures(ids.map(value => value === id ? this.data.replacingRecipe.id : value))
     },
     onCancelReplace() { if (!this.data.busy) this.setData({ replacingRecipe: null }) },
-    saveSignatures(ids) { return this.mutate({ kind: 'signatures', method: 'put', path: '/restaurant/signatures', body: { request_id: supplyRequestID(), recipe_ids: ids } }) },
+    saveSignatures(ids, successMessage) { return this.mutate({ kind: 'signatures', method: 'put', path: '/restaurant/signatures', successMessage: successMessage || '招牌菜单更新好了', body: { request_id: supplyRequestID(), recipe_ids: ids } }) },
     onDismissResult() { this.setData({ serviceResult: null }) },
     onOpenRecipeBook() { if (!this.data.busy) this.setData({ serviceResult: null, tab: 'menu' }) },
     async mutate(operation) {
@@ -311,7 +328,7 @@ function createRestaurantPage(api, wxApi, showError = () => {}, showSuccess = ()
       }
       this.setData(extra)
       this.persistDraft()
-      if (this._visible !== false && operation.kind !== 'serve') showSuccess(operation.kind === 'save' ? '食谱记好啦，去菜单里设为招牌菜吧' : '招牌菜单更新好了')
+      if (this._visible !== false && operation.kind !== 'serve') showSuccess(operation.kind === 'save' ? '食谱记好啦，去菜单里设为招牌菜吧' : operation.successMessage || '招牌菜单更新好了')
     },
     onRetryPending() { const pending = this.data.pending; if (pending && !this.data.busy) return this.mutate(pending) },
     onBack() { if (!this.data.busy) wxApi.navigateBack({ fail: () => wxApi.switchTab({ url: '/pages/index/index' }) }) }
