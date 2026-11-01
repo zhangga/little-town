@@ -39,6 +39,8 @@ Page(withTapSounds({
     // tab 页会缓存；完成后再次进入应准备下一轮，正在答的题保持原样。
     const pendingPractice = this.data.freePractice && this.data.finished && !this.data.practiceSettled
     if (this._alive && !this.data.loading && !pendingPractice && (this.data.phase === 'done' || this.data.failed)) this.loadDaily()
+    else if (this._schoolVisited) this.refreshSchoolQuota()
+    this._schoolVisited = false
   },
   onHide() {
     this._visible = false
@@ -63,7 +65,20 @@ Page(withTapSounds({
   },
   onSchoolSubject(e) {
     const subject = e.currentTarget.dataset.subject
-    if (['chinese', 'math', 'english'].includes(subject)) wx.navigateTo({ url: '/school/pages/classroom/classroom?subject=' + subject })
+    if (['chinese', 'math', 'english'].includes(subject)) {
+      this._schoolVisited = true
+      wx.navigateTo({ url: '/school/pages/classroom/classroom?subject=' + subject })
+    }
+  },
+  async refreshSchoolQuota() {
+    const loadID = this._loadID
+    try {
+      const res = await api.get('/learn/school/rewards')
+      const s = res.subjects.english
+      if (this._alive && loadID === this._loadID) this.setRewardState({ bricksToday: s.bricks_today,
+        dailyBrickCap: s.daily_brick_cap, bricksPerCorrect: s.bricks_per_correct,
+        goalDone: s.bonus_claimed, practiceRewards: s.practice_rewards })
+    } catch (_) { /* 下一次保存答案或加载课堂时再次同步。 */ }
   },
   setRewardState(patch) {
     const state = Object.assign({}, this.data, patch)

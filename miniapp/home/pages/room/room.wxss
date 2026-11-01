@@ -1,3 +1,1 @@
-@import "../../../pages/resident/resident.wxss";
 @import "../../styles/home-room.wxss";
-.resident-tabs { margin-top: 4rpx; }

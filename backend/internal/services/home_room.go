@@ -3,6 +3,7 @@ package services
 import (
 	"encoding/json"
 	"errors"
+	"math"
 
 	"github.com/zhangga/little-town/backend/internal/models"
 	"gorm.io/gorm"
@@ -32,10 +33,13 @@ var furnitureCatalog = []ResidentShopItem{
 }
 
 type RoomPlacement struct {
-	ID       string `json:"id"`
-	X        int    `json:"x"`
-	Y        int    `json:"y"`
-	Rotation int    `json:"rotation"`
+	ID       string  `json:"id"`
+	X        float64 `json:"x"`
+	Y        float64 `json:"y"`
+	Rotation int     `json:"rotation"`
+	// With Angle, X/Y are the furniture centre in continuous floor coordinates.
+	// Without it, retain the original grid origin and 0/1 quarter-turn format.
+	Angle *float64 `json:"angle,omitempty"`
 }
 type HomeRoom struct {
 	Version int             `json:"version"`
@@ -63,7 +67,8 @@ func ValidateRoomLayout(layout []RoomPlacement, owned map[string]bool) error {
 	if layout == nil || len(layout) > len(furnitureCatalog) {
 		return ErrRoomLayout
 	}
-	seen, cells := map[string]bool{}, map[[2]int]bool{}
+	seen := map[string]bool{}
+	placed := []roomRect{}
 	for _, p := range layout {
 		item, ok := residentItem(p.ID)
 		if !ok || item.Kind != "furniture" || seen[p.ID] || p.Rotation < 0 || p.Rotation > 1 {
@@ -73,24 +78,76 @@ func ValidateRoomLayout(layout []RoomPlacement, owned map[string]bool) error {
 			return ErrResidentOwned
 		}
 		seen[p.ID] = true
-		w, d := item.Width, item.Depth
-		if p.Rotation == 1 {
-			w, d = d, w
-		}
-		if p.X < 0 || p.Y < 0 || p.X+w > HomeRoomSize || p.Y+d > HomeRoomSize {
+		if !roomFinite(p.X) || !roomFinite(p.Y) || (p.Angle != nil && (!roomFinite(*p.Angle) || *p.Angle < 0 || *p.Angle >= 360)) {
 			return ErrRoomLayout
 		}
-		for x := p.X; x < p.X+w; x++ {
-			for y := p.Y; y < p.Y+d; y++ {
-				cell := [2]int{x, y}
-				if cells[cell] || (x == 3 && y == 6) {
+		if p.Angle == nil && (p.X != math.Trunc(p.X) || p.Y != math.Trunc(p.Y)) {
+			return ErrRoomLayout
+		}
+		r := placementRect(p, item)
+		for _, c := range r.corners() {
+			if c[0] < -1e-7 || c[1] < -1e-7 || c[0] > HomeRoomSize+1e-7 || c[1] > HomeRoomSize+1e-7 {
+				return ErrRoomLayout
+			}
+		}
+		if roomOverlap(r, roomRect{x: 3.5, y: 6.5, w: 1, d: 1, c: 1}) {
+			return ErrRoomLayout
+		}
+		if p.ID != "rug" {
+			for _, other := range placed {
+				if roomOverlap(r, other) {
 					return ErrRoomLayout
 				}
-				cells[cell] = true
 			}
+			placed = append(placed, r)
 		}
 	}
 	return nil
+}
+
+type roomRect struct{ x, y, w, d, c, s float64 }
+
+func roomFinite(v float64) bool { return !math.IsNaN(v) && !math.IsInf(v, 0) }
+func placementRect(p RoomPlacement, item ResidentShopItem) roomRect {
+	w, d, a := float64(item.Width), float64(item.Depth), 0.0
+	x, y := p.X, p.Y
+	if p.Angle != nil {
+		a = *p.Angle * math.Pi / 180
+	} else {
+		if p.Rotation == 1 {
+			w, d = d, w
+		}
+		x += w / 2
+		y += d / 2
+	}
+	return roomRect{x: x, y: y, w: w, d: d, c: math.Cos(a), s: math.Sin(a)}
+}
+func (r roomRect) corners() [][2]float64 {
+	result := make([][2]float64, 0, 4)
+	for _, p := range [][2]float64{{-1, -1}, {1, -1}, {1, 1}, {-1, 1}} {
+		x, y := p[0]*r.w/2, p[1]*r.d/2
+		result = append(result, [2]float64{r.x + x*r.c - y*r.s, r.y + x*r.s + y*r.c})
+	}
+	return result
+}
+func roomOverlap(a, b roomRect) bool {
+	for _, axis := range [][2]float64{{a.c, a.s}, {-a.s, a.c}, {b.c, b.s}, {-b.s, b.c}} {
+		amin, amax, bmin, bmax := math.Inf(1), math.Inf(-1), math.Inf(1), math.Inf(-1)
+		for _, p := range a.corners() {
+			v := p[0]*axis[0] + p[1]*axis[1]
+			amin = math.Min(amin, v)
+			amax = math.Max(amax, v)
+		}
+		for _, p := range b.corners() {
+			v := p[0]*axis[0] + p[1]*axis[1]
+			bmin = math.Min(bmin, v)
+			bmax = math.Max(bmax, v)
+		}
+		if amin >= bmax-1e-7 || bmin >= amax-1e-7 {
+			return false
+		}
+	}
+	return true
 }
 
 func (s *ResidentService) SaveRoom(userID uint, version int, layout []RoomPlacement) (*ResidentState, error) {

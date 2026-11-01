@@ -217,11 +217,23 @@ func (h *LearnHandler) SubmitAnswer(c *gin.Context) {
 			}
 		}
 		rewards := services.NewRewardService(tx)
-		reward, err = rewards.GrantForAnswer(userID, growth.RewardEligible)
+		schoolRewarded, err := services.SchoolWordRewarded(tx, userID, req.WordID)
 		if err != nil {
 			return err
 		}
-		if growth.DayComplete {
+		reward, err = rewards.GrantForAnswer(userID, growth.RewardEligible && !schoolRewarded)
+		if err != nil {
+			return err
+		}
+		completed, err := services.EnglishDailyCompleted(tx, userID)
+		if err != nil {
+			return err
+		}
+		goal := h.cfg.DailyWordCount
+		if goal < 1 {
+			goal = config.DefaultDailyWordCount
+		}
+		if growth.DayComplete || completed >= goal {
 			granted, bonus, err := rewards.GrantCompletionBonus(userID)
 			if err != nil {
 				return err

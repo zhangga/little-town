@@ -5,13 +5,14 @@ const { createPronunciation } = require('../../utils/pronunciation')
 const { createLessonPlayer } = require('./lesson-player')
 const { DEFAULT_MODE, normalizeQuestion, checkQuestion } = require('./curriculum')
 const { activityData, activityPatch, createActivityMethods } = require('./classroom-activities')
+const { rewardData, rewardPatch, createRewardMethods } = require('./classroom-rewards')
 
 function createClassroomPage(wxApi, dependencies = {}) {
   const audioFactory = dependencies.createAudio || createPronunciation
   const padFactory = dependencies.createPad || createHandwriting
   const teacherFactory = dependencies.createTeacher || createLessonPlayer
   return Object.assign({
-    data: Object.assign({}, activityData, {
+    data: Object.assign({}, activityData, rewardData, {
       subjects: SUBJECTS, subject: 'chinese', info: subjectInfo('chinese'), view: 'home',
       level: '20', totals: { chinese: 0, math: 0, english: 0 }, lessons: [], lessonCount: 0,
       lessonTitle: '', lessonPhoto: '', question: null, index: 0, total: 0, answer: '',
@@ -32,9 +33,11 @@ function createClassroomPage(wxApi, dependencies = {}) {
       const subject = subjectInfo(options.subject).id
       this.setData(Object.assign({ subject, info: subjectInfo(subject) }, activityPatch(subject)))
       this.loadNotebook()
+      this.initRewards((wxApi.getStorageSync('apiBackend') || 'local') + ':' + user.id)
     },
     onShow() {
       this._visible = true
+      if (this._rewards) this._rewards.refresh()
       if (this._pad && this.data.view === 'practice' && this.data.question && this.data.question.kind === 'writing') this.initPad()
     },
     onHide() {
@@ -48,6 +51,7 @@ function createClassroomPage(wxApi, dependencies = {}) {
       if (this._audio) this._audio.stop()
       if (this._teacher) this._teacher.stop()
       if (this._pad) this._pad.destroy()
+      if (this._rewards) this._rewards.stop()
     },
     onResize() { if (this.data.view === 'practice' && this.data.question && this.data.question.kind === 'writing') this.initPad() },
     loadNotebook() {
@@ -79,7 +83,7 @@ function createClassroomPage(wxApi, dependencies = {}) {
         return
       }
       if (subject === this.data.subject && this.data.view === 'home') return
-      this.changeView('home', Object.assign({ subject, info: subjectInfo(subject) }, activityPatch(subject, this.data.classroomHistory)))
+      this.changeView('home', Object.assign({ subject, info: subjectInfo(subject) }, activityPatch(subject, this.data.classroomHistory), rewardPatch(this.data.rewardStatuses, subject)))
     },
     onLevel(event) { this.setData({ level: ['20', '100', 'times'].includes(event.currentTarget.dataset.level) ? event.currentTarget.dataset.level : '20' }) },
     onStart() {
@@ -87,7 +91,9 @@ function createClassroomPage(wxApi, dependencies = {}) {
     },
     startRound(subject, items, title, photo, reviewing = false, options = {}) {
       if (!this._book || !items.length) return
-      this._round = items.map(item => normalizeQuestion(subject, item))
+      const prepared = items.map(item => normalizeQuestion(subject, item))
+      if (!this.prepareRewardRound(subject, prepared, reviewing, options.rewardKind || 'learning')) return
+      this._round = prepared
       const round = this._round
       this._mistakes = []; this._roundResults = []; this._classroomSaved = false
       const scoredTotal = round.filter(item => item.kind !== 'writing').length
@@ -148,6 +154,7 @@ function createClassroomPage(wxApi, dependencies = {}) {
       this._roundResults.push({ mode: question.mode, modeName: question.modeName, correct: question.kind === 'writing' ? null : this.data.isCorrect, assisted: this.data.usedHelp })
       this.setData({ assistedCount: this.data.assistedCount + (this.data.usedHelp ? 1 : 0) })
       this.recordPractice()
+      if (this._rewards && !this.data.reviewing) this._rewards.answer(this._rewardRound, this.data.index, question.kind === 'writing' || this.data.isCorrect)
     },
     onNext() {
       if (!this.data.answered || this.data.view !== 'practice') return
@@ -163,7 +170,8 @@ function createClassroomPage(wxApi, dependencies = {}) {
       this.startRound(this.data.subject, this._mistakes.slice(), this.data.lessonTitle, this.data.lessonPhoto, true)
     },
     onAgain() {
-      if (this.data.view === 'done') this.startRound(this.data.subject, this._round, this.data.lessonTitle, this.data.lessonPhoto)
+      if (this.data.view === 'done') this.startRound(this.data.subject, this._round, this.data.lessonTitle, this.data.lessonPhoto, false,
+        { classroom: this.data.classroom, rewardKind: this.data.roundRewardKind })
     },
     onPlayAudio(event) {
       if (!this._audio || !this.data.question || !this.data.question.audio) return
@@ -238,7 +246,7 @@ function createClassroomPage(wxApi, dependencies = {}) {
           catch (error) { this.setData({ error: error.message }) }
         } })
     }
-  }, createActivityMethods())
+  }, createActivityMethods(), createRewardMethods(wxApi, dependencies))
 }
 
 module.exports = { createClassroomPage }

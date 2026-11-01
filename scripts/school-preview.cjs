@@ -47,6 +47,7 @@ function states() {
   const wxApi = { getStorageSync: key => storage[key], setStorageSync: (key, value) => { storage[key] = value }, nextTick: fn => fn(), pageScrollTo() {} }
   const noop = () => {}
   const definition = createClassroomPage(wxApi, { createAudio: () => ({ play: noop, stop: noop }),
+    createRewards: () => ({ begin: () => ({}), answer: noop, complete: noop, refresh: noop, stop: noop }),
     createPad: (_, __, state) => ({ init: () => state({ canvasReady: true }), reset: noop, suspend: noop, destroy: noop, end: noop }) })
   const page = { ...definition, data: clone(definition.data), setData(patch, done) { Object.assign(this.data, patch); if (done) done() } }
   page.onLoad({}); page.onShow()

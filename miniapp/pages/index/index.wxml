@@ -120,11 +120,11 @@
           </view>
           <view wx:if="{{!selected.supplies.length}}" class="shop-unavailable"><text>补给暂时没连上，重新看看吧。</text><button bindtap="loadTown" disabled="{{refreshing || lifeBusy}}">重新加载</button></view>
         </block>
-        <template is="building-room" data="{{selected}}" />
+        <template wx:if="{{selected.name !== '地铁站'}}" is="building-room" data="{{selected}}" />
         <view wx:if="{{selected.serviceEvent}}" class="building-service"><view>{{selected.serviceEvent.icon}} {{selected.serviceEvent.title}}</view><text>{{selected.serviceEvent.description}}</text><button class="life-action" disabled="{{lifeBusy || refreshing || !life}}" loading="{{lifeBusy}}" bindtap="onResolveLife">{{selected.serviceEvent.affordable ? selected.serviceEvent.action + (selected.serviceEvent.cost ? ' · 1 金币' : ' · 免费') : '还差 1 金币 · 去学习'}}</button></view>
         <template is="building-lobby" data="{{selected, life, lifeBusy, refreshing, pendingActivity}}" />
-        <button wx:if="{{!selected.isShop}}" class="building-activity" bindtap="onBuildingActivity" disabled="{{lifeBusy || refreshing}}">{{selected.activity.label}} →</button>
-        <text wx:if="{{!selected.isShop && !selected.activity.learn && !selected.activity.school}}" class="building-free">走到门口逛逛，免费。</text>
+        <button wx:if="{{!selected.isShop && selected.name !== '地铁站'}}" class="building-activity" bindtap="onBuildingActivity" disabled="{{lifeBusy || refreshing}}">{{selected.activity.label}} →</button>
+        <text wx:if="{{!selected.isShop && !selected.activity.learn && !selected.activity.school && selected.name !== '地铁站'}}" class="building-free">走到门口逛逛，免费。</text>
         </block>
       </scroll-view>
       <view class="building-footer"><button wx:if="{{activitySession}}" class="building-lobby-return" bindtap="onActivityLobby" disabled="{{lifeBusy}}">{{selected.isShop ? '返回大厅 · 买点吃喝' : '返回大厅'}}</button><button bindtap="onCloseDetail" disabled="{{lifeBusy}}">{{lifeBusy ? '正在安排…' : '走出' + (selected.displayName || selected.name)}}</button></view>

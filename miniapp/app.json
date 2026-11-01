@@ -10,6 +10,10 @@
   ],
   "subpackages": [
     {
+      "root": "subway",
+      "pages": ["pages/run/run"]
+    },
+    {
       "root": "home",
       "pages": ["pages/room/room", "pages/mall/mall"]
     },

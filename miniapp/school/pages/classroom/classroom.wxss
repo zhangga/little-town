@@ -226,3 +226,23 @@ page { background: #f6f0df; color: #344236; }
 .lecture-navigation { display: flex; justify-content: space-between; gap: 20rpx; margin-top: 26rpx; }
 .lecture-navigation > button { padding: 22rpx; background: #e8e1cb; color: #8b7b5b; font-size: 25rpx; }
 .lecture-navigation > .lecture-next { margin-left: auto; background: #54724d; color: #fff8e6; }
+.school-rewards { margin-bottom: 26rpx; padding: 26rpx 24rpx; background: #fff8e5; border: 2rpx solid #e7d9ac; border-radius: 24rpx; color: #4e432a; }
+.reward-heading { display: flex; justify-content: space-between; gap: 12rpx; font-weight: 700; font-size: 27rpx; }
+.reward-heading > text:last-child { font-size: 21rpx; font-weight: 400; color: #83754d; }
+.reward-quotas { display: flex; margin: 23rpx 0 18rpx; }
+.reward-quotas > view { flex: 1; display: flex; flex-direction: column; gap: 6rpx; text-align: center; font-size: 21rpx; }
+.reward-quotas > view + view { border-left: 1rpx solid #e7d9ac; }
+.quota-count { font-size: 39rpx; font-weight: 800; line-height: 1.25; }
+.quota-count text { font-size: 23rpx; font-weight: 400; color: #95866b; }
+.reward-rule, .reward-goal { font-size: 21rpx; line-height: 1.7; color: #7b6b45; }
+.round-reward { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 12rpx; margin-top: 18rpx; padding-top: 18rpx; border-top: 1rpx solid #e7d9ac; font-size: 23rpx; }
+.earned-bricks { font-weight: 800; color: #ad582f; }
+.reward-retry { margin-bottom: 22rpx; padding: 22rpx; background: #fff0e9; border-radius: 18rpx; font-size: 24rpx; line-height: 1.6; }
+.reward-retry button { margin-top: 14rpx; background: #fff; color: #9a4c2b; font-size: 24rpx; }
+.reward-practice-entry { width: 100%; margin-bottom: 24rpx; padding: 25rpx; background: #f6ead0; color: #61502c; border: 2rpx solid #e1cea1; border-radius: 22rpx; text-align: left; line-height: 1.5; }
+.reward-practice-entry > view { display: flex; justify-content: space-between; gap: 12rpx; font-size: 30rpx; font-weight: 700; }
+.reward-practice-entry > view text, .reward-practice-entry > text { font-size: 22rpx; font-weight: 400; }
+.next-subject { margin-top: 36rpx; padding-top: 30rpx; border-top: 2rpx dashed #dbd8ca; font-size: 26rpx; }
+.next-subject > view { display: flex; gap: 16rpx; margin: 18rpx 0; }
+.next-subject button { flex: 1; padding: 10rpx; background: #eaf1e9; color: #315945; border-radius: 18rpx; font-size: 26rpx; }
+.next-subject > text:last-child { font-size: 22rpx; color: #858a7c; }

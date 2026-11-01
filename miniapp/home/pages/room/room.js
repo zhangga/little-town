@@ -3,17 +3,22 @@ const { withTapSounds } = require('../../../utils/sound-page')
 const { showError } = require('../../../utils/util')
 const { presentResident, saveWallet } = require('../../../utils/resident')
 const { roomData, createHomeRoom } = require('../../utils/home-room-page')
+const { createRoomScenePage } = require('../../utils/home-room-scene-page')
 
-Page(withTapSounds(Object.assign({}, createHomeRoom(api, wx, showError), {
+Page(withTapSounds(Object.assign({}, createHomeRoom(api, wx, showError), createRoomScenePage(wx), {
   data: Object.assign({}, roomData, { loading: true, failed: false, state: null, busy: false, tab: 'room' }),
   onLoad() { if (!wx.getStorageSync('token')) wx.redirectTo({ url: '/pages/login/login' }) },
   onShow() {
     this._visible = true
+    this.bindRoomKeyboard()
+    if (this._scene) this._scene.start()
     this._roomRequest = wx.getStorageSync('homeRoomRequested')
     if (wx.getStorageSync('token')) this.loadResident()
   },
-  onHide() { this._visible = false; this.stopRoomWalk() },
-  onUnload() { this._visible = false; this.stopRoomWalk(); this._disposed = true },
+  onReady() { this.initRoomScene() },
+  onResize() { this.resizeRoomScene() },
+  onHide() { this._visible = false; this.pauseRoomScene() },
+  onUnload() { this._visible = false; this.disposeRoomScene(); this._disposed = true },
   onPullDownRefresh() { return this.loadResident().finally(() => wx.stopPullDownRefresh()) },
   applyState(response) {
     if (this._disposed) return
@@ -21,14 +26,14 @@ Page(withTapSounds(Object.assign({}, createHomeRoom(api, wx, showError), {
     const state = presentResident(response)
     this.setData({ state, loading: false, failed: false })
     this.syncRoom(state)
+    if (wx.nextTick) wx.nextTick(() => this.initRoomScene())
     saveWallet(state.wallet)
     if (this._roomRequest && this.data.roomSupported) {
       const id = this._roomRequest
       this._roomRequest = null
       wx.removeStorageSync('homeRoomRequested')
       if (typeof id === 'string' && this.data.roomInventory.some(item => item.id === id)) {
-        this.onRoomEdit()
-        this.onRoomChoose({ currentTarget: { dataset: { id } } })
+        this.setData({ roomBagOpen: true, roomMessage: '新家具已放进小背包，点一下就能拿出来布置。' })
       }
     }
   },

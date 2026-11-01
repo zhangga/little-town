@@ -53,7 +53,7 @@
     }
   },
   "compileType": "miniprogram",
-  "libVersion": "3.5.5",
+  "libVersion": "3.6.0",
   "appid": "wxbd8f4a305320e623",
   "projectname": "little-town",
   "condition": {},

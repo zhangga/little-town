@@ -80,6 +80,10 @@ func SetupRouter(db *gorm.DB, cfg *config.Config) *gin.Engine {
 			authorized.POST("/learn/practice/answer", learnHandler.SubmitPracticeAnswer)
 			authorized.POST("/learn/practice/complete", learnHandler.CompletePractice)
 			authorized.GET("/learn/stats", learnHandler.GetStats)
+			authorized.GET("/learn/school/rewards", learnHandler.SchoolRewards)
+			authorized.POST("/learn/school/start", learnHandler.StartSchoolRound)
+			authorized.POST("/learn/school/answer", learnHandler.SchoolAnswer)
+			authorized.POST("/learn/school/complete", learnHandler.CompleteSchoolRound)
 
 			// 建筑
 			buildingHandler := handlers.NewBuildingHandler(db)

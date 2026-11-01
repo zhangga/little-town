@@ -143,3 +143,34 @@
 .mall-entry > view > view { color: #5f7551; font-size: 28rpx; font-weight: 800; }
 .mall-entry text { color: #93997e; font-size: 21rpx; display: block; margin: 8rpx 0 14rpx; }
 .building-sheet .mall-entry button { margin: 0; width: auto; display: inline-block; padding: 12rpx 25rpx; border-radius: 12rpx; background: #5c754d; color: #fffbe8; font-size: 24rpx; line-height: 1.5; }
+.interior-subway .building-awning { background: repeating-linear-gradient(90deg,#23756c 0,#23756c 46rpx,#e8ba59 46rpx,#e8ba59 53rpx); }
+.metro-platform { margin: 4rpx 24rpx 28rpx; color: #294d47; }
+.metro-platform-heading { display: flex; align-items: center; gap: 14rpx; padding: 18rpx 4rpx 22rpx; }
+.metro-line-number { display: flex; align-items: center; justify-content: center; width: 66rpx; height: 66rpx; flex-shrink: 0; background: #246d61; color: #ffefc8; border-radius: 50%; font-size: 28rpx; font-weight: 900; }
+.metro-platform-heading > view { flex: 1; font-weight: 900; font-size: 30rpx; }
+.metro-platform-heading > view > text { color: #728477; font-size: 20rpx; font-weight: 400; }
+.metro-arrival { color: #427968; font-size: 19rpx; }
+.metro-route { display: flex; align-items: center; gap: 10rpx; margin: 0 4rpx 22rpx; font-size: 20rpx; }
+.metro-route > view { flex: 1; height: 4rpx; background: #d3b66a; }
+.town-page .metro-train-button { position: relative; height: 354rpx; padding: 0; overflow: hidden; border: 3rpx solid #294d47; border-radius: 20rpx; background: #dae8dc; box-shadow: 0 6rpx 0 #b1c3ae; line-height: 1.4; }
+.metro-platform-grid { position: absolute; inset: 0; background: repeating-linear-gradient(0deg,transparent 0,transparent 49rpx,#c4d7c6 50rpx,#c4d7c6 52rpx),repeating-linear-gradient(90deg,transparent 0,transparent 72rpx,#c4d7c6 73rpx,#c4d7c6 75rpx); }
+.metro-train { position: absolute; left: 48rpx; right: 48rpx; top: 54rpx; height: 190rpx; background: #fff4d6; border: 4rpx solid #294d47; border-radius: 48rpx 48rpx 16rpx 16rpx; box-shadow: 0 10rpx 0 #aec0af; }
+.metro-train-roof { position: absolute; left: 45rpx; right: 45rpx; top: -16rpx; height: 12rpx; border: 3rpx solid #294d47; border-bottom: 0; background: #80aa94; border-radius: 6rpx 6rpx 0 0; }
+.metro-train-window { display: flex; gap: 13rpx; margin: 24rpx 27rpx 12rpx; height: 65rpx; }
+.metro-train-window > view { flex: 1; border: 3rpx solid #294d47; background: linear-gradient(135deg,#64958d 42%,#a4c6b8 43%,#a4c6b8 54%,#64958d 55%); border-radius: 12rpx 12rpx 3rpx 3rpx; }
+.metro-train-stripe { display: flex; justify-content: space-between; padding: 6rpx 28rpx; background: #2e7a6d; color: #fff1c6; font-size: 22rpx; font-weight: 800; letter-spacing: 4rpx; }
+.metro-train-lights,.metro-train-wheels { display: flex; justify-content: space-between; margin: 10rpx 28rpx 0; }
+.metro-train-lights > view { width: 24rpx; height: 12rpx; border: 2rpx solid #b59345; background: #f8d46f; border-radius: 8rpx; }
+.metro-train-wheels { position: absolute; left: 3rpx; right: 3rpx; bottom: -17rpx; }
+.metro-train-wheels > view { width: 34rpx; height: 14rpx; background: #294d47; border-radius: 0 0 5rpx 5rpx; }
+.metro-platform-edge { position: absolute; left: 0; right: 0; top: 268rpx; height: 12rpx; border-top: 3rpx solid #294d47; background: repeating-linear-gradient(90deg,#e7b85d 0,#e7b85d 22rpx,#fff2c6 22rpx,#fff2c6 26rpx); }
+.metro-train-invitation { position: absolute; left: 0; right: 0; bottom: 0; height: 72rpx; display: flex; justify-content: center; align-items: center; gap: 22rpx; background: #f6e9c8; font-size: 27rpx; color: #294d47; font-weight: 900; }
+.metro-train-invitation > text { font-size: 36rpx; }
+.metro-ticket { display: flex; justify-content: space-between; align-items: center; margin: 28rpx 0 22rpx; padding: 18rpx 24rpx; border: 2rpx dashed #b39d68; border-radius: 12rpx; background: #fbefcd; }
+.metro-ticket > view > text { font-size: 18rpx; color: #837856; }
+.metro-ticket > view > view { margin-top: 4rpx; font-size: 32rpx; font-weight: 900; }
+.metro-ticket > view > view > text { margin-left: 14rpx; padding: 4rpx 9rpx; font-size: 18rpx; font-weight: 500; color: #fff8dd; background: #307264; border-radius: 5rpx; }
+.metro-ticket-star { font-size: 54rpx; color: #c38e3e; }
+.metro-platform-guide { display: flex; justify-content: space-around; gap: 8rpx; font-size: 21rpx; }
+.metro-platform-guide text { margin-right: 7rpx; font-size: 28rpx; font-weight: 800; }
+.metro-platform-note { display: block; margin-top: 18rpx; color: #7a806a; text-align: center; font-size: 20rpx; line-height: 1.8; }

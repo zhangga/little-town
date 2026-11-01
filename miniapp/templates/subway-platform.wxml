@@ -1,0 +1,15 @@
+<template name="subway-platform">
+  <view class="metro-platform">
+    <view class="metro-platform-heading"><text class="metro-line-number">01</text><view><view>下一站，去冒险</view><text>星光号 · 小镇环线</text></view><text class="metro-arrival">● 已到站</text></view>
+    <view class="metro-route"><text>小小镇</text><view /><text>阳光隧道</text><view /><text>星星广场</text></view>
+    <button class="metro-train-button" bindtap="onOpenSubwayRunner" disabled="{{lifeBusy || refreshing}}" aria-label="点击地铁，进入免费地铁跑酷游戏">
+      <view class="metro-platform-grid" aria-hidden="true" />
+      <view class="metro-train" aria-hidden="true"><view class="metro-train-roof" /><view class="metro-train-window"><view /><view /><view /></view><view class="metro-train-stripe"><text>星光号</text><text>01 →</text></view><view class="metro-train-lights"><view /><view /></view><view class="metro-train-wheels"><view /><view /></view></view>
+      <view class="metro-platform-edge" aria-hidden="true" />
+      <view class="metro-train-invitation">点击地铁 · 出发跑酷 <text>→</text></view>
+    </button>
+    <view class="metro-ticket"><view><text>一张通往快乐的车票</text><view>地铁跑酷 <text>免费畅玩</text></view></view><text class="metro-ticket-star">✦</text></view>
+    <view class="metro-platform-guide"><view><text>↔</text>左右换道</view><view><text>↑</text>跳过路障</view><view><text>↓</text>滑过横杆</view></view>
+    <text class="metro-platform-note">躲开列车，收集星星，试试能跑多远。<br />星星只计游戏分数，最高分保存在这台设备。</text>
+  </view>
+</template>

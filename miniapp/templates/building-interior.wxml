@@ -1,3 +1,4 @@
+<import src="subway-platform.wxml" />
 <template name="building-room">
   <view class="interior-room room-{{selected.interior.theme}}" aria-hidden="true">
     <view class="room-window"><view /><view /></view><view class="room-lamp" />
@@ -10,6 +11,8 @@
 </template>
 
 <template name="building-lobby">
+  <template wx:if="{{selected.name === '地铁站'}}" is="subway-platform" data="{{lifeBusy, refreshing}}" />
+  <block wx:else>
   <view wx:if="{{selected.name === '餐厅'}}" class="bento-entry">
     <view class="bento-entry-stamp">🍱</view>
     <view class="bento-entry-copy"><view>我的便当厨房</view><text>自由摆盘 · 招待熟客 · 做出招牌菜</text></view>
@@ -28,6 +31,7 @@
   <view wx:if="{{!life || !selected.activities.length}}" class="interior-unavailable"><text>体验项目暂时没连上，重新确认一下入场记录。</text><button bindtap="loadTown" disabled="{{refreshing || lifeBusy}}">重新加载</button></view>
   <view wx:if="{{selected.activities.length}}" class="interior-admission-note">选好项目才扣金币 · 最近 12 张入场票可免费重玩</view>
   <view wx:if="{{selected.visits.length}}" class="interior-visits"><text>🎟️ 我的入场票</text><view wx:for="{{selected.visits}}" wx:key="request_id"><text>{{item.icon}} {{item.name}}</text><text>{{item.price}} 金币 · 已入场</text></view></view>
+  </block>
 </template>
 
 <template name="building-session">

@@ -86,5 +86,13 @@
     "cost_bricks": 25,
     "unlock_level": 4,
     "image_url": "/images/buildings/stadium.png"
+  },
+  {
+    "name": "地铁站",
+    "description": "点击站台上的地铁，开启换道、跳跃和下滑的跑酷冒险",
+    "subject": "english",
+    "cost_bricks": 15,
+    "unlock_level": 2,
+    "image_url": "/images/town/subway-station.png"
   }
 ]

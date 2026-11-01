@@ -1,9 +1,9 @@
-<view class="resident-page">
-  <view wx:if="{{loading}}" class="loading">正在打开小镇长的家…</view>
-  <view wx:elif="{{failed}}" class="resident-empty"><text>小家暂时没连上</text><button class="resident-primary" bindtap="loadResident">重新加载</button></view>
+<view class="home-page">
+  <canvas id="home-space" type="webgl" class="home-space" disable-scroll="true" bindtouchstart="onRoomTouchStart" catchtouchmove="onRoomTouchMove" bindtouchend="onRoomTouchEnd" bindtouchcancel="onRoomTouchCancel" aria-label="可以走动和布置家具的立体橡木小家" />
+  <view wx:if="{{loading}}" class="room-loading"><view class="room-loading-house">⌂</view><text>推开小家的门…</text></view>
+  <view wx:elif="{{failed}}" class="room-loading"><text>小家暂时没连上</text><button bindtap="loadResident">重新打开</button></view>
   <block wx:elif="{{state}}">
-    <view class="resident-top"><text class="resident-eyebrow">MY LITTLE HOME</text><view class="resident-wallet"><text>{{state.wallet.coins}} 金币</text><text>{{state.wallet.bricks}} 砖块</text></view></view>
-    <view class="resident-tabs"><button data-tab="outfit" bindtap="onTab">我的衣橱</button><button data-tab="decoration" bindtap="onTab">庭院装饰</button><button data-tab="home" bindtap="onTab">小屋升级</button><button class="active" aria-label="当前界面：屋内生活">屋内生活</button></view>
+    <view class="home-tabs"><button data-tab="outfit" bindtap="onTab">我的衣橱</button><button data-tab="decoration" bindtap="onTab">庭院装饰</button><button data-tab="home" bindtap="onTab">小屋升级</button><text class="active">屋内生活</text></view>
     <include src="../../templates/home-room.wxml" />
   </block>
 </view>

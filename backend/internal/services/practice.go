@@ -101,12 +101,7 @@ func (s *PracticeService) Status(userID uint) (*PracticeRewards, error) {
 }
 
 func practiceStatus(db *gorm.DB, userID uint) (*PracticeRewards, error) {
-	var count int64
-	if err := db.Model(&models.PracticeRound{}).Where("user_id = ? AND day = ? AND rewarded = ?", userID, TodayString(), true).Count(&count).Error; err != nil {
-		return nil, err
-	}
-	return &PracticeRewards{BricksPerRound: PracticeBricksPerRound, CoinsPerRound: PracticeCoinsPerRound,
-		DailyRoundCap: PracticeDailyRounds, RewardedRounds: int(count), RemainingRounds: max(0, PracticeDailyRounds-int(count))}, nil
+	return schoolPracticeStatus(db, userID, "english")
 }
 
 // withRound 与学习、购买和建造共用用户行锁；所有副本共享进度和每日限额。

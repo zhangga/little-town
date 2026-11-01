@@ -72,6 +72,7 @@ function createActivityMethods() {
         } catch (error) { this.setData({ notice: '这轮课堂小练的记录未保存。' + error.message }) }
       }
       this.changeView('done', { summaryRows: rows })
+      if (this._rewards && !this.data.reviewing) this._rewards.complete(this._rewardRound)
     },
     onLectures() { this.changeView('lectures') },
     onOpenLecture(event) { this.openLecture(event.currentTarget.dataset.id, false) },

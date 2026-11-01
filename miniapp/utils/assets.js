@@ -10,6 +10,7 @@ const TOWN_SPRITES = {
 function townSprite(name) {
   if (name === '商场') name = '商店'
   if (name === '宠物医院') return { image: '/images/town/vet-clinic.png' }
+  if (name === '地铁站') return { image: '/images/town/subway-station.png' }
   const index = Object.prototype.hasOwnProperty.call(TOWN_SPRITES, name) ? TOWN_SPRITES[name] : 10
   const sprite = { x: -(index % 4) * 100, y: -Math.floor(index / 4) * 100 }
   if (name === '金币') sprite.image = '/images/town/gold-coin.png'
@@ -27,7 +28,8 @@ const BUILDING_EMOJI = {
   '警察局': '🚓',
   '消防站': '🚒',
   '体育馆': '⚽',
-  '宠物医院': '🐾'
+  '宠物医院': '🐾',
+  '地铁站': '🚇'
 }
 
 const WORD_EMOJI = {

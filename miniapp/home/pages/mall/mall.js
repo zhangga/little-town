@@ -49,7 +49,7 @@ Page(withTapSounds({
       const state = await api.post('/resident/purchase', { item_id: item.id })
       if (this._disposed) return
       this.applyState(state)
-      this.setData({ message: '买好啦！已经放进你的家具箱。' })
+      this.setData({ message: '买好啦！已经放进你的家中背包。' })
     } catch (err) {
       if (this._disposed) return
       let recovered = false
@@ -60,7 +60,7 @@ Page(withTapSounds({
         recovered = (state.furniture || []).some(row => row.id === item.id && row.owned)
       } catch (_) {}
       if (!this._disposed) {
-        if (recovered) this.setData({ message: '购买已经确认，家具在你的家具箱里。' })
+        if (recovered) this.setData({ message: '购买已经确认，家具在你的家中背包里。' })
         else showError(err.message || '购买尚未确认，稍后再看看')
       }
     } finally { if (!this._disposed) this.setData({ busy: false }) }
