@@ -46,7 +46,7 @@ var townEventRules = []townEventRule{
 	{Kind: "pet_sick", Building: "宠物医院", Icon: "🐾", Title: "毛茸茸的伙伴不太舒服", Description: "小伙伴今天没什么精神，需要宠物医生温柔地检查一下。", Action: "呼叫宠物医生", Outcome: "宠物医生做好了检查，小伙伴休息后恢复精神，又蹦蹦跳跳地跟着你啦。", Cost: 1, NeedsPet: true},
 	{Kind: "lost_bag", Building: "警察局", Icon: "🎒", Title: "谁的小书包落下了", Description: "路边长椅上有一个小书包，请小镇警员帮忙找主人吧。", Action: "联系小镇警员", Outcome: "警员找到了书包的小主人，对方开心地向你挥手说谢谢！", Cost: 1},
 	{Kind: "park_walk", Building: "公园", Icon: "🌳", Title: "公园的花开了", Description: "小路两旁开出新花，邻居邀请你一起走走、听听鸟叫。", Action: "一起去散步", Outcome: "你们沿着花间小路慢慢走，发现了一只停在叶子上的小蝴蝶。"},
-	{Kind: "fresh_bread", Building: "商店", Icon: "🥖", Title: "商店飘来面包香", Description: "店主刚摆好今天的面包，想请你把一份带给隔壁邻居。", Action: "帮忙送面包", Outcome: "温热的面包送到了，邻居请你坐一会儿，聊了聊今天的小镇。"},
+	{Kind: "fresh_bread", Building: "商店", Icon: "🥖", Title: "商场飘来面包香", Description: "店主刚摆好今天的面包，想请你把一份带给隔壁邻居。", Action: "帮忙送面包", Outcome: "温热的面包送到了，邻居请你坐一会儿，聊了聊今天的小镇。"},
 	{Kind: "warm_meal", Building: "餐厅", Icon: "🍜", Title: "今天有热乎乎的汤", Description: "餐厅正在准备邻里聚餐，厨师想请你一起摆好小餐桌。", Action: "一起准备聚餐", Outcome: "餐桌摆好了！大家围在一起喝汤，说起今天遇到的开心事。"},
 	{Kind: "reading", Building: "图书馆", Icon: "📚", Title: "故事时间到啦", Description: "图书馆窗边留了一个座位，今天的故事里有森林和星星。", Action: "听一个故事", Outcome: "故事读完了，大家把书放回原处，约好下次再来探险。"},
 	{Kind: "school_day", Building: "学校", Icon: "🏫", Title: "放学铃声响起来", Description: "孩子们背着书包走出校门，想和你分享今天认识的新单词。", Action: "和大家打招呼", Outcome: "你和孩子们互相说了 hello，校门口响起一阵轻快的笑声。"},

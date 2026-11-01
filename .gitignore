@@ -48,6 +48,8 @@ backend/import
 backend/tmp/
 output/cloudrun/
 output/restaurant-preview/
+output/school-preview/
+output/home-preview/
 
 # Miniapp specific
 miniapp/project.private.config.json

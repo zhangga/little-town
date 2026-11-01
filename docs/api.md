@@ -693,3 +693,28 @@ wx.request({
 - v1.1: 添加好友系统接口
 - v1.2: 添加班级和排行榜接口
 - v2.0: 添加数学、语文学科接口
+# 商场家具与室内布局
+
+所有路径使用 `/api/v1` 前缀和现有登录鉴权。`GET /resident` 以及居民写入操作的响应新增：
+
+- `furniture`：家具目录。字段含 `id`, `name`, `description`, `kind: "furniture"`, `category`, `price`, `owned`, `equipped`, `width`, `depth`。分类为 `living`, `bedroom`, `study`, `dining`；`equipped` 表示已摆在房间里。
+- `mall_available`：是否已经拥有商场。已有数据库中的 `商店` 继续有效，不改变旧建筑 ID。
+- `room`：`{version, size: 7, layout: [{id, x, y, rotation}]}`。首次默认摆放免费单椅；已保存的空布局保持为空。
+
+`POST /resident/purchase` 继续接收 `{item_id}`，支持家具。价格以服务端为准，购买同一家具幂等，拥有后不再扣款，购买不会改变衣服和庭院装饰。付费家具要求建好商场；家具每款可拥有一件，收回仓库不失去所有权。
+
+`PUT /resident/room`：
+
+```json
+{
+  "expected_version": 0,
+  "layout": [
+    {"id": "chair", "x": 1, "y": 3, "rotation": 0},
+    {"id": "sofa", "x": 3, "y": 2, "rotation": 1}
+  ]
+}
+```
+
+`expected_version` 必填，可为 0。`layout` 必填，可为 `[]`；保存全量布局。坐标为 0～6 的整数；`rotation` 为 0 或 1，后者交换家具宽深。服务端验证家具存在、当前账号拥有、无重复、无重叠、无越界，以及门口 `(3, 6)` 留空。成功在同一用户行锁事务内保存并递增版本，返回完整居民状态，不扣资源。旧版本返回 409；其他布局/所有权错误返回 400。客户端对不确定的写入结果先 GET 读取确认，不自动重发。
+
+家具互动、人物走动、灯光和电视图片是当前页面的免费动画，不调用资源奖励接口；家具所有权和已保存布局持久化到服务端。发布时需更新后端并迁移 `residents.room_layout`、`residents.room_version`，再更新小程序。

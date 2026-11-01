@@ -5,7 +5,9 @@
     "include": [
       { "type": "folder", "value": "town-audio/audio" },
       { "type": "folder", "value": "audio/words" },
-      { "type": "folder", "value": "textbook-audio/words" }
+      { "type": "folder", "value": "school/audio" },
+      { "type": "folder", "value": "textbook-audio/words" },
+      { "type": "folder", "value": "home/images" }
     ]
   },
   "setting": {

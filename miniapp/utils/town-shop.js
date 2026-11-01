@@ -1,7 +1,7 @@
 const activities = {
-  '商店': { label: '到店门口逛逛', note: '买好补给就能吃喝，继续逛小镇。' },
+  '商店': { label: '去商场挑家具', note: '挑选家具带回家，也可以买好补给继续逛小镇。' },
   '餐厅': { label: '到餐厅坐坐', note: '一份热饭，让肚子和心情都暖起来。' },
-  '学校': { label: '去上一堂单词课', learn: true, note: '认识新单词，也能为小镇攒金币。' },
+  '学校': { label: '去上课 · 语文 / 数学 / 英语', school: true, note: '写汉字、算数学、学英语，还能带上自己的教材。' },
   '图书馆': { label: '去读单词、学知识', learn: true, note: '找一个安静的位置，学一点新知识。' },
   '公园': { label: '去公园散步', note: '到花丛边走走，和路过的邻居打个招呼。' },
   '电影院': { label: '去影院门口走走', note: '买一张电影票，和邻居一起走进故事。' },
@@ -16,6 +16,8 @@ function presentBuilding(building, life) {
   if (!building) return null
   const { presentInterior } = require('./building-interior')
   return Object.assign({}, building, presentInterior(building, life), {
+    displayName: require('./assets').buildingName(building.name),
+    isMall: building.name === '商店' || building.name === '商场',
     supplies: life ? life.supplies.filter(item => item.building === building.name && item.available) : [],
     serviceEvent: life && life.event && life.event.building === building.name ? life.event : null,
     activity: activities[building.name] || { label: '到这里逛逛', note: '出门走走，看看小镇里的生活。' },
@@ -30,6 +32,10 @@ function supplyRequestID() {
 
 function createTownShop(clock = { setTimeout: (fn, ms) => setTimeout(fn, ms), clearTimeout: id => clearTimeout(id) }) {
   return {
+    onOpenMall() {
+      if (!this.data.selected || !this.data.selected.isMall || this.data.lifeBusy || this.data.refreshing) return
+      wx.navigateTo({ url: '/home/pages/mall/mall' })
+    },
     startNeedsClock() {
       this.stopNeedsClock()
       if (this._disposed || !this.data.sceneActive || this.data.editingLayout || !this.data.life || !this.data.life.needs.enabled) return
@@ -60,6 +66,7 @@ function createTownShop(clock = { setTimeout: (fn, ms) => setTimeout(fn, ms), cl
     onBuildingActivity() {
       const building = this.data.selected
       if (!building || this.data.lifeBusy || this.data.refreshing) return
+      if (building.activity.school) { this.onGoSchool(); return }
       if (building.activity.learn) { this.onGoLearn(); return }
       this.onActivityLobby()
       if (this._stroll) this._stroll.visitHost(building.name)

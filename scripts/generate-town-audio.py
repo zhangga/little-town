@@ -3,6 +3,7 @@
 
 No samples, downloaded music, third-party melody or synthesis dependency is used.
 Run from any directory: python3 scripts/generate-town-audio.py
+Use --effects-only to refresh UI sounds without re-encoding music (no macOS dependency).
 """
 
 import argparse
@@ -71,12 +72,12 @@ def add_brush(samples, start, level, rng):
         samples[(offset + i) % len(samples)] += level * envelope * soft_noise
 
 
-def finish(samples, peak):
+def finish(samples, peak, edge_seconds=0.008):
     """Leave ample headroom and make the boundary quiet without a long fade."""
     mean = sum(samples) / len(samples)
     maximum = max(abs(sample - mean) for sample in samples)
     gain = peak / maximum if maximum else 1.0
-    edge = round(RATE * 0.008)
+    edge = round(RATE * edge_seconds)
     for i in range(len(samples)):
         fade = min(1.0, i / edge, (len(samples) - 1 - i) / edge)
         samples[i] = (samples[i] - mean) * gain * fade
@@ -146,6 +147,52 @@ def make_effect(duration, notes, peak):
     return finish(samples, peak)
 
 
+def make_tap(tuning=1.0, seed=20261031):
+    """A felted wooden touch: a short, falling body with soft contact noise.
+
+    Inharmonic modes die within a few cycles, so the touch has texture rather
+    than a sustained musical pitch. Small variations keep repeated taps natural.
+    """
+    duration = 0.075
+    samples = array("d", [0.0]) * round(duration * RATE)
+    rng = random.Random(seed)
+    filtered = 0.0
+    softened = 0.0
+    for i in range(len(samples)):
+        t = i / RATE
+        filtered += 0.42 * (rng.uniform(-1, 1) - filtered)
+        softened += 0.42 * (filtered - softened)
+        phase = TAU * 390 * tuning * (t + 0.22 * 0.012 * (1 - math.exp(-t / 0.012)))
+        body = (0.65 * math.sin(phase) * math.exp(-t / 0.014)
+                + 0.20 * math.sin(phase * 2.17) * math.exp(-t / 0.007)
+                + 0.10 * math.sin(phase * 3.61) * math.exp(-t / 0.004))
+        contact = 0.8 * softened * math.exp(-t / 0.008)
+        attack = 1 - math.exp(-t / 0.0015)
+        release = min(1.0, (duration - t) / 0.015)
+        samples[i] = (body + contact) * attack * release
+    return finish(samples, 0.32, edge_seconds=0.002)
+
+
+def make_open():
+    """A soft wooden touch with a small brushed tail, without a two-note beep."""
+    duration = 0.14
+    samples = array("d", [0.0]) * round(duration * RATE)
+    touch = make_tap(0.93, 20261103)
+    offset = round(0.008 * RATE)
+    for i, sample in enumerate(touch):
+        samples[offset + i] += sample * 0.85
+    rng = random.Random(20261104)
+    filtered = 0.0
+    softened = 0.0
+    for i in range(len(samples)):
+        t = i / RATE
+        filtered += 0.28 * (rng.uniform(-1, 1) - filtered)
+        softened += 0.28 * (filtered - softened)
+        envelope = math.sin(math.pi * t / duration) ** 2 * math.exp(-t / 0.055)
+        samples[i] += 0.20 * softened * envelope
+    return finish(samples, 0.30, edge_seconds=0.003)
+
+
 def write_wave(path, samples):
     pcm = array("h", (round(sample * 32767) for sample in samples))
     if sys.byteorder != "little":
@@ -181,37 +228,44 @@ def main():
                         help="Path to the macOS AAC encoder/decoder")
     parser.add_argument("--output", type=Path,
                         default=Path(__file__).resolve().parents[1] / "miniapp/town-audio/audio")
+    parser.add_argument("--effects-only", action="store_true",
+                        help="Regenerate only UI effects; leave the music file untouched")
     args = parser.parse_args()
-    if not args.afconvert:
+    if not args.effects_only and not args.afconvert:
         parser.error("macOS afconvert is required to encode the compact AAC loop")
     args.output.mkdir(parents=True, exist_ok=True)
     report = {}
-    with tempfile.TemporaryDirectory(prefix="little-town-music-") as directory:
-        temp = Path(directory)
-        music = args.output / "cheerful-loop.m4a"
-        write_wave(temp / "music.wav", make_music())
-        subprocess.run([args.afconvert, str(temp / "music.wav"), str(music),
-                        "-f", "m4af", "-d", "aac", "-b", "32000", "-q", "127",
-                        "-s", "0", "--no-filler"], check=True)
-        # Check the actual delivered AAC after decoding, including encoder priming.
-        subprocess.run([args.afconvert, str(music), str(temp / "decoded.wav"),
-                        "-f", "WAVE", "-d", "LEI16"], check=True)
-        report[music.name] = {"bytes": music.stat().st_size, **analyze(temp / "decoded.wav")}
+    if not args.effects_only:
+        with tempfile.TemporaryDirectory(prefix="little-town-music-") as directory:
+            temp = Path(directory)
+            music = args.output / "cheerful-loop.m4a"
+            write_wave(temp / "music.wav", make_music())
+            subprocess.run([args.afconvert, str(temp / "music.wav"), str(music),
+                            "-f", "m4af", "-d", "aac", "-b", "32000", "-q", "127",
+                            "-s", "0", "--no-filler"], check=True)
+            # Check the actual delivered AAC after decoding, including encoder priming.
+            subprocess.run([args.afconvert, str(music), str(temp / "decoded.wav"),
+                            "-f", "WAVE", "-d", "LEI16"], check=True)
+            report[music.name] = {"bytes": music.stat().st_size, **analyze(temp / "decoded.wav")}
     effects = {
-        "tap.wav": (0.10, [(0, 76, 0.095, 1.0)], 0.37),
-        "open.wav": (0.22, [(0, 72, 0.16, 0.8), (0.065, 79, 0.15, 0.75)], 0.40),
-        "success.wav": (0.50, [(0, 72, 0.25, 0.7), (0.09, 76, 0.26, 0.7),
-                                (0.18, 79, 0.30, 0.75)], 0.46),
+        "tap.wav": make_tap(),
+        "tap-soft.wav": make_tap(0.94, 20261101),
+        "tap-round.wav": make_tap(1.06, 20261102),
+        "open.wav": make_open(),
+        "success.wav": make_effect(0.50, [(0, 72, 0.25, 0.7), (0.09, 76, 0.26, 0.7),
+                                         (0.18, 79, 0.30, 0.75)], 0.46),
     }
-    for name, (duration, notes, peak) in effects.items():
+    for name, samples in effects.items():
         target = args.output / name
-        write_wave(target, make_effect(duration, notes, peak))
+        write_wave(target, samples)
         report[name] = {"bytes": target.stat().st_size, **analyze(target)}
-    total = sum(item["bytes"] for item in report.values())
+    total = sum(asset.stat().st_size for asset in args.output.iterdir()
+                if asset.suffix in (".wav", ".m4a"))
     assert total < 250_000, f"Audio assets exceed the 250 KB budget: {total}"
     assert all(item["clipped_samples"] == 0 for item in report.values())
-    assert abs(report["cheerful-loop.m4a"]["seconds"] - LOOP_SECONDS) < 0.05
-    assert report["cheerful-loop.m4a"]["loop_boundary_step"] < 0.015
+    if not args.effects_only:
+        assert abs(report["cheerful-loop.m4a"]["seconds"] - LOOP_SECONDS) < 0.05
+        assert report["cheerful-loop.m4a"]["loop_boundary_step"] < 0.015
     print(json.dumps({"assets": report, "total_bytes": total}, ensure_ascii=False, indent=2))
 
 

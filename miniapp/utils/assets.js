@@ -8,6 +8,7 @@ const TOWN_SPRITES = {
 }
 
 function townSprite(name) {
+  if (name === '商场') name = '商店'
   if (name === '宠物医院') return { image: '/images/town/vet-clinic.png' }
   const index = Object.prototype.hasOwnProperty.call(TOWN_SPRITES, name) ? TOWN_SPRITES[name] : 10
   const sprite = { x: -(index % 4) * 100, y: -Math.floor(index / 4) * 100 }
@@ -61,6 +62,7 @@ const DEFAULT_BUILDING = '🏠'
 const DEFAULT_WORD = '🧩'
 
 function buildingEmoji(name) {
+  if (name === '商店' || name === '商场') return '🛍️'
   return Object.prototype.hasOwnProperty.call(BUILDING_EMOJI, name) ? BUILDING_EMOJI[name] : DEFAULT_BUILDING
 }
 
@@ -81,6 +83,7 @@ const GRADES = [
 ]
 
 module.exports = {
+  buildingName: name => name === '商店' ? '商场' : name,
   townSprite,
   buildingEmoji,
   wordEmoji,

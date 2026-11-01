@@ -1,10 +1,12 @@
 const STORAGE_KEY = 'little-town-sound-preferences-v1'
 const MUSIC_SOURCE = '/town-audio/audio/cheerful-loop.m4a'
 const EFFECT_SOURCES = {
-  tap: '/town-audio/audio/tap.wav',
-  open: '/town-audio/audio/open.wav',
-  success: '/town-audio/audio/success.wav'
+  tap: ['/town-audio/audio/tap.wav', '/town-audio/audio/tap-soft.wav', '/town-audio/audio/tap-round.wav'],
+  open: ['/town-audio/audio/open.wav'],
+  success: ['/town-audio/audio/success.wav']
 }
+const EFFECT_VOLUMES = { tap: 0.32, open: 0.32, success: 0.4 }
+const INTERACTION_GAP_MS = 240
 
 // Only resolve wx when an action runs: importing a page must not start audio.
 function createSound(wxApi, options) {
@@ -27,7 +29,9 @@ function createSound(wxApi, options) {
   let musicGeneration = 0
   let effectGeneration = 0
   let musicStatus = 'idle'
-  let lastTapAt = -Infinity
+  let lastInteractionAt = -Infinity
+  let successQuietUntil = -Infinity
+  let tapVariant = 0
   let packageState = 'idle'
   let packageGeneration = 0
 
@@ -108,6 +112,7 @@ function createSound(wxApi, options) {
 
   function stopEffects(dispose) {
     effectGeneration++
+    successQuietUntil = -Infinity
     if (!effect) return
     detach(effect)
     if (!safely(effect.context, 'stop') || dispose) {
@@ -299,14 +304,21 @@ function createSound(wxApi, options) {
       if (packageState !== 'ready') return
     }
     kind = Object.prototype.hasOwnProperty.call(EFFECT_SOURCES, kind) ? kind : 'tap'
-    if (kind === 'tap' && now() - lastTapAt < 80) return
-    if (kind === 'tap') lastTapAt = now()
+    const timestamp = now()
+    if (kind !== 'success') {
+      const gap = timestamp - lastInteractionAt
+      // Only the first touch in a burst sounds, even when tap/open alternate.
+      // Updating on skipped touches avoids a steady rattle during sustained input.
+      lastInteractionAt = timestamp
+      if (gap < INTERACTION_GAP_MS || timestamp < successQuietUntil) return
+    }
     stopEffects(false)
     const generation = ++effectGeneration
     let current = null
     const fail = () => {
       if (generation !== effectGeneration || (current && current !== effect)) return
       stopEffects(true)
+      lastInteractionAt = -Infinity
     }
     try {
       if (!effect) {
@@ -315,13 +327,16 @@ function createSound(wxApi, options) {
         effect = { context: api.createInnerAudioContext(), handlers: [] }
         effect.context.autoplay = false
         effect.context.loop = false
-        effect.context.volume = 0.4
         effect.context.obeyMuteSwitch = true
       }
       current = effect
       listen(current, 'onError', fail)
-      current.context.src = EFFECT_SOURCES[kind]
+      const sources = EFFECT_SOURCES[kind]
+      current.context.volume = EFFECT_VOLUMES[kind]
+      current.context.src = sources[kind === 'tap' ? tapVariant++ % sources.length : 0]
       if (generation !== effectGeneration || current !== effect) return
+      // Let a completed action finish its 0.5 s cue without a tap cutting it off.
+      if (kind === 'success') successQuietUntil = timestamp + 500
       current.context.play()
     } catch (error) {
       fail()

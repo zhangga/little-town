@@ -1,0 +1,25 @@
+<view class="mall-page">
+  <view class="mall-top"><text>给生活添一点喜欢</text><text wx:if="{{state}}" class="mall-wallet">● {{state.wallet.coins}} 金币</text></view>
+  <view class="mall-hero"><view class="mall-hero-copy"><text class="mall-eyebrow">LITTLE TOWN / HOME + LIVING</text><view class="mall-title">小镇商场</view><text class="mall-subtitle">把喜欢的家具，
+带回自己的小家。</text><text class="mall-stamp">家具 · 家电 · 生活的小美好</text></view><image class="mall-building" src="/home/images/mall.png" mode="aspectFit" /></view>
+  <view wx:if="{{loading}}" class="mall-empty">正在打开家具货架…</view>
+  <view wx:elif="{{failed}}" class="mall-empty"><text>家具货架暂时没连上</text><button bindtap="loadMall">重新看看</button></view>
+  <block wx:elif="{{state}}">
+    <view wx:if="{{!state.mall_available}}" class="mall-notice"><view>先为小镇建一座商场<text>可以先逛逛，建好商场就能买家具。</text></view><button bindtap="onBuildMall">去建造 →</button></view>
+    <view class="mall-collection"><view><text>我的家具箱</text><text class="mall-muted">已经收集 {{ownedCount}} / {{furniture.length}} 件</text></view><button bindtap="onGoHome">回家布置 ↗</button></view>
+    <view class="mall-categories"><button wx:for="{{categories}}" wx:key="id" class="{{category === item.id ? 'active' : ''}}" data-id="{{item.id}}" bindtap="onCategory">{{item.name}}</button></view>
+    <view class="mall-heading"><text>{{category === 'all' ? '慢慢挑，每一件都能用' : '为家里添一件喜欢的家具'}}</text><text>{{items.length}} 件好物</text></view>
+    <view class="mall-grid"><button wx:for="{{items}}" wx:key="id" class="furniture-card" data-id="{{item.id}}" bindtap="onSelectFurniture" aria-label="{{item.name + '，' + (item.owned ? '已拥有' : item.price + '金币')}}">
+      <text wx:if="{{item.owned}}" class="furniture-owned">{{item.placed ? '已在家里' : '已放入家具箱'}}</text>
+      <view class="furniture-stage"><image src="{{item.image}}" mode="aspectFit" /></view>
+      <view class="furniture-name">{{item.name}}</view><text class="furniture-verb">{{item.action.verb}}</text>
+      <view class="furniture-bottom"><text>{{item.owned ? '永久拥有' : item.price + ' 金币'}}</text><text class="furniture-plus">{{item.owned ? '↗' : '＋'}}</text></view>
+    </button></view>
+    <view class="mall-footnote">用学习攒下的金币购买 · 买一次，永久拥有</view>
+  </block>
+  <view wx:if="{{selected}}" class="mall-mask" bindtap="onCloseFurniture" catchtouchmove="onNoop"><view class="mall-sheet" catchtap="onNoop">
+    <view class="mall-sheet-top"><text>把日常的小美好带回家</text><button bindtap="onCloseFurniture" disabled="{{busy}}" aria-label="关闭家具详情">×</button></view>
+    <scroll-view scroll-y class="mall-sheet-scroll"><image class="mall-detail-art" src="{{selected.image}}" mode="aspectFit" /><view class="mall-detail-name">{{selected.name}}</view><text class="mall-detail-copy">{{selected.description}}</text><view class="mall-detail-price">{{selected.owned ? '已经永久拥有' : selected.price + ' 金币'}}</view><text wx:if="{{!selected.owned && !selected.affordable}}" class="mall-missing">还差 {{selected.missing}} 金币，去学习攒一点吧。</text><view wx:if="{{message}}" class="mall-purchased">✓ {{message}}</view></scroll-view>
+    <view class="mall-sheet-actions"><button class="mall-primary" bindtap="onBuyFurniture" loading="{{busy}}" disabled="{{busy}}">{{busy ? '正在确认购买…' : selected.owned ? '带回家 · 摆放家具' : !state.mall_available ? '先去建造商场' : !selected.affordable ? '去学习攒金币' : '确认花 ' + selected.price + ' 金币购买'}}</button><text>{{selected.owned ? '在家里可自由移动、旋转或收回家具箱' : '确认后扣除金币，家具永久保留'}}</text></view>
+  </view></view>
+</view>

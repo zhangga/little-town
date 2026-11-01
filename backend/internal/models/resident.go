@@ -10,6 +10,8 @@ type Resident struct {
 	OutfitID     string    `gorm:"size:32;not null" json:"outfit_id"`
 	DecorationID string    `gorm:"size:32;not null" json:"decoration_id"`
 	HomeLevel    int       `gorm:"default:1" json:"home_level"`
+	RoomLayout   string    `gorm:"type:text" json:"-"`
+	RoomVersion  int       `gorm:"default:0" json:"-"`
 	XPBonusDate  string    `gorm:"size:10" json:"-"`
 	CreatedAt    time.Time `json:"-"`
 	UpdatedAt    time.Time `json:"-"`

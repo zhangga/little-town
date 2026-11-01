@@ -10,7 +10,12 @@ Page(withTapSounds({
     this._visible = true
     if (!wx.getStorageSync('token')) wx.redirectTo({ url: '/pages/login/login' })
   },
-  onShow() { this._visible = true; if (wx.getStorageSync('token')) this.loadResident() },
+  onShow() {
+    this._visible = true
+    const tab = wx.getStorageSync('residentTabRequested')
+    if (['outfit', 'decoration', 'home'].includes(tab)) { this.setData({ tab }); wx.removeStorageSync('residentTabRequested') }
+    if (wx.getStorageSync('token')) this.loadResident()
+  },
   onHide() {
     this._visible = false
     clearTimeout(this._waveTimer)
@@ -38,9 +43,11 @@ Page(withTapSounds({
   },
   onTab(e) {
     const tab = e.currentTarget.dataset.tab
-    if (!['outfit', 'decoration', 'home'].includes(tab) || !this.data.state) return
+    if (!['outfit', 'decoration', 'home', 'room'].includes(tab) || !this.data.state || this.data.busy) return
+    if (tab === 'room') { wx.navigateTo({ url: '/home/pages/room/room' }); return }
     this.setData({ tab, items: this.data.state.shop.filter(item => item.kind === tab) })
   },
+  onEnterRoom() { this.onTab({ currentTarget: { dataset: { tab: 'room' } } }) },
   onWave() {
     if (!this.data.state || this.data.waving) return
     this.setData({ waving: true, 'state.characterArt': residentArt(this.data.state.resident.outfit_id, 1) })

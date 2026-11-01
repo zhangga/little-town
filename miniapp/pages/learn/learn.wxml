@@ -11,6 +11,14 @@
 </template>
 
 <view class="learn-page {{answered && (phase === 'practice' || phase === 'review') ? 'has-answer' : ''}}">
+  <view wx:if="{{loading || failed || phase === 'ready' || phase === 'done'}}" class="school-subject-entry">
+    <view class="school-entry-heading">🏫 小镇学校 <text>三科都能学</text></view>
+    <view class="school-entry-subjects">
+      <button bindtap="onSchoolSubject" data-subject="chinese">语文<text>鼠标 / 手指写字</text></button>
+      <button bindtap="onSchoolSubject" data-subject="math">数学<text>输入数字算题</text></button>
+      <button bindtap="onSchoolSubject" data-subject="english">英语<text>听音 / 拼写</text></button>
+    </view>
+  </view>
   <view wx:if="{{!loading && !failed}}" class="daily-quota" aria-role="status" aria-live="polite">
     <view class="daily-quota-heading">今日奖励剩余<text>领满后也能继续学习</text></view>
     <view class="daily-quota-counts">

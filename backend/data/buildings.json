@@ -9,7 +9,7 @@
   },
   {
     "name": "商店",
-    "description": "买东西的地方",
+    "description": "有玻璃中庭和屋顶花园的商场，挑选家具、家电和日常补给",
     "subject": "english",
     "cost_bricks": 5,
     "unlock_level": 1,

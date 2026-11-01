@@ -206,33 +206,83 @@ test('pronunciation suppresses all town audio until it finishes, respecting late
   assert.equal(music.plays, 3)
 })
 
-test('tap effects throttle rapid input, reuse a player, and allow distinct success/open feedback', () => {
+test('ordinary taps vary softly, reuse one player, and respect the effects switch', () => {
   const h = harness()
   h.sound.playEffect()
   const effect = h.contexts[0]
   assert.equal(effect.src, '/town-audio/audio/tap.wav')
   assert.equal(effect.loop, false)
   assert.equal(effect.obeyMuteSwitch, true)
-  assert.equal(effect.volume, 0.4)
+  assert.equal(effect.volume, 0.32)
   h.sound.playEffect('tap')
   assert.equal(effect.plays, 1)
-  h.sound.playEffect('success')
-  assert.equal(effect.src, '/town-audio/audio/success.wav')
-  h.sound.playEffect('open')
-  assert.equal(effect.src, '/town-audio/audio/open.wav')
-  assert.equal(effect.plays, 3)
-  h.advance(80)
-  h.sound.playEffect('unknown')
-  assert.equal(effect.src, '/town-audio/audio/tap.wav')
+  for (const filename of ['tap-soft.wav', 'tap-round.wav', 'tap.wav']) {
+    h.advance(300)
+    h.sound.playEffect('unknown')
+    assert.equal(effect.src, '/town-audio/audio/' + filename)
+  }
   assert.equal(effect.plays, 4)
   assert.equal(h.contexts.length, 1)
   h.sound.setEffectsEnabled(false)
-  h.advance(100)
+  h.advance(300)
   h.sound.playEffect()
   assert.equal(effect.plays, 4)
   h.sound.setEffectsEnabled(true)
   h.sound.playEffect()
   assert.equal(effect.plays, 5)
+})
+
+test('sustained mixed tap/open bursts sound only once, with no trailing replay', () => {
+  const h = harness()
+  h.sound.playEffect('open')
+  const effect = h.contexts[0]
+  assert.equal(effect.src, '/town-audio/audio/open.wav')
+  assert.equal(effect.volume, 0.32)
+  for (let i = 0; i < 12; i++) {
+    h.advance(120)
+    h.sound.playEffect(i % 2 ? 'open' : 'tap')
+  }
+  assert.equal(effect.plays, 1)
+  assert.equal(effect.stops, 0)
+  h.advance(239)
+  h.sound.playEffect('unknown')
+  assert.equal(effect.plays, 1)
+  h.advance(240)
+  assert.equal(effect.plays, 1)
+  h.sound.playEffect('tap')
+  assert.equal(effect.plays, 2)
+  // Skipped taps do not advance the variations or restart the current sound.
+  assert.equal(effect.src, '/town-audio/audio/tap.wav')
+  h.advance(240)
+  h.sound.playEffect('open')
+  assert.equal(effect.plays, 3)
+  assert.equal(h.contexts.length, 1)
+})
+
+test('success preempts a tap and finishes without being chopped by later interaction sounds', () => {
+  const h = harness()
+  h.sound.playEffect('tap')
+  h.sound.playEffect('success')
+  const effect = h.contexts[0]
+  assert.equal(effect.plays, 2)
+  assert.equal(effect.src, '/town-audio/audio/success.wav')
+  assert.equal(effect.volume, 0.4)
+  const stops = effect.stops
+  h.advance(250)
+  h.sound.playEffect('open')
+  assert.equal(effect.plays, 2)
+  assert.equal(effect.stops, stops)
+  h.advance(250)
+  h.sound.playEffect('tap')
+  assert.equal(effect.plays, 3)
+  assert.equal(effect.volume, 0.32)
+  h.sound.playEffect('success')
+  h.sound.setEffectsEnabled(false)
+  h.advance(240)
+  h.sound.setEffectsEnabled(true)
+  h.sound.playEffect('open')
+  assert.equal(effect.plays, 5)
+  assert.equal(effect.src, '/town-audio/audio/open.wav')
 })
 
 test('backgrounded effects are suppressed even outside town', () => {

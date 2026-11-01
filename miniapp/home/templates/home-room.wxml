@@ -1,0 +1,33 @@
+<view wx:if="{{!roomSupported}}" class="room-unavailable"><text>房间暂时没准备好，请稍后再试。</text><button bindtap="loadResident">重新打开房间</button></view>
+<view wx:else class="home-life">
+  <view class="room-heading"><view><text class="room-eyebrow">A LITTLE LIFE AT HOME</text><view>{{roomEditing ? '把家，摆成喜欢的样子' : '欢迎回家，' + state.resident.name}}</view></view><text class="room-day">☀ 午后时光</text></view>
+  <view class="room-scene {{roomEditing ? 'is-editing' : ''}} {{roomLamp ? 'lamp-on' : ''}}">
+    <image class="room-shell" src="/home/images/room.png" mode="scaleToFill" />
+    <button wx:for="{{roomCells}}" wx:key="id" class="room-cell {{roomEditing && item.valid ? 'cell-valid' : ''}}" style="left: {{item.left}}%; top: {{item.top}}rpx;" data-x="{{item.x}}" data-y="{{item.y}}" bindtap="onRoomCell" aria-label="{{roomEditing ? '在这里摆放家具' : '走到这里'}}" />
+    <button wx:for="{{roomFurniture}}" wx:key="id" class="room-furniture {{item.wide ? 'room-furniture-wide' : ''}} {{roomAction === item.id ? 'furniture-active' : ''}} {{roomEditing && roomSelected === item.id ? 'furniture-selected' : ''}}" style="left: {{item.left}}%; top: {{item.top}}rpx; z-index: {{item.id === 'rug' ? 2 : item.z}};" data-id="{{item.id}}" bindtap="onRoomFurniture" aria-label="{{item.name + '，' + item.action.verb}}">
+      <image src="{{item.image}}" mode="aspectFit" style="transform: scaleX({{item.rotation ? -1 : 1}});" />
+      <view wx:if="{{item.id === 'lamp' && roomLamp}}" class="room-lamp-glow" />
+      <text wx:if="{{roomAction === item.id && item.id === 'plant'}}" class="room-water">💧</text>
+      <text wx:if="{{roomAction === item.id && item.id === 'fridge'}}" class="room-water">🍎 🥛</text>
+    </button>
+    <view wx:if="{{!roomEditing && roomActor}}" class="room-actor {{roomActor.moving ? 'actor-walking' : ''}} actor-{{roomActor.pose}}" style="left: {{roomActor.left}}%; top: {{roomActor.top}}rpx; z-index: {{roomActor.z}};">
+      <view class="room-actor-shadow" /><view class="room-actor-body"><view class="art-sprite"><image class="art-atlas" src="{{roomActor.art.src}}" mode="scaleToFill" style="width: {{roomActor.art.scale}}%; height: {{roomActor.art.scaleY || roomActor.art.scale}}%; left: {{roomActor.art.x}}%; top: {{roomActor.art.y}}%;" /></view></view>
+      <text wx:if="{{roomActor.pose === 'sleep'}}" class="room-reaction">z Z</text><text wx:elif="{{roomActor.pose === 'read'}}" class="room-reaction">📖</text><text wx:elif="{{roomActor.pose === 'draw'}}" class="room-reaction">🎨</text><text wx:elif="{{roomActor.pose === 'tea'}}" class="room-reaction">☕</text>
+    </view>
+  </view>
+  <view class="room-message" aria-live="polite"><text>✦</text><text>{{roomMessage}}</text></view>
+  <block wx:if="{{!roomEditing}}">
+    <view class="room-playbar"><view class="room-control"><button class="move-up" data-direction="up" bindtap="onRoomMove" aria-label="向后走">↑<text>后</text></button><button class="move-left" data-direction="left" bindtap="onRoomMove" aria-label="向左走">←</button><view class="move-center">✦</view><button class="move-right" data-direction="right" bindtap="onRoomMove" aria-label="向右走">→</button><button class="move-down" data-direction="down" bindtap="onRoomMove" aria-label="向前走">↓<text>前</text></button></view><view class="room-play-actions"><button class="room-main" bindtap="onRoomEdit">布置我的家</button><button class="room-shopping" bindtap="onGoMall">去商场买家具 ↗</button><text>也可以直接点地板走过去</text></view></view>
+    <view class="room-interact-heading">在家里，做点喜欢的事<text>点击家具就会走过去</text></view>
+    <view class="room-quick-actions"><button wx:for="{{roomFurniture}}" wx:key="id" data-id="{{item.id}}" bindtap="onRoomFurniture"><image src="{{item.image}}" mode="aspectFit" /><text>{{item.action.verb}}</text></button></view>
+    <view wx:if="{{!roomFurniture.length}}" class="room-unavailable">家具都收进箱子啦。点「布置我的家」摆一件出来吧。</view>
+    <button wx:if="{{roomAction === 'wardrobe'}}" class="room-wardrobe-link" data-tab="outfit" bindtap="onTab">打开我的衣橱 →</button>
+  </block>
+  <block wx:else>
+    <view class="room-edit-toolbar"><text>{{roomDirty ? '● 有尚未保存的布置' : '先选家具，再点地板'}}</text><button bindtap="onRoomRotate" disabled="{{!roomSelected || roomSaving}}">↻ 旋转</button><button bindtap="onRoomStore" disabled="{{!roomSelected || roomSaving}}">收回</button></view>
+    <scroll-view scroll-x class="room-inventory"><view class="room-inventory-row"><button wx:for="{{roomInventory}}" wx:key="id" data-id="{{item.id}}" bindtap="onRoomChoose" class="{{roomSelected === item.id ? 'inventory-selected' : ''}}" disabled="{{roomSaving}}"><image src="{{item.image}}" mode="aspectFit" /><text>{{item.name}}</text><text class="inventory-state">{{item.placed ? '已摆放 · 可移动' : '在家具箱里'}}</text></button></view></scroll-view>
+    <view class="room-save-actions"><button class="room-cancel" bindtap="onRoomCancel" disabled="{{roomSaving}}">取消</button><button class="room-main" bindtap="onRoomSave" disabled="{{roomSaving}}" loading="{{roomSaving}}">{{roomSaving ? '正在保存…' : '保存布置'}}</button></view>
+    <button class="room-shopping room-more" bindtap="onGoMall" disabled="{{roomSaving}}">去商场挑些新家具 ↗</button>
+  </block>
+</view>
+<view wx:if="{{roomTV}}" class="nature-mask" bindtap="onRoomTVClose" catchtouchmove="onNoop"><view class="nature-sheet" catchtap="onNoop"><view class="nature-top"><text>自然频道 · {{roomNatureIndex + 1}} / 3</text><button bindtap="onRoomTVClose" aria-label="关闭电视画面">×</button></view><view class="nature-screen"><image src="{{roomNature.image}}" mode="aspectFit" /></view><view class="nature-name">{{roomNature.name}}</view><text class="nature-caption">{{roomNature.caption}}</text><view class="nature-actions"><button data-step="-1" bindtap="onRoomNature">← 上一张</button><button data-step="1" bindtap="onRoomNature">下一张 →</button></view><button class="nature-close" bindtap="onRoomTVClose">关掉电视，回到小家</button></view></view>

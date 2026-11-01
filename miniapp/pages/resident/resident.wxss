@@ -12,6 +12,8 @@ page { background: #edf0df; }
 .home-tag { position: absolute; left: 22rpx; top: 20rpx; color: #6d8162; font-size: 21rpx; }
 .resident-ground { position: absolute; width: 110%; height: 200rpx; border-radius: 50% 50% 0 0; background: #c8dba6; bottom: -50rpx; left: -5%; }
 .resident-house { position: absolute; width: 365rpx; height: 365rpx; left: -7rpx; bottom: -10rpx; }
+.resident-page .resident-house { background: transparent; overflow: visible; }
+.house-enter { position: absolute; bottom: 30rpx; left: 80rpx; background: #fffae9; border: 2rpx solid #b6c49c; border-radius: 18rpx; padding: 5rpx 16rpx; color: #698050; font-size: 21rpx; }
 .resident-garden { position: absolute; width: 150rpx; height: 150rpx; right: -5rpx; bottom: -10rpx; }
 .resident-page .resident-character { position: absolute; width: 255rpx; height: 255rpx; right: 55rpx; bottom: 5rpx; background: transparent; overflow: visible; }
 .resident-character.waving { animation: happy-wave .6s ease-out; }

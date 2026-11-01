@@ -1,0 +1,196 @@
+<view class="school-page subject-{{subject}}">
+  <view class="school-header">
+    <view class="school-kicker"><text>小小镇 · 学校</text><text class="school-badge">每天学一点</text></view>
+    <view class="school-heading">{{view === 'editor' ? '把课本装进小镇' : view === 'materials' ? '我的教材本' : view === 'lecture' || view === 'lectures' ? '跟阿禾一起想一想' : '今天，想学点什么？'}}</view>
+    <view class="school-subtitle">先听一听，再想一想，最后自己试试看。</view>
+    <view class="subject-tabs" aria-role="tablist">
+      <button wx:for="{{subjects}}" wx:key="id" class="subject-tab tab-{{item.id}} {{(view === 'editor' ? draftSubject : subject) === item.id ? 'tab-active' : ''}}" data-subject="{{item.id}}" bindtap="onSubject" disabled="{{saving || choosing}}" aria-role="tab" aria-selected="{{(view === 'editor' ? draftSubject : subject) === item.id}}">
+        <text class="subject-mark">{{item.mark}}</text><text>{{item.name}}</text>
+      </button>
+    </view>
+  </view>
+
+  <view class="school-body">
+    <button wx:if="{{view !== 'home'}}" class="back-link" bindtap="onBack" disabled="{{saving || choosing}}">← {{view === 'editor' ? '返回教材本' : view === 'lecture' ? lectureFromQuestion ? '回到刚才那道题' : '返回小讲播' : '返回教室'}}</button>
+    <view wx:if="{{notice}}" class="notice" aria-role="status">{{notice}}</view>
+    <view wx:if="{{error && view !== 'editor'}}" class="form-error" aria-role="alert">{{error}}</view>
+
+    <block wx:if="{{view === 'home'}}">
+      <view class="classroom-launch">
+        <button class="drill-entry" bindtap="onStartDrill"><text class="entry-kicker">练一练 · 5 道题</text><view>课堂小练 <text>→</text></view><text>换着题型，看看学会多少</text></button>
+        <button class="lecture-entry" bindtap="onLectures"><text class="entry-kicker">听一听 · 分步讲</text><view>阿禾小讲播 <text>♫</text></view><text>不会的地方，慢慢讲给你</text></button>
+      </view>
+      <view wx:if="{{lastClassroom}}" class="last-drill">上次{{info.name}}小练 <text>{{lastClassroom.correct}} / {{lastClassroom.total}}</text> 答对{{lastClassroom.assisted ? ' · 借助讲解 ' + lastClassroom.assisted + ' 题' : ''}}</view>
+      <view class="class-card">
+        <view class="card-eyebrow">{{info.name}}小课堂 <text>每次 5 {{info.unit}}</text></view>
+        <view class="class-illustration" aria-hidden="true">
+          <view wx:if="{{subject === 'chinese'}}" class="paper-character"><text>字</text><view class="pencil">✎</view></view>
+          <view wx:elif="{{subject === 'math'}}" class="number-blocks"><text>3</text><text class="operator">+</text><text>5</text><text class="operator">=</text><text class="answer-block">?</text></view>
+          <view wx:else class="english-illustration"><text class="apple">🍎</text><text class="word-label">a p p l e</text></view>
+        </view>
+        <view class="class-title">{{info.title}}</view>
+        <view class="class-hint">{{info.hint}}</view>
+        <view wx:if="{{subject === 'math'}}" class="level-options">
+          <button class="level-chip {{level === '20' ? 'level-active' : ''}}" data-level="20" bindtap="onLevel">20 以内</button>
+          <button class="level-chip {{level === '100' ? 'level-active' : ''}}" data-level="100" bindtap="onLevel">100 以内</button>
+          <button class="level-chip {{level === 'times' ? 'level-active' : ''}}" data-level="times" bindtap="onLevel">乘除法</button>
+        </view>
+        <view wx:else class="class-detail">{{subject === 'chinese' ? '田字格 · 描着写 / 自己写 · 撤销一笔' : '听发音 · 输入拼写 · 错词再练'}}</view>
+        <button class="school-primary" bindtap="onStart">{{subject === 'chinese' ? '拿起笔，开始写' : subject === 'math' ? '准备好啦，开始算' : '开始单词练习'}} <text>→</text></button>
+        <button wx:if="{{subject === 'english'}}" class="text-link" bindtap="onEnglishCourse">去英语闯关，学单词攒砖块 ↗</button>
+      </view>
+      <view class="ways-heading"><text>再换一种方式学</text><text>每科 4 种玩法</text></view>
+      <view class="activity-grid">
+        <button wx:for="{{modes}}" wx:key="id" class="activity-tile" data-mode="{{item.id}}" bindtap="onActivity"><text class="activity-icon">{{item.icon}}</text><view>{{item.name}}</view><text class="activity-note">{{item.note}}</text></button>
+      </view>
+      <button class="materials-entry" bindtap="onMaterials">
+        <view class="notebook-icon" aria-hidden="true">本</view>
+        <view class="materials-copy"><view>我的教材 <text>{{lessonCount}} 份</text></view><text>拍照存课本 · 三科内容都能加</text></view>
+        <text class="entry-arrow">↗</text>
+      </button>
+      <view class="progress-note">
+        <view class="section-label">在这个设备上，慢慢积累</view>
+        <view class="practice-counts">
+          <view><text class="count-number">{{totals.chinese}}</text><text>次语文练习</text></view>
+          <view><text class="count-number">{{totals.math}}</text><text>次数学练习</text></view>
+          <view><text class="count-number">{{totals.english}}</text><text>次英语练习</text></view>
+        </view>
+      </view>
+    </block>
+
+    <block wx:elif="{{view === 'practice' && question}}">
+      <view class="lesson-heading"><text>{{reviewing ? '再练一遍 · ' : ''}}{{lessonTitle}}</text><text>{{index + 1}} / {{total}}</text></view>
+      <view class="lesson-progress"><view style="width: {{(index + (answered ? 1 : 0)) / total * 100}}%;"></view></view>
+      <view class="question-mode"><text>{{question.modeName}}</text><text wx:if="{{usedHelp}}">已看讲解</text><text wx:elif="{{classroom}}">课堂小练 · 第 {{index + 1}} 题</text></view>
+      <button wx:if="{{lessonPhoto}}" class="photo-reference" data-photo="{{lessonPhoto}}" bindtap="onPreviewPhoto">▧ 看看这份教材的照片 ↗</button>
+
+      <view wx:if="{{question.kind === 'writing'}}" class="writing-card">
+        <view class="character-heading"><view><text class="character-pinyin">{{question.pinyin}}</text><text class="character-name">{{question.text}}</text></view><view class="character-description"><text>{{question.meaning}}</text><text>先看一看，再写一写</text></view></view>
+        <view class="writing-frame">
+          <canvas id="writing-canvas" type="2d" class="writing-canvas" disable-scroll="{{true}}" catchtouchstart="onWriteStart" catchtouchmove="onWriteMove" bindtouchend="onWriteEnd" bindtouchcancel="onWriteEnd" aria-label="汉字练习田字格，按住鼠标或用手指拖动写字"></canvas>
+        </view>
+        <view wx:if="{{canvasError}}" class="canvas-error"><text>{{canvasError}}</text><button class="text-link" bindtap="onRetryCanvas">重新加载写字板</button></view>
+        <view wx:else class="writing-caption">{{!canvasReady ? '写字板准备中…' : answered ? '这次练写完成了，看看自己的作品吧' : '按住鼠标拖动写字，也可以用手指写'}}</view>
+        <view class="writing-tools">
+          <button bindtap="onUndo" disabled="{{!hasInk || answered}}">↶ 撤销</button>
+          <button bindtap="onClear" disabled="{{!hasInk || answered}}">清空</button>
+          <button class="guide-toggle {{guide ? 'guide-on' : ''}}" bindtap="onGuide">{{guide ? '隐藏范字' : '显示范字'}}</button>
+        </view>
+        <text class="gentle-note">自己对照范字检查，练字不自动打分。</text>
+      </view>
+
+      <view wx:elif="{{question.kind === 'choice'}}" class="answer-card choice-card">
+        <view wx:if="{{question.passage}}" class="reading-passage"><text class="passage-label">读一读这段小故事</text><text>{{question.passage}}</text></view>
+        <view class="choice-prompt">{{question.prompt}}</view>
+        <view wx:if="{{question.display}}" class="choice-display {{question.mode === 'pinyin' ? 'pinyin-character' : ''}}">{{question.display}}</view>
+        <block wx:if="{{question.listening}}">
+          <view class="listening-bubble">{{listeningFallback ? question.word : '♫'}}</view>
+          <view class="audio-row"><button bindtap="onPlayAudio" data-slow="{{false}}" disabled="{{!question.audio}}">{{audioState === 'playing' ? '正在读…' : audioState === 'loading' ? '准备发音…' : '听发音'}}</button><button bindtap="onPlayAudio" data-slow="{{true}}" disabled="{{!question.audio}}">慢速听</button></view>
+          <text class="gentle-note">{{listeningFallback ? '这一题改成看词练习' : heardAudio ? '听完啦，选出它的意思' : '先完整听一遍，再选择意思'}}</text>
+          <button wx:if="{{(!question.audio || audioState === 'error') && !listeningFallback && !answered}}" class="text-link" bindtap="onUseListeningText">发音没播出来，改成看词练习</button>
+        </block>
+        <view class="choice-options">
+          <button wx:for="{{question.options}}" wx:key="id" class="choice-option {{selectedChoice === item.id ? 'option-selected' : ''}} {{answered && item.label === question.answer ? 'option-correct' : ''}} {{answered && selectedChoice === item.id && !isCorrect ? 'option-wrong' : ''}}" data-id="{{item.id}}" bindtap="onChoice" disabled="{{answered}}" aria-label="{{item.label}}"><text class="option-letter">{{index + 1}}</text><text>{{item.label}}</text><text wx:if="{{answered && item.label === question.answer}}">✓</text></button>
+        </view>
+      </view>
+
+      <view wx:elif="{{question.kind === 'order'}}" class="answer-card order-card">
+        <text class="question-label">{{question.prompt}}</text>
+        <view class="order-translation">{{question.translation}}</view>
+        <view class="sentence-slots"><text wx:if="{{!orderSlots.length}}" class="sentence-placeholder">我的句子，等你来搭</text><text wx:for="{{orderSlots}}" wx:key="id" class="placed-word">{{item.text}}</text></view>
+        <view class="word-tiles"><button wx:for="{{orderOptions}}" wx:key="id" data-id="{{item.id}}" class="word-tile {{item.used ? 'word-used' : ''}}" disabled="{{answered || item.used}}" bindtap="onOrderPick">{{item.text}}</button></view>
+        <view class="order-tools"><button bindtap="onOrderUndo" disabled="{{answered || !orderSlots.length}}">↶ 撤销一个词</button><button bindtap="onOrderClear" disabled="{{answered || !orderSlots.length}}">重新排</button></view>
+      </view>
+
+      <view wx:else class="answer-card">
+        <text class="question-label {{question.hideExpression ? 'story-prompt' : ''}}">{{question.prompt || (subject === 'math' ? '认真想一想，再写下答案' : '这个词，英文怎么拼？')}}</text>
+        <view wx:if="{{question.kind === 'number' && !question.hideExpression}}" class="math-question">{{question.text}} <text wx:if="{{question.mode === 'arithmetic'}}">= ?</text></view>
+        <view wx:elif="{{question.hideExpression}}" class="story-picture" aria-hidden="true">✎ <text>把故事里的数量，写成答案</text></view>
+        <block wx:elif="{{question.kind === 'spell'}}">
+          <text class="translation">{{question.translation}}</text>
+          <view class="audio-row">
+            <button data-slow="{{false}}" bindtap="onPlayAudio" disabled="{{!question.audio}}">♫ {{audioState === 'loading' ? '准备发音…' : audioState === 'playing' ? '正在读…' : '听发音'}}</button>
+            <button data-slow="{{true}}" bindtap="onPlayAudio" disabled="{{!question.audio}}">慢速听</button>
+          </view>
+          <text wx:if="{{!question.audio}}" class="gentle-note">这个词还没有录音，可以照中文练拼写。</text>
+          <text wx:elif="{{audioState === 'error'}}" class="gentle-note">发音暂时没播出来，可以重听或继续拼写。</text>
+        </block>
+        <label class="input-label" for="answer-input">{{subject === 'math' ? '我的答案' : '我的拼写'}}</label>
+        <input id="answer-input" class="answer-input {{subject === 'math' ? 'numeric-input' : ''}}" type="{{subject === 'math' ? 'number' : 'text'}}" value="{{answer}}" placeholder="{{subject === 'math' ? '输入数字' : '输入英文单词或短语'}}" maxlength="{{subject === 'math' ? 5 : 80}}" disabled="{{answered}}" confirm-type="done" bindinput="onAnswer" bindconfirm="onCheck" adjust-position="{{true}}" aria-label="{{subject === 'math' ? '输入数字答案' : '输入英文拼写'}}" />
+      </view>
+
+      <view class="help-actions"><button bindtap="onHelp">{{helpOpen ? '收起本题解法' : '给我一点提示'}}</button><button class="listen-help" bindtap="onListenHelp">♫ 不会，听讲解</button></view>
+      <view wx:if="{{helpOpen}}" class="question-help"><view class="help-heading">阿禾老师 · 这道题这样想</view><text class="help-hint">{{question.hint}}</text><view wx:for="{{question.explanation}}" wx:key="*this" class="help-step"><text>{{index + 1}}</text><view>{{item}}</view></view><text class="help-footnote">看完后可以收起来，再自己试一试。</text></view>
+      <view wx:if="{{answered}}" class="answer-feedback {{question.kind === 'writing' || isCorrect ? 'feedback-good' : 'feedback-retry'}}" aria-role="status"><text>{{question.kind === 'writing' ? '✎' : isCorrect ? '✓' : '↻'}}</text><view>{{feedback}}<text wx:if="{{question.kind !== 'writing' && !isCorrect}}">没关系，这一轮结束后可以再练。</text></view></view>
+      <button wx:if="{{!answered}}" class="school-primary practice-submit" bindtap="onCheck" disabled="{{question.kind === 'writing' && (!hasInk || !canvasReady)}}">{{question.kind === 'writing' ? '我写好了' : '检查答案'}} →</button>
+      <button wx:else class="school-primary practice-submit" bindtap="onNext">{{index + 1 === total ? '完成这一轮' : question.kind === 'writing' ? '写下一个字' : '下一题'}} →</button>
+    </block>
+
+    <view wx:elif="{{view === 'done'}}" class="completion-card">
+      <text class="completion-stamp">完成</text>
+      <view class="class-title">{{classroom ? '课堂小练，完成啦！' : '又学会了一点点！'}}</view>
+      <view class="completion-score">{{writingOnly ? total : correct}}<text>{{writingOnly ? ' 个汉字练写' : ' / ' + scoredTotal + ' 答对'}}</text></view>
+      <view class="class-hint">{{writingOnly ? '认真写过的每一笔，都算数。' : mistakeCount ? '还有 ' + mistakeCount + ' 题，再试一遍会更熟悉。' : '这一轮都答对啦，给自己一个小小的鼓励。'}}</view>
+      <view wx:if="{{classroom}}" class="drill-summary"><view wx:for="{{summaryRows}}" wx:key="mode"><text>{{item.name}}</text><text>{{item.correct}} / {{item.total}}</text></view></view>
+      <view wx:if="{{assistedCount}}" class="assisted-note">这次有 {{assistedCount}} 题借助了讲解。愿意弄懂，也是一种进步。</view>
+      <button wx:if="{{mistakeCount}}" class="school-primary" bindtap="onReviewMistakes">错题再练一遍 →</button>
+      <button wx:elif="{{classroom}}" class="school-primary" bindtap="onStartDrill">再来一组课堂小练 →</button>
+      <button wx:else class="school-primary" bindtap="onAgain">这一组，再练一遍 →</button>
+      <button class="text-link" bindtap="onBack">回教室，换一组内容</button>
+    </view>
+
+    <block wx:elif="{{view === 'lectures'}}">
+      <view class="teacher-welcome"><view class="teacher-avatar">禾</view><view><view>阿禾的小讲播</view><text>每次讲一个方法，分成 3 小步。</text></view></view>
+      <view class="lecture-intro">可以一边看板书，一边听讲解。听不懂就暂停、慢速听，听完再做几题。</view>
+      <button wx:for="{{miniLessons}}" wx:key="id" class="lecture-list-item" data-id="{{item.id}}" bindtap="onOpenLecture"><text class="lecture-number">0{{index + 1}}</text><view><view>{{item.title}}</view><text>{{item.summary}}</text></view><text class="lecture-play-symbol">▶</text></button>
+    </block>
+
+    <block wx:elif="{{view === 'lecture' && lectureSlide}}">
+      <view class="teacher-welcome lecture-teacher"><view class="teacher-avatar">禾</view><view><view>{{lecture.title}}</view><text>阿禾老师 · 第 {{lectureStep + 1}} / {{lecture.steps.length}} 步</text></view></view>
+      <view class="lecture-step-tabs"><button wx:for="{{lecture.steps}}" wx:key="title" class="{{lectureStep === index ? 'lecture-step-active' : ''}}" data-index="{{index}}" bindtap="onLectureStep">{{index + 1}}. {{item.title}}</button></view>
+      <view class="lecture-board"><view class="board-kicker">今天的板书</view><view class="board-title">{{lectureSlide.title}}</view><text class="board-content">{{lectureSlide.board}}</text><view class="chalk-tray"><text></text><text></text><text></text></view></view>
+      <view class="lecture-player">
+        <view class="lecture-player-controls"><button class="lecture-play" bindtap="onLecturePlay">{{lectureAudioState === 'playing' ? 'Ⅱ 暂停' : lectureAudioState === 'loading' ? 'Ⅱ 准备中' : lectureAudioState === 'paused' ? '▶ 继续听' : lectureAudioState === 'ended' ? '↻ 再听一遍' : '▶ 听老师讲'}}</button><button bindtap="onLectureReplay" aria-label="从头重听这一步">↻ 重听</button><button class="{{lectureSlow ? 'slow-active' : ''}}" bindtap="onLectureSlow">{{lectureSlow ? '0.8× 慢速' : '1× 常速'}}</button></view>
+        <view class="lecture-track"><view style="width: {{lectureProgress}}%;"></view></view>
+        <text wx:if="{{lectureAudioState === 'error'}}" class="lecture-error" aria-role="alert">刚才没播出来，点重听再试。也可以先看下面的讲解。</text>
+        <text wx:elif="{{lectureAudioState === 'ended'}}" class="lecture-status">这一步讲完啦，准备好后再继续。</text>
+        <view class="lecture-transcript"><text>这一段，老师说</text><view>{{lectureSlide.transcript}}</view></view>
+      </view>
+      <view class="lecture-navigation"><button bindtap="onLecturePrevious" disabled="{{lectureStep === 0}}">← 上一步</button><button wx:if="{{lectureStep + 1 < lecture.steps.length}}" class="lecture-next" bindtap="onLectureNext">下一步，继续听 →</button><button wx:else class="lecture-next" bindtap="onLecturePractice">{{lectureFromQuestion ? '回到这题试试看' : '听懂啦，练一练'}} →</button></view>
+      <button wx:if="{{lectureFromQuestion && lectureStep + 1 < lecture.steps.length}}" class="text-link" bindtap="onLecturePractice">我有思路了，回到刚才那道题</button>
+      <view class="local-note">{{lectureFromQuestion ? '这里讲的是解题方法；回到原题，还能看这道题的具体解法。' : '声音和板书可以反复看、反复听，按自己的节奏学。'}}</view>
+    </block>
+
+    <block wx:elif="{{view === 'materials'}}">
+      <view class="materials-intro"><view class="section-title">你带来的，也是好教材</view><text>保存课本照片，填上想练的内容，就能在小镇里学。</text></view>
+      <button class="school-primary" bindtap="onAddMaterial">＋ 添加一份教材</button>
+      <view wx:if="{{!lessons.length}}" class="materials-empty"><text class="empty-book">▤</text><view>第一份教材，等你来放</view><text>汉字、算式、英文单词都可以。<text class="line-break">没有照片，也能直接输入内容。</text></text></view>
+      <view wx:for="{{lessons}}" wx:key="id" class="lesson-card">
+        <view class="lesson-meta"><text class="subject-tag tag-{{item.subject}}">{{item.subjectName}}</text><text>{{item.count}} 项练习{{item.photo ? ' · 附照片' : ''}}</text></view>
+        <view class="lesson-title">{{item.title}}</view>
+        <view class="lesson-excerpt">{{item.text}}</view>
+        <view class="lesson-actions"><button class="lesson-start" data-id="{{item.id}}" bindtap="onStudyMaterial">开始练习 →</button><button wx:if="{{item.photo}}" class="lesson-photo" data-photo="{{item.photo}}" bindtap="onPreviewPhoto">看照片</button><button class="lesson-delete" data-id="{{item.id}}" bindtap="onDeleteMaterial" aria-label="删除{{item.title}}">删除</button></view>
+      </view>
+      <view class="local-note">教材、照片和这里的练习次数保存在当前设备，暂不跨设备同步。每份最多 40 项，可保存 16 份。</view>
+    </block>
+
+    <block wx:elif="{{view === 'editor'}}">
+      <view class="editor-card">
+        <view class="editor-step"><text>1</text><view>选一张课本照片 <text>可选</text></view></view>
+        <image wx:if="{{draftPhoto}}" class="draft-photo" src="{{draftPhoto}}" mode="aspectFit" data-photo="{{draftPhoto}}" bindtap="onPreviewPhoto" aria-label="已选择的教材照片，点击放大" />
+        <button class="photo-picker" bindtap="onChoosePhoto" loading="{{choosing}}" disabled="{{choosing || saving}}">▧ {{draftPhoto ? '换一张照片' : '拍照 / 从相册选择'}}</button>
+        <button wx:if="{{draftPhoto}}" class="text-link" bindtap="onRemovePhoto" disabled="{{saving}}">移除照片</button>
+        <view class="editor-step second-step"><text>2</text><view>填入要练的内容</view></view>
+        <view class="photo-explainer">照片用来对照。请把想练的内容写在下面，暂不自动识别照片中的文字。</view>
+        <label class="input-label" for="material-title">教材名字</label>
+        <input id="material-title" class="title-input" placeholder="例如：今天老师教的内容" maxlength="30" value="{{draftTitle}}" bindinput="onDraftTitle" disabled="{{saving}}" />
+        <label class="input-label" for="material-text">{{draftSubject === 'chinese' ? '写下汉字或一句话，会拆成单个字' : draftSubject === 'math' ? '每行一道整数算式（支持 + − × ÷）' : '每行一个英文单词或短语，再写中文'}} </label>
+        <textarea id="material-text" class="material-text" placeholder="{{example}}" value="{{draftText}}" maxlength="2000" bindinput="onDraftText" disabled="{{saving}}" auto-height="{{true}}" aria-label="教材练习内容" />
+        <view class="draft-count">{{draftCount ? '可以生成 ' + draftCount + ' 项练习' : '填好内容，保存后就能开始练习'}}</view>
+      </view>
+      <view wx:if="{{error}}" class="form-error" aria-role="alert">{{error}}</view>
+      <button class="school-primary" bindtap="onSaveMaterial" disabled="{{saving || choosing}}" loading="{{saving}}">{{saving ? '正在保存教材…' : '保存到我的教材'}} →</button>
+      <view class="local-note">照片和教材只保存在当前设备。</view>
+    </block>
+  </view>
+</view>

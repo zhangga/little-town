@@ -4,7 +4,7 @@ const { supplyRequestID } = require('./town-shop')
 const interiors = {
   '电影院': { theme: 'cinema', kicker: '小镇光影俱乐部', host: '放映员小光', welcome: '挑一部喜欢的电影，灯暗下来，故事就开始了。', room: '今晚，去故事里旅行', sign: 'NOW SHOWING', props: [{ icon: '🎟️', label: '售票处' }, { icon: '🍿', label: '爆米花台' }, { icon: '🎞️', label: '放映室' }] },
   '餐厅': { theme: 'restaurant', kicker: '围上围裙，今天你当主厨', host: '厨师阿米', welcome: '食材都备好啦！来做一份热腾腾的小镇料理。', room: '有烟火气的小厨房', sign: 'TOWN KITCHEN', props: [{ icon: '🥕', label: '新鲜菜篮' }, { icon: '🍲', label: '料理台' }, { icon: '🪑', label: '窗边餐桌' }] },
-  '商店': { theme: 'shop', kicker: '街角杂货铺 · 今日营业中', host: '店主栗栗', welcome: '买点吃喝，也来帮我照着清单挑东西吧。', room: '装满日常的小货架', sign: 'CORNER SHOP', props: [{ icon: '🥖', label: '面包架' }, { icon: '🧃', label: '饮品柜' }, { icon: '🧺', label: '购物篮' }] },
+  '商店': { theme: 'shop', kicker: '小镇商场 · 今日营业中', host: '店主栗栗', welcome: '楼上挑家具，楼下买吃喝，把喜欢的东西带回家吧。', room: '一楼 · 日常补给', sign: 'TOWN MALL', props: [{ icon: '🥖', label: '面包架' }, { icon: '🧃', label: '饮品柜' }, { icon: '🧺', label: '购物篮' }] },
   '学校': { theme: 'school', kicker: '小镇课堂 · 欢迎新同学', host: '老师阿禾', welcome: '黑板上有新问题，带着好奇心来试一试。', room: '今天，也发现一点新知识', sign: 'HELLO, CLASS!', props: [{ icon: '🎒', label: '书包柜' }, { icon: '📝', label: '小课桌' }, { icon: '🔔', label: '上课铃' }] },
   '图书馆': { theme: 'library', kicker: '窗边的故事屋', host: '馆员知知', welcome: '书页里藏着森林和大海，你想先去哪里？', room: '翻开书，就是另一片天地', sign: 'ONCE UPON A TIME', props: [{ icon: '📚', label: '故事书架' }, { icon: '🪴', label: '阳光窗台' }, { icon: '🛋️', label: '阅读角' }] },
   '公园': { theme: 'park', kicker: '慢慢走，发现身边的小生命', host: '园丁小叶', welcome: '给口渴的小花浇浇水，再去树梢找找小鸟。', room: '把好心情种在这里', sign: 'A LITTLE GREEN', props: [{ icon: '🌷', label: '花圃' }, { icon: '⛲', label: '小喷泉' }, { icon: '🌳', label: '观鸟树' }] },

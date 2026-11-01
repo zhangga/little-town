@@ -1,4 +1,4 @@
-const { townSprite, buildingEmoji } = require('./assets')
+const { townSprite, buildingEmoji, buildingName } = require('./assets')
 const { buildingLife } = require('./town-life')
 const { walkingMap } = require('./town-stroll')
 const { buildTownGrid } = require('./town-layout')
@@ -11,6 +11,8 @@ function describeBuilding(item, user) {
   // 解锁由接口决定；当前版本按砖块开放，不展示尚未实现的等级门槛。
   const ready = !built && !!item.can_build && missing === 0
   return Object.assign({}, item, {
+    displayName: buildingName(item.name),
+    description: item.name === '商店' ? '有玻璃中庭和屋顶花园的商场，挑选家具、家电，也能补充日常吃喝。' : item.description,
     sprite: townSprite(item.name), lifeHint: buildingLife[item.name] || '', cost_bricks: cost,
     is_built: built, can_build: ready, missing,
     progress: cost ? Math.min(100, Math.floor(bricks / cost * 100)) : 100,
@@ -35,6 +37,7 @@ function catalogState(raw, user, filter, selectedID) {
 
 function townPlots(raw, recentName, withHome, saved = {}) {
   const buildings = raw.map((item, index) => Object.assign({}, item, {
+    displayName: buildingName(item.name),
     sprite: townSprite(item.name), icon: buildingEmoji(item.name), lifeHint: buildingLife[item.name] || '', builtDate: String(item.built_at || '').slice(0, 10),
     isNew: item.name === recentName, delay: Math.min(index, 5) * 60
   }))

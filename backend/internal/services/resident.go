@@ -30,6 +30,9 @@ type ResidentShopItem struct {
 	Price       int    `json:"price"`
 	Owned       bool   `json:"owned"`
 	Equipped    bool   `json:"equipped"`
+	Category    string `json:"category,omitempty"`
+	Width       int    `json:"width,omitempty"`
+	Depth       int    `json:"depth,omitempty"`
 }
 
 var residentCatalog = []ResidentShopItem{
@@ -80,6 +83,11 @@ func residentItem(id string) (ResidentShopItem, bool) {
 			return item, true
 		}
 	}
+	for _, item := range furnitureCatalog {
+		if item.ID == id {
+			return item, true
+		}
+	}
 	return ResidentShopItem{}, false
 }
 
@@ -120,11 +128,14 @@ type ResidentWallet struct {
 	Bricks int `json:"bricks"`
 }
 type ResidentState struct {
-	Resident ResidentView       `json:"resident"`
-	Wallet   ResidentWallet     `json:"wallet"`
-	Daily    ResidentDaily      `json:"daily"`
-	Home     ResidentHome       `json:"home"`
-	Shop     []ResidentShopItem `json:"shop"`
+	Resident      ResidentView       `json:"resident"`
+	Wallet        ResidentWallet     `json:"wallet"`
+	Daily         ResidentDaily      `json:"daily"`
+	Home          ResidentHome       `json:"home"`
+	Shop          []ResidentShopItem `json:"shop"`
+	Furniture     []ResidentShopItem `json:"furniture"`
+	Room          HomeRoom           `json:"room"`
+	MallAvailable bool               `json:"mall_available"`
 }
 
 type ResidentService struct {
@@ -185,6 +196,15 @@ func (s *ResidentService) Purchase(userID uint, id string) (*ResidentState, erro
 			return err
 		}
 		if item.Price > 0 && owned == 0 {
+			if item.Kind == "furniture" {
+				available, err := residentMallAvailable(tx, userID)
+				if err != nil {
+					return err
+				}
+				if !available {
+					return ErrMallLocked
+				}
+			}
 			if user.Coins < item.Price {
 				return ErrResidentCoins
 			}
@@ -201,6 +221,9 @@ func (s *ResidentService) Purchase(userID uint, id string) (*ResidentState, erro
 }
 
 func equipResident(tx *gorm.DB, resident *models.Resident, item ResidentShopItem) error {
+	if item.Kind == "furniture" {
+		return nil
+	}
 	if item.Kind == "outfit" {
 		resident.OutfitID = item.ID
 		return tx.Model(resident).Update("outfit_id", item.ID).Error
@@ -264,6 +287,23 @@ func (s *ResidentService) state(tx *gorm.DB, user *models.User, resident *models
 		shop[i].Owned = shop[i].Price == 0 || ownedMap[shop[i].ID]
 		shop[i].Equipped = shop[i].ID == resident.OutfitID || shop[i].ID == resident.DecorationID
 	}
+	room, err := readHomeRoom(resident)
+	if err != nil {
+		return nil, err
+	}
+	furniture := append([]ResidentShopItem{}, furnitureCatalog...)
+	for i := range furniture {
+		furniture[i].Owned = furniture[i].Price == 0 || ownedMap[furniture[i].ID]
+		for _, placed := range room.Layout {
+			if placed.ID == furniture[i].ID {
+				furniture[i].Equipped = true
+			}
+		}
+	}
+	mallAvailable, err := residentMallAvailable(tx, user.ID)
+	if err != nil {
+		return nil, err
+	}
 	var total, reviews int64
 	today := tx.Model(&models.ResidentStudy{}).Where("user_id = ? AND day = ?", user.ID, TodayString())
 	if err := today.Count(&total).Error; err != nil {
@@ -288,7 +328,7 @@ func (s *ResidentService) state(tx *gorm.DB, user *models.User, resident *models
 		Resident: ResidentView{Resident: *resident, Level: level, Title: title, XPCurrent: current, XPNeeded: needed},
 		Wallet:   ResidentWallet{Coins: user.Coins, Bricks: user.Bricks},
 		Daily:    ResidentDaily{Completed: completed, Goal: s.dailyGoal, Reviews: int(reviews), Done: completed >= s.dailyGoal, BonusXP: 10},
-		Home:     home, Shop: shop,
+		Home:     home, Shop: shop, Furniture: furniture, Room: room, MallAvailable: mallAvailable,
 	}, nil
 }
 

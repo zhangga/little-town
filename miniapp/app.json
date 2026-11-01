@@ -10,6 +10,14 @@
   ],
   "subpackages": [
     {
+      "root": "home",
+      "pages": ["pages/room/room", "pages/mall/mall"]
+    },
+    {
+      "root": "school",
+      "pages": ["pages/classroom/classroom"]
+    },
+    {
       "root": "kitchen",
       "pages": ["pages/restaurant/restaurant"]
     },
@@ -51,7 +59,7 @@
       },
       {
         "pagePath": "pages/learn/learn",
-        "text": "学单词"
+        "text": "学习"
       },
       {
         "pagePath": "pages/build/build",

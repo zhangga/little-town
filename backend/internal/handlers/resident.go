@@ -23,7 +23,11 @@ func residentResponse(c *gin.Context, state *services.ResidentState, err error) 
 		c.JSON(http.StatusNotFound, gin.H{"error": "用户不存在"})
 		return
 	}
-	for _, expected := range []error{services.ErrResidentName, services.ErrResidentItem, services.ErrResidentCoins, services.ErrResidentOwned, services.ErrResidentBricks, services.ErrResidentHome, services.ErrResidentMaxHome} {
+	if errors.Is(err, services.ErrRoomChanged) {
+		c.JSON(http.StatusConflict, gin.H{"error": err.Error()})
+		return
+	}
+	for _, expected := range []error{services.ErrResidentName, services.ErrResidentItem, services.ErrResidentCoins, services.ErrResidentOwned, services.ErrResidentBricks, services.ErrResidentHome, services.ErrResidentMaxHome, services.ErrRoomLayout, services.ErrMallLocked} {
 		if errors.Is(err, expected) {
 			c.JSON(http.StatusBadRequest, gin.H{"error": expected.Error()})
 			return
@@ -31,6 +35,19 @@ func residentResponse(c *gin.Context, state *services.ResidentState, err error) 
 	}
 	_ = c.Error(err)
 	c.JSON(http.StatusInternalServerError, gin.H{"error": "小镇暂时没能保存，请稍后重试"})
+}
+
+func (h *ResidentHandler) SaveRoom(c *gin.Context) {
+	var req struct {
+		ExpectedVersion *int                     `json:"expected_version" binding:"required"`
+		Layout          []services.RoomPlacement `json:"layout"`
+	}
+	if err := c.ShouldBindJSON(&req); err != nil || req.ExpectedVersion == nil || req.Layout == nil || len(req.Layout) > 12 {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "请选择有效的房间布置"})
+		return
+	}
+	state, err := h.service.SaveRoom(getCurrentUserID(c), *req.ExpectedVersion, req.Layout)
+	residentResponse(c, state, err)
 }
 func (h *ResidentHandler) Get(c *gin.Context) {
 	state, err := h.service.Get(getCurrentUserID(c))

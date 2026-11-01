@@ -79,6 +79,7 @@ func TestResidentMySQLLifecycle(t *testing.T) {
 	router.POST("/purchase", h.Purchase)
 	router.POST("/equip", h.Equip)
 	router.POST("/upgrade", h.UpgradeHome)
+	router.PUT("/room", h.SaveRoom)
 	router.POST("/answer", learn.SubmitAnswer)
 	router.POST("/build", NewBuildingHandler(db).BuildBuilding)
 	request := func(method, path string, body interface{}) (int, map[string]interface{}) {
@@ -256,4 +257,82 @@ func TestResidentMySQLLifecycle(t *testing.T) {
 	if _, err := services.NewResidentService(db, 2).UpgradeHome(other.ID, 1); err != services.ErrResidentBricks {
 		t.Fatalf("insufficient bricks: %v", err)
 	}
+	// Furniture uses the same wallet lock and ownership ledger, without changing the outfit/garden.
+	residentService := services.NewResidentService(db, 2)
+	if _, err := residentService.Purchase(user.ID, "tv"); err != services.ErrMallLocked {
+		t.Fatalf("unbuilt mall accepted furniture purchase: %v", err)
+	}
+	mall := models.Building{Name: "商店", CostBricks: 5}
+	if err := db.Create(&mall).Error; err != nil {
+		t.Fatal(err)
+	}
+	t.Cleanup(func() {
+		db.Where("building_id = ?", mall.ID).Delete(&models.UserBuilding{})
+		db.Unscoped().Delete(&mall)
+	})
+	if err := db.Create(&models.UserBuilding{UserID: user.ID, BuildingID: mall.ID, BuiltAt: time.Now()}).Error; err != nil {
+		t.Fatal(err)
+	}
+	if err := db.Create(&models.UserBuilding{UserID: other.ID, BuildingID: mall.ID, BuiltAt: time.Now()}).Error; err != nil {
+		t.Fatal(err)
+	}
+	if _, err := residentService.Purchase(other.ID, "tv"); err != services.ErrResidentCoins {
+		t.Fatalf("poor furniture purchase: %v", err)
+	}
+	ok("POST", "/purchase", gin.H{"item_id": "tv", "price": 0})
+	wallet(70, 74)
+	codes = make(chan int, 8)
+	for range 8 {
+		wg.Add(1)
+		go func() {
+			defer wg.Done()
+			code, _ := request("POST", "/purchase", gin.H{"item_id": "sofa"})
+			codes <- code
+		}()
+	}
+	wg.Wait()
+	close(codes)
+	for code := range codes {
+		if code != 200 {
+			t.Fatalf("parallel furniture purchase: %d", code)
+		}
+	}
+	wallet(25, 74)
+	ownedFurniture, err := residentService.Get(user.ID)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if ownedFurniture.Resident.OutfitID != "builder" || ownedFurniture.Resident.DecorationID != "flowers" || !ownedFurniture.MallAvailable {
+		t.Fatalf("furniture changed clothing/garden: %+v", ownedFurniture.Resident)
+	}
+	layout := []services.RoomPlacement{{ID: "chair", X: 1, Y: 3}, {ID: "tv", X: 3, Y: 0}, {ID: "sofa", X: 3, Y: 3}}
+	ok("PUT", "/room", gin.H{"expected_version": 0, "layout": layout})
+	storedRoom, err := residentService.Get(user.ID)
+	if err != nil || storedRoom.Room.Version != 1 || len(storedRoom.Room.Layout) != 3 {
+		t.Fatalf("room did not persist: %+v %v", storedRoom, err)
+	}
+	status, _ = request("PUT", "/room", gin.H{"expected_version": 0, "layout": []services.RoomPlacement{}})
+	if status != 409 {
+		t.Fatalf("stale room accepted: %d", status)
+	}
+	for _, bad := range []interface{}{
+		gin.H{"layout": layout}, gin.H{"expected_version": 1},
+		gin.H{"expected_version": 1, "layout": []services.RoomPlacement{{ID: "bed"}}},
+		gin.H{"expected_version": 1, "layout": []services.RoomPlacement{{ID: "chair", X: 3, Y: 6}}},
+	} {
+		status, _ = request("PUT", "/room", bad)
+		if status != 400 {
+			t.Fatalf("invalid room accepted: %d %+v", status, bad)
+		}
+	}
+	if _, err := residentService.SaveRoom(other.ID, 0, layout); err != services.ErrResidentOwned {
+		t.Fatalf("other user's furniture accepted: %v", err)
+	}
+	ok("PUT", "/room", gin.H{"expected_version": 1, "layout": []services.RoomPlacement{}})
+	emptyRoom, err := residentService.Get(user.ID)
+	if err != nil || len(emptyRoom.Room.Layout) != 0 {
+		t.Fatalf("empty room restored starter furniture: %+v %v", emptyRoom, err)
+	}
+	ok("POST", "/purchase", gin.H{"item_id": "tv"})
+	wallet(25, 74)
 }

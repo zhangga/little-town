@@ -60,6 +60,10 @@ MySQL 使用独立的 `little-town-mysqldata` 数据卷。原 PostgreSQL 容器�
 
 `node scripts/restaurant-preview.cjs --serve 9433` 编译实际厨房 WXML/WXSS，提供空厨房、成品、熟客点单、招牌菜单、回忆卡和错误恢复等演示状态。需要安装微信开发者工具，或通过 `WECHAT_COMPILER_DIR` 指定包含 `wcc`、`wcsc` 的目录；生成文件在 `output/restaurant-preview`（已忽略）。这是静态布局预览，业务行为由 `node --test scripts/restaurant-test.cjs` 与后端 `TestRestaurantMySQLLifecycle` 验证。
 
+## 学校三科课堂预览
+
+学校三科回归：`node --test scripts/school-test.cjs scripts/school-lessons-test.cjs` 覆盖 12 种玩法、五题课堂小练、讲解播放与生命周期、36 段音频校验、错题重练、照片教材、账号隔离及保存失败。`node scripts/school-preview.cjs` 用微信编译器生成 26 个实际 WXML/WXSS 场景；直接打开 `output/school-preview/index.html`，或加 `--serve 9434` 启动本机预览。预览里的写字板与小讲播播放器运行产品同一套逻辑，其余按钮仅用于布局展示。修改小讲播文稿后，在 macOS 上运行 `python3 scripts/generate-school-audio.py` 重建有变化的语音片段，无需外部语音服务。
+
 ## 前置要求
 
 Docker Desktop（Windows/macOS）或 docker engine（Linux）。脚本会检查三件事并给出对应提示：Docker 是否安装、compose 命令是否可用、守护进程是否运行。

@@ -61,6 +61,10 @@ Page(withTapSounds({
   scrollToTop() {
     if (this._visible && wx.pageScrollTo) wx.pageScrollTo({ scrollTop: 0, duration: 0 })
   },
+  onSchoolSubject(e) {
+    const subject = e.currentTarget.dataset.subject
+    if (['chinese', 'math', 'english'].includes(subject)) wx.navigateTo({ url: '/school/pages/classroom/classroom?subject=' + subject })
+  },
   setRewardState(patch) {
     const state = Object.assign({}, this.data, patch)
     this.setData(Object.assign({}, patch, { rewardHeader: makeRewardHeader(state), dailyRewardQuota: makeDailyRewardQuota(state) }))

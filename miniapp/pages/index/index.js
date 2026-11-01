@@ -211,6 +211,7 @@ Page(withTapSounds(Object.assign({
   },
   onNoop() {},
   onGoLearn() { wx.switchTab({ url: '/pages/learn/learn' }) },
+  onGoSchool() { wx.navigateTo({ url: '/school/pages/classroom/classroom' }) },
   onGoBuild() { wx.switchTab({ url: '/pages/build/build' }) },
   onGoResident() { wx.switchTab({ url: '/pages/resident/resident' }) },
   onDailyTask() { this.onGoLearn() },

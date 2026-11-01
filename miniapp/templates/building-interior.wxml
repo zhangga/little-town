@@ -61,6 +61,6 @@
     </block>
     <view wx:else class="activity-result"><text class="activity-result-kicker">{{session.kind === 'movie' ? '谢谢观看' : '今天的小小成就'}}</text><view>{{session.result}}</view><button bindtap="onActivityReplay" class="activity-replay">{{session.kind === 'movie' ? '再看一遍 · 免费' : '再玩一次 · 免费'}}</button></view>
     <view class="activity-ticket"><text>🎟️ {{session.receipt.name || session.title}}</text><text>已付 {{session.receipt.price}} 金币 · 重玩免费</text></view>
-    <button class="activity-back" bindtap="onActivityLobby">返回{{selected.name}}大厅</button>
+    <button class="activity-back" bindtap="onActivityLobby">返回{{selected.displayName || selected.name}}大厅</button>
   </view>
 </template>

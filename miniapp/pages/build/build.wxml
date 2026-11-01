@@ -12,7 +12,7 @@
   <view wx:elif="{{failed}}" class="panel empty"><text>图纸还没送到，重新试试吧。</text><button class="btn btn-sun" bindtap="loadBuildings">重新加载</button></view>
   <block wx:else>
     <view wx:if="{{recommended}}" class="next-project" data-id="{{recommended.id}}" bindtap="onSelect" role="button" aria-label="查看推荐建筑图纸">
-      <view class="project-copy"><text class="project-kicker">下一块小镇拼图</text><view class="project-title">造一座{{recommended.name}}</view><text class="project-desc">{{recommended.can_build ? '材料齐了，今天就能动工！' : '攒下的每一块砖，都让它更近一步。'}}</text><view class="project-cta">{{recommended.can_build ? '查看图纸，开始建造' : recommended.status + ' · 查看图纸'}} <text>→</text></view></view>
+      <view class="project-copy"><text class="project-kicker">下一块小镇拼图</text><view class="project-title">造一座{{recommended.displayName || recommended.name}}</view><text class="project-desc">{{recommended.can_build ? '材料齐了，今天就能动工！' : '攒下的每一块砖，都让它更近一步。'}}</text><view class="project-cta">{{recommended.can_build ? '查看图纸，开始建造' : recommended.status + ' · 查看图纸'}} <text>→</text></view></view>
       <view class="project-art"><template is="voxel" data="{{sprite: recommended.sprite}}" /></view>
     </view>
     <view wx:elif="{{buildings.length}}" class="collection-complete" bindtap="onGoTown"><text>小镇图鉴集齐啦！</text><text>去看看你亲手建成的 {{builtCount}} 座建筑 →</text></view>
@@ -23,10 +23,10 @@
       <button class="catalog-tab {{filter === 'built' ? 'is-active' : ''}}" data-filter="built" bindtap="onFilter">已落成 {{builtCount}}</button>
     </view>
     <view class="blueprint-grid">
-      <button wx:for="{{visibleBuildings}}" wx:key="id" class="blueprint-card {{item.is_built ? 'is-built' : ''}}" data-id="{{item.id}}" bindtap="onSelect" aria-label="{{item.name}}，{{item.status}}">
+      <button wx:for="{{visibleBuildings}}" wx:key="id" class="blueprint-card {{item.is_built ? 'is-built' : ''}}" data-id="{{item.id}}" bindtap="onSelect" aria-label="{{item.displayName || item.name}}，{{item.status}}">
         <view class="card-state {{item.can_build ? 'state-ready' : ''}} {{item.is_built ? 'state-built' : ''}}">{{item.status}}</view>
         <view class="card-art"><template is="voxel" data="{{sprite: item.sprite}}" /></view>
-        <view class="card-name">{{item.name === '宠物医院' ? '🐾 ' : ''}}{{item.name}}</view>
+        <view class="card-name">{{item.name === '宠物医院' ? '🐾 ' : ''}}{{item.displayName || item.name}}</view>
         <view class="card-caption">{{item.description}}</view>
         <view class="card-footer"><view class="card-cost"><view class="mini-brick"><template is="voxel" data="{{sprite: brickSprite}}" /></view><text>{{item.cost_bricks}} 砖</text></view><text class="card-arrow">{{item.is_built ? '✓' : '＋'}}</text></view>
       </button>
@@ -40,7 +40,7 @@
       <view class="sheet-top"><text>{{completed ? '小镇又长大了一点' : '建造图纸'}}</text><button class="sheet-close" disabled="{{building}}" bindtap="onCloseDetail" aria-label="关闭图纸">×</button></view>
       <scroll-view class="sheet-body" scroll-y>
       <view class="sheet-art {{building ? 'is-building' : ''}} {{completed ? 'has-landed' : ''}}"><template is="voxel" data="{{sprite: selected.sprite}}" /></view>
-      <view class="sheet-title">{{selected.name}}{{completed ? '，落成！' : ''}}</view>
+      <view class="sheet-title">{{selected.displayName || selected.name}}{{completed ? '，落成！' : ''}}</view>
       <text class="sheet-description">{{completed ? '你学会的单词，变成了小镇的新风景。' : selected.description}}</text>
       <view wx:if="{{selected.lifeHint}}" class="completion-note">{{selected.lifeHint}}</view>
       <view wx:if="{{completed}}" class="completion-note">本次使用 {{completed.cost_bricks}} 砖 · 仓库剩余 {{user.bricks}} 砖</view>
