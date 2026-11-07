@@ -246,7 +246,7 @@ func TestResidentMySQLLifecycle(t *testing.T) {
 	wallet(145, 104)
 	ok("POST", "/upgrade", gin.H{"expected_level": 2})
 	wallet(145, 74)
-	reject("/upgrade", gin.H{"expected_level": 3})
+	reject("/upgrade", gin.H{"expected_level": 2})
 	isolated, err := services.NewResidentService(db, 2).Get(other.ID)
 	if err != nil || isolated.Resident.Name != "小镇长" || isolated.Resident.Experience != 0 {
 		t.Fatalf("user isolation: %+v %v", isolated, err)
@@ -305,20 +305,21 @@ func TestResidentMySQLLifecycle(t *testing.T) {
 	if ownedFurniture.Resident.OutfitID != "builder" || ownedFurniture.Resident.DecorationID != "flowers" || !ownedFurniture.MallAvailable {
 		t.Fatalf("furniture changed clothing/garden: %+v", ownedFurniture.Resident)
 	}
+	roomVersion := ownedFurniture.Room.Version
 	layout := []services.RoomPlacement{{ID: "chair", X: 1, Y: 3}, {ID: "tv", X: 3, Y: 0}, {ID: "sofa", X: 3, Y: 3}}
-	ok("PUT", "/room", gin.H{"expected_version": 0, "layout": layout})
+	ok("PUT", "/room", gin.H{"expected_version": roomVersion, "layout": layout})
 	storedRoom, err := residentService.Get(user.ID)
-	if err != nil || storedRoom.Room.Version != 1 || len(storedRoom.Room.Layout) != 3 {
+	if err != nil || storedRoom.Room.Version != roomVersion+1 || len(storedRoom.Room.Layout) != 3 {
 		t.Fatalf("room did not persist: %+v %v", storedRoom, err)
 	}
-	status, _ = request("PUT", "/room", gin.H{"expected_version": 0, "layout": []services.RoomPlacement{}})
+	status, _ = request("PUT", "/room", gin.H{"expected_version": roomVersion, "layout": []services.RoomPlacement{}})
 	if status != 409 {
 		t.Fatalf("stale room accepted: %d", status)
 	}
 	for _, bad := range []interface{}{
-		gin.H{"layout": layout}, gin.H{"expected_version": 1},
-		gin.H{"expected_version": 1, "layout": []services.RoomPlacement{{ID: "bed"}}},
-		gin.H{"expected_version": 1, "layout": []services.RoomPlacement{{ID: "chair", X: 3, Y: 6}}},
+		gin.H{"layout": layout}, gin.H{"expected_version": roomVersion + 1},
+		gin.H{"expected_version": roomVersion + 1, "layout": []services.RoomPlacement{{ID: "bed"}}},
+		gin.H{"expected_version": roomVersion + 1, "layout": []services.RoomPlacement{{ID: "chair", X: float64(ownedFurniture.Room.Size / 2), Y: float64(ownedFurniture.Room.Size - 1)}}},
 	} {
 		status, _ = request("PUT", "/room", bad)
 		if status != 400 {
@@ -328,11 +329,81 @@ func TestResidentMySQLLifecycle(t *testing.T) {
 	if _, err := residentService.SaveRoom(other.ID, 0, layout); err != services.ErrResidentOwned {
 		t.Fatalf("other user's furniture accepted: %v", err)
 	}
-	ok("PUT", "/room", gin.H{"expected_version": 1, "layout": []services.RoomPlacement{}})
+	angle := 137.5
+	freeLayout := []services.RoomPlacement{{ID: "sofa", X: 3.125, Y: 3.275, Angle: &angle}}
+	ok("PUT", "/room", gin.H{"expected_version": roomVersion + 1, "layout": freeLayout})
+	freeRoom, err := residentService.Get(user.ID)
+	if err != nil || freeRoom.Room.Version != roomVersion+2 || len(freeRoom.Room.Layout) != 1 || freeRoom.Room.Layout[0].Angle == nil || *freeRoom.Room.Layout[0].Angle != angle || freeRoom.Room.Layout[0].X != 3.125 || freeRoom.Room.Layout[0].Y != 3.275 {
+		t.Fatalf("continuous layout did not round-trip: %+v %v", freeRoom, err)
+	}
+	if _, err := residentService.SaveRoom(other.ID, 0, freeLayout); err != services.ErrResidentOwned {
+		t.Fatalf("other user's continuous furniture accepted: %v", err)
+	}
+	ok("PUT", "/room", gin.H{"expected_version": roomVersion + 2, "layout": []services.RoomPlacement{}})
 	emptyRoom, err := residentService.Get(user.ID)
 	if err != nil || len(emptyRoom.Room.Layout) != 0 {
 		t.Fatalf("empty room restored starter furniture: %+v %v", emptyRoom, err)
 	}
 	ok("POST", "/purchase", gin.H{"item_id": "tv"})
 	wallet(25, 74)
+	// Expansion is a paid, versioned mutation; concurrent requests charge once.
+	beforeVilla, err := residentService.Get(user.ID)
+	if err != nil {
+		t.Fatal(err)
+	}
+	villaCodes := make(chan int, 6)
+	for i := 0; i < 6; i++ {
+		wg.Add(1)
+		go func() {
+			defer wg.Done()
+			code, _ := request("POST", "/upgrade", gin.H{"expected_level": 3})
+			villaCodes <- code
+		}()
+	}
+	wg.Wait()
+	close(villaCodes)
+	villaSuccess := 0
+	for code := range villaCodes {
+		if code == 200 {
+			villaSuccess++
+		} else if code != 400 {
+			t.Fatalf("villa upgrade status: %d", code)
+		}
+	}
+	if villaSuccess != 1 {
+		t.Fatal("villa upgrade charged more than once")
+	}
+	wallet(25, 14)
+	villa, err := residentService.Get(user.ID)
+	if err != nil || villa.Room.Size != 16 || villa.Home.Level != 4 || villa.Room.Version != beforeVilla.Room.Version+1 {
+		t.Fatalf("villa did not expand %+v %v", villa, err)
+	}
+	status, _ = request("PUT", "/room", gin.H{"expected_version": beforeVilla.Room.Version, "layout": []services.RoomPlacement{}})
+	if status != 409 {
+		t.Fatalf("pre-expansion editor accepted: %d", status)
+	}
+	reject("/upgrade", gin.H{"expected_level": 4})
+	wallet(25, 14)
+	if err := db.Model(&models.User{}).Where("id = ?", user.ID).Updates(map[string]interface{}{"bricks": 100, "coins": 500}).Error; err != nil {
+		t.Fatal(err)
+	}
+	ok("POST", "/upgrade", gin.H{"expected_level": 4})
+	wallet(500, 0)
+	ok("POST", "/purchase", gin.H{"item_id": "pool"})
+	wallet(320, 0)
+	ok("POST", "/purchase", gin.H{"item_id": "pool"})
+	wallet(320, 0)
+	mansion, err := residentService.Get(user.ID)
+	if err != nil || mansion.Room.Size != 20 || mansion.Home.Area != 400 || mansion.Home.NextLevel != 0 {
+		t.Fatalf("mansion metadata %+v %v", mansion, err)
+	}
+	zero := 0.0
+	mansionLayout := []services.RoomPlacement{{ID: "chair", X: 1.5, Y: 3.5, Angle: &zero}, {ID: "pool", X: 17.5, Y: 16.5, Angle: &zero}}
+	ok("PUT", "/room", gin.H{"expected_version": mansion.Room.Version, "layout": mansionLayout})
+	if _, err := residentService.SaveRoom(other.ID, 0, mansionLayout); err == nil {
+		t.Fatal("other account used a purchased pool or expanded floor")
+	}
+	reject("/upgrade", gin.H{"expected_level": 5})
+	wallet(320, 0)
+
 }

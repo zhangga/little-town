@@ -697,9 +697,12 @@ wx.request({
 
 所有路径使用 `/api/v1` 前缀和现有登录鉴权。`GET /resident` 以及居民写入操作的响应新增：
 
-- `furniture`：家具目录。字段含 `id`, `name`, `description`, `kind: "furniture"`, `category`, `price`, `owned`, `equipped`, `width`, `depth`。分类为 `living`, `bedroom`, `study`, `dining`；`equipped` 表示已摆在房间里。
+- `furniture`：24 款家具目录。字段含 `id`, `name`, `description`, `kind: "furniture"`, `category`, `price`, `owned`, `equipped`, `width`, `depth`。分类为 `living`, `bedroom`, `study`, `dining`, `bathroom`, `leisure`；`equipped` 表示已摆在房间里。
 - `mall_available`：是否已经拥有商场。已有数据库中的 `商店` 继续有效，不改变旧建筑 ID。
-- `room`：`{version, size: 7, layout: [{id, x, y, rotation}]}`。首次默认摆放免费单椅；已保存的空布局保持为空。
+- `room`：`{version, level, size, layout: [{id, x, y, rotation, angle?}]}`。`level` 为 1–5，`size` 对应 7、9、12、16、20。首次默认摆放免费单椅；已保存的空布局保持为空。
+- `home`：原字段 `level`, `name`, `next_level`, `upgrade_cost`, `can_upgrade` 保留；新增 `size`, `area`, `summary`, `next_name`, `next_size`, `next_summary`, `stages`。`stages` 含五项 `{level, name, size, cost, summary}`，`cost` 是升至该级需要的砖块。最高级为 5，无下一阶段，`next_level/upgrade_cost/next_size` 为 0。
+
+`POST /resident/home/upgrade` 接收 `{expected_level}`。二至五级各消耗 15、30、60、100 砖块，在用户行锁事务内校验当前等级并扣款。升级保留家具与布局，递增 `room.version`，避免升级前的编辑器覆盖新状态；最高级、余额不足、旧等级均返回 400。升级前的旧布局请求因版本冲突返回 409。房间边界由账号真实等级决定，不能用请求字段扩大。
 
 `POST /resident/purchase` 继续接收 `{item_id}`，支持家具。价格以服务端为准，购买同一家具幂等，拥有后不再扣款，购买不会改变衣服和庭院装饰。付费家具要求建好商场；家具每款可拥有一件，收回仓库不失去所有权。
 
@@ -709,12 +712,12 @@ wx.request({
 {
   "expected_version": 0,
   "layout": [
-    {"id": "chair", "x": 1, "y": 3, "rotation": 0},
-    {"id": "sofa", "x": 3, "y": 2, "rotation": 1}
+    {"id": "chair", "x": 1.5, "y": 3.5, "rotation": 0, "angle": 0},
+    {"id": "sofa", "x": 4.125, "y": 3.275, "rotation": 0, "angle": 137.5}
   ]
 }
 ```
 
-`expected_version` 必填，可为 0。`layout` 必填，可为 `[]`；保存全量布局。坐标为 0～6 的整数；`rotation` 为 0 或 1，后者交换家具宽深。服务端验证家具存在、当前账号拥有、无重复、无重叠、无越界，以及门口 `(3, 6)` 留空。成功在同一用户行锁事务内保存并递增版本，返回完整居民状态，不扣资源。旧版本返回 409；其他布局/所有权错误返回 400。客户端对不确定的写入结果先 GET 读取确认，不自动重发。
+`expected_version` 必填，可为 0。`layout` 必填，可为 `[]`，最多 24 件；保存全量布局。新布局携带 `angle`（有限数，0 ≤ angle < 360，单位为度），`x/y` 为家具中心在 `size × size` 地板中的连续坐标，`rotation` 传 0。没有 `angle` 的旧布局仍按整数网格左上角处理，`rotation` 为 0/1（交换宽深），不重置已有存档。服务端按旋转后的矩形进行分离轴碰撞检查，验证所有权、唯一家具、边界与门口留空。门口中心为 `(size/2, size-0.5)`、深 1 格，一级至三级宽 1 格，四、五级宽 2 格；地毯可放在其他家具下。成功在同一用户行锁事务内保存并递增版本，返回完整居民状态，不扣资源。旧版本返回 409；其他布局/所有权错误返回 400。客户端对不确定的写入结果先 GET 读取确认，不自动重发。
 
-家具互动、人物走动、灯光和电视图片是当前页面的免费动画，不调用资源奖励接口；家具所有权和已保存布局持久化到服务端。发布时需更新后端并迁移 `residents.room_layout`、`residents.room_version`，再更新小程序。
+本次五级别墅、angle／小数坐标更新使用原有 JSON 文本列，无需新增数据库列，但须先更新后端使其支持新布局请求。家具互动、人物走动、人称切换、木门、灯光和电视图片是当前页面的免费动画，不调用资源奖励接口；家具所有权和已保存布局持久化到服务端。首次发布家具功能时需更新后端并迁移 `residents.room_layout`、`residents.room_version`，再更新小程序。

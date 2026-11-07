@@ -36,13 +36,24 @@ func EnglishDailyCompleted(db *gorm.DB, userID uint) (int, error) {
 	}
 	err := db.Model(&models.SchoolStudy{}).
 		Where("user_id = ? AND day = ? AND subject = ?", userID, TodayString(), "english").
-		Where("word_id = 0 OR NOT EXISTS (SELECT 1 FROM resident_studies r WHERE r.user_id = school_studies.user_id AND r.day = school_studies.day AND r.word_id = school_studies.word_id)").Count(&school).Error
+		Where(`word_id = 0 OR NOT EXISTS (
+			SELECT 1 FROM resident_studies r JOIN words w ON w.id = r.word_id
+			JOIN words school_word ON school_word.id = school_studies.word_id
+			WHERE r.user_id = school_studies.user_id AND r.day = school_studies.day
+			AND LOWER(w.word) = LOWER(school_word.word) AND w.translation = school_word.translation
+		)`).Count(&school).Error
 	return int(original + school), err
 }
 
 func SchoolWordRewarded(db *gorm.DB, userID, wordID uint) (bool, error) {
+	var word models.Word
+	if err := db.First(&word, wordID).Error; err != nil {
+		return false, err
+	}
+	// The same vocabulary appears under different grade-specific catalog IDs.
+	ids := db.Model(&models.Word{}).Select("id").Where("LOWER(word) = LOWER(?) AND translation = ? AND subject = ?", word.Word, word.Translation, "english")
 	var count int64
-	err := db.Model(&models.SchoolStudy{}).Where("user_id = ? AND day = ? AND subject = ? AND word_id = ? AND rewarded = ?", userID, TodayString(), "english", wordID, true).Count(&count).Error
+	err := db.Model(&models.SchoolStudy{}).Where("user_id = ? AND day = ? AND subject = ? AND word_id IN (?) AND rewarded = ?", userID, TodayString(), "english", ids, true).Count(&count).Error
 	return count > 0, err
 }
 
@@ -127,7 +138,8 @@ func (s *SchoolService) grantSchoolAnswer(tx *gorm.DB, user *models.User, round 
 	eligible := correct && !study.Rewarded
 	if eligible && q.WordID != 0 {
 		var count int64
-		if err := tx.Model(&models.ResidentStudy{}).Where("user_id = ? AND day = ? AND word_id = ? AND rewarded = ?", user.ID, round.Day, q.WordID, true).Count(&count).Error; err != nil {
+		ids := tx.Model(&models.Word{}).Select("id").Where("LOWER(word) = ? AND translation = ? AND subject = ?", q.Word, q.Translation, "english")
+		if err := tx.Model(&models.ResidentStudy{}).Where("user_id = ? AND day = ? AND word_id IN (?) AND rewarded = ?", user.ID, round.Day, ids, true).Count(&count).Error; err != nil {
 			return err
 		}
 		eligible = count == 0

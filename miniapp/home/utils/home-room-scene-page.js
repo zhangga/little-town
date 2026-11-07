@@ -2,7 +2,7 @@ const { createHomeScene } = require('./home-scene')
 function keyboardKey(event) {
   if(!event)return ''
   if(event.altKey===true||event.altKey==='true'||event.ctrlKey||event.metaKey)return ''
-  return ({KeyW:'w',KeyA:'a',KeyS:'s',KeyD:'d'})[event.code]||String(event.key||'').toLowerCase()
+  return ({KeyW:'w',KeyA:'a',KeyS:'s',KeyD:'d',KeyE:'e',KeyV:'v',F5:'v'})[event.code]||String(event.key||'').toLowerCase()
 }
 function createRoomScenePage(wxApi) {
   return {
@@ -17,7 +17,7 @@ function createRoomScenePage(wxApi) {
         try{
           const info=wxApi.getWindowInfo?wxApi.getWindowInfo():wxApi.getSystemInfoSync()
           this._canvasRect=result
-          this._scene=createHomeScene(result.node,result.width,result.height,{pixelRatio:info.pixelRatio,catalog:this.data.state.furniture,outfit:this.data.state.resident.outfit_id,onFrame:dt=>this.tickRoom(dt)})
+          this._scene=createHomeScene(result.node,result.width,result.height,{pixelRatio:info.pixelRatio,catalog:this.data.state.furniture,room:this.data.state.room,outfit:this.data.state.resident.outfit_id,onFrame:dt=>this.tickRoom(dt),onError:()=>{this.stopRoomWalk();if(!this._disposed)this.setData({roomSceneFailed:true,roomSceneReady:false})}})
           this.refreshRoom();this._scene.setMode(this.data.roomCamera);this._scene.start()
           this.setData({roomSceneReady:true,roomSceneFailed:false})
           if(this._candidate)this.previewRoomPlacement(this._candidate)
@@ -57,7 +57,7 @@ function createRoomScenePage(wxApi) {
       const p=this.roomTouchPoint(e.touches[0]),hit=this._scene.hit(p.x,p.y)
       this._gesture={start:p,last:p,id:hit.id,time:Date.now(),moved:false,pinch:false}
       if(e.touches.length>1){this._gesture.pinch=true;this._gesture.distance=this.roomPinchDistance(e.touches);return}
-      if(this.data.roomEditing&&hit.id){if(hit.id!==this.data.roomSelected)this.onRoomChoose({currentTarget:{dataset:{id:hit.id}}});this._gesture.drag=!!this._candidate}
+      if(this.data.roomEditing&&hit.id&&hit.id!=='__door__'){if(hit.id!==this.data.roomSelected)this.onRoomChoose({currentTarget:{dataset:{id:hit.id}}});this._gesture.drag=!!this._candidate}
     },
     roomPinchDistance(touches) {const a=this.roomTouchPoint(touches[0]),b=this.roomTouchPoint(touches[1]);return Math.hypot(a.x-b.x,a.y-b.y)},
     onRoomTouchMove(e) {
@@ -78,6 +78,7 @@ function createRoomScenePage(wxApi) {
       if(g.pinch)return
       if(g.moved){if(g.drag)this.placeRoomCandidate();return}
       const p=e.changedTouches&&e.changedTouches[0]?this.roomTouchPoint(e.changedTouches[0]):g.last,hit=this._scene.hit(p.x,p.y)
+      if(hit.id==='__door__'){this.onRoomDoor();return}
       if(hit.id){const event={currentTarget:{dataset:{id:hit.id}}};if(Date.now()-g.time>450)this.onRoomChoose(event);else this.onRoomFurniture(event)}
       else if(hit.point)this.onRoomFloor(hit.point)
     },

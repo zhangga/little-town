@@ -8,6 +8,7 @@ const http = require('node:http')
 const { spawnSync } = require('node:child_process')
 const { createClassroomPage } = require('../miniapp/school/utils/classroom-page')
 const { mathProblem } = require('../miniapp/school/utils/content')
+const { rewardPatch } = require('../miniapp/school/utils/classroom-rewards')
 const root = path.resolve(__dirname, '..')
 const output = path.join(root, 'output/school-preview')
 const pageFile = 'miniapp/school/pages/classroom/classroom.wxml'
@@ -51,6 +52,11 @@ function states() {
     createPad: (_, __, state) => ({ init: () => state({ canvasReady: true }), reset: noop, suspend: noop, destroy: noop, end: noop }) })
   const page = { ...definition, data: clone(definition.data), setData(patch, done) { Object.assign(this.data, patch); if (done) done() } }
   page.onLoad({}); page.onShow()
+  const statuses = Object.fromEntries(['chinese', 'math', 'english'].map(subject => [subject, { subject,
+    daily_goal: 10, daily_brick_cap: 20, bricks_per_correct: 1, bricks_today: subject === 'english' ? 20 : subject === 'math' ? 6 : 0,
+    bonus_bricks: 10, completed_today: subject === 'english' ? 20 : subject === 'math' ? 6 : 0, bonus_claimed: subject === 'english',
+    practice_rewards: { remaining_rounds: subject === 'english' ? 0 : 12, daily_round_cap: 12, bricks_per_round: 4, coins_per_round: 12 } }]))
+  page.setData(rewardPatch(statuses, 'chinese'))
   const scenes = {}, save = name => { scenes[name] = clone(page.data) }, tap = subject => ({ currentTarget: { dataset: { subject } } })
   save('01-chinese-home'); page.onSubject(tap('math')); save('02-math-home'); page.onSubject(tap('english')); save('03-english-home')
   page.onSubject(tap('chinese')); page.onStart(); save('04-handwriting')
@@ -80,6 +86,11 @@ function states() {
   page.setData({ lectureAudioState: 'paused', lectureProgress: 54 }); save('24-lecture-paused')
   page.onSubject(tap('math')); activity('story'); page.onHelp(); save('25-question-help')
   page.onListenHelp(); save('26-method-lecture')
+  page.onSubject(tap('math')); page.onRewardPractice(); save('27-reward-review')
+  page.changeView('done', { correct: 10, mistakeCount: 0, scoredTotal: 10, roundRewardBricks: 4, roundRewardCoins: 12, roundRewardSettled: true,
+    summaryRows: [{ mode: 'arithmetic', name: '数字口算', total: 4, correct: 4 }, { mode: 'compare', name: '比大小', total: 2, correct: 2 }, { mode: 'missing', name: '算式补空', total: 2, correct: 2 }, { mode: 'story', name: '生活应用题', total: 2, correct: 2 }] }); save('28-reward-completed')
+  page.setData({ roundRewardSettled: false, roundRewardBricks: 0, roundRewardCoins: 0, rewardPending: 1, rewardError: '网络刚才断开了，奖励还在等待确认。' }); save('29-reward-retry')
+  page.setData({ rewardError: '', rewardPending: 0 }); page.onSubject(tap('english')); save('30-reward-capped')
   page.onUnload(); return scenes
 }
 function buildPreview() {

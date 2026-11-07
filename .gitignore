@@ -46,10 +46,12 @@ uploads/
 backend/server
 backend/import
 backend/tmp/
+backend/cmd/server/__debug_bin*
 output/cloudrun/
 output/restaurant-preview/
 output/school-preview/
 output/home-preview/
+output/subway-preview/
 
 # Miniapp specific
 miniapp/project.private.config.json

@@ -24,9 +24,9 @@
         <view><text class="quota-count">{{subjectReward ? subjectReward.practice_rewards.remaining_rounds : '—'}}<text> / {{subjectReward ? subjectReward.practice_rewards.daily_round_cap : '—'}}</text></text><text>复习奖励剩余</text></view>
         <view><text class="quota-count">{{subjectReward ? subjectReward.bonus_claimed ? 0 : 1 : '—'}}<text> / 1</text></text><text>完成奖励剩余</text></view>
       </view>
-      <view wx:if="{{subjectReward}}" class="reward-rule">答对 +{{subjectReward.bricks_per_correct}} 砖{{subject === 'chinese' ? '（写字完成也算）' : ''}} · 每科做满 {{subjectReward.daily_goal}} 道不同题目 +{{subjectReward.bonus_bricks}} 砖</view>
+      <view wx:if="{{subjectReward}}" class="reward-rule">{{rewardAnswerRemaining ? '答对 +' + subjectReward.bricks_per_correct + ' 砖' + (subject === 'chinese' ? '（写字完成也算）' : '') : '今日答题砖块已领满，仍可继续练习'}} · 每科做满 {{subjectReward.daily_goal}} 道不同题目 +{{subjectReward.bonus_bricks}} 砖</view>
       <view wx:else class="reward-rule">奖励次数正在确认，可以先开始学习。</view>
-      <view wx:if="{{subjectReward}}" class="reward-goal">今日已做 {{subjectReward.completed_today}} / {{subjectReward.daily_goal}} 题 · {{subjectReward.bonus_claimed ? '完成奖励已到账' : '同一道题不重复计数'}}{{subject === 'english' ? ' · 与英语闯关共用次数' : ''}}</view>
+      <view wx:if="{{subjectReward}}" class="reward-goal">今日已做 {{subjectReward.completed_today}} 题 · 目标 {{subjectReward.daily_goal}} 题 · {{subjectReward.bonus_claimed ? '完成奖励已到账' : '同一道题每天只领奖一次'}}{{subject === 'english' ? ' · 与英语闯关共用次数' : ''}}</view>
       <view wx:if="{{view !== 'home'}}" class="round-reward" aria-role="status">
         <block wx:if="{{reviewing}}"><text>错题巩固</text><text>本轮不重复发奖</text></block>
         <block wx:else><text>本轮已到账 <text class="earned-bricks">{{roundRewardBricks}} 砖</text> · {{roundRewardCoins}} 金币</text><text>{{roundRewardDisabled ? '请开始新一轮' : roundRewardSettled ? '已存进小镇' : rewardPending ? rewardBusy ? '正在确认…' : '有奖励待确认' : roundRewardKind === 'practice' ? '整轮做完后领取' : '边学边攒砖块'}}</text></block>
@@ -147,14 +147,16 @@
 
     <view wx:elif="{{view === 'done'}}" class="completion-card">
       <text class="completion-stamp">完成</text>
-      <view class="class-title">{{classroom ? '课堂小练，完成啦！' : '又学会了一点点！'}}</view>
+      <view class="class-title">{{roundRewardKind === 'practice' && !reviewing ? '整轮复习，完成啦！' : classroom ? '课堂小练，完成啦！' : '又学会了一点点！'}}</view>
       <view class="completion-score">{{writingOnly ? total : correct}}<text>{{writingOnly ? ' 个汉字练写' : ' / ' + scoredTotal + ' 答对'}}</text></view>
       <view class="class-hint">{{writingOnly ? '认真写过的每一笔，都算数。' : mistakeCount ? '还有 ' + mistakeCount + ' 题，再试一遍会更熟悉。' : '这一轮都答对啦，给自己一个小小的鼓励。'}}</view>
       <view wx:if="{{classroom}}" class="drill-summary"><view wx:for="{{summaryRows}}" wx:key="mode"><text>{{item.name}}</text><text>{{item.correct}} / {{item.total}}</text></view></view>
       <view wx:if="{{assistedCount}}" class="assisted-note">这次有 {{assistedCount}} 题借助了讲解。愿意弄懂，也是一种进步。</view>
       <button wx:if="{{mistakeCount}}" class="school-primary" bindtap="onReviewMistakes">错题再练一遍 →</button>
+      <button wx:elif="{{roundRewardKind === 'practice' && !reviewing}}" class="school-primary" bindtap="onRewardPractice">继续下一轮复习 →</button>
       <button wx:elif="{{classroom}}" class="school-primary" bindtap="onStartDrill">再来一组课堂小练 →</button>
       <button wx:else class="school-primary" bindtap="onAgain">这一组，再练一遍 →</button>
+      <button wx:if="{{mistakeCount && roundRewardKind === 'practice' && !reviewing}}" class="text-link" bindtap="onRewardPractice">继续下一轮复习 →</button>
       <button class="text-link" bindtap="onBack">回教室，换一组内容</button>
       <view class="next-subject"><text>学完一科，再学一科</text><view><button wx:for="{{subjects}}" wx:key="id" wx:if="{{item.id !== subject}}" data-subject="{{item.id}}" bindtap="onSubject">去学{{item.name}} →</button></view><text>另一科有自己的奖励次数</text></view>
     </view>

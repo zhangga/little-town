@@ -73,3 +73,5 @@ page { background: #edf0df; }
 .sheet-actions { flex-shrink: 0; padding: 20rpx 28rpx calc(24rpx + env(safe-area-inset-bottom)); border-top: 2rpx solid #e3e7d6; }
 .sheet-hint { display: block; margin-top: 12rpx; text-align: center; color: #9c9d8a; font-size: 19rpx; }
 @media (prefers-reduced-motion: reduce) { .resident-character.waving { animation: none; } }
+
+.home-area{display:flex;justify-content:space-between;gap:12rpx;padding:20rpx 0;font-size:23rpx;color:#7a875e}.home-area text+text{font-weight:700;color:#627b4c}.home-stages{display:flex;gap:7rpx;margin:4rpx 0 25rpx}.home-stages>view{flex:1;background:#eeecdf;border-radius:12rpx;padding:14rpx 4rpx;text-align:center;color:#a3a28a}.home-stages text{display:block;font-size:17rpx;line-height:1.8}.home-stages text:first-child{font-weight:700}.home-stages .stage-reached{background:#e1e8cf;color:#6a8055}

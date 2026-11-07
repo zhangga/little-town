@@ -12,6 +12,7 @@ Page(withTapSounds(Object.assign({}, createHomeRoom(api, wx, showError), createR
     this._visible = true
     this.bindRoomKeyboard()
     if (this._scene) this._scene.start()
+    else this.initRoomScene()
     this._roomRequest = wx.getStorageSync('homeRoomRequested')
     if (wx.getStorageSync('token')) this.loadResident()
   },

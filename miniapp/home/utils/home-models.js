@@ -1,3 +1,5 @@
+const { createBuilding } = require('./home-building')
+const { buildExtraFurniture } = require('./home-furniture-extra')
 // Small, editable oak-and-voxel models. All dimensions share the placement footprint.
 function createModels(T) {
   const materials = new Map(), cube = new T.BoxGeometry(1,1,1)
@@ -31,7 +33,7 @@ function createModels(T) {
       legs(g,.72,.72,.42);box(g,0,.46,0,.78,.13,.76,C.light);box(g,0,.77,-.31,.78,.56,.12,C.oak)
       box(g,0,.83,-.235,.56,.2,.03,C.light);box(g,0,.54,.03,.57,.05,.55,C.green)
     } else if(id==='sofa') {
-      legs(g,1.7,.78,.18);box(g,0,.29,0,1.84,.3,.84,C.oak)
+      legs(g,1.7,.78,.18);box(g,0,.29,0,1.78,.3,.78,C.oak)
       box(g,0,.64,-.33,1.84,.54,.18,C.cream)
       for(const x of [-.83,.83])box(g,x,.53,0,.18,.42,.84,C.cream)
       for(const x of [-.39,.39]){box(g,x,.47,.06,.72,.18,.65,0xe6d9b6);box(g,x,.7,-.17,.64,.32,.2,C.cream)}
@@ -86,47 +88,11 @@ function createModels(T) {
     } else if(id==='rug') {
       cylinder(g,0,.018,0,.47,.47,.035,0xd5b87a,24);cylinder(g,0,.038,0,.39,.39,.008,0xe7d4a4,24);cylinder(g,0,.044,0,.32,.32,.006,0xb3b88a,24)
     }
+    if(!g.children.length)buildExtraFurniture(id,g,{box,cylinder},T)
     g.userData.furniture=id
     return bake(g)
   }
-  function house() {
-    const base=new T.Group(), back=new T.Group(), left=new T.Group(), front=new T.Group(), right=new T.Group()
-    box(base,3.5,-.22,3.5,7.35,.44,7.35,C.edge);box(base,3.5,-.035,3.5,7.12,.08,7.12,C.oak)
-    const woods=[0xd9b37c,0xe0bc87,0xd6af75,0xe2bd86,0xdab780]
-    for(let row=0;row<14;row++){
-      const offset=row%2?-.7:0
-      for(let x=offset;x<7;x+=1.4){const start=Math.max(0,x),end=Math.min(7,x+1.4);box(base,(start+end)/2,.005,row*.5+.25,end-start-.015,.025,.485,woods[(row+Math.floor(x*3)+9)%woods.length])}
-    }
-    // Back window is an actual opening; oak frame sits around it.
-    box(back,3.5,1.32,-.08,7.2,2.64,.16,C.cream)
-    box(back,3.5,1.6,.025,2.75,1.65,.04,C.edge);box(back,3.5,1.62,.055,2.53,1.42,.03,0xb5d2c9)
-    box(back,3.5,1.22,.078,2.53,.6,.02,0xa8ba85)
-    for(let i=0;i<5;i++)box(back,2.47+i*.5,1.25+(i%2)*.19,.1,.43,.65+(i%2)*.18,.03,i%2?0x759361:0x91a274)
-    for(const x of [2.12,3.5,4.88])box(back,x,1.62,.15,.1,1.72,.19,C.oak)
-    for(const y of [.8,1.62,2.44])box(back,3.5,y,.15,2.9,.1,.19,C.oak)
-    box(back,3.5,.77,.25,3.05,.12,.5,C.light)
-    for(const x of [1.86,5.14]){box(back,x,1.55,.23,.3,1.9,.12,0xd7d9bd);box(back,x,2.49,.16,.42,.08,.2,C.edge)}
-    // Wainscot and exposed oak posts echo the original town buildings.
-    box(left,-.08,1.32,3.5,.16,2.64,7.2,C.cream)
-    for(const wall of [back,left]){
-      if(wall===back){box(wall,3.5,.33,.04,7,.65,.1,0xd9c4a1);box(wall,3.5,.66,.1,7,.07,.15,C.oak);box(wall,3.5,2.68,0,7.3,.2,.24,C.edge)}
-      else {box(wall,.04,.33,3.5,.1,.65,7,0xd9c4a1);box(wall,.1,.66,3.5,.15,.07,7,C.oak);box(wall,0,2.68,3.5,.24,.2,7.3,C.edge)}
-    }
-    for(const x of [0,7])box(back,x,1.3,0,.2,2.7,.25,C.oak)
-    for(const z of [0,3.5,7])box(left,0,1.3,z,.22,2.7,.2,C.oak)
-    // Tiny framed landscape, wall clock and beams are background details.
-    box(left,.13,1.78,4.58,.1,.94,1.16,C.edge);box(left,.19,1.78,4.58,.03,.78,1,0xd5dfbe)
-    box(left,.21,1.6,4.58,.02,.3,.96,C.green);box(left,.22,1.95,4.8,.02,.15,.15,0xe7c680)
-    box(left,.16,1.92,1.35,.13,.61,.61,C.oak);box(left,.24,1.92,1.35,.03,.47,.47,C.cream)
-    box(left,.27,1.99,1.35,.02,.17,.025,C.edge);box(left,.27,1.91,1.43,.02,.025,.18,C.edge)
-    box(right,7.03,.12,3.5,.18,.24,7.2,C.oak)
-    box(front,1.5,.12,7.03,3,.24,.18,C.oak);box(front,5.5,.12,7.03,3,.24,.18,C.oak)
-    // Open doorway and a small front step leave the entry free for the resident.
-    for(const x of [3,4])box(front,x,.72,7,.12,1.44,.15,C.oak)
-    box(base,3.5,-.16,7.4,1.3,.15,.65,C.light)
-    box(base,3.5,.015,6.75,.72,.018,.34,0x8b9a6d)
-    return {base:bake(base),back:bake(back),left:bake(left),front:bake(front),right:bake(right)}
-  }
+  function house(plan) { return createBuilding(T,{box,bake},plan) }
   function actor(outfit='everyday') {
     const g=new T.Group(), body=new T.Group(), limbs={};g.add(body)
     const shirt={everyday:0xd3ab63,builder:0xdaaf43,gardener:0x789362,explorer:0x79999a}[outfit]||0xd3ab63
@@ -149,6 +115,6 @@ function createModels(T) {
     g.userData={body,limbs};return g
   }
   function dispose() {cube.dispose();materials.forEach(m=>m.dispose())}
-  return {house,furniture,actor,box,bake,dispose}
+  return {house,furniture,actor,box,bake,dispose,cube}
 }
 module.exports={createModels}

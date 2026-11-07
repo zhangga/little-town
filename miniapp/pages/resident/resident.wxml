@@ -32,9 +32,11 @@
       </button></view>
     </block>
     <view wx:else class="resident-home-panel">
-      <view class="home-panel-heading"><text>{{state.home.next_level ? '下一站，更温暖的家' : '花园之家，已经落成'}}</text><text class="home-small">{{state.home.next_level ? 'Lv.' + state.home.level + ' → Lv.' + state.home.next_level : 'Lv.3 · 最高级'}}</text></view>
+      <view class="home-panel-heading"><text>{{state.home.next_level ? '下一站，更温暖的家' : state.home.name + '，已经落成'}}</text><text class="home-small">{{state.home.next_level ? 'Lv.' + state.home.level + ' → Lv.' + state.home.next_level : 'Lv.' + state.home.level + ' · 最高级'}}</text></view>
       <view class="home-next-art"><template is="resident-art" data="{{art: state.nextHomeArt || state.homeArt}}" /></view>
-      <text class="home-description">{{state.home.next_level === 2 ? '添一个门廊，开一扇明亮的小窗。' : state.home.next_level === 3 ? '多一层空间，也多一座看风景的阳台。' : '每一块砖，都是你认真学习的印记。'}}</text>
+      <text class="home-description">{{state.home.next_summary || state.home.summary || '每一块砖，都是你认真学习的印记。'}}</text>
+      <view wx:if="{{state.home.size}}" class="home-area"><text>现在 {{state.home.size}} × {{state.home.size}} 格</text><text>{{state.home.next_size ? '升级后 ' + state.home.next_size + ' × ' + state.home.next_size + ' 格' : state.home.area + ' 格超大空间'}}</text></view>
+      <view wx:if="{{state.home.stages}}" class="home-stages"><view wx:for="{{state.home.stages}}" wx:key="level" class="{{item.level <= state.home.level ? 'stage-reached' : ''}}"><text>Lv.{{item.level}}</text><text>{{item.name}}</text><text>{{item.size}}×{{item.size}}</text></view></view>
       <view wx:if="{{state.home.next_level}}"><view class="home-material"><text>升级需要 {{state.home.upgrade_cost}} 砖块</text><text>已有 {{state.wallet.bricks}}</text></view><button class="resident-primary" bindtap="onPreviewHome">{{state.home.can_upgrade ? '预览升级' : '看看升级后的家'}}</button></view>
     </view>
     <view class="resident-daily"><view><text class="daily-heading">{{state.daily.done ? '今天的学习完成啦' : '每天一点，小镇长也在成长'}}</text><text class="daily-caption">今日 {{state.daily.completed}} / {{state.daily.goal}} 词 · 首次练习每词 +5 成长，完成再 +{{state.daily.bonus_xp}}</text></view><button bindtap="onGoLearn">{{state.daily.done ? '再练练' : '去学习'}} →</button></view>

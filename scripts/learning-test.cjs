@@ -72,10 +72,21 @@ function loadPronunciation(loadPackage = (name, success) => {
 
 test('returning to a completed or empty tab loads another round without losing an active round', async () => {
   const h = await pageHarness([words[0]])
-  let reads = 0
-  h.api.get = async () => { reads++; return { words: [words[1]], bonus_claimed: true } }
+  let reads = 0, quotaReads = 0
+  h.api.get = async url => {
+    if (url === '/learn/school/rewards') {
+      quotaReads++
+      return { subjects: { english: { bricks_today: 8, daily_brick_cap: 20, bricks_per_correct: 1, bonus_claimed: true, practice_rewards: { remaining_rounds: 9, daily_round_cap: 12 } } } }
+    }
+    reads++; return { words: [words[1]], bonus_claimed: true }
+  }
+  const activeWords = h.page.data.words
   h.page.onStart(); h.page.onHide(); h.page.onShow(); await flush()
   assert.equal(reads, 0)
+  assert.equal(quotaReads, 1)
+  assert.equal(h.page.data.words, activeWords)
+  assert.equal(h.page.data.dailyRewardQuota.answerRemaining, 12)
+  assert.equal(h.page.data.dailyRewardQuota.practiceRemaining, 9)
   h.page.finish(); h.page.onHide(); h.page.onShow(); await flush()
   assert.equal(reads, 1)
   assert.equal(h.page.data.phase, 'ready')
@@ -83,6 +94,18 @@ test('returning to a completed or empty tab loads another round without losing a
   h.page.setData({ phase: 'done', finished: true, words: [] })
   h.page.onHide(); h.page.onShow(); await flush()
   assert.equal(reads, 2)
+  h.page.onUnload()
+})
+
+test('old English ignores a stale school quota response after another answer receipt', async () => {
+  const h = await pageHarness([words[0]])
+  let release
+  h.api.get = () => new Promise(resolve => { release = resolve })
+  const refresh = h.page.refreshSchoolQuota()
+  h.page.setRewardState({ bricksToday: 19, dailyBrickCap: 20, bricksPerCorrect: 1 })
+  release({ subjects: { english: { bricks_today: 0, daily_brick_cap: 20, bricks_per_correct: 1 } } })
+  await refresh
+  assert.equal(h.page.data.dailyRewardQuota.answerRemaining, 1)
   h.page.onUnload()
 })
 

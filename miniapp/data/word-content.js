@@ -28,11 +28,12 @@ const content = {
   zebra: { sentence: 'The ___ is black and white.', meaning: '斑马是黑白相间的。' }
 }
 
+Object.keys(content).forEach(key => { content[key].audioPackage = 'textbook-audio' })
 textbook.forEach((unit) => unit.words.forEach((word) => {
   const key = word.word.toLowerCase()
   const extra = {
     sentence: word.sentence, meaning: word.meaning,
-    audioPackage: Object.prototype.hasOwnProperty.call(content, key) ? content[key].audioPackage : 'textbook-audio'
+    audioPackage: 'textbook-audio'
   }
   // 按释义区分同形词，例如原有 orange（橙子）和课本 orange（橙色）。
   content[key + '|' + word.translation] = extra

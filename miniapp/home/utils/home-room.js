@@ -1,7 +1,4 @@
-const { strollArt } = require('../../utils/stroll-art')
-const SIZE = 7
-const ENTRY = { x: 3, y: 6 }
-const categories = [{ id: 'all', name: '全部家具' }, { id: 'living', name: '客厅' }, { id: 'bedroom', name: '卧室' }, { id: 'study', name: '书房' }, { id: 'dining', name: '餐厨' }]
+const categories = [{ id: 'all', name: '全部家具' }, { id: 'living', name: '客厅' }, { id: 'bedroom', name: '卧室' }, { id: 'study', name: '书房' }, { id: 'dining', name: '餐厨' }, { id: 'bathroom', name: '卫浴' }, { id: 'leisure', name: '娱乐' }]
 const nature = [{ id: 'forest', name: '林间的小路', caption: '阳光穿过树叶，沿着小路慢慢走。' }, { id: 'sea', name: '安静的海边', caption: '浪花轻轻拍着沙滩，远处是一片蓝。' }, { id: 'mountain', name: '雪山与湖泊', caption: '山尖戴着白帽子，湖水映着天空。' }].map(item => Object.assign({}, item, { image: '/home/images/' + item.id + '.png' }))
 const actions = {
   chair: { verb: '坐一坐', text: '歇歇脚，今天的家也很舒服。', pose: 'sit' },
@@ -15,52 +12,19 @@ const actions = {
   wardrobe: { verb: '整理衣柜', text: '衣服挂得整整齐齐，去衣橱挑一套吧。', pose: 'tidy' },
   table: { verb: '喝下午茶', text: '摆好茶杯，和想象中的朋友一起喝杯茶。', pose: 'tea' },
   fridge: { verb: '打开冰箱', text: '苹果、牛奶、果汁，都整整齐齐放好啦。', pose: 'open' },
+  kitchen: { verb: '做点心', text: '搅一搅面糊，烤一份香香的小点心。', pose: 'cook' },
+  bathtub: { verb: '泡个澡', text: '咕噜咕噜，洗掉一整天的疲倦。', pose: 'bath' },
+  vanity: { verb: '洗洗手', text: '搓搓手心和手背，清清爽爽。', pose: 'wash' },
+  toilet: { verb: '整理卫生间', text: '打扫干净，家里的每个角落都整整齐齐。', pose: 'clean' },
+  piano: { verb: '弹一段琴', text: '小手在黑白琴键上跳舞。', pose: 'play' },
+  arcade: { verb: '玩一会儿街机', text: '方块跳过小障碍，今天也过关啦！', pose: 'play' },
+  aquarium: { verb: '看看小鱼', text: '小鱼穿过水草，安静的家也有小小的热闹。', pose: 'watch' },
+  fireplace: { verb: '点亮壁炉', text: '暖暖的炉光，让大别墅也像小木屋一样舒服。', pose: 'stand' },
+  pool: { verb: '玩一会儿水', text: '扑通，小泳池里荡起了水花。', pose: 'swim' },
+  treadmill: { verb: '慢跑一下', text: '一步两步，今天也动起来啦。', pose: 'run' },
+  pooltable: { verb: '打一杆台球', text: '瞄准，小球沿着绿色桌面轻轻滚动。', pose: 'play' },
+  sectional: { verb: '靠在大沙发上', text: '转角这里最舒服，可以看很久的书。', pose: 'sit' },
   rug: { verb: '伸个懒腰', text: '在软软的地毯上伸展一下，真舒服。', pose: 'stretch' }
-}
-function project(x, y) { return { left: (350 + (x - y) * 40) / 7, top: 210 + (x + y) * 22 } }
-function dimensions(item, rotation) { return rotation ? { w: item.depth || 1, d: item.width || 1 } : { w: item.width || 1, d: item.depth || 1 } }
-function footprint(p, catalog) {
-  const item = catalog.find(item => item.id === p.id)
-  if (!item) return []
-  const { w, d } = dimensions(item, p.rotation)
-  const cells = []
-  for (let x = p.x; x < p.x + w; x++) for (let y = p.y; y < p.y + d; y++) cells.push({ x, y })
-  return cells
-}
-const key = p => p.x + ',' + p.y
-const inside = p => Number.isInteger(p.x) && Number.isInteger(p.y) && p.x >= 0 && p.x < SIZE && p.y >= 0 && p.y < SIZE
-function blockedCells(layout, catalog, ignoreID, walk = false) {
-  const cells = new Set()
-  layout.filter(p => p.id !== ignoreID && (!walk || p.id !== 'rug')).forEach(p => footprint(p, catalog).forEach(c => cells.add(key(c))))
-  return cells
-}
-function canPlace(layout, catalog, placement) {
-  const item = catalog.find(item => item.id === placement.id && item.owned)
-  if (!item || ![0, 1].includes(placement.rotation)) return false
-  const blocked = blockedCells(layout, catalog, placement.id)
-  return footprint(placement, catalog).every(p => inside(p) && key(p) !== key(ENTRY) && !blocked.has(key(p)))
-}
-function pathTo(start, target, layout, catalog) {
-  if (!inside(start) || !inside(target)) return null
-  const blocked = blockedCells(layout, catalog, null, true)
-  if (blocked.has(key(target))) return null
-  const queue = [{ p: start, path: [] }], seen = new Set([key(start)])
-  while (queue.length) {
-    const { p, path } = queue.shift()
-    if (key(p) === key(target)) return path
-    for (const [dx, dy] of [[0, -1], [-1, 0], [1, 0], [0, 1]]) {
-      const next = { x: p.x + dx, y: p.y + dy }
-      if (inside(next) && !seen.has(key(next)) && !blocked.has(key(next))) {
-        seen.add(key(next)); queue.push({ p: next, path: path.concat(next) })
-      }
-    }
-  }
-  return null
-}
-function approach(start, placed, layout, catalog) {
-  const targets = footprint(placed, catalog).flatMap(p => [{ x: p.x - 1, y: p.y }, { x: p.x + 1, y: p.y }, { x: p.x, y: p.y - 1 }, { x: p.x, y: p.y + 1 }])
-  if (placed.id === 'rug') targets.push({ x: placed.x, y: placed.y })
-  return targets.map(p => pathTo(start, p, layout, catalog)).filter(p => p !== null).sort((a, b) => a.length - b.length)[0] || null
 }
 function presentFurniture(items, wallet, layout = []) {
   return (items || []).map(item => Object.assign({}, item, {
@@ -68,17 +32,4 @@ function presentFurniture(items, wallet, layout = []) {
     placed: layout.some(p => p.id === item.id), affordable: wallet.coins >= item.price, missing: Math.max(0, item.price - wallet.coins)
   }))
 }
-function roomView(layout, catalog, selectedID = '', rotation = 0) {
-  const furniture = layout.map(p => {
-    const item = catalog.find(item => item.id === p.id)
-    const { w, d } = dimensions(item || {}, p.rotation)
-    return Object.assign({}, item, p, project(p.x + (w - 1) / 2, p.y + (d - 1) / 2), { z: (p.x + p.y + w + d - 2) * 10 + 20, wide: w + d > 2 })
-  })
-  const cells = []
-  for (let y = 0; y < SIZE; y++) for (let x = 0; x < SIZE; x++) cells.push(Object.assign({ id: x + '-' + y, x, y, valid: !!selectedID && canPlace(layout, catalog, { id: selectedID, x, y, rotation }) }, project(x, y)))
-  return { roomFurniture: furniture, roomCells: cells }
-}
-function actorView(p, outfit, direction = 'down', moving = false, pose = '') {
-  return Object.assign({}, p, project(p.x, p.y), { z: (p.x + p.y) * 10 + 25, direction, moving, pose, art: strollArt({ outfit }, direction) })
-}
-module.exports = { SIZE, ENTRY, categories, nature, actions, project, dimensions, footprint, blockedCells, canPlace, pathTo, approach, presentFurniture, roomView, actorView }
+module.exports = { categories, nature, actions, presentFurniture }

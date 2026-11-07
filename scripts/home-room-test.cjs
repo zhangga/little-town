@@ -6,14 +6,19 @@ const vm = require('node:vm')
 const { createRequire } = require('node:module')
 const { fixture: residentFixture } = require('./resident-test.cjs')
 const room = require('../miniapp/home/utils/home-room')
+const space = require('../miniapp/home/utils/home-space')
 const { roomData, createHomeRoom } = require('../miniapp/home/utils/home-room-page')
 const { presentResident } = require('../miniapp/utils/resident')
 const clone = value => JSON.parse(JSON.stringify(value))
 const tap = dataset => ({ currentTarget: { dataset } })
-function fixture() {
+function fixture(level = 1) {
   const rows = [['chair','原木单椅','living',0,1,1],['sofa','奶油双人沙发','living',45,2,1],['tv','自然风景电视','living',75,1,1],['lamp','暖光落地灯','living',18,1,1],['plant','窗边绿植','living',12,1,1],['bed','云朵单人床','bedroom',60,1,2],['wardrobe','橡木衣柜','bedroom',50,1,1],['rug','圆圆编织地毯','bedroom',16,1,1],['desk','窗边书桌','study',35,2,1],['bookshelf','故事书架','study',30,1,1],['table','原木餐桌','dining',32,2,1],['fridge','薄荷小冰箱','dining',55,1,1]]
-  return Object.assign(residentFixture(), {
-    mall_available: true, room: { version: 0, size: 7, layout: [{ id: 'chair', x: 1, y: 3, rotation: 0 }] },
+  rows.push(['kitchen','橡木料理台','dining',85,3,1],['bathtub','白瓷浴缸','bathroom',85,2,1],['vanity','镜面洗漱台','bathroom',45,1,1],['toilet','白瓷马桶','bathroom',30,1,1],['piano','橡木钢琴','leisure',120,2,1],['arcade','方块街机','leisure',95,1,1],['aquarium','观景鱼缸','living',70,2,1],['fireplace','石砖壁炉','living',90,2,1],['pool','室内景观泳池','leisure',180,3,3],['treadmill','家用跑步机','leisure',75,1,2],['pooltable','绿色台球桌','leisure',140,3,2],['sectional','转角大沙发','living',100,3,2])
+  const stages=[['初来的小屋',7,0],['暖暖的家',9,15],['花园之家',12,30],['林间大别墅',16,60],['橡木庄园',20,100]].map(([name,size,cost],i)=>({level:i+1,name,size,cost,summary:'橡木、石砖和明亮的玻璃厅。'}))
+  const base=residentFixture(),current=stages[level-1],next=stages[level];base.resident.home_level=level
+  base.home={level,name:current.name,size:current.size,area:current.size**2,summary:current.summary,stages,next_level:next?next.level:0,next_name:next?next.name:'',next_size:next?next.size:0,next_summary:next?next.summary:'',upgrade_cost:next?next.cost:0,can_upgrade:!!next&&base.wallet.bricks>=next.cost}
+  return Object.assign(base, {
+    mall_available: true, room: { version: 0, size: current.size, level, layout: [{ id: 'chair', x: 1, y: 3, rotation: 0 }] },
     furniture: rows.map(([id,name,category,price,width,depth]) => ({ id,name,category,price,width,depth,kind:'furniture',owned: price===0,description:'给小家添一件喜欢的家具。' }))
   })
 }
@@ -36,7 +41,7 @@ function roomHarness(server = fixture(), options = {}) {
     applyState(state){this.setData({state:presentResident(state)});this.syncRoom(this.data.state)}
   }
   page.syncRoom(page.data.state)
-  const flush = () => { let n=0;while(timers.size){if(n++>100)throw Error('timer loop');const [id,fn]=timers.entries().next().value;timers.delete(id);fn()} }
+  const flush = () => { let n=0;while(page._walkPath){if(n++>2000)throw Error('walk never arrived');page.tickRoom(1/30)} }
   return {page,server,timers,clock,calls,errors,navigation,flush}
 }
 async function mallHarness(options = {}) {
@@ -58,8 +63,8 @@ test('the actual room page receives purchased furniture, saves it and preserves 
   const api={get:async()=>clone(server),put:async(url,body)=>{calls.push({url,body});server.room.layout=clone(body.layout);server.room.version++;return clone(server)}}
   vm.runInNewContext(fs.readFileSync(filename,'utf8'),{require:id=>id==='../../../utils/api'?api:id==='../../../utils/util'?{showError:e=>{throw Error(e)}}:id==='../../../utils/resident'?{presentResident,saveWallet:()=>{}}:id==='../../../utils/sound-page'?{withTapSounds:x=>x}:localRequire(id),Page:p=>{definition=p},wx:{getStorageSync:key=>storage[key],setStorageSync:(key,value)=>{storage[key]=value},removeStorageSync:key=>delete storage[key],navigateTo:args=>navigation.push(args.url),switchTab:args=>navigation.push(args.url),redirectTo(){},stopPullDownRefresh(){}},console},{filename})
   const page={...definition,data:clone(definition.data),setData};page.onLoad();page.onShow();await page._loadPromise
-  assert.equal(page.data.roomEditing,true);assert.equal(page.data.roomSelected,'sofa');assert.equal(storage.homeRoomRequested,undefined)
-  page.onRoomCell(tap({x:3,y:2}));page.onGoMall();page.onHide();page.onShow();await page._loadPromise
+  assert.equal(page.data.roomBagOpen,true);assert.equal(page.data.roomEditing,false);page.onRoomChoose(tap({id:'sofa'}));assert.equal(page.data.roomSelected,'sofa');assert.equal(storage.homeRoomRequested,undefined)
+  page.onRoomFloor({x:3.25,y:2.125});page.onGoMall();page.onHide();page.onShow();await page._loadPromise
   assert.equal(page.data.roomDirty,true);assert.equal(page.data.roomDraft.length,2);assert.deepEqual(navigation,['/home/pages/mall/mall'])
   await page.onRoomSave();assert.equal(calls.length,1);assert.equal(page.data.roomEditing,false);assert.equal(page.data.roomDraft.length,2)
   page.onUnload();page.applyState({...server,wallet:{coins:1,bricks:1}});assert.equal(page.data.state.wallet.coins,85)
@@ -69,32 +74,16 @@ test('each furniture action changes its intended room state and furniture can ro
     const s=fixture();s.furniture.forEach(item=>{item.owned=true});s.room.layout=[{id,x:2,y:2,rotation:0}]
     const h=roomHarness(s);h.page.onRoomFurniture(tap({id}));h.flush();assert.equal(h.page.data.roomAction,id);assert.equal(h.page.data.roomActor.pose,room.actions[id].pose)
     if(id==='lamp'){assert.equal(h.page.data.roomLamp,true);h.page.onRoomFurniture(tap({id}));h.flush();assert.equal(h.page.data.roomLamp,false)}
-    if(id==='sofa'){h.page.onRoomEdit();h.page.onRoomChoose(tap({id}));h.page.onRoomRotate();assert.equal(h.page.data.roomDraft[0].rotation,1);assert.equal(h.page.data.roomDirty,true)}
+    if(id==='sofa'){h.page.onRoomEdit();h.page.onRoomChoose(tap({id}));h.page.onRoomRotateEnd({detail:{value:91}});assert.equal(h.page.data.roomDraft[0].angle,91);assert.equal(h.page.data.roomDirty,true)}
   }
 })
-test('owned furniture can move and rotate but cannot overlap, leave room, or block the doorway',()=>{
-  const s=fixture();s.furniture.forEach(i=>{i.owned=true})
-  assert.equal(room.canPlace(s.room.layout,s.furniture,{id:'tv',x:1,y:3,rotation:0}),false)
-  assert.equal(room.canPlace(s.room.layout,s.furniture,{id:'bed',x:5,y:6,rotation:1}),true)
-  assert.equal(room.canPlace(s.room.layout,s.furniture,{id:'bed',x:5,y:6,rotation:0}),false)
-  assert.equal(room.canPlace(s.room.layout,s.furniture,{id:'sofa',x:2,y:6,rotation:0}),false)
-  assert.equal(room.canPlace(s.room.layout,s.furniture,{id:'chair',x:2,y:3,rotation:0}),true)
-  assert.equal(room.canPlace(s.room.layout,s.furniture,{id:'fake',x:0,y:0,rotation:0}),false)
-})
-test('walking takes a real path around furniture and rejects blocked destinations',()=>{
-  const s=fixture();const layout=[{id:'sofa',x:2,y:4,rotation:0},{id:'bed',x:4,y:2,rotation:0}]
-  const p=room.pathTo(room.ENTRY,{x:3,y:3},layout,s.furniture)
-  assert.ok(p.length>3)
-  const blocked=room.blockedCells(layout,s.furniture,null,true)
-  assert.ok(p.every(c=>!blocked.has(c.x+','+c.y)))
-  assert.equal(room.pathTo(room.ENTRY,{x:3,y:4},layout,s.furniture),null)
-  assert.equal(room.pathTo(room.ENTRY,{x:9,y:3},layout,s.furniture),null)
-})
-test('direction controls move one step and hidden pages stop animation timers',()=>{
-  const h=roomHarness();h.page.onRoomMove(tap({direction:'up'}));assert.equal(h.page.data.roomActor.y,5);assert.equal(h.page.data.roomActor.moving,true)
-  h.flush();assert.equal(h.page.data.roomActor.moving,false)
-  h.page.onRoomCell(tap({x:0,y:0}));assert.equal(h.timers.size,1)
-  h.page._visible=false;h.page.stopRoomWalk();assert.equal(h.timers.size,0);assert.equal(h.page.data.roomActor.moving,false)
+test('WASD holds move continuously, release stops, and hidden pages cannot keep walking',()=>{
+  const h=roomHarness();h.page.setRoomKey('w',true);for(let i=0;i<10;i++)h.page.tickRoom(1/30)
+  assert.ok(h.page._actor.y<6.5);assert.equal(h.page._actor.moving,true)
+  h.page.setRoomKey('w',false);h.page.tickRoom(1/30);assert.equal(h.page._actor.moving,false)
+  h.page.onRoomFloor({x:.5,y:.5});assert.ok(h.page._walkPath)
+  h.page._visible=false;h.page.stopRoomWalk();const actor=clone(h.page._actor);h.page.setRoomKey('s',true);h.page.tickRoom(.1)
+  assert.deepEqual(h.page._actor,actor);assert.equal(h.page._walkPath,null)
 })
 test('television is reached on foot and cycles all three local nature pictures',()=>{
   const s=fixture();s.furniture.find(i=>i.id==='tv').owned=true;s.room.layout.push({id:'tv',x:3,y:3,rotation:0})
@@ -107,12 +96,12 @@ test('television is reached on foot and cycles all three local nature pictures',
 })
 test('placing and storing remain drafts until one successful versioned save',async()=>{
   let finish;const h=roomHarness(fixture(),{save:(body,s)=>new Promise(resolve=>{finish=()=>{s.room={...s.room,layout:body.layout,version:1};resolve(clone(s))}})})
-  h.page.onRoomEdit();h.page.onRoomChoose(tap({id:'chair'}));h.page.onRoomCell(tap({x:5,y:4}))
+  h.page.onRoomEdit();h.page.onRoomChoose(tap({id:'chair'}));h.page.onRoomFloor({x:5.125,y:4.25})
   assert.equal(h.page.data.roomDirty,true);assert.equal(h.server.room.layout[0].x,1)
   const pending=h.page.onRoomSave();h.page.onRoomSave();h.page.onRoomCancel();assert.equal(h.calls.length,1);assert.equal(h.calls[0].body.expected_version,0)
   finish();await pending;assert.equal(h.page.data.roomEditing,false);assert.equal(h.page.data.roomVersion,1)
   h.page.onRoomEdit();h.page.onRoomChoose(tap({id:'chair'}));h.page.onRoomStore();assert.equal(h.page.data.roomDraft.length,0);assert.equal(h.page.data.roomInventory.length,1)
-  h.page.onRoomCancel();assert.equal(h.page.data.roomDraft[0].x,5)
+  h.page.onRoomCancel();assert.equal(h.page.data.roomDraft[0].x,5.125)
 })
 test('lost save replies reconcile without replay, offline failures retain the draft',async()=>{
   const recovered=roomHarness(fixture(),{save:async(body,s)=>{s.room.layout=body.layout;s.room.version++;throw Error('timeout')}})
@@ -125,7 +114,7 @@ test('lost save replies reconcile without replay, offline failures retain the dr
 test('a conflicting device layout is reloaded instead of overwritten',async()=>{
   const h=roomHarness(fixture(),{save:async(body,s)=>{s.room={version:2,size:7,layout:[{id:'chair',x:6,y:6,rotation:0}]};throw Error('conflict')}})
   h.page.onRoomEdit();h.page.onRoomChoose(tap({id:'chair'}));h.page.onRoomStore();await h.page.onRoomSave()
-  assert.equal(h.page.data.roomVersion,2);assert.equal(h.page.data.roomDraft[0].x,6);assert.equal(h.page.data.roomEditing,false);assert.equal(h.calls.length,1)
+  assert.equal(h.page.data.roomVersion,2);assert.equal(h.page.data.roomDraft[0].x,6.5);assert.equal(h.page.data.roomEditing,false);assert.equal(h.calls.length,1)
 })
 test('mall purchase uses authoritative prices, handles rapid taps, and returns owned furniture home',async()=>{
   let finish;const h=await mallHarness({purchase:(body,s)=>new Promise(resolve=>{finish=()=>{s.furniture.find(i=>i.id===body.item_id).owned=true;s.wallet.coins-=45;resolve(clone(s))}})})

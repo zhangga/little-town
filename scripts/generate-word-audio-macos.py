@@ -29,9 +29,6 @@ def main():
 
     root = Path(__file__).resolve().parent.parent
     seed = json.loads((root / "backend/data/words/grade-1-3.json").read_text())
-    # 原始 25 词带 image_url，继续放主包；不能依靠 MP3 是否存在判断，
-    # 否则补回被删的文件时会误写到另一个包。
-    main_words = {word["word"].lower() for word in seed if word.get("image_url")}
     # 数据用 JS 模块供微信加载，导出的数组保持 JSON 字面量格式。
     textbook_source = (root / "miniapp/data/textbook-words.js").read_text()
     units = json.loads(textbook_source.removeprefix("module.exports = "))
@@ -47,7 +44,7 @@ def main():
             if stem in seen:
                 continue
             seen.add(stem)
-            package = "audio" if word["word"].lower() in main_words else "textbook-audio"
+            package = "textbook-audio"
             output = root / "miniapp" / package / "words"
             output.mkdir(parents=True, exist_ok=True)
             for rate, suffix in [(165, ""), (110, "-slow")]:

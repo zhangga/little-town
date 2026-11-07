@@ -61,6 +61,7 @@ async function main(){
   h.page.onRoomCancel();h.page.onRoomFurniture(tap({id:'tv'}));h.flush();record('03-television')
   h.page.onRoomTVClose()
   for(const tab of ['outfit','decoration','home']){h.page.setData({tab,items:h.page.data.state.shop.filter(i=>i.kind===tab)});record('04-'+tab)}
+  for(const level of [3,4,5]){const home=roomHarness(fixture(level));home.page.setData({tab:'home'});states['04-home-level-'+level]=clone(home.page.data)}
   const empty=roomHarness();states['05-first-home']=clone(empty.page.data)
   renderGroup('miniapp/home/pages/room/room',Object.fromEntries(Object.entries(states).filter(([name])=>!name.startsWith('04-'))))
   renderGroup('miniapp/pages/resident/resident',Object.fromEntries(Object.entries(states).filter(([name])=>name.startsWith('04-'))))
@@ -81,4 +82,5 @@ async function main(){
     }).listen(port,'127.0.0.1',()=>console.log('http://127.0.0.1:'+port+'/output/home-preview/index.html'))
   }
 }
-main().catch(error=>{console.error(error);process.exitCode=1})
+module.exports={compile,dependencies,cssFor,html,renderGroup}
+if(require.main===module)main().catch(error=>{console.error(error);process.exitCode=1})

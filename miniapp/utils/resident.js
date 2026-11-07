@@ -6,7 +6,7 @@ function art(src, index, columns) {
 function residentArt(outfit, pose) {
   return art('/images/resident/resident-atlas.png', Math.max(0, outfits.indexOf(outfit)) * 4 + (pose || 0), 4)
 }
-function homeArt(level) { return art('/images/resident/home-atlas.png', Math.max(0, Math.min(2, level - 1)), 2) }
+function homeArt(level) { if(level >= 4) return art('/images/resident/home-villa-' + Math.min(5,level) + '.png',0,1); return art('/images/resident/home-atlas.png', Math.max(0, Math.min(2, level - 1)), 2) }
 function decorationArt(id) {
   if (id === 'flowers') return art('/images/resident/home-atlas.png', 3, 2)
   if (id === 'flag' || id === 'trees') return Object.assign({ src: '/images/town/voxel-atlas.png', scale: 400 }, townSprite(id === 'flag' ? '旗帜' : '树林'))

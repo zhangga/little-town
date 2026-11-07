@@ -72,7 +72,7 @@ Page(withTapSounds({
   onPreviewHome() {
     if (this.data.busy || !this.data.state.home.next_level) return
     const { home, nextHomeArt, wallet } = this.data.state
-    this.setData({ selected: { type: 'home', name: '升级到 ' + home.next_level + ' 级小屋', description: '更宽敞的家，装得下新的学习故事。', art: nextHomeArt, price: home.upgrade_cost, affordable: home.can_upgrade, missing: Math.max(0, home.upgrade_cost - wallet.bricks), expectedLevel: home.level } })
+    this.setData({ selected: { type: 'home', name: home.next_name || '升级到 ' + home.next_level + ' 级小屋', description: home.next_size ? home.next_summary + ' 室内扩大到 ' + home.next_size + ' × ' + home.next_size + ' 格，已有家具会保留。' : '更宽敞的家，装得下新的学习故事。', art: nextHomeArt, price: home.upgrade_cost, affordable: home.can_upgrade, missing: Math.max(0, home.upgrade_cost - wallet.bricks), expectedLevel: home.level } })
   },
   onClose() { if (!this.data.busy) this.setData({ selected: null }) },
   onNoop() {},

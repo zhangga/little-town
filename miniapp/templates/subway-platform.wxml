@@ -10,6 +10,6 @@
     </button>
     <view class="metro-ticket"><view><text>一张通往快乐的车票</text><view>地铁跑酷 <text>免费畅玩</text></view></view><text class="metro-ticket-star">✦</text></view>
     <view class="metro-platform-guide"><view><text>↔</text>左右换道</view><view><text>↑</text>跳过路障</view><view><text>↓</text>滑过横杆</view></view>
-    <text class="metro-platform-note">躲开列车，收集星星，试试能跑多远。<br />星星只计游戏分数，最高分保存在这台设备。</text>
+    <view class="metro-platform-note"><view>躲开列车，收集星星，试试能跑多远。</view><view>星星只计游戏分数，最高分保存在这台设备。</view></view>
   </view>
 </template>

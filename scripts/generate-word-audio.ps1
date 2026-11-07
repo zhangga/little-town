@@ -13,11 +13,9 @@ foreach ($taskUnit in $taskUnits) {
         if ($taskEntry.spoken) { $taskSpoken[$taskEntry.word] = $taskEntry.spoken }
     }
 }
-$taskOutput = Join-Path $taskRoot 'miniapp/audio/words'
-$taskTextbookOutput = Join-Path $taskRoot 'miniapp/textbook-audio/words'
+$taskOutput = Join-Path $taskRoot 'miniapp/textbook-audio/words'
 $taskWaveOutput = Join-Path $taskRoot 'output/word-audio-source'
 New-Item -ItemType Directory -Path $taskOutput -Force | Out-Null
-New-Item -ItemType Directory -Path $taskTextbookOutput -Force | Out-Null
 New-Item -ItemType Directory -Path $taskWaveOutput -Force | Out-Null
 if (-not (Get-Command $Ffmpeg -ErrorAction SilentlyContinue)) { throw 'ffmpeg is required; pass -Ffmpeg with its executable path.' }
 $taskSynth = New-Object System.Speech.Synthesis.SpeechSynthesizer
@@ -31,7 +29,7 @@ try {
         if ($taskStem -notmatch '^[a-z-]+$') { throw "Unsupported filename: $taskStem" }
         if ($taskSeen.ContainsKey($taskStem)) { continue }
         $taskSeen[$taskStem] = $true
-        $taskDestination = if ($taskWord.image_url) { $taskOutput } else { $taskTextbookOutput }
+        $taskDestination = $taskOutput
         $taskSpeech = if ($taskSpoken.ContainsKey($taskWord.word)) { $taskSpoken[$taskWord.word] } else { $taskWord.word }
         foreach ($taskRate in @(-1, -4)) {
             $taskSuffix = if ($taskRate -eq -4) { '-slow' } else { '' }

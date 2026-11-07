@@ -147,7 +147,7 @@ if (require.main === module) {
     const raw = seed.map((item, index) => ({ ...item, id: index + 1, position_x: 60 + (index % 4) * 180, position_y: 60 + Math.floor(index / 4) * 200, built_at: '2026-10-16 12:00:00' }))
     const snapshot = JSON.stringify(raw)
     const layout = townPlots(raw, '体育馆')
-    assert.equal(layout.buildings.length, 11)
+    assert.equal(layout.buildings.length, seed.length)
     assert.equal(layout.plots.length, 18)
     assert.equal(layout.plots.filter(item => item.next).length, 1)
     assert.equal(layout.buildings.filter(item => item.isNew).length, 1)

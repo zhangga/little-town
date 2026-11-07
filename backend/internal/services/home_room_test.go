@@ -1,7 +1,10 @@
 package services
 
 import (
+	"encoding/json"
 	"errors"
+	"math"
+	"os"
 	"testing"
 
 	"github.com/zhangga/little-town/backend/internal/models"
@@ -56,5 +59,86 @@ func TestRoomDefaultsAndStoredEmptyLayout(t *testing.T) {
 			t.Fatalf("invalid furniture: %+v", item)
 		}
 		seen[item.ID] = true
+	}
+}
+
+func TestContinuousRoomLayouts(t *testing.T) {
+	data, err := os.ReadFile("testdata/home-space.json")
+	if err != nil {
+		t.Fatal(err)
+	}
+	var cases []struct {
+		Name   string
+		Valid  bool
+		Layout []RoomPlacement
+	}
+	if err := json.Unmarshal(data, &cases); err != nil {
+		t.Fatal(err)
+	}
+	owned := map[string]bool{}
+	for _, item := range furnitureCatalog {
+		owned[item.ID] = true
+	}
+	for _, c := range cases {
+		t.Run(c.Name, func(t *testing.T) {
+			if err := ValidateRoomLayout(c.Layout, owned); (err == nil) != c.Valid {
+				t.Fatalf("valid=%v, err=%v", c.Valid, err)
+			}
+		})
+	}
+	angle := 42.25
+	for _, value := range []float64{math.NaN(), math.Inf(1), math.Inf(-1)} {
+		if ValidateRoomLayout([]RoomPlacement{{ID: "chair", X: value, Y: 2, Angle: &angle}}, owned) == nil {
+			t.Fatal("non-finite position accepted")
+		}
+		if ValidateRoomLayout([]RoomPlacement{{ID: "chair", X: 2, Y: 2, Angle: &value}}, owned) == nil {
+			t.Fatal("non-finite angle accepted")
+		}
+	}
+	if ValidateRoomLayout([]RoomPlacement{{ID: "chair", X: 1.5, Y: 2}}, owned) == nil {
+		t.Fatal("fractional legacy coordinate accepted without angle")
+	}
+}
+
+func TestHomeExpansionStagesAndBoundaries(t *testing.T) {
+	owned := map[string]bool{"pool": true}
+	angle := 0.0
+	for level, size := range []int{7, 9, 12, 16, 20} {
+		home := residentHome(level+1, 1000)
+		if home.Size != size || home.Area != size*size || len(home.Stages) != 5 {
+			t.Fatalf("wrong stage %+v", home)
+		}
+		resident := models.Resident{HomeLevel: level + 1, RoomLayout: `[{"id":"chair","x":1,"y":3,"rotation":0}]`}
+		room, err := readHomeRoom(&resident)
+		if err != nil || room.Size != size || room.Level != level+1 || room.Layout[0].X != 1 {
+			t.Fatalf("old room changed %+v %v", room, err)
+		}
+		p := RoomPlacement{ID: "chair", X: float64(size) - .5, Y: 2.5, Angle: &angle}
+		if ValidateRoomLayoutForLevel([]RoomPlacement{p}, owned, level+1) != nil {
+			t.Fatal("expanded floor cannot be used")
+		}
+		p.X += .1
+		if ValidateRoomLayoutForLevel([]RoomPlacement{p}, owned, level+1) == nil {
+			t.Fatal("crossed current house boundary")
+		}
+		p.X = float64(size) / 2
+		p.Y = float64(size) - .5
+		if ValidateRoomLayoutForLevel([]RoomPlacement{p}, owned, level+1) == nil {
+			t.Fatal("blocked current doorway")
+		}
+	}
+	if residentHome(3, 59).CanUpgrade || !residentHome(3, 60).CanUpgrade {
+		t.Fatal("villa price is not authoritative")
+	}
+	if residentHome(5, 999).NextLevel != 0 || residentHome(5, 999).CanUpgrade {
+		t.Fatal("max home can upgrade")
+	}
+	if len(furnitureCatalog) != MaxRoomFurniture {
+		t.Fatal("room limit no longer matches catalog")
+	}
+	for _, item := range furnitureCatalog {
+		if item.Width > homeStage(1).Size || item.Depth > homeStage(1).Size {
+			t.Fatalf("furniture has no usable footprint: %s", item.ID)
+		}
 	}
 }

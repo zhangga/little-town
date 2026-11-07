@@ -239,7 +239,7 @@ page { background: #f6f0df; color: #344236; }
 .earned-bricks { font-weight: 800; color: #ad582f; }
 .reward-retry { margin-bottom: 22rpx; padding: 22rpx; background: #fff0e9; border-radius: 18rpx; font-size: 24rpx; line-height: 1.6; }
 .reward-retry button { margin-top: 14rpx; background: #fff; color: #9a4c2b; font-size: 24rpx; }
-.reward-practice-entry { width: 100%; margin-bottom: 24rpx; padding: 25rpx; background: #f6ead0; color: #61502c; border: 2rpx solid #e1cea1; border-radius: 22rpx; text-align: left; line-height: 1.5; }
+.school-page .reward-practice-entry { width: 100%; margin-bottom: 24rpx; padding: 25rpx; background: #f6ead0; color: #61502c; border: 2rpx solid #e1cea1; border-radius: 22rpx; text-align: left; line-height: 1.5; }
 .reward-practice-entry > view { display: flex; justify-content: space-between; gap: 12rpx; font-size: 30rpx; font-weight: 700; }
 .reward-practice-entry > view text, .reward-practice-entry > text { font-size: 22rpx; font-weight: 400; }
 .next-subject { margin-top: 36rpx; padding-top: 30rpx; border-top: 2rpx dashed #dbd8ca; font-size: 26rpx; }

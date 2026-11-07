@@ -4,29 +4,31 @@ const roomData = {
   roomSupported:false,roomEditing:false,roomDirty:false,roomVersion:0,roomDraft:[],roomFurniture:[],roomInventory:[],
   roomSelected:'',roomRotation:0,roomAngle:0,roomSelectionName:'',roomActor:null,roomMessage:'按住 WASD 走动，拖动空白处转动视角。',
   roomAction:'',roomLamp:false,roomTV:false,roomNatureIndex:0,roomNature:nature[0],roomSaving:false,
-  roomBagOpen:false,roomBagCount:0,roomPreviewValid:true,roomSceneReady:false,roomSceneFailed:false,roomCamera:'overview',roomKeys:[],roomHelp:false
+  roomSize:7,roomLevel:1,roomName:'橡木小家',roomDoorOpen:false,roomFire:false,roomBagOpen:false,roomBagCount:0,roomPreviewValid:true,roomSceneReady:false,roomSceneFailed:false,roomCamera:'close',roomKeys:{},roomHelp:false
 }
 function createHomeRoom(api, wxApi, showError) {
   return {
+    roomGeometry() {return Object.assign({},this.data.state&&this.data.state.room,{doorOpen:this.data.roomDoorOpen,porch:true})},
     syncRoom(state) {
       if(!state.room||!Array.isArray(state.furniture)){this.setData({roomSupported:false});return}
-      const patch={roomSupported:true}
+      const geometry=space.dimensions(state.room)
+      const patch={roomSupported:true,roomSize:geometry.size,roomLevel:geometry.level,roomName:state.home.name||'橡木小家'}
       if(!this.data.roomEditing){patch.roomDraft=state.room.layout.map(p=>space.normalize(p,state.furniture));patch.roomVersion=state.room.version}
       this.setData(patch)
-      if(!this._actor||!space.canWalk(this._actor,this.data.roomDraft,state.furniture))this._actor={...space.ENTRY,angle:Math.PI,moving:false,pose:''}
+      if(!this._actor||!space.canWalk(this._actor,this.data.roomDraft,state.furniture,this.roomGeometry()))this._actor={...geometry.entry,angle:Math.PI,moving:false,pose:''}
       this.setData({roomActor:{...this._actor}});this.refreshRoom()
     },
     refreshRoom() {
       if(!this.data.state)return
       const catalog=presentFurniture(this.data.state.furniture,this.data.state.wallet,this.data.roomDraft)
       this.setData({roomInventory:catalog.filter(i=>i.owned),roomBagCount:catalog.filter(i=>i.owned&&!i.placed).length,roomFurniture:this.data.roomDraft.map(p=>({...catalog.find(i=>i.id===p.id),...p}))})
-      if(this._scene){this._scene.clearPreview();this._scene.setLayout(this.data.roomDraft);this._scene.setActor(this._actor);this._scene.setSelected(this.data.roomSelected);this._scene.setOutfit(this.data.state.resident.outfit_id);this._scene.setNature(this.data.roomNature.image);this._scene.setLamp(this.data.roomLamp)}
+      if(this._scene){this._scene.setHouse(this.roomGeometry());this._scene.setDoor(this.data.roomDoorOpen);this._scene.clearPreview();this._scene.setLayout(this.data.roomDraft);this._scene.setActor(this._actor);this._scene.setSelected(this.data.roomSelected);this._scene.setOutfit(this.data.state.resident.outfit_id);this._scene.setNature(this.data.roomNature.image);this._scene.setLamp(this.data.roomLamp);this._scene.setFire(this.data.roomFire);if(this._candidate)this.previewRoomPlacement(this._candidate)}
     },
     stopRoomWalk() {
       this.leaveRoomSeat()
-      this._walkPath=null;this._walkDone=null;this._heldKeys=new Set()
+      this._walkPath=null;this._walkDone=null;this._heldKeys=new Set();this._doorKeyHeld=false;this._viewKeyHeld=false
       if(this._actor){this._actor.moving=false;this._actor.pose=''}
-      if(!this._disposed){this.setData({roomKeys:[],roomActor:this._actor?{...this._actor}:null});if(this._scene)this._scene.setActor(this._actor)}
+      if(!this._disposed){this.setData({roomKeys:{},roomActor:this._actor?{...this._actor}:null});if(this._scene)this._scene.setActor(this._actor)}
     },
     onRoomBag() {
       if(this.data.roomSaving||this.data.busy)return
@@ -34,26 +36,29 @@ function createHomeRoom(api, wxApi, showError) {
     },
     onRoomEdit() {
       if(this.data.busy||this.data.roomSaving||!this.data.roomSupported)return
-      this.stopRoomWalk();this.setData({roomEditing:true,roomAction:'',roomTV:false})
+      if(!this.data.roomEditing)this._playCamera=this.data.roomCamera
+      this.stopRoomWalk();this.setData({roomEditing:true,roomAction:'',roomTV:false});if(this.data.roomCamera!=='overview'){this.setData({roomCamera:'overview'});if(this._scene)this._scene.setMode('overview')}
     },
     onRoomCancel() {
       if(this.data.roomSaving)return
       this._candidate=null
       if(this._scene)this._scene.clearPreview()
       this.setData({roomEditing:false,roomDirty:false,roomSelected:'',roomSelectionName:'',roomBagOpen:false,roomAngle:0,roomPreviewValid:true,roomMessage:'按住 WASD 走动，拖动空白处转动视角。'})
-      this.syncRoom(this.data.state)
+      this.syncRoom(this.data.state);this.restoreRoomCamera()
     },
+    restoreRoomCamera(){const mode=this._playCamera||'close';this.setData({roomCamera:mode});if(this._scene)this._scene.setMode(mode)},
     onRoomChoose(e) {
       if(this.data.busy||this.data.roomSaving)return
       const id=e.currentTarget.dataset.id,item=this.data.roomInventory.find(i=>i.id===id)
       if(!item)return
       this.onRoomEdit()
       const placed=this.data.roomDraft.find(p=>p.id===id)
-      let candidate=placed?{...placed}:{id,x:3.5,y:4.5,rotation:0,angle:0}
+      const size=this.data.roomSize
+      let candidate=placed?{...placed}:{id,x:size/2,y:size/2,rotation:0,angle:0}
       if(!placed){
-        const spots=[];for(let x=.5;x<7;x+=.25)for(let y=.5;y<6;y+=.25)spots.push({id,x,y,rotation:0,angle:0})
-        spots.sort((a,b)=>Math.hypot(a.x-3.5,a.y-4)-Math.hypot(b.x-3.5,b.y-4))
-        candidate=spots.find(p=>space.canPlace(this.data.roomDraft,this.data.state.furniture,p))||candidate
+        const spots=[];for(let x=.5;x<size;x+=.5)for(let y=.5;y<size-.5;y+=.5)spots.push({id,x,y,rotation:0,angle:0})
+        spots.sort((a,b)=>Math.hypot(a.x-size/2,a.y-size/2)-Math.hypot(b.x-size/2,b.y-size/2))
+        candidate=spots.find(p=>space.canPlace(this.data.roomDraft,this.data.state.furniture,p,this.roomGeometry()))||candidate
       }
       this.setData({roomSelected:id,roomSelectionName:item.name,roomAngle:candidate.angle,roomRotation:0,roomBagOpen:false,roomMessage:'拖动家具或点地板放置，滑动角度条自由旋转。'})
       if(this._scene)this._scene.setSelected(id)
@@ -62,14 +67,14 @@ function createHomeRoom(api, wxApi, showError) {
     previewRoomPlacement(p) {
       if(!p||this.data.roomSaving)return
       this._candidate={...p,x:space.round(p.x),y:space.round(p.y),angle:space.degrees(p.angle)}
-      const valid=space.canPlace(this.data.roomDraft,this.data.state.furniture,this._candidate)
+      const valid=space.canPlace(this.data.roomDraft,this.data.state.furniture,this._candidate,this.roomGeometry())
       this.setData({roomPreviewValid:valid,roomAngle:this._candidate.angle})
       if(this._scene)this._scene.setPreview(this._candidate,valid)
     },
     placeRoomCandidate() {
       if(this.data.roomSaving||!this._candidate)return false
       const p={...this._candidate}
-      if(!space.canPlace(this.data.roomDraft,this.data.state.furniture,p)){this.setData({roomMessage:'这里放不下，红框移到空地变绿后就能放下。'});return false}
+      if(!space.canPlace(this.data.roomDraft,this.data.state.furniture,p,this.roomGeometry())){this.setData({roomMessage:'这里放不下，红框移到空地变绿后就能放下。'});return false}
       if(this._scene)this._scene.clearPreview()
       this.setData({roomDraft:this.data.roomDraft.filter(i=>i.id!==p.id).concat(p),roomDirty:true,roomMessage:'放好了，还可以拖动、旋转。完成后保存。'})
       this.refreshRoom();return true
@@ -93,7 +98,7 @@ function createHomeRoom(api, wxApi, showError) {
       if(!this.data.roomDirty){this.onRoomCancel();return}
       this.stopRoomWalk();this.setData({roomSaving:true,busy:true})
       const layout=this.data.roomDraft.map(p=>({...p}))
-      const finish=()=>{this._candidate=null;if(this._scene)this._scene.clearPreview();this.setData({roomEditing:false,roomDirty:false,roomSelected:'',roomBagOpen:false})}
+      const finish=()=>{this._candidate=null;if(this._scene)this._scene.clearPreview();this.setData({roomEditing:false,roomDirty:false,roomSelected:'',roomBagOpen:false});this.restoreRoomCamera()}
       try {
         const state=await api.put('/resident/room',{expected_version:this.data.roomVersion,layout})
         if(this._disposed)return
@@ -118,7 +123,7 @@ function createHomeRoom(api, wxApi, showError) {
         if(!this._candidate){this.setData({roomMessage:'打开底部小背包，选一件家具。'});return}
         this.previewRoomPlacement({...this._candidate,...point});this.placeRoomCandidate();return
       }
-      this.walkRoom(space.pathTo(this._actor,point,this.data.roomDraft,this.data.state.furniture))
+      this.leaveRoomSeat();this.walkRoom(space.pathTo(this._actor,point,this.data.roomDraft,this.data.state.furniture,this.roomGeometry()))
     },
     walkRoom(path,done) {
       this.stopRoomWalk()
@@ -127,14 +132,16 @@ function createHomeRoom(api, wxApi, showError) {
       this.setData({roomAction:'',roomMessage:'慢慢走，家里的一切都属于你。'})
     },
     setRoomKey(key,down) {
+      if(key==='v'){if(!down){this._viewKeyHeld=false;return}if(!this._viewKeyHeld&&this._visible&&!this.data.roomEditing&&!this.data.roomTV&&!this.data.roomBagOpen){this.onRoomPerspective();this._viewKeyHeld=true}return}
+      if(key==='e'){if(!down){this._doorKeyHeld=false;return}if(!this._doorKeyHeld&&this._visible){this.onRoomDoor();this._doorKeyHeld=true}return}
       if(!['w','a','s','d'].includes(key))return
       if(!this._heldKeys)this._heldKeys=new Set()
-      if(!down){this._heldKeys.delete(key);if(!this._disposed)this.setData({roomKeys:Array.from(this._heldKeys)});return}
+      if(!down){this._heldKeys.delete(key);if(!this._disposed)this.setData({['roomKeys.'+key]:false});return}
       if(!this._visible||this.data.roomEditing||this.data.roomBagOpen||this.data.roomTV||this.data.busy)return
       this.leaveRoomSeat()
       this._walkPath=null;this._walkDone=null;this._heldKeys.add(key)
       if(this._actor)this._actor.pose=''
-      this.setData({roomKeys:Array.from(this._heldKeys),roomAction:''})
+      if(!this.data.roomKeys[key])this.setData({['roomKeys.'+key]:true,roomAction:''})
     },
     onRoomKeyStart(e) {this.setRoomKey(e.currentTarget.dataset.key,true)},
     onRoomKeyEnd(e) {this.setRoomKey(e.currentTarget.dataset.key,false)},
@@ -145,11 +152,11 @@ function createHomeRoom(api, wxApi, showError) {
       if(dx||dy){
         const len=Math.hypot(dx,dy);dx/=len;dy/=len
         const move=this._scene?this._scene.movement(dx,dy):{x:dx,y:dy}
-        Object.assign(this._actor,space.move(this._actor,move.x*dt*1.75,move.y*dt*1.75,this.data.roomDraft,this.data.state.furniture))
+        Object.assign(this._actor,space.move(this._actor,move.x*dt*1.75,move.y*dt*1.75,this.data.roomDraft,this.data.state.furniture,this.roomGeometry()))
       }else if(this._walkPath&&this._walkPath.length){
         const target=this._walkPath[0],vx=target.x-this._actor.x,vy=target.y-this._actor.y,d=Math.hypot(vx,vy),step=Math.min(d,dt*1.75)
         if(d<.015)this._walkPath.shift()
-        else Object.assign(this._actor,space.move(this._actor,vx/d*step,vy/d*step,this.data.roomDraft,this.data.state.furniture))
+        else Object.assign(this._actor,space.move(this._actor,vx/d*step,vy/d*step,this.data.roomDraft,this.data.state.furniture,this.roomGeometry()))
       }
       const mx=this._actor.x-before.x,my=this._actor.y-before.y
       this._actor.moving=Math.hypot(mx,my)>.0001
@@ -163,10 +170,11 @@ function createHomeRoom(api, wxApi, showError) {
       if(this.data.roomEditing){this.onRoomChoose(e);return}
       const id=e.currentTarget.dataset.id,placed=this.data.roomDraft.find(p=>p.id===id)
       if(!placed||!actions[id])return
-      this.walkRoom(space.approach(this._actor,placed,this.data.roomDraft,this.data.state.furniture),()=>{
+      this.leaveRoomSeat();this.walkRoom(space.approach(this._actor,placed,this.data.roomDraft,this.data.state.furniture,this.roomGeometry()),()=>{
         const action=actions[id];this._actor.pose=action.pose;this._actor.angle=Math.atan2(placed.x-this._actor.x,placed.y-this._actor.y)
-        if(['chair','sofa','bed'].includes(id)){this._seatReturn={x:this._actor.x,y:this._actor.y};this._actor.x=placed.x;this._actor.y=placed.y;this._actor.angle=-placed.angle*Math.PI/180}
+        if(['chair','sofa','bed','sectional','bathtub','pool','treadmill'].includes(id)){this._seatReturn={x:this._actor.x,y:this._actor.y};this._actor.x=placed.x;this._actor.y=placed.y;this._actor.angle=-placed.angle*Math.PI/180}
         this.setData({roomAction:id,roomMessage:action.text,roomActor:{...this._actor}})
+        if(id==='fireplace'){this.setData({roomFire:!this.data.roomFire});if(this._scene)this._scene.setFire(this.data.roomFire)}
         if(id==='lamp'){this.setData({roomLamp:!this.data.roomLamp});if(this._scene)this._scene.setLamp(this.data.roomLamp)}
         if(id==='tv'){this._heldKeys=new Set();this.setData({roomTV:true})}
       })
@@ -175,6 +183,21 @@ function createHomeRoom(api, wxApi, showError) {
     onRoomNature(e) {const index=(this.data.roomNatureIndex+Number(e.currentTarget.dataset.step)+nature.length)%nature.length;this.setData({roomNatureIndex:index,roomNature:nature[index]});if(this._scene)this._scene.setNature(nature[index].image)},
     onRoomTVClose() {this.setData({roomTV:false})},
     onRoomCamera() {const mode=this.data.roomCamera==='overview'?'close':'overview';this.setData({roomCamera:mode});if(this._scene)this._scene.setMode(mode)},
+    onRoomPerspective(){if(this.data.roomEditing||this.data.busy)return;const mode=this.data.roomCamera==='first'?'close':'first';this.setData({roomCamera:mode});if(this._scene)this._scene.setMode(mode)},
+    onRoomExterior() {
+      if(this.data.roomEditing)return
+      const mode=this.data.roomCamera==='outside'?'close':'outside'
+      this.setData({roomCamera:mode});if(this._scene)this._scene.setMode(mode)
+    },
+    onRoomDoor() {
+      if(this.data.roomEditing||this.data.roomBagOpen||this.data.roomTV||this.data.busy||!this._actor)return
+      const {size,doorWidth,entry}=space.dimensions(this.roomGeometry())
+      if(this.data.roomDoorOpen&&Math.abs(this._actor.x-entry.x)<doorWidth/2+.2&&Math.abs(this._actor.y-size)<.35){this.setData({roomMessage:'先从门口走开一点，再关门。'});return}
+      const toggle=()=>{const held=this._doorKeyHeld;this.stopRoomWalk();this._doorKeyHeld=held;this.setData({roomDoorOpen:!this.data.roomDoorOpen,roomMessage:this.data.roomDoorOpen?'木门关好啦。':'木门打开了，按 WASD 就能穿过门口。'});if(this._scene)this._scene.setDoor(this.data.roomDoorOpen)}
+      if(Math.hypot(this._actor.x-entry.x,this._actor.y-size)>1.8){
+        this.leaveRoomSeat();this.walkRoom(space.pathTo(this._actor,entry,this.data.roomDraft,this.data.state.furniture,this.roomGeometry()),toggle)
+      }else toggle()
+    },
     onRoomHelp() {this.setData({roomHelp:!this.data.roomHelp})},
     onGoMall() {if(this.data.busy)return;this.stopRoomWalk();wxApi.navigateTo({url:'/home/pages/mall/mall'})}
   }

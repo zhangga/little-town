@@ -1,0 +1,58 @@
+page { height: 100%; overflow: hidden; background: #f4ebd2; color: #294e43; }
+.runner-page { height: 100vh; display: flex; flex-direction: column; overflow: hidden; }
+.runner-page button { margin: 0; font-size: 25rpx; line-height: 1.4; border-radius: 12rpx; }
+.runner-page button::after { border: 0; }
+.run-topbar { display: flex; align-items: center; justify-content: space-between; flex-shrink: 0; padding: 12rpx 22rpx; border-bottom: 2rpx solid #d4d5b9; background: #f4ebd2; }
+.runner-page .run-topbar button { width: auto; flex-shrink: 0; min-height: 40px; padding: 14rpx 10rpx; color: #376453; background: transparent; font-size: 23rpx; }
+.run-topbar button[disabled] { opacity: .35; }
+.run-brand { display: flex; align-items: center; gap: 10rpx; font-size: 25rpx; font-weight: 800; letter-spacing: 3rpx; }
+.run-line { display: flex; align-items: center; justify-content: center; width: 40rpx; height: 40rpx; border-radius: 50%; color: #fff0c7; background: #2d6b59; font-size: 20rpx; letter-spacing: 0; }
+.run-hud { display: flex; justify-content: space-between; align-items: center; gap: 14rpx; padding: 18rpx 28rpx; background: #fffae8; flex-shrink: 0; border-bottom: 3rpx solid #48745c; }
+.run-score > text,.run-stat > text { font-size: 18rpx; color: #7a8468; }
+.run-score > view { font-size: 46rpx; font-weight: 900; font-variant-numeric: tabular-nums; line-height: 1.15; }
+.run-stat > view { font-size: 29rpx; font-weight: 800; font-variant-numeric: tabular-nums; }
+.run-stat > view > text { font-size: 18rpx; font-weight: 400; }
+.run-stars { color: #a4742c; }
+.run-stat > .run-hearts { color: #b96446; font-size: 27rpx; letter-spacing: 3rpx; }
+.run-stage { position: relative; flex: 1; min-height: 0; overflow: hidden; background: #b8d6c4; }
+.run-canvas { display: block; width: 100%; height: 100%; }
+.run-pace { position: absolute; top: 20rpx; left: 24rpx; display: flex; align-items: center; gap: 18rpx; padding: 8rpx 16rpx; background: rgba(255,249,222,.9); border: 2rpx solid #9daa83; border-radius: 30rpx; font-size: 19rpx; font-weight: 700; color: #4c7357; pointer-events: none; }
+.run-overlay { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; padding: 18rpx 34rpx; background: rgba(50,75,61,.18); overflow-y: auto; }
+.run-card { position: relative; width: 100%; max-width: 610rpx; max-height: 100%; padding: 28rpx 30rpx 24rpx; overflow-y: auto; background: #fffae8; border: 3rpx solid #2f6552; border-radius: 22rpx; box-shadow: 0 10rpx 0 rgba(42,71,51,.22); box-sizing: border-box; }
+.run-card::before { content: ''; display: block; position: absolute; top: 0; left: 0; right: 0; height: 7rpx; background: repeating-linear-gradient(90deg,#2f715c 0,#2f715c 42rpx,#e4ba60 42rpx,#e4ba60 49rpx); }
+.run-eyebrow { font-size: 16rpx; letter-spacing: 3rpx; color: #7b8e70; font-weight: 700; }
+.run-card-title { margin-top: 12rpx; font-family: "Songti SC", "STSong", serif; font-size: 54rpx; line-height: 1.2; font-weight: 900; color: #275941; }
+.run-card-intro { margin-top: 13rpx; color: #7b826c; font-size: 22rpx; line-height: 1.65; }
+.run-instructions { display: flex; gap: 10rpx; margin: 24rpx 0 18rpx; padding: 16rpx 0; border-top: 2rpx dashed #d7d8b9; border-bottom: 2rpx dashed #d7d8b9; }
+.run-instructions > view { flex: 1; min-width: 0; }
+.run-instructions > view > text { display: inline-flex; align-items: center; justify-content: center; width: 42rpx; height: 42rpx; margin-bottom: 9rpx; border-radius: 9rpx; border: 2rpx solid #b0c0a0; color: #3f7358; background: #ecf0d9; font-size: 27rpx; font-weight: 800; }
+.run-instructions > view > view { font-size: 23rpx; font-weight: 700; }
+.run-instructions > view > view > text { display: block; margin-top: 4rpx; font-size: 20rpx; color: #7f876a; font-weight: 400; }
+.run-best { margin: 16rpx 0; display: flex; justify-content: space-between; align-items: center; color: #738065; font-size: 22rpx; }
+.run-best > text { color: #2c654b; font-size: 29rpx; font-weight: 800; }
+.runner-page .run-primary { width: 100%; min-height: 44px; padding: 23rpx 10rpx; color: #fff3cf; background: #2c6d55; border: 2rpx solid #235441; border-radius: 12rpx; box-shadow: 0 5rpx 0 #1e4a39; font-size: 28rpx; font-weight: 800; }
+.runner-page .run-primary[disabled] { background: #b6c3a8; box-shadow: none; border-color: #aab89c; color: #f7f4df; }
+.run-footnote { display: block; margin-top: 15rpx; text-align: center; font-size: 19rpx; color: #8b8d70; }
+.run-card-compact { padding: 38rpx 30rpx 24rpx; }
+.run-card-compact .run-card-title { font-size: 42rpx; }
+.run-result-score { text-align: center; margin: 30rpx 0 16rpx; font-size: 82rpx; line-height: 1.1; font-weight: 900; color: #2b6b50; }
+.run-result-score > text { display: block; margin-top: 10rpx; color: #839071; font-size: 21rpx; font-weight: 400; }
+.run-result-stats { display: flex; justify-content: center; gap: 24rpx; margin: 22rpx 0; font-size: 22rpx; color: #7d8368; }
+.runner-page .run-secondary { width: 100%; padding: 20rpx 10rpx 6rpx; color: #668169; background: transparent; font-size: 24rpx; }
+.run-storage-note { display: block; margin-bottom: 14rpx; font-size: 21rpx; color: #a46c3a; }
+.runner-page .run-canvas-retry { position: absolute; bottom: 10rpx; left: 20rpx; right: 20rpx; padding: 18rpx; border: 2rpx solid #b8783f; background: #fff0c8; color: #90542f; font-size: 23rpx; }
+.run-controls { flex-shrink: 0; padding: 14rpx 22rpx 20rpx; padding-bottom: calc(20rpx + env(safe-area-inset-bottom)); border-top: 3rpx solid #54785c; background: #f4ebd2; }
+.run-hint { margin-bottom: 14rpx; color: #7b8066; font-size: 20rpx; text-align: center; }
+.run-control-buttons { display: flex; gap: 14rpx; }
+.run-control-buttons button { display: flex; flex: 1; align-items: center; justify-content: center; gap: 8rpx; min-width: 0; min-height: 44px; padding: 10rpx 6rpx; background: #fffae8; border: 2rpx solid #93a583; border-radius: 12rpx; box-shadow: 0 4rpx 0 #afbb96; color: #326448; font-size: 22rpx; }
+.run-control-buttons button > text { font-size: 33rpx; font-weight: 900; }
+.run-control-buttons button[disabled] { opacity: .5; }
+@media (max-height: 620px) {
+  .run-topbar { padding-top: 4rpx; padding-bottom: 4rpx; }
+  .run-hud { padding-top: 8rpx; padding-bottom: 8rpx; }
+  .run-card { padding: 22rpx 24rpx 18rpx; }
+  .run-card-title { font-size: 43rpx; }
+  .run-card-intro { margin-top: 8rpx; font-size: 20rpx; }
+  .run-instructions { margin: 14rpx 0 8rpx; padding: 12rpx 0; }
+  .run-controls { padding-top: 9rpx; }
+}

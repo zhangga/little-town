@@ -10,6 +10,7 @@ import (
 )
 
 const HomeRoomSize = 7
+const MaxRoomFurniture = 24
 
 var (
 	ErrRoomLayout  = errors.New("家具不能重叠、超出房间或挡住门口，请换个位置")
@@ -30,6 +31,18 @@ var furnitureCatalog = []ResidentShopItem{
 	{ID: "bookshelf", Name: "故事书架", Description: "抽出一本书，读一个森林里的小故事。", Kind: "furniture", Category: "study", Price: 30, Width: 1, Depth: 1},
 	{ID: "table", Name: "原木餐桌", Description: "摆好杯子和餐盘，享受一场家里的下午茶。", Kind: "furniture", Category: "dining", Price: 32, Width: 2, Depth: 1},
 	{ID: "fridge", Name: "薄荷小冰箱", Description: "打开冰箱，看看整齐摆好的水果和果汁。", Kind: "furniture", Category: "dining", Price: 55, Width: 1, Depth: 1},
+	{ID: "kitchen", Name: "橡木料理台", Description: "灶台、水槽和储物柜，为家里做一点香香的点心。", Kind: "furniture", Category: "dining", Price: 85, Width: 3, Depth: 1},
+	{ID: "bathtub", Name: "白瓷浴缸", Description: "把浴室布置好，享受一个泡泡满满的下午。", Kind: "furniture", Category: "bathroom", Price: 85, Width: 2, Depth: 1},
+	{ID: "vanity", Name: "镜面洗漱台", Description: "洗洗手、照照镜子，每天清清爽爽。", Kind: "furniture", Category: "bathroom", Price: 45, Width: 1, Depth: 1},
+	{ID: "toilet", Name: "白瓷马桶", Description: "给家里添一个整洁的小卫生间。", Kind: "furniture", Category: "bathroom", Price: 30, Width: 1, Depth: 1},
+	{ID: "piano", Name: "橡木钢琴", Description: "黑白琴键，弹一段自己的小小旋律。", Kind: "furniture", Category: "leisure", Price: 120, Width: 2, Depth: 1},
+	{ID: "arcade", Name: "方块街机", Description: "给游戏角添一台亮晶晶的街机。", Kind: "furniture", Category: "leisure", Price: 95, Width: 1, Depth: 1},
+	{ID: "aquarium", Name: "观景鱼缸", Description: "蓝色的水、绿色的水草和小小的鱼，安静看一会儿。", Kind: "furniture", Category: "living", Price: 70, Width: 2, Depth: 1},
+	{ID: "fireplace", Name: "石砖壁炉", Description: "点亮暖色的炉火，让大房子也暖暖的。", Kind: "furniture", Category: "living", Price: 90, Width: 2, Depth: 1},
+	{ID: "pool", Name: "室内景观泳池", Description: "三格见方的小泳池，把自己的别墅布置得更酷。", Kind: "furniture", Category: "leisure", Price: 180, Width: 3, Depth: 3},
+	{ID: "treadmill", Name: "家用跑步机", Description: "在家里慢跑一下，给身体充充电。", Kind: "furniture", Category: "leisure", Price: 75, Width: 1, Depth: 2},
+	{ID: "pooltable", Name: "绿色台球桌", Description: "摆好球杆，试试把小球送进洞口。", Kind: "furniture", Category: "leisure", Price: 140, Width: 3, Depth: 2},
+	{ID: "sectional", Name: "转角大沙发", Description: "宽宽的转角沙发，留给朋友和舒服的午后。", Kind: "furniture", Category: "living", Price: 100, Width: 3, Depth: 2},
 }
 
 type RoomPlacement struct {
@@ -44,6 +57,7 @@ type RoomPlacement struct {
 type HomeRoom struct {
 	Version int             `json:"version"`
 	Size    int             `json:"size"`
+	Level   int             `json:"level"`
 	Layout  []RoomPlacement `json:"layout"`
 }
 
@@ -54,7 +68,8 @@ func residentMallAvailable(tx *gorm.DB, userID uint) (bool, error) {
 }
 
 func readHomeRoom(resident *models.Resident) (HomeRoom, error) {
-	room := HomeRoom{Version: resident.RoomVersion, Size: HomeRoomSize, Layout: []RoomPlacement{{ID: "chair", X: 1, Y: 3}}}
+	stage := homeStage(resident.HomeLevel)
+	room := HomeRoom{Version: resident.RoomVersion, Size: stage.Size, Level: stage.Level, Layout: []RoomPlacement{{ID: "chair", X: 1, Y: 3}}}
 	if resident.RoomLayout != "" {
 		if err := json.Unmarshal([]byte(resident.RoomLayout), &room.Layout); err != nil {
 			return room, err
@@ -64,6 +79,11 @@ func readHomeRoom(resident *models.Resident) (HomeRoom, error) {
 }
 
 func ValidateRoomLayout(layout []RoomPlacement, owned map[string]bool) error {
+	return ValidateRoomLayoutForLevel(layout, owned, 1)
+}
+
+func ValidateRoomLayoutForLevel(layout []RoomPlacement, owned map[string]bool, level int) error {
+	size := float64(homeStage(level).Size)
 	if layout == nil || len(layout) > len(furnitureCatalog) {
 		return ErrRoomLayout
 	}
@@ -86,11 +106,15 @@ func ValidateRoomLayout(layout []RoomPlacement, owned map[string]bool) error {
 		}
 		r := placementRect(p, item)
 		for _, c := range r.corners() {
-			if c[0] < -1e-7 || c[1] < -1e-7 || c[0] > HomeRoomSize+1e-7 || c[1] > HomeRoomSize+1e-7 {
+			if c[0] < -1e-7 || c[1] < -1e-7 || c[0] > size+1e-7 || c[1] > size+1e-7 {
 				return ErrRoomLayout
 			}
 		}
-		if roomOverlap(r, roomRect{x: 3.5, y: 6.5, w: 1, d: 1, c: 1}) {
+		doorWidth := 1.0
+		if level >= 4 {
+			doorWidth = 2
+		}
+		if roomOverlap(r, roomRect{x: size / 2, y: size - .5, w: doorWidth, d: 1, c: 1}) {
 			return ErrRoomLayout
 		}
 		if p.ID != "rug" {
@@ -163,7 +187,7 @@ func (s *ResidentService) SaveRoom(userID uint, version int, layout []RoomPlacem
 		for _, item := range items {
 			owned[item.ItemID] = true
 		}
-		if err := ValidateRoomLayout(layout, owned); err != nil {
+		if err := ValidateRoomLayoutForLevel(layout, owned, resident.HomeLevel); err != nil {
 			return err
 		}
 		encoded, err := json.Marshal(layout)

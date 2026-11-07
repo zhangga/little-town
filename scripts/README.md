@@ -62,7 +62,15 @@ MySQL 使用独立的 `little-town-mysqldata` 数据卷。原 PostgreSQL 容器�
 
 ## 学校三科课堂预览
 
-学校三科回归：`node --test scripts/school-test.cjs scripts/school-lessons-test.cjs` 覆盖 12 种玩法、五题课堂小练、讲解播放与生命周期、36 段音频校验、错题重练、照片教材、账号隔离及保存失败。`node scripts/school-preview.cjs` 用微信编译器生成 26 个实际 WXML/WXSS 场景；直接打开 `output/school-preview/index.html`，或加 `--serve 9434` 启动本机预览。预览里的写字板与小讲播播放器运行产品同一套逻辑，其余按钮仅用于布局展示。修改小讲播文稿后，在 macOS 上运行 `python3 scripts/generate-school-audio.py` 重建有变化的语音片段，无需外部语音服务。
+学校三科回归：`node --test scripts/school-test.cjs scripts/school-lessons-test.cjs scripts/school-rewards-test.cjs` 覆盖 12 种玩法、五题课堂小练、讲解播放与生命周期、36 段音频校验、错题重练、照片教材、账号隔离及保存失败。`node scripts/school-preview.cjs` 用微信编译器生成 30 个实际 WXML/WXSS 场景；直接打开 `output/school-preview/index.html`，或加 `--serve 9434` 启动本机预览。预览里的写字板与小讲播播放器运行产品同一套逻辑，其余按钮仅用于布局展示。修改小讲播文稿后，在 macOS 上运行 `python3 scripts/generate-school-audio.py` 重建有变化的语音片段，无需外部语音服务。
+
+## 地铁站与跑酷预览
+
+`node scripts/subway-preview.cjs --serve 9436` 编译实际站台和跑酷 WXML/WXSS，并运行产品的游戏逻辑、Canvas 绘制和页面控制器。打开 `http://127.0.0.1:9436/output/subway-preview/index.html`，可以从站台点击列车试玩，也可查看暂停、结算、未建造和网络失败状态。支持鼠标按钮、触摸滑动和预览用方向键。演示使用本地站台数据，不调用业务后端；输出目录已忽略。
+
+`node --test scripts/subway-test.cjs` 覆盖换道、跳跃/下滑判定、星星计分、随机障碍可通行性、不同帧率、重玩、后台暂停、页面退出、拥有建筑校验、账号隔离与保存失败。地铁站插画源文件是 `scripts/art/subway-station.svg`，发布素材是 `miniapp/images/town/subway-station.png`。
+
+启动预览后，运行 `node scripts/subway-browser-check.cjs`（需安装 `agent-browser`），使用真实鼠标按下、松开检查四个控制按钮，覆盖 HUD 刷新期间的点击、长按以及暂停/继续。微信端还需检查开始、暂停和结算卡片：原生 Canvas 会遮挡普通 view，所以只在奔跑时显示；初始化从 `.run-stage` 读取尺寸，滑动手势只绑定画布，不绑定菜单按钮的父容器。
 
 ## 前置要求
 
@@ -78,3 +86,15 @@ ports:
 ```
 
 两个端口都只绑定到 `127.0.0.1`，局域网内其他机器连不上，开发库不会意外暴露。
+
+三科奖励后端集成测试使用独立的 `MYSQL_TEST_DB=littletown_test_…` 测试库及对应数据库凭据，在 `backend` 目录运行 `go test -p 1 ./...`，覆盖独立次数、原英语共用额度、同词跨年级去重、重复提交、并发钱包和跨天恢复。学校奖励客户端测试覆盖断网收据丢失、重进恢复、切科、账号隔离、存储失败及过期题组。
+
+## 立体小家交互预览
+
+`node scripts/home-space-preview.cjs 9435` 编译实际 WXML/WXSS，启动 `http://127.0.0.1:9435/output/home-preview/space.html`。预览使用真实屋内控制器、碰撞规则与 WebGL 模型，示例账号拥有全部家具；`?level=2` 至 `?level=5` 分别预览各级住宅，第五级摆有全部 24 款家具。保存写入浏览器本地存储，带 `?saved=1` 可检查重新进入后的布局。WASD 走动，V 切换第一／第三人称，E 开关木门。预览不连接用户账号或扣金币。
+
+`node scripts/home-space-preview.cjs --build` 仅重新生成预览文件。编译器默认使用 macOS 微信开发者工具，其他位置通过 `WECHAT_COMPILER_DIR` 指定。浏览器交互检查执行 `node scripts/home-space-browser-check.cjs`，需 Node 环境可解析 Playwright（可通过 `NODE_PATH` 指定已有依赖），并已启动预览服务；`HOME_PREVIEW_URL` 和 `CHROME_PATH` 可覆盖默认地址与 Chrome 路径。截图保存在 `output/home-preview/space-*-final.png`。
+
+扩建、木门与人称检查：`node scripts/home-villa-browser-check.cjs`，验证开门后经过门廊、站在门槛不能关门、五种真实空间大小、第一／第三人称，以及全部家具与背包缩略图。截图保存在 `output/home-preview/villa-*-final.png`。完成场景修改后，`node scripts/render-home-model-assets.cjs` 将实际模型渲染为新增家具和四／五级住宅 PNG；加 `--homes` 仅更新住宅，需要预览服务、Playwright 和 Sharp。
+
+纯逻辑测试：`node --test scripts/home-room-test.cjs scripts/home-space-test.cjs scripts/home-villa-test.cjs scripts/resident-test.cjs`。后端服务测试包含与前端共用的连续坐标／任意旋转碰撞用例；`TestResidentMySQLLifecycle` 检查升级扣款、版本冲突和扩建后布局的实际数据库保存与重新读取。

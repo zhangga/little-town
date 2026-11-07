@@ -46,9 +46,6 @@ var residentCatalog = []ResidentShopItem{
 	{ID: "trees", Name: "绿荫角落", Description: "在小屋旁添一片绿意", Kind: "decoration", Price: 70},
 }
 
-var homeNames = []string{"", "初来的小屋", "暖暖的家", "花园之家"}
-var homeCosts = []int{0, 0, 15, 30}
-
 func ResidentProgress(xp int) (level, current, needed int, title string) {
 	thresholds := []int{0, 30, 80, 150, 250}
 	titles := []string{"见习镇长", "活力镇长", "小镇建造师", "小镇规划师", "小镇守护者"}
@@ -117,11 +114,18 @@ type ResidentDaily struct {
 	BonusXP   int  `json:"bonus_xp"`
 }
 type ResidentHome struct {
-	Level       int    `json:"level"`
-	Name        string `json:"name"`
-	NextLevel   int    `json:"next_level"`
-	UpgradeCost int    `json:"upgrade_cost"`
-	CanUpgrade  bool   `json:"can_upgrade"`
+	Level       int         `json:"level"`
+	Name        string      `json:"name"`
+	NextLevel   int         `json:"next_level"`
+	UpgradeCost int         `json:"upgrade_cost"`
+	CanUpgrade  bool        `json:"can_upgrade"`
+	Size        int         `json:"size"`
+	Area        int         `json:"area"`
+	Summary     string      `json:"summary"`
+	NextName    string      `json:"next_name"`
+	NextSize    int         `json:"next_size"`
+	NextSummary string      `json:"next_summary"`
+	Stages      []HomeStage `json:"stages"`
 }
 type ResidentWallet struct {
 	Coins  int `json:"coins"`
@@ -256,10 +260,10 @@ func (s *ResidentService) UpgradeHome(userID uint, expectedLevel int) (*Resident
 		if resident.HomeLevel != expectedLevel {
 			return ErrResidentHome
 		}
-		if resident.HomeLevel >= 3 {
+		if resident.HomeLevel >= MaxHomeLevel {
 			return ErrResidentMaxHome
 		}
-		cost := homeCosts[resident.HomeLevel+1]
+		cost := homeStage(resident.HomeLevel + 1).Cost
 		if user.Bricks < cost {
 			return ErrResidentBricks
 		}
@@ -268,7 +272,9 @@ func (s *ResidentService) UpgradeHome(userID uint, expectedLevel int) (*Resident
 			return err
 		}
 		resident.HomeLevel++
-		return tx.Model(resident).Update("home_level", resident.HomeLevel).Error
+		// A larger floor also changes layout validation. Invalidate stale editors.
+		resident.RoomVersion++
+		return tx.Model(resident).Updates(map[string]interface{}{"home_level": resident.HomeLevel, "room_version": resident.RoomVersion}).Error
 	})
 }
 
@@ -318,12 +324,7 @@ func (s *ResidentService) state(tx *gorm.DB, user *models.User, resident *models
 		completed = s.dailyGoal
 	}
 	level, current, needed, title := ResidentProgress(resident.Experience)
-	home := ResidentHome{Level: resident.HomeLevel, Name: homeNames[resident.HomeLevel]}
-	if home.Level < 3 {
-		home.NextLevel = home.Level + 1
-		home.UpgradeCost = homeCosts[home.NextLevel]
-		home.CanUpgrade = user.Bricks >= home.UpgradeCost
-	}
+	home := residentHome(resident.HomeLevel, user.Bricks)
 	return &ResidentState{
 		Resident: ResidentView{Resident: *resident, Level: level, Title: title, XPCurrent: current, XPNeeded: needed},
 		Wallet:   ResidentWallet{Coins: user.Coins, Bricks: user.Bricks},

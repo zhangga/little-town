@@ -42,7 +42,7 @@ func (h *ResidentHandler) SaveRoom(c *gin.Context) {
 		ExpectedVersion *int                     `json:"expected_version" binding:"required"`
 		Layout          []services.RoomPlacement `json:"layout"`
 	}
-	if err := c.ShouldBindJSON(&req); err != nil || req.ExpectedVersion == nil || req.Layout == nil || len(req.Layout) > 12 {
+	if err := c.ShouldBindJSON(&req); err != nil || req.ExpectedVersion == nil || req.Layout == nil || len(req.Layout) > services.MaxRoomFurniture {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "请选择有效的房间布置"})
 		return
 	}

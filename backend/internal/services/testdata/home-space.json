@@ -1,0 +1,12 @@
+[
+  {"name":"fractional position and arbitrary angle","valid":true,"layout":[{"id":"sofa","x":2.425,"y":2.315,"rotation":0,"angle":37.5}]},
+  {"name":"rotated furniture overlap","valid":false,"layout":[{"id":"sofa","x":2.425,"y":2.315,"rotation":0,"angle":37.5},{"id":"chair","x":3,"y":2.4,"rotation":0,"angle":130}]},
+  {"name":"touching edges fit","valid":true,"layout":[{"id":"chair","x":2,"y":2,"rotation":0,"angle":0},{"id":"plant","x":3,"y":2,"rotation":0,"angle":0}]},
+  {"name":"rotated bounding boxes overlap but objects do not","valid":true,"layout":[{"id":"chair","x":2,"y":2,"rotation":0,"angle":45},{"id":"plant","x":2.8,"y":2.8,"rotation":0,"angle":45}]},
+  {"name":"rotated corner crosses wall","valid":false,"layout":[{"id":"chair","x":0.5,"y":0.5,"rotation":0,"angle":45}]},
+  {"name":"rotated sofa blocks doorway","valid":false,"layout":[{"id":"sofa","x":3.8,"y":5.9,"rotation":0,"angle":55}]},
+  {"name":"rug may lie under furniture","valid":true,"layout":[{"id":"bed","x":4,"y":4,"rotation":0,"angle":23},{"id":"rug","x":4,"y":4,"rotation":0,"angle":33}]},
+  {"name":"angle outside range","valid":false,"layout":[{"id":"chair","x":2,"y":2,"rotation":0,"angle":360}]},
+  {"name":"negative angle","valid":false,"layout":[{"id":"chair","x":2,"y":2,"rotation":0,"angle":-1}]},
+  {"name":"small chair gap permits placement","valid":true,"layout":[{"id":"chair","x":2,"y":3,"rotation":0,"angle":0},{"id":"wardrobe","x":3.03,"y":3,"rotation":0,"angle":0}]}
+]

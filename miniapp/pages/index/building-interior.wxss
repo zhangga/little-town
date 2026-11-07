@@ -152,7 +152,7 @@
 .metro-arrival { color: #427968; font-size: 19rpx; }
 .metro-route { display: flex; align-items: center; gap: 10rpx; margin: 0 4rpx 22rpx; font-size: 20rpx; }
 .metro-route > view { flex: 1; height: 4rpx; background: #d3b66a; }
-.town-page .metro-train-button { position: relative; height: 354rpx; padding: 0; overflow: hidden; border: 3rpx solid #294d47; border-radius: 20rpx; background: #dae8dc; box-shadow: 0 6rpx 0 #b1c3ae; line-height: 1.4; }
+.town-page .metro-train-button { position: relative; width: 100%; height: 354rpx; padding: 0; overflow: hidden; border: 3rpx solid #294d47; border-radius: 20rpx; background: #dae8dc; box-shadow: 0 6rpx 0 #b1c3ae; line-height: 1.4; }
 .metro-platform-grid { position: absolute; inset: 0; background: repeating-linear-gradient(0deg,transparent 0,transparent 49rpx,#c4d7c6 50rpx,#c4d7c6 52rpx),repeating-linear-gradient(90deg,transparent 0,transparent 72rpx,#c4d7c6 73rpx,#c4d7c6 75rpx); }
 .metro-train { position: absolute; left: 48rpx; right: 48rpx; top: 54rpx; height: 190rpx; background: #fff4d6; border: 4rpx solid #294d47; border-radius: 48rpx 48rpx 16rpx 16rpx; box-shadow: 0 10rpx 0 #aec0af; }
 .metro-train-roof { position: absolute; left: 45rpx; right: 45rpx; top: -16rpx; height: 12rpx; border: 3rpx solid #294d47; border-bottom: 0; background: #80aa94; border-radius: 6rpx 6rpx 0 0; }
