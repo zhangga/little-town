@@ -253,7 +253,7 @@ func (s *SubscriptionService) PushReminder(target PushTarget) PushResult {
 	// 这里按「待复习数量 + 昵称 + 提示」的常见模板结构组织，
 	// 实际使用时请对照你的模板字段名调整。
 	data := SubscribeMessageData{
-		"thing1":  truncate("小小镇有 "+strconv.Itoa(target.DueCount)+" 个单词等着复习", 20),
+		"thing1":  truncate("我的小镇有 "+strconv.Itoa(target.DueCount)+" 个单词等着复习", 20),
 		"number2": target.DueCount,
 		"thing3":  truncate("今天还没去小镇看看，学习一下就能拿砖块", 20),
 	}

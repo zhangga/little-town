@@ -104,5 +104,6 @@ func AutoMigrate(db *gorm.DB) error {
 		&models.TownActivityVisit{},
 		&models.Restaurant{},
 		&models.RestaurantRequest{},
+		&models.SubwayWallet{}, &models.SubwayRun{}, &models.SubwayPurchase{},
 	)
 }

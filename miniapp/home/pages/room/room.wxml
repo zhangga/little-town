@@ -1,4 +1,4 @@
-<view class="home-page camera-{{roomCamera}}">
+<view class="home-page camera-{{roomCamera}}" bindpointermove="onRoomPointerMove" bindmouseleave="onRoomPointerLeave">
   <canvas id="home-space" type="webgl" class="home-space" disable-scroll="true" bindtouchstart="onRoomTouchStart" catchtouchmove="onRoomTouchMove" bindtouchend="onRoomTouchEnd" bindtouchcancel="onRoomTouchCancel" aria-label="可以走动和布置家具的立体橡木小家" />
   <view wx:if="{{loading}}" class="room-loading"><view class="room-loading-house">⌂</view><text>推开小家的门…</text></view>
   <view wx:elif="{{failed}}" class="room-loading"><text>小家暂时没连上</text><button bindtap="loadResident">重新打开</button></view>

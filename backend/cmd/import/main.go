@@ -68,7 +68,7 @@ func importAll(db *gorm.DB, cfg *config.Config) error {
 	}
 
 	fmt.Println()
-	fmt.Println("小小镇 · 数据导入")
+	fmt.Println("我的小镇 · 数据导入")
 	fmt.Printf("数据库 %s:%s/%s\n", cfg.DBHost, cfg.DBPort, cfg.DBName)
 
 	wordStats, err := importWords(db, "data/words/grade-1-3.json")

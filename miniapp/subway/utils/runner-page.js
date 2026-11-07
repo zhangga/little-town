@@ -1,5 +1,6 @@
 const { createRun, controlRun, stepRun, runView } = require('./runner')
 const { drawRun } = require('./runner-renderer')
+const { createEconomy } = require('./runner-economy')
 
 function createRunnerPage(api, wxApi, options = {}) {
   const random = options.random || Math.random
@@ -15,10 +16,12 @@ function createRunnerPage(api, wxApi, options = {}) {
   return {
     data: {
       phase: 'loading', canvasReady: false, canvasError: '', error: '',
-      score: 0, distance: 0, stars: 0, hearts: '♥♥♥', pace: '轻快出发',
+      score: 0, distance: 0, stars: 0, coins: 0, runTokens: 0, boards: 1, boardSeconds: 0, magnetSeconds: 0, chaseSeconds: 0, chaseLabel: '安全距离', pace: '城市站台',
+      economy: null, economyBusy: false, economyError: '', pendingReward: false, awarded: null, shopOpen: false, shopMessage: '',
       hint: '左右换道 · 上跳下滑 · 列车要绕开', best: 0, newRecord: false, recordSaveFailed: false
     },
-    onLoad() {
+    onLoad(query = {}) {
+      this._openShop = query.shop === '1'
       this._disposed = false
       this._visible = true
       this._run = createRun()
@@ -34,9 +37,11 @@ function createRunnerPage(api, wxApi, options = {}) {
     onHide() {
       this._visible = false
       this.onPause()
+      this.checkpoint()
       this.saveRecord()
     },
     onUnload() {
+      this.checkpoint()
       this.saveRecord()
       this.stopLoop()
       this._disposed = true
@@ -57,6 +62,8 @@ function createRunnerPage(api, wxApi, options = {}) {
       this.stopLoop()
       this._owner = owner; this._token = token; this._owned = false
       this._run = createRun()
+      this._sessionID = null
+      this._economy = createEconomy(api, wxApi, owner, () => this.current(owner, token))
       let best = 0
       try {
         const saved = wxApi.getStorageSync('subwayRecord:v1:' + owner)
@@ -65,11 +72,17 @@ function createRunnerPage(api, wxApi, options = {}) {
       this.setData(Object.assign(runView(this._run), { phase: token ? 'loading' : 'login', best, error: '', newRecord: false, recordSaveFailed: false }))
       this.drawFrame()
       if (!token) return Promise.resolve()
-      const loading = Promise.resolve().then(() => api.get('/buildings/my-town')).then(state => {
+      const loading = Promise.resolve().then(() => api.get('/buildings/my-town')).then(async state => {
         if (!this.current(owner, token)) return
         if (!state || !Array.isArray(state.buildings)) throw new Error('站台信息没能加载，请再试一次')
         this._owned = state.buildings.some(item => item.name === '地铁站')
-        this.setData({ phase: this._owned ? 'ready' : 'locked' })
+        if (this._owned) {
+          const wallet = await this._economy.load()
+          if (!this.current(owner, token)) return
+          this.applyEconomy(wallet)
+        }
+        this.setData({ phase: this._owned ? 'ready' : 'locked', pendingReward: !!this._economy.pending().finish, shopOpen: this._openShop && this._owned })
+        if (this._owned && this.data.pendingReward) await this.onSettle()
       }).catch(err => {
         if (this.current(owner, token)) this.setData({ phase: 'error', error: err.message || '地铁站暂时没连上，请再试一次' })
       }).finally(() => { if (this._loadPromise === loading) this._loadPromise = null })
@@ -109,22 +122,77 @@ function createRunnerPage(api, wxApi, options = {}) {
     drawFrame() {
       if (this._ctx && this._run && !this._disposed) drawRun(this._ctx, this._width, this._height, this._run)
     },
-    onStart() {
-      if (!this.current() || !this._visible || !this._owned || !this.data.canvasReady || !['ready', 'over'].includes(this.data.phase)) return
-      this._run = createRun()
-      this._runBest = this.data.best
-      controlRun(this._run, 'start')
-      this.setData(Object.assign(runView(this._run), { newRecord: false, recordSaveFailed: false }))
-      this.startLoop()
+    applyEconomy(state) {
+      this.setData({ economy: state, best: Math.max(this.data.best, state.best || 0) })
+    },
+    checkpoint() {
+      try { if (this._economy && this._sessionID) this._economy.checkpoint(this._run, this._sessionID) }
+      catch (_) { if (!this._disposed) this.setData({ economyError: '本局记录还没存好，请保持页面并重试结算' }) }
+    },
+    async onStart() {
+      if (!this.current() || !this._visible || !this._owned || !this.data.canvasReady || this.data.economyBusy || !['ready', 'over'].includes(this.data.phase)) return
+      if (this._economy.pending().finish) { this.setData({ pendingReward: true, economyError: '先结算上一程，再出发' }); return }
+      const owner = this._owner, token = this._token
+      this.setData({ economyBusy: true, economyError: '', awarded: null })
+      try {
+        const state = await this._economy.start()
+        if (!this.current(owner, token)) return
+        this._sessionID = state.run.run_id
+        this.applyEconomy(state)
+        this._run = createRun(); this._run.skin = state.equipped || 'mint'
+        this._runBest = this.data.best
+        controlRun(this._run, 'start')
+        if (!this._visible) controlRun(this._run, 'pause')
+        this.setData(Object.assign(runView(this._run), { newRecord: false, recordSaveFailed: false, pendingReward: false }))
+        this.checkpoint(); this.startLoop()
+      } catch (err) { if (this.current(owner, token)) this.setData({ economyError: err.message }) }
+      finally { if (this.current(owner, token)) this.setData({ economyBusy: false }) }
+    },
+    async onSettle() {
+      if (!this.current() || this.data.economyBusy) return
+      const owner = this._owner, token = this._token
+      this.checkpoint()
+      this.setData({ economyBusy: true, economyError: '' })
+      try {
+        const state = await this._economy.settle()
+        if (!this.current(owner, token)) return
+        this._sessionID = null; this.applyEconomy(state)
+        this.setData({ pendingReward: false, awarded: state.run ? state.run.awarded : null })
+      } catch (err) { if (this.current(owner, token)) this.setData({ pendingReward: true, economyError: err.message }) }
+      finally { if (this.current(owner, token)) this.setData({ economyBusy: false }) }
+    },
+    onDiscardReward() {
+      if (!this.current() || this.data.economyBusy) return
+      wxApi.showModal({ title: '放弃本次结算？', content: '这程收集物将不兑换为星光币，已有余额不受影响。', success: res => {
+        if (res.confirm && this.current()) { this._economy.discard(); this._sessionID = null; this.setData({ pendingReward: false, economyError: '' }) }
+      } })
+    },
+    onOpenShop() { this.onPause(); this.setData({ shopOpen: true, shopMessage: '' }) },
+    onCloseShop() { this.setData({ shopOpen: false }) },
+    async onShopItem(event) {
+      if (!this.current() || this.data.economyBusy || !this.data.economy) return
+      const item = this.data.economy.items.find(i => i.id === event.currentTarget.dataset.id)
+      if (!item) return
+      const owner = this._owner, token = this._token
+      this.setData({ economyBusy: true, economyError: '', shopMessage: '' })
+      try {
+        const pending = this._economy.pending().purchase
+        const state = item.owned && !pending ? await this._economy.equip(item.id) : await this._economy.purchase(item.id)
+        if (!this.current(owner, token)) return
+        this.applyEconomy(state); this._run.skin = state.equipped
+        this.setData({ shopMessage: item.kind === 'exchange' ? '兑换成功，已存入小镇钱包' : '滑板已装备，下一程一起出发' })
+      } catch (err) { if (this.current(owner, token)) this.setData({ economyError: err.message }) }
+      finally { if (this.current(owner, token)) this.setData({ economyBusy: false }) }
     },
     startLoop() {
       this.stopLoop()
-      if (!this.current() || !this._visible || !this._canvas || this._run.status !== 'running') return
+      if (!this.current() || !this._visible || !this._canvas || !['running', 'caught'].includes(this._run.status)) return
       const version = this._loopVersion
       this._lastFrame = null
       this._lastHUD = 0
+      this._lastCheckpoint = 0
       const frame = timestamp => {
-        if (version !== this._loopVersion || !this.current() || !this._visible || this._run.status !== 'running') return
+        if (version !== this._loopVersion || !this.current() || !this._visible || !['running', 'caught'].includes(this._run.status)) return
         this._raf = null
         const now = Number.isFinite(timestamp) ? timestamp : Date.now()
         if (this._lastFrame !== null) stepRun(this._run, Math.max(0, (now - this._lastFrame) / 1000), random)
@@ -132,10 +200,11 @@ function createRunnerPage(api, wxApi, options = {}) {
         this.drawFrame()
         if (this._run.status === 'over' || now - this._lastHUD >= 100) {
           this.setData(runView(this._run)); this._lastHUD = now
+          if (now - this._lastCheckpoint > 5000) { this.checkpoint(); this._lastCheckpoint = now }
         }
         if (this._run.status === 'over') {
-          this.setData({ newRecord: this._run.score > this._runBest })
-          this.saveRecord()
+          this.setData({ newRecord: this._run.score > this._runBest, pendingReward: true })
+          this.saveRecord(); this.checkpoint(); this.onSettle()
         } else this._raf = this._canvas.requestAnimationFrame(frame)
       }
       this._raf = this._canvas.requestAnimationFrame(frame)
@@ -149,7 +218,7 @@ function createRunnerPage(api, wxApi, options = {}) {
     },
     onPause() {
       this.stopLoop()
-      if (this._run && this._run.status === 'running') {
+      if (this._run && ['running', 'caught'].includes(this._run.status)) {
         controlRun(this._run, 'pause')
         if (!this._disposed) this.setData(runView(this._run))
       }
@@ -191,8 +260,16 @@ function createRunnerPage(api, wxApi, options = {}) {
     onRetryCanvas() { this.onPause(); this.initCanvas() },
     onGoBuild() { wxApi.switchTab({ url: '/pages/build/build' }) },
     onLogin() { wxApi.redirectTo({ url: '/pages/login/login' }) },
-    onBack() {
-      this.onPause(); this.saveRecord()
+    onEndRun() {
+      if (!this.current() || this.data.economyBusy) return
+      this.stopLoop(); this._run.status = 'over'
+      this.setData(Object.assign(runView(this._run), { pendingReward: true }))
+      this.saveRecord(); return this.onSettle()
+    },
+    async onBack() {
+      if (this.data.economyBusy) return
+      this.onPause(); this.checkpoint(); this.saveRecord()
+      if (this._sessionID) await this.onSettle()
       wxApi.navigateBack({ fail: () => wxApi.switchTab({ url: '/pages/index/index' }) })
     }
   }

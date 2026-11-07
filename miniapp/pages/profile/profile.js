@@ -94,7 +94,7 @@ Page(withTapSounds({
 
   onShareAppMessage() {
     return {
-      title: '我在小小镇学单词，还能盖房子',
+      title: '在我的小镇学单词，还能盖房子',
       path: '/pages/index/index'
     }
   }

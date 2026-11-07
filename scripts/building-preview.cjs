@@ -143,7 +143,7 @@ async function defaultStates() {
 function documentHTML(name, body, css) {
   // Component base styles mirror browser-visible Mini Program primitives only.
   // All product markup and product styling come from the real compiled files.
-  return '<!doctype html><html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>小小镇 · ' + escape(name) + '</title><style>' +
+  return '<!doctype html><html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>我的小镇 · ' + escape(name) + '</title><style>' +
     ':root{--rpx:calc(100vw / 750)}html,body{margin:0;width:100%;height:100%}*{box-sizing:border-box}wx-page,wx-view,wx-scroll-view,wx-cover-view{display:block}wx-text{display:inline}wx-scroll-view[scroll-y]{overflow-y:auto}wx-scroll-view[scroll-x]{overflow-x:auto}img{display:inline-block;object-fit:fill}button{display:block;margin:0 auto;padding:0 14px;border:0;border-radius:5px;background:#f8f8f8;color:#000;text-align:center;text-decoration:none;font:inherit;font-size:18px;line-height:2.55555556;overflow:hidden;cursor:pointer}button:disabled{cursor:default;color:rgba(0,0,0,.3)}' +
     css + '</style></head><body>' + body + '</body></html>'
 }

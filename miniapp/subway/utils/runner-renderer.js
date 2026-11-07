@@ -75,7 +75,7 @@ function scenery(ctx, w, h, run) {
   box(ctx, w * 0.375, h * 0.175, w * 0.25, h * 0.067, '#2d655d', 4)
   ctx.fillStyle = '#fff0cc'; ctx.textAlign = 'center'; ctx.font = 'bold ' + Math.round(w * 0.025) + 'px sans-serif'
   ctx.fillText('星 光 环 线  01', w * 0.5, h * 0.205)
-  ctx.font = Math.round(w * 0.019) + 'px sans-serif'; ctx.fillText('LITTLE TOWN', w * 0.5, h * 0.226)
+  ctx.font = Math.round(w * 0.019) + 'px sans-serif'; ctx.fillText('MY TOWN', w * 0.5, h * 0.226)
 }
 
 function train(ctx, w, h, item) {

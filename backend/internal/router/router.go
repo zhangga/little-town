@@ -73,6 +73,13 @@ func SetupRouter(db *gorm.DB, cfg *config.Config) *gin.Engine {
 			authorized.PUT("/restaurant/signatures", restaurantHandler.SetSignatures)
 			authorized.POST("/restaurant/serve", restaurantHandler.Serve)
 
+			subwayHandler := handlers.NewSubwayHandler(db)
+			authorized.GET("/subway", subwayHandler.Get)
+			authorized.POST("/subway/start", subwayHandler.Start)
+			authorized.POST("/subway/finish", subwayHandler.Finish)
+			authorized.POST("/subway/purchase", subwayHandler.Purchase)
+			authorized.POST("/subway/equip", subwayHandler.Equip)
+
 			// 学习
 			learnHandler := handlers.NewLearnHandler(db, cfg)
 			authorized.GET("/learn/daily-words", learnHandler.GetDailyWords)

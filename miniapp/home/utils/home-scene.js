@@ -43,13 +43,14 @@ function createHomeScene(canvas, width, height, options = {}) {
     marker.position.set(p.x,0,p.y);marker.rotation.y=-p.angle*Math.PI/180
   }
   function updateCamera(immediate=false) {
-    const desired=mode==='close'?new T.Vector3(actor.x,.7,actor.y):new T.Vector3(plan.size/2,mode==='outside'?1.5:.45,plan.size/2)
+    const elevation=actor.elevation||0
+    const desired=mode==='close'?new T.Vector3(actor.x,.7+elevation,actor.y):new T.Vector3(plan.size/2,mode==='outside'?1.5:.45,plan.size/2)
     if(immediate)target.copy(desired);else target.lerp(desired,.12)
     const fit=Math.max(1,.58/camera.aspect)
     const d=(mode==='close'?7.5:mode==='outside'?(plan.size*3.1+3)*fit:plan.size*2.55)*zoomFactor
     distance=d
     if(mode==='first'){
-      camera.position.set(actor.x,1.05+Math.sin(time*11)*(actor.moving?.018:0),actor.y)
+      camera.position.set(actor.x,1.05+elevation+Math.sin(time*11)*(actor.moving&&!actor.airborne?.018:0),actor.y)
       camera.lookAt(new T.Vector3(actor.x-Math.sin(yaw)*Math.cos(lookPitch),camera.position.y-Math.sin(lookPitch),actor.y-Math.cos(yaw)*Math.cos(lookPitch)))
     }else{
       camera.position.set(target.x+Math.sin(yaw)*Math.cos(pitch)*d,target.y+Math.sin(pitch)*d,target.z+Math.cos(yaw)*Math.cos(pitch)*d)
@@ -66,7 +67,7 @@ function createHomeScene(canvas, width, height, options = {}) {
     let fade=false
     if(mode==='close'&&actor.y<plan.size&&camera.position.z>plan.size){const t=(plan.size-actor.y)/(camera.position.z-actor.y);const x=actor.x+(camera.position.x-actor.x)*t;fade=Math.abs(x-plan.size/2)<plan.doorWidth/2+.3}
     house.door.userData.materials.forEach(m=>{m.opacity=fade?.16:1;m.depthWrite=!fade})
-    hand.position.y=actor.moving?Math.sin(time*11)*.009:0
+    hand.position.y=actor.moving&&!actor.airborne?Math.sin(time*11)*.009:0
     camera.updateMatrixWorld()
   }
   function setActor(value) {actor=Object.assign({},actor,value)}
@@ -76,7 +77,7 @@ function createHomeScene(canvas, width, height, options = {}) {
     doorProgress+=(Number(doorOpen)-doorProgress)*Math.min(1,dt*12)
     house.door.userData.leaves.forEach(({pivot,sign})=>{pivot.rotation.y=sign*doorProgress*Math.PI/2})
     const moving=actor.moving||actor.pose==='run'
-    avatar.position.set(actor.x,Math.abs(Math.sin(time*11))*(moving?.025:0),actor.y)
+    avatar.position.set(actor.x,(actor.elevation||0)+Math.abs(Math.sin(time*11))*(moving&&!actor.airborne?.025:0),actor.y)
     avatar.rotation.y=actor.angle||0
     const {body,limbs}=avatar.userData
     body.rotation.set(0,0,0);body.position.set(0,0,0)
@@ -89,6 +90,7 @@ function createHomeScene(canvas, width, height, options = {}) {
     if(actor.pose==='swim'||actor.pose==='bath'){body.position.y=-.28;limbs.armL.rotation.x=Math.sin(time*3)*.6;limbs.armR.rotation.x=-Math.sin(time*3)*.6}
     if(fireOn)fire.intensity=1+Math.sin(time*7)*.12
     if(actor.pose==='stretch'){limbs.armR.rotation.z=-1.8;limbs.armL.rotation.z=1.8}else{limbs.armR.rotation.z=0;limbs.armL.rotation.z=0}
+    if(actor.airborne){limbs.legL.rotation.x=.25;limbs.legR.rotation.x=-.2;limbs.armL.rotation.z=.3;limbs.armR.rotation.z=-.3}
     updateCamera();renderer.render(scene,camera)
   }
   function frame(ms) {
@@ -168,7 +170,7 @@ function createHomeScene(canvas, width, height, options = {}) {
     // Screen-relative directions remain intuitive after orbiting the camera.
     movement(x,y){return {x:x*Math.cos(yaw)+y*Math.sin(yaw),y:-x*Math.sin(yaw)+y*Math.cos(yaw)}},
     project(x,y,z=0){const p=new T.Vector3(x,z,y).project(camera);return {x:(p.x+1)*width/2,y:(1-p.y)*height/2}},
-    stats(){return {calls:renderer.info.render.calls,triangles:renderer.info.render.triangles,size:plan.size,level:plan.level,doorOpen,doorProgress,position:{...actor},camera:{yaw,pitch,distance,mode,lookPitch,eye:{x:camera.position.x,y:camera.position.y,z:camera.position.z}},avatarVisible:avatar.visible,furniture:Array.from(furniture.keys())}}
+    stats(){return {calls:renderer.info.render.calls,triangles:renderer.info.render.triangles,size:plan.size,level:plan.level,doorOpen,doorProgress,position:{...actor},camera:{yaw,pitch,distance,mode,lookPitch,eye:{x:camera.position.x,y:camera.position.y,z:camera.position.z}},avatarVisible:avatar.visible,avatarElevation:avatar.position.y,furniture:Array.from(furniture.keys())}}
   }
 }
 module.exports={createHomeScene}

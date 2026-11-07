@@ -1,6 +1,6 @@
 <view class="school-page subject-{{subject}}">
   <view class="school-header">
-    <view class="school-kicker"><text>小小镇 · 学校</text><text class="school-badge">每天学一点</text></view>
+    <view class="school-kicker"><text>我的小镇 · 学校</text><text class="school-badge">每天学一点</text></view>
     <view class="school-heading">{{view === 'editor' ? '把课本装进小镇' : view === 'materials' ? '我的教材本' : view === 'lecture' || view === 'lectures' ? '跟阿禾一起想一想' : '今天，想学点什么？'}}</view>
     <view class="school-subtitle">先听一听，再想一想，最后自己试试看。</view>
     <view class="subject-tabs" aria-role="tablist">

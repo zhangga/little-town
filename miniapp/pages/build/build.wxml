@@ -1,7 +1,7 @@
 <import src="../../templates/voxel.wxml" />
 <view class="build-page">
   <view class="workshop-head">
-    <view><text class="eyebrow">LITTLE TOWN · WORKSHOP</text><view class="workshop-title">小镇建造工坊</view></view>
+    <view><text class="eyebrow">MY TOWN · WORKSHOP</text><view class="workshop-title">小镇建造工坊</view></view>
     <button class="town-link" bindtap="onGoTown">回小镇 ↗</button>
   </view>
   <view class="inventory">

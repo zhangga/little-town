@@ -83,7 +83,7 @@ async function earnBricks(token, target, maxRounds = 30) {
 }
 
 async function main() {
-  console.log('\x1b[1m小小镇后端冒烟测试\x1b[0m')
+  console.log('\x1b[1m我的小镇后端冒烟测试\x1b[0m')
   console.log('后端地址: ' + BASE)
 
   // ---------- 0. 健康检查 ----------

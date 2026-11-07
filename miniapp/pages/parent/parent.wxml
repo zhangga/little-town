@@ -42,7 +42,7 @@
       <view wx:else class="head-avatar head-avatar-empty">👦</view>
       <view class="col">
         <text class="head-name">{{child.nickname || '我的孩子'}}</text>
-        <text class="head-meta">{{child.grade}} 年级 · 小小镇</text>
+        <text class="head-meta">{{child.grade}} 年级 · 我的小镇</text>
       </view>
     </view>
 

@@ -2,8 +2,8 @@
 <view class="login-page">
   <!-- 招牌：一块立在草地上的木牌 -->
   <view class="signboard block">
-    <text class="signboard-sub">LITTLE TOWN</text>
-    <text class="signboard-title">小小镇</text>
+    <text class="signboard-sub">MY TOWN</text>
+    <text class="signboard-title">我的小镇</text>
     <text class="signboard-tag">学会一个单词，就多一块砖</text>
   </view>
 

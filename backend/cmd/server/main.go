@@ -92,7 +92,7 @@ func run() error {
 		WriteTimeout: 120 * time.Second, IdleTimeout: 60 * time.Second,
 		BaseContext: func(net.Listener) context.Context { return ctx },
 	}
-	log.Printf("小小镇后端启动：环境=%s 部署=%s 时区=%s 监听=%s", cfg.Env, cfg.DeployTarget, cfg.TimeZone, addr)
+	log.Printf("我的小镇后端启动：环境=%s 部署=%s 时区=%s 监听=%s", cfg.Env, cfg.DeployTarget, cfg.TimeZone, addr)
 	if cfg.WechatAppID != "" && cfg.WechatSecret != "" {
 		log.Printf("微信登录：已配置（AppID %s）", maskAppID(cfg.WechatAppID))
 	} else {

@@ -162,7 +162,7 @@ Page(withTapSounds({
 
   onShareAppMessage() {
     return {
-      title: '小小镇 · 家长报告',
+      title: '我的小镇 · 家长报告',
       path: '/pages/index/index'
     }
   }

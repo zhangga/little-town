@@ -113,7 +113,7 @@ docker compose -f docker-compose.yml -f docker-compose.app.yml exec app /app/imp
    | LOG_TO_FILE | false，由平台采集标准输出 |
    | PUSH_ENABLED | false，缩容场景使用外部任务 |
 
-   后端优先读取明确设置的 DB_HOST/DB_PORT/DB_USER/DB_PASSWORD/DB_NAME；未设置时兼容 MYSQL_ADDRESS/MYSQL_USERNAME/MYSQL_PASSWORD/MYSQL_DATABASE。沿用 golang_demo 会新增小小镇业务表，计数器模板的 Counters 表不会被修改。需要新建独立库时，先在已有 MySQL 实例中建库再设置 DB_NAME。
+   后端优先读取明确设置的 DB_HOST/DB_PORT/DB_USER/DB_PASSWORD/DB_NAME；未设置时兼容 MYSQL_ADDRESS/MYSQL_USERNAME/MYSQL_PASSWORD/MYSQL_DATABASE。沿用 golang_demo 会新增我的小镇业务表，计数器模板的 Counters 表不会被修改。需要新建独立库时，先在已有 MySQL 实例中建库再设置 DB_NAME。
 
 4. 确认该云托管环境关联了当前小程序。发布后访问公网地址的 `/ready`，应返回 `{"status":"ready"}`；通过小程序体验版验证真实微信登录、答题、建造和统计。
 

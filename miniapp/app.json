@@ -48,7 +48,7 @@
     "backgroundTextStyle": "dark",
     "backgroundColor": "#7FBF4D",
     "navigationBarBackgroundColor": "#4E7A2E",
-    "navigationBarTitleText": "小小镇",
+    "navigationBarTitleText": "我的小镇",
     "navigationBarTextStyle": "white"
   },
   "tabBar": {

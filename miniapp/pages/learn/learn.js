@@ -495,6 +495,6 @@ Page(withTapSounds({
   onGoProfile() { wx.switchTab({ url: '/pages/profile/profile' }) },
   onBackToTown() { wx.switchTab({ url: '/pages/index/index' }) },
   onShareAppMessage() {
-    return { title: '听一听、拼一拼，我在小小镇学单词', path: '/pages/index/index' }
+    return { title: '听一听、拼一拼，在我的小镇学单词', path: '/pages/index/index' }
   }
 }))

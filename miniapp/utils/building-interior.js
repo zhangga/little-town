@@ -2,7 +2,7 @@ const { activityDetails, createActivitySession, advanceActivity } = require('./b
 const { supplyRequestID } = require('./town-shop')
 
 const interiors = {
-  '地铁站': { theme: 'subway', kicker: '小镇地铁 · 01 号站台', host: '站长小森', welcome: '星光号到站啦！点击列车，开启一场跑酷冒险。', room: '下一站，去冒险', sign: 'LITTLE TOWN METRO', props: [] },
+  '地铁站': { theme: 'subway', kicker: '小镇地铁 · 01 号站台', host: '站长小森', welcome: '星光号到站啦！点击列车，开启一场跑酷冒险。', room: '下一站，去冒险', sign: 'MY TOWN METRO', props: [] },
   '电影院': { theme: 'cinema', kicker: '小镇光影俱乐部', host: '放映员小光', welcome: '挑一部喜欢的电影，灯暗下来，故事就开始了。', room: '今晚，去故事里旅行', sign: 'NOW SHOWING', props: [{ icon: '🎟️', label: '售票处' }, { icon: '🍿', label: '爆米花台' }, { icon: '🎞️', label: '放映室' }] },
   '餐厅': { theme: 'restaurant', kicker: '围上围裙，今天你当主厨', host: '厨师阿米', welcome: '食材都备好啦！来做一份热腾腾的小镇料理。', room: '有烟火气的小厨房', sign: 'TOWN KITCHEN', props: [{ icon: '🥕', label: '新鲜菜篮' }, { icon: '🍲', label: '料理台' }, { icon: '🪑', label: '窗边餐桌' }] },
   '商店': { theme: 'shop', kicker: '小镇商场 · 今日营业中', host: '店主栗栗', welcome: '楼上挑家具，楼下买吃喝，把喜欢的东西带回家吧。', room: '一楼 · 日常补给', sign: 'TOWN MALL', props: [{ icon: '🥖', label: '面包架' }, { icon: '🧃', label: '饮品柜' }, { icon: '🧺', label: '购物篮' }] },

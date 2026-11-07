@@ -2,7 +2,7 @@ const { createHomeScene } = require('./home-scene')
 function keyboardKey(event) {
   if(!event)return ''
   if(event.altKey===true||event.altKey==='true'||event.ctrlKey||event.metaKey)return ''
-  return ({KeyW:'w',KeyA:'a',KeyS:'s',KeyD:'d',KeyE:'e',KeyV:'v',F5:'v'})[event.code]||String(event.key||'').toLowerCase()
+  return ({KeyW:'w',KeyA:'a',KeyS:'s',KeyD:'d',KeyE:'e',KeyV:'v',KeyM:'m',Space:'space',Escape:'escape',F5:'v'})[event.code]||({' ':'space',Spacebar:'space',Esc:'escape'})[event.key]||String(event.key||'').toLowerCase()
 }
 function createRoomScenePage(wxApi) {
   return {
@@ -52,8 +52,26 @@ function createRoomScenePage(wxApi) {
       const rect=this._canvasRect||{left:0,top:0}
       return {x:Number.isFinite(touch.clientX)?touch.clientX-(rect.left||0):touch.x,y:Number.isFinite(touch.clientY)?touch.clientY-(rect.top||0):touch.y}
     },
+    onRoomPointerLeave() {this._roomPointer=null},
+    onRoomPointerMove(e) {
+      // PC WeChat forwards PointerEvent fields in detail, even with no mouse button held.
+      const detail=e.detail||e
+      if(detail.pointerType!=='mouse')return
+      if(!this.data.roomMouseAvailable&&this._visible)this.setData({roomMouseAvailable:true})
+      const overRoom=e.target&&e.target.id==='home-space'
+      if(!overRoom||!this._visible||!this._scene||!this.data.roomMouseLook||this.data.roomEditing||this.data.roomBagOpen||this.data.roomTV||this.data.roomHelp||this.data.busy||this._gesture||detail.buttons||!['first','close'].includes(this.data.roomCamera)){this._roomPointer=null;return}
+      if(!Number.isFinite(detail.clientX)||!Number.isFinite(detail.clientY)){this._roomPointer=null;return}
+      const previous=this._roomPointer
+      this._roomPointer={x:detail.clientX,y:detail.clientY}
+      if(!previous)return
+      const dx=detail.clientX-previous.x,dy=detail.clientY-previous.y
+      // Re-entering a window must not whip the camera around.
+      if(Math.abs(dx)>120||Math.abs(dy)>120)return
+      this._scene.orbit(dx,dy)
+    },
     onRoomTouchStart(e) {
       if(!this._scene||this.data.busy||this.data.roomBagOpen||this.data.roomTV||!e.touches.length)return
+      this._roomPointer=null
       const p=this.roomTouchPoint(e.touches[0]),hit=this._scene.hit(p.x,p.y)
       this._gesture={start:p,last:p,id:hit.id,time:Date.now(),moved:false,pinch:false}
       if(e.touches.length>1){this._gesture.pinch=true;this._gesture.distance=this.roomPinchDistance(e.touches);return}

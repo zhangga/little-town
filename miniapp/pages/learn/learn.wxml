@@ -40,7 +40,7 @@
   </view>
 
   <view wx:elif="{{phase === 'ready'}}" class="ready">
-    <view class="eyebrow">LITTLE TOWN · 单词探险</view>
+    <view class="eyebrow">MY TOWN · 单词探险</view>
     <view class="welcome-row">
       <view>
         <view class="welcome-title">{{freePractice ? '老朋友，再练一练' : goalDone ? '继续探索新单词！' : '今天，换个玩法！'}}</view>

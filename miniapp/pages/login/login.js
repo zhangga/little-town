@@ -120,6 +120,6 @@ Page(withTapSounds({
       wx.hideLoading()
       this.setData({ submitting: false })
     }
-    if (entered) showSuccess('欢迎来到小小镇')
+    if (entered) showSuccess('欢迎来到我的小镇')
   }
 }))
