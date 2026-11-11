@@ -6,13 +6,14 @@ const { createLessonPlayer } = require('./lesson-player')
 const { DEFAULT_MODE, normalizeQuestion, checkQuestion } = require('./curriculum')
 const { activityData, activityPatch, createActivityMethods } = require('./classroom-activities')
 const { rewardData, rewardPatch, createRewardMethods } = require('./classroom-rewards')
+const { photoCourseData, createPhotoCourseMethods } = require('./photo-course-page')
 
 function createClassroomPage(wxApi, dependencies = {}) {
   const audioFactory = dependencies.createAudio || createPronunciation
   const padFactory = dependencies.createPad || createHandwriting
   const teacherFactory = dependencies.createTeacher || createLessonPlayer
   return Object.assign({
-    data: Object.assign({}, activityData, rewardData, {
+    data: Object.assign({}, activityData, rewardData, photoCourseData, {
       subjects: SUBJECTS, subject: 'chinese', info: subjectInfo('chinese'), view: 'home',
       level: '20', totals: { chinese: 0, math: 0, english: 0 }, lessons: [], lessonCount: 0,
       lessonTitle: '', lessonPhoto: '', question: null, index: 0, total: 0, answer: '',
@@ -34,6 +35,7 @@ function createClassroomPage(wxApi, dependencies = {}) {
       this.setData(Object.assign({ subject, info: subjectInfo(subject) }, activityPatch(subject)))
       this.loadNotebook()
       this.initRewards((wxApi.getStorageSync('apiBackend') || 'local') + ':' + user.id)
+      if (options.coursebook === '1') this.onPhotoCourses()
     },
     onShow() {
       this._visible = true
@@ -52,6 +54,7 @@ function createClassroomPage(wxApi, dependencies = {}) {
       if (this._teacher) this._teacher.stop()
       if (this._pad) this._pad.destroy()
       if (this._rewards) this._rewards.stop()
+      this.stopPhotoCourse()
     },
     onResize() { if (this.data.view === 'practice' && this.data.question && this.data.question.kind === 'writing') this.initPad() },
     loadNotebook() {
@@ -60,6 +63,7 @@ function createClassroomPage(wxApi, dependencies = {}) {
         const state = this._book.read()
         this.setData(Object.assign({ totals: state.totals, lessonCount: state.lessons.length, classroomHistory: state.classroomHistory,
           lessons: state.lessons.map(lesson => Object.assign({}, lesson, { subjectName: subjectInfo(lesson.subject).name, count: lesson.items.length })) }, activityPatch(this.data.subject, state.classroomHistory)))
+        this.refreshCourseProgress(state.courseProgress)
       } catch (error) { this.setData({ notice: error.message }) }
     },
     changeView(view, patch = {}, done) {
@@ -83,7 +87,7 @@ function createClassroomPage(wxApi, dependencies = {}) {
         return
       }
       if (subject === this.data.subject && this.data.view === 'home') return
-      this.changeView('home', Object.assign({ subject, info: subjectInfo(subject) }, activityPatch(subject, this.data.classroomHistory), rewardPatch(this.data.rewardStatuses, subject)))
+      this.changeView('home', Object.assign({ subject, info: subjectInfo(subject), courseRound: null, photoCourse: null }, activityPatch(subject, this.data.classroomHistory), rewardPatch(this.data.rewardStatuses, subject)))
     },
     onLevel(event) { this.setData({ level: ['20', '100', 'times'].includes(event.currentTarget.dataset.level) ? event.currentTarget.dataset.level : '20' }) },
     onStart() {
@@ -99,7 +103,8 @@ function createClassroomPage(wxApi, dependencies = {}) {
       const scoredTotal = round.filter(item => item.kind !== 'writing').length
       this.changeView('practice', Object.assign({ subject, info: subjectInfo(subject), lessonTitle: title, lessonPhoto: photo || '',
         index: 0, total: items.length, correct: 0, mistakeCount: 0, reviewing, question: null, answered: false, hasInk: false, canvasReady: false,
-        classroom: !!options.classroom, assistedCount: 0, summaryRows: [], scoredTotal, writingOnly: scoredTotal === 0 }, activityPatch(subject, this.data.classroomHistory)), () => {
+        classroom: !!options.classroom, courseRound: options.courseRound || null,
+        assistedCount: 0, summaryRows: [], scoredTotal, writingOnly: scoredTotal === 0 }, activityPatch(subject, this.data.classroomHistory)), () => {
         if (this._round === round && this.data.view === 'practice') this.loadQuestion()
       })
     },
@@ -154,6 +159,7 @@ function createClassroomPage(wxApi, dependencies = {}) {
       this._roundResults.push({ mode: question.mode, modeName: question.modeName, correct: question.kind === 'writing' ? null : this.data.isCorrect, assisted: this.data.usedHelp })
       this.setData({ assistedCount: this.data.assistedCount + (this.data.usedHelp ? 1 : 0) })
       this.recordPractice()
+      this.recordCoursePractice(question)
       if (this._rewards && !this.data.reviewing) this._rewards.answer(this._rewardRound, this.data.index, question.kind === 'writing' || this.data.isCorrect)
     },
     onNext() {
@@ -167,11 +173,11 @@ function createClassroomPage(wxApi, dependencies = {}) {
     },
     onReviewMistakes() {
       if (this.data.view !== 'done' || !this._mistakes || !this._mistakes.length) return
-      this.startRound(this.data.subject, this._mistakes.slice(), this.data.lessonTitle, this.data.lessonPhoto, true)
+      this.startRound(this.data.subject, this._mistakes.slice(), this.data.lessonTitle, this.data.lessonPhoto, true, { courseRound: this.data.courseRound })
     },
     onAgain() {
       if (this.data.view === 'done') this.startRound(this.data.subject, this._round, this.data.lessonTitle, this.data.lessonPhoto, false,
-        { classroom: this.data.classroom, rewardKind: this.data.roundRewardKind })
+        { classroom: this.data.classroom, rewardKind: this.data.roundRewardKind, courseRound: this.data.courseRound })
     },
     onPlayAudio(event) {
       if (!this._audio || !this.data.question || !this.data.question.audio) return
@@ -187,6 +193,11 @@ function createClassroomPage(wxApi, dependencies = {}) {
         this.changeView(target, {}, () => { if (target === 'practice' && this.data.question && this.data.question.kind === 'writing') this.initPad() })
         return
       }
+      if ((this.data.view === 'practice' || this.data.view === 'done') && this.data.courseRound) {
+        this.openPhotoCourse(this.data.courseRound.id, this.data.courseRound.batch); return
+      }
+      if (this.data.view === 'course') { this.changeView('courses'); return }
+      if (this.data.view === 'courses') { this.changeView(this._courseReturnView || 'home'); return }
       this.changeView(this.data.view === 'editor' ? 'materials' : 'home')
     },
     onAddMaterial() {
@@ -246,7 +257,7 @@ function createClassroomPage(wxApi, dependencies = {}) {
           catch (error) { this.setData({ error: error.message }) }
         } })
     }
-  }, createActivityMethods(), createRewardMethods(wxApi, dependencies))
+  }, createActivityMethods(), createRewardMethods(wxApi, dependencies), createPhotoCourseMethods(dependencies))
 }
 
 module.exports = { createClassroomPage }

@@ -1,1 +1,2 @@
 @import "../../styles/home-room.wxss";
+@import "../../styles/nature-world.wxss";

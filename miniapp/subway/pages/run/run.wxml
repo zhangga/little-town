@@ -8,7 +8,7 @@
       <view wx:if="{{phase === 'ready'}}" class="run-card run-intro">
         <view class="run-eyebrow">LITTLE TOWN / 城市追逐赛</view><view class="run-card-title">星光<text>疾驰</text><view class="title-arrow">↗</view></view>
         <view class="metro-hero" aria-hidden="true"><view class="hero-sun"/><view class="hero-rail rail-a"/><view class="hero-rail rail-b"/><view class="hero-rail rail-c"/><view class="hero-train"><view/><text>01</text></view><view class="hero-token token-a">◉</view><view class="hero-token token-b">✦</view><view class="hero-token token-c">◉</view><text class="hero-tag">RUN · JUMP · SURF</text></view>
-        <view class="run-card-intro">甩开巡逻员，踩上弹跳板。<br/>装满金币，带一份礼物回小镇。</view>
+        <view class="run-card-intro"><view>甩开巡逻员，踩上弹跳板。</view><view>装满金币，带一份礼物回小镇。</view></view>
         <view class="run-instructions"><view><text>↔</text>换道躲车</view><view><text>↑ ↓</text>跳跃 / 下滑</view><view><text>▰</text>滑板挡撞</view></view>
         <view class="run-best"><text>最佳 {{best}}</text><text>星光币 ◉ {{economy.tokens || 0}}</text></view>
         <button wx:if="{{pendingReward}}" class="run-primary" bindtap="onSettle" disabled="{{economyBusy}}">{{economyBusy ? '结算中…' : '领取上一程星光币'}}</button>
@@ -23,6 +23,7 @@
       <view class="shop-heading"><view><text class="run-eyebrow">THE STARLIGHT STORE</text><view>把快乐带回家</view></view><button bindtap="onCloseShop" aria-label="关闭星光商店">×</button></view>
       <view class="shop-wallet"><view><text>我的星光币</text><view>◉ {{economy.tokens}}</view></view><text>今日获得 {{economy.earned_today}} / {{economy.daily_cap}}</text></view>
       <view class="shop-town-wallet">小镇钱包 <text>金币 {{economy.wallet.coins}} · 砖块 {{economy.wallet.bricks}}</text></view>
+      <view wx:if="{{pendingPurchase}}" class="shop-pending"><text>上次「{{pendingPurchase.name}}」尚未确认，请先重试确认。</text><button bindtap="onRetryPurchase" disabled="{{economyBusy}}">确认上次兑换 / 购买</button></view>
       <view class="shop-rule">沿途金币 1 枚 = 1 星光币，星星 1 颗 = 5 星光币。每局最多结算 500，今日最多 1000。</view>
       <view class="shop-item" wx:for="{{economy.items}}" wx:key="id"><view class="shop-item-art {{item.kind === 'skin' ? 'board-art' : ''}}" style="--item-color:{{item.color}}"><text>{{item.kind === 'skin' ? '▰' : item.id === 'coins' ? '◉' : '▦'}}</text></view><view class="shop-item-copy"><view>{{item.name}}</view><text>{{item.description}}</text><button data-id="{{item.id}}" bindtap="onShopItem" disabled="{{economyBusy || item.equipped}}">{{item.equipped ? '已装备' : item.owned ? '装备滑板' : item.price + ' 星光币 · ' + (item.kind === 'exchange' ? '兑换' : '购买')}}</button></view></view>
       <view class="shop-rule">所有滑板保护效果相同。兑换的小镇金币可去商场购买家具、吃喝和装扮。</view><text wx:if="{{shopMessage}}" class="shop-success">{{shopMessage}}</text>

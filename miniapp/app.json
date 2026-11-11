@@ -15,11 +15,19 @@
     },
     {
       "root": "home",
-      "pages": ["pages/room/room", "pages/mall/mall"]
+      "pages": ["pages/world/world", "pages/room/room", "pages/mall/mall"]
     },
     {
       "root": "school",
       "pages": ["pages/classroom/classroom"]
+    },
+    {
+      "root": "coursebook",
+      "pages": ["index/index"]
+    },
+    {
+      "root": "coursebook-voice",
+      "pages": ["index/index"]
     },
     {
       "root": "kitchen",

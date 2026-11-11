@@ -1,0 +1,82 @@
+<view class="voxel-page dimension-{{dimension}}" bindpointermove="onWorldPointerMove" bindmouseleave="onWorldPointerLeave">
+  <!-- Keep controls outside the native WebGL surface; z-index cannot reliably cover it in DevTools. -->
+  <view id="world-stage" class="world-stage">
+    <canvas id="voxel-world" type="webgl" class="world-canvas" hidden="{{!!panel || loading || failed || sceneFailed}}" disable-scroll="true" bindtouchstart="onWorldTouchStart" catchtouchmove="onWorldTouchMove" bindtouchend="onWorldTouchEnd" bindtouchcancel="onWorldTouchCancel" aria-label="从角色眼睛看到的方块世界，按住画面拖动转头" />
+  </view>
+  <view wx:if="{{loading || failed || sceneFailed}}" class="world-loading">
+    <view class="loading-cube"><view></view><view></view><view></view></view>
+    <text class="loading-title">{{failed ? '小家暂时没连上' : sceneFailed ? '重新点亮这个世界' : '推开门，世界就在眼前'}}</text>
+    <text class="loading-sub">{{sceneFailed ? '世界和背包都还在，重新打开画面即可。' : '草地、木屋，还有一点未知的惊喜。'}}</text>
+    <button wx:if="{{failed}}" bindtap="loadResident" class="sheet-primary">重新连接</button>
+    <button wx:if="{{sceneFailed}}" bindtap="onWorldRetry" class="sheet-primary">恢复画面</button>
+  </view>
+  <block wx:if="{{state && !loading && !failed && !sceneFailed}}">
+    <view class="world-top">
+      <view class="world-brand"><text class="world-eyebrow">LITTLE TOWN / SANDBOX</text><text class="world-title">我的方块世界<text class="world-title-dot">.</text></text></view>
+      <view class="world-top-actions"><button bindtap="onWorldHome" aria-label="带着背包回家">⌂<text>回家</text></button><button bindtap="onWorldGuide" aria-label="打开世界指南">?<text>指南</text></button></view>
+    </view>
+    <view class="world-location">
+      <view class="location-line"><view class="location-dot"></view><text>{{worldName}}</text><text class="location-slash">/</text><text>{{region}}</text></view>
+      <text class="location-house">{{floors}} 层<text wx:if="{{region === '在自己的家'}}"> · {{currentFloor}}F</text></text>
+    </view>
+    <view class="world-tools"><button bindtap="onWorldBag"><text class="tool-icon">▣</text><text>背包</text><text class="tool-key">B</text></button><button bindtap="onWorldCraft"><text class="tool-icon">◇</text><text>合成</text><text class="tool-key">C</text></button><button bindtap="onWorldShop"><text class="tool-icon">⌑</text><text>商店</text></button><button bindtap="onNatureVisit" aria-label="去林溪探索"><text class="tool-icon">⌁</text><text>林溪</text></button></view>
+    <view class="world-target"><text>{{targetName || '按住画面拖动，让中心准星对准目标'}}</text><text class="target-hint">{{targetHint}}</text><view wx:if="{{minePercent > 0}}" class="world-mine-track"><view style="width:{{minePercent}}%"></view></view></view>
+    <view class="world-note" aria-live="polite"><view class="note-mark"></view><text>{{message}}</text></view>
+    <view class="world-controls">
+      <view class="world-dpad">
+        <button class="dpad-up {{keys.w ? 'is-held' : ''}}" data-key="w" bindtap="onWorldKeyTap" bindtouchstart="onWorldKeyStart" bindtouchend="onWorldKeyEnd" bindtouchcancel="onWorldKeyCancel" aria-label="向前走，W">↑</button>
+        <button class="dpad-left {{keys.a ? 'is-held' : ''}}" data-key="a" bindtap="onWorldKeyTap" bindtouchstart="onWorldKeyStart" bindtouchend="onWorldKeyEnd" bindtouchcancel="onWorldKeyCancel" aria-label="向左走，A">←</button>
+        <view class="dpad-center">按住走动</view>
+        <button class="dpad-right {{keys.d ? 'is-held' : ''}}" data-key="d" bindtap="onWorldKeyTap" bindtouchstart="onWorldKeyStart" bindtouchend="onWorldKeyEnd" bindtouchcancel="onWorldKeyCancel" aria-label="向右走，D">→</button>
+        <button class="dpad-down {{keys.s ? 'is-held' : ''}}" data-key="s" bindtap="onWorldKeyTap" bindtouchstart="onWorldKeyStart" bindtouchend="onWorldKeyEnd" bindtouchcancel="onWorldKeyCancel" aria-label="向后走，S">↓</button>
+      </view>
+      <view class="world-action-pad">
+        <button class="action-jump" bindtap="onWorldJump">↟<text>跳跃</text><text class="action-key">空格</text></button>
+        <button class="action-interact" bindtap="onWorldInteract">✧<text>{{interactLabel}}</text><text class="action-key">E</text></button>
+        <button class="action-mine" bindtap="onWorldMine" bindtouchstart="onWorldMineStart" bindtouchend="onWorldMineEnd" bindtouchcancel="onWorldMineEnd">⛏<text>{{minePercent ? '挖掘中' : '挖掘'}}</text><text class="action-key">F</text></button>
+        <button class="action-place" bindtap="onWorldPlace">＋<text>放置</text><text class="action-key">R</text></button>
+      </view>
+    </view>
+    <view class="world-held-row"><text>{{held ? '手里拿着 · ' + heldName : '空手 · 自由探索'}}</text><button wx:if="{{heldKind === 'furniture' || held === 'mirror'}}" bindtap="onWorldRotate">旋转 {{rotation}}°</button><button wx:elif="{{targetKind === 'furniture'}}" bindtap="onWorldPickup">Q · 拿起家具</button></view>
+    <view class="world-hotbar"><button wx:for="{{hotbar}}" wx:key="id" class="hotbar-slot {{item.selected ? 'is-selected' : ''}} {{!item.count ? 'is-empty' : ''}}" data-id="{{item.id}}" data-kind="{{item.kind}}" bindtap="onWorldChoose" aria-label="拿起{{item.name}}，剩余{{item.count}}件"><text class="hotbar-number">{{item.slot}}</text><image wx:if="{{item.image}}" src="{{item.image}}" mode="aspectFit" /><view wx:else class="item-cube" style="background:{{item.color}}"></view><text class="hotbar-count">{{item.count}}</text><text class="hotbar-name">{{item.name}}</text></button><button class="hotbar-bag" bindtap="onWorldBag" aria-label="打开完整背包">▣<text>全部</text></button></view>
+    <view class="world-bottom"><text>XYZ {{coordinates}} · 拖动转头</text><button bindtap="flushWorldSave">{{saveLabel}}</button></view>
+
+    <view wx:if="{{panel}}" class="world-overlay" catchtap="onClosePanel">
+      <view class="world-sheet {{panel === 'tv' ? 'tv-sheet' : ''}}" catchtap="onNoop">
+        <view class="sheet-handle"></view>
+        <view class="sheet-heading"><view><text class="sheet-eyebrow">{{panel === 'bag' ? 'YOUR POCKET' : panel === 'craft' ? 'MAKE SOMETHING' : panel === 'tv' ? 'A WINDOW TO NATURE' : 'A LITTLE FIELD GUIDE'}}</text><text class="sheet-title">{{panel === 'bag' ? '把喜欢的，带回家' : panel === 'craft' ? '从一块原木开始' : panel === 'tv' ? tvNature.name : '你好，小小探险家'}}</text></view><button class="sheet-close" bindtap="onClosePanel" aria-label="关闭面板">×</button></view>
+        <block wx:if="{{panel === 'bag'}}">
+          <view class="sheet-tabs"><button class="{{bagTab === 'blocks' ? 'active' : ''}}" data-tab="blocks" bindtap="onBagTab">方块与图纸<text>{{bagItems.length}}</text></button><button class="{{bagTab === 'furniture' ? 'active' : ''}}" data-tab="furniture" bindtap="onBagTab">我的家具<text>{{furnitureItems.length}}</text></button></view>
+          <scroll-view scroll-y class="sheet-scroll">
+            <block wx:if="{{bagTab === 'blocks'}}">
+              <view wx:if="{{bagItems.length}}" class="bag-explainer">白玻璃和银镜也能带回家：拿起后对准地板或墙面放置；银镜可旋转。想换位置，挖下就会完整回到背包。</view>
+              <view wx:if="{{!bagItems.length}}" class="bag-empty"><view class="empty-blocks"><view></view><view></view><view></view></view><text>第一块材料，等你发现</text><text>出门对准树干或草地，点“挖掘”。{{'\n'}}挖到的方块会自动拾进背包。</text></view>
+              <view class="bag-grid"><button wx:for="{{bagItems}}" wx:key="id" class="bag-item {{item.selected ? 'selected' : ''}}" data-id="{{item.id}}" data-kind="block" bindtap="onWorldChoose"><view class="item-cube" style="background:{{item.color}}"></view><text class="bag-item-name">{{item.name}}</text><text class="bag-item-count">× {{item.count}}</text></button></view>
+            </block>
+            <block wx:else><view class="bag-explainer">家具从商店购买。点一下拿在手里，对准地面放置；已经摆好的家具，走近后按 Q 或“拿起”。</view><view class="bag-grid furniture-grid"><button wx:for="{{furnitureItems}}" wx:key="id" class="bag-item {{item.selected ? 'selected' : ''}} {{item.placed ? 'placed' : ''}}" data-id="{{item.id}}" data-kind="furniture" bindtap="onWorldChoose"><image src="{{item.image}}" mode="aspectFit" /><text class="bag-item-name">{{item.name}}</text><text class="bag-item-count">{{item.placed ? '已经摆好' : '拿起布置'}}</text></button></view></block>
+          </scroll-view>
+          <view class="sheet-footer"><button class="sheet-secondary" bindtap="onWorldEmptyHand">放下手持物</button><button class="sheet-primary" bindtap="onWorldShop">去商店挑家具 ↗</button></view>
+        </block>
+        <block wx:elif="{{panel === 'craft'}}">
+          <view class="craft-intro">{{journal}}</view>
+          <scroll-view scroll-y class="sheet-scroll recipe-scroll"><view wx:for="{{recipeItems}}" wx:key="id" class="recipe-row"><view class="recipe-main"><text class="recipe-name">{{item.name}}</text><text class="recipe-description">{{item.description}}</text><view class="recipe-ingredients"><text wx:for="{{item.ingredients}}" wx:for-item="ingredient" wx:key="id" class="{{ingredient.enough ? 'enough' : 'missing'}}">{{ingredient.name}} {{ingredient.have}}/{{ingredient.count}}</text></view></view><button class="recipe-button {{item.affordable ? 'can-craft' : ''}}" disabled="{{!item.affordable}}" data-id="{{item.id}}" bindtap="onWorldCraftRecipe">合成<text>×{{item.count}}</text></button></view></scroll-view>
+          <view class="sheet-footer"><text class="recipe-tip">西侧矿道有石英与银矿，合成后带回家。</text><button class="sheet-secondary" bindtap="onWorldBag">查看背包</button></view>
+        </block>
+        <block wx:elif="{{panel === 'tv'}}"><image class="world-tv-image" src="{{tvNature.image}}" mode="aspectFill" /><text class="world-tv-caption">{{tvNature.caption}}</text><view class="sheet-footer"><button class="sheet-secondary" bindtap="onClosePanel">回到家里</button><button class="sheet-primary" bindtap="onWorldTVNext">换一片风景 →</button></view></block>
+        <block wx:else>
+          <scroll-view scroll-y class="sheet-scroll guide-scroll">
+            <view class="guide-lead">这是从你的小镇长眼睛里看到的世界。{{'\n'}}按住左下的箭头走动，拖动画面转头。打开木门，草地就在外面。</view>
+            <view class="guide-step"><text class="guide-number">01</text><view><text class="guide-title">家，真的有这么多层</text><text>小屋随等级变成 1 / 1 / 2 / 2 / 3 层。沿墙边的木楼梯往上走，就能到楼上布置。</text></view></view>
+            <view class="guide-step"><text class="guide-number">02</text><view><text class="guide-title">买下来，亲手摆好</text><text>去商店购买家具，在背包里拿起。向下看地板，按 R 或“放置”；Q 可以拿起已摆好的家具。每件家具都能换方向。</text></view></view>
+            <view class="guide-step"><text class="guide-number">03</text><view><text class="guide-title">往下挖，往上建</text><text>F 或“挖掘”采集方块，C 打开合成。原木变木板，矿石变建材；合成图纸，再找空草地建新房。家西侧的露天矿道通往深处。</text></view></view>
+            <view class="guide-step"><text class="guide-number">04</text><view><text class="guide-title">还有另一个世界</text><text>月纹石与紫晶合成星门框，再加入回声方块与萤光石。放下星门，靠近按 E，去看看星苔秘境和奇异生物。那里也有回程门。</text></view></view>
+            <view class="guide-step"><text class="guide-number">05</text><view><text class="guide-title">把天光和倒影带回家</text><text>整个世界都有阳光、树影和随风摇动的叶子。东侧浅河缓缓流过，可以涉水。西侧矿道有铜、铁、石英、银、紫晶和萤石；用玻璃加石英做白玻璃，加银矿做镜子。放在家里或新房都可以，挖下还能换位置。</text></view></view>
+            <view class="guide-small">开发者工具：鼠标按住左下箭头走动，松开就停；轻点走一小步。拖动场景转头。{{'\n'}}电脑键盘：WASD / 方向键走动 · 空格跳跃{{'\n'}}E 互动 / 开关门 · Q 拿起家具 · B 背包 · C 合成{{'\n'}}黑色基岩和原来的建筑挖不动。世界按账号保存在这台设备，家具购买仍由小镇钱包确认。</view>
+            <button class="mouse-toggle" bindtap="onMouseLook">鼠标移过画面转头：{{mouseLook ? '已开启' : '已关闭'}}</button>
+          </scroll-view>
+          <view class="sheet-footer"><button class="sheet-secondary" bindtap="onWorldUpgrade">升级我的家</button><button class="sheet-primary" bindtap="onClosePanel">出发，去看看 →</button></view>
+        </block>
+      </view>
+    </view>
+  </block>
+</view>

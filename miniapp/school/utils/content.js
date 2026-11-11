@@ -88,7 +88,7 @@ function checkAnswer(subject, answer, item) {
   if (!value) return { empty: true, correct: false }
   if (subject === 'math') return { empty: false, correct: /^\d{1,5}$/.test(value) && Number(value) === Number(item.answer) }
   const clean = text => normalized(text).toLowerCase().replace(/[’]/g, "'").replace(/\s+/g, ' ')
-  return { empty: false, correct: clean(value) === clean(item.word) }
+  return { empty: false, correct: [item.word].concat(item.aliases || []).some(form => clean(value) === clean(form)) }
 }
 
 module.exports = { SUBJECTS, CHARACTERS, ENGLISH, EXAMPLES, MAX_ITEMS, subjectInfo, mathProblem, parseMaterial, makeMathRound, checkAnswer }

@@ -93,7 +93,7 @@ func (s *SubwayService) transact(uid uint, action func(*gorm.DB, *models.User, *
 		} else if err != nil {
 			return err
 		}
-		day := TodayString()
+		day := s.now().Format("2006-01-02")
 		if wallet.RewardDay != day {
 			wallet.RewardDay = day
 			wallet.RewardToday = 0

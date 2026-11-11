@@ -65,7 +65,7 @@ async function build() {
   fs.mkdirSync(output, { recursive: true })
   const compiled = compile('wcc', [...dependencies(pageFile, 'wxml')])
   fs.writeFileSync(path.join(output, 'runner-template.js'), compiled)
-  const modules = ['runner', 'runner-renderer', 'runner-page'].map(name => JSON.stringify(name) + ':function(require,module,exports){\n' + fs.readFileSync(path.join(root, 'miniapp/subway/utils/' + name + '.js'), 'utf8') + '\n}').join(',\n')
+  const modules = ['runner', 'runner-renderer', 'runner-economy', 'runner-page'].map(name => JSON.stringify(name) + ':function(require,module,exports){\n' + fs.readFileSync(path.join(root, 'miniapp/subway/utils/' + name + '.js'), 'utf8') + '\n}').join(',\n')
   fs.writeFileSync(path.join(output, 'runner-product.js'), '(function(){const modules={' + modules + '},cache={};function load(name){name=name.startsWith("./")?name.slice(2):name;if(cache[name])return cache[name].exports;const m=cache[name]={exports:{}};modules[name](load,m,m.exports);return m.exports}window.RunnerPage=load("runner-page");window.RunnerSim=load("runner");})();')
   const styles = css(['miniapp/app.wxss', 'miniapp/subway/pages/run/run.wxss'])
   const script = `
@@ -77,7 +77,7 @@ function patchNode(current,next){
   if(current.nodeType!==next.nodeType||current.nodeName!==next.nodeName){current.replaceWith(next);return}
   if(current.nodeType===Node.TEXT_NODE){if(current.nodeValue!==next.nodeValue)current.nodeValue=next.nodeValue;return}
   if(current.nodeType!==Node.ELEMENT_NODE)return;
-  for(const attr of [...current.attributes])if(!next.hasAttribute(attr.name))current.removeAttribute(attr.name);
+  for(const attr of [...current.attributes])if(!next.hasAttribute(attr.name)&&!(current.tagName==='CANVAS'&&['width','height'].includes(attr.name)))current.removeAttribute(attr.name);
   for(const attr of [...next.attributes])if(current.getAttribute(attr.name)!==attr.value)current.setAttribute(attr.name,attr.value);
   if(current.tagName!=='CANVAS')patchChildren(current,next)
 }
@@ -88,20 +88,30 @@ function patchChildren(current,next){
 }
 function refresh(){const next=document.createElement('div');next.innerHTML=html(template(page.data,{}));patchChildren(mount,next)}
 const storage={token:'local-preview',apiBackend:'preview',userInfo:{id:1}};
-const wxApi={getStorageSync:key=>key.startsWith('subwayRecord:')?JSON.parse(localStorage.getItem(key)||'null'):storage[key],setStorageSync:(key,value)=>localStorage.setItem(key,JSON.stringify(value)),getWindowInfo:()=>({pixelRatio:devicePixelRatio}),createSelectorQuery:()=>({selections:[],in(){return this},select(selector){this.selections.push(selector);return this},fields(){return this},exec(fn){fn(this.selections.map(selector=>{const node=document.querySelector(selector),r=node.getBoundingClientRect();if(node.tagName==='CANVAS'){node.requestAnimationFrame=cb=>requestAnimationFrame(cb);node.cancelAnimationFrame=id=>cancelAnimationFrame(id)}return {node,width:r.width,height:r.height}}))}}),navigateBack:()=>{location.href='station.html'},switchTab:()=>{location.href='town.html'},redirectTo:()=>{location.href='station.html'}};
+const wxApi={getStorageSync:key=>key.startsWith('subway')?JSON.parse(localStorage.getItem(key)||'null'):storage[key],setStorageSync:(key,value)=>localStorage.setItem(key,JSON.stringify(value)),showModal:args=>args.success({confirm:confirm(args.content)}),getWindowInfo:()=>({pixelRatio:devicePixelRatio}),createSelectorQuery:()=>({selections:[],in(){return this},select(selector){this.selections.push(selector);return this},fields(){return this},exec(fn){fn(this.selections.map(selector=>{const node=document.querySelector(selector),r=node.getBoundingClientRect();if(node.tagName==='CANVAS'){node.requestAnimationFrame=cb=>requestAnimationFrame(cb);node.cancelAnimationFrame=id=>cancelAnimationFrame(id)}return {node,width:r.width,height:r.height}}))}}),navigateBack:()=>{location.href='station.html'},switchTab:()=>{location.href='town.html'},redirectTo:()=>{location.href='station.html'}};
 const previewState=new URLSearchParams(location.search).get('state');
-const api={get:async()=>{if(previewState==='error')throw Error('演示：站台暂时没有连上');return {buildings:previewState==='locked'?[]:[{name:'地铁站'}]}}};
+const createFixture=${require('./subway-fixture.cjs').createSubwayFixture.toString()};
+const fixture=window.subwayFixture=createFixture({tokens:240,locked:previewState==='locked',saved:JSON.parse(localStorage.getItem('subway-demo-wallet')||'null'),save:value=>localStorage.setItem('subway-demo-wallet',JSON.stringify(value))});
+const api={get:async url=>{if(previewState==='error')throw Error('演示：站台暂时没有连上');return fixture.get(url)},post:(url,body)=>fixture.post(url,body)};
 const definition=RunnerPage.createRunnerPage(api,wxApi);
 const page=window.runnerPage={...definition,data:JSON.parse(JSON.stringify(definition.data)),setData(patch){Object.assign(this.data,patch);refresh()}};
 refresh();const loaded=page.onLoad();page.onReady();page.onShow();
-loaded.then(()=>{if(previewState==='paused'||previewState==='over'){page.onStart();page._run.distance=167;page._run.stars=7;page._run.score=342;page.onPause();if(previewState==='over'){page._run.status='over';page._run.lives=0;page.setData({...RunnerSim.runView(page._run),newRecord:true,best:342})}}});
+loaded.then(async()=>{
+  if(previewState==='shop'){page.onOpenShop();return}
+  if(['paused','over','running','caught'].includes(previewState)){
+    await page.onStart();page._run.distance=167;page._run.coins=32;page._run.stars=2;page._run.score=427;
+    if(previewState==='paused')page.onPause();
+    if(previewState==='over')await page.onEndRun();
+    if(previewState==='caught'){page._run.status='caught';page._run.captureTime=1.2;page.setData(RunnerSim.runView(page._run));page.drawFrame();page.stopLoop()}
+  }
+});
 document.addEventListener('click',event=>{const el=event.target.closest('[data-tap]');if(el&&!el.disabled&&page[el.dataset.tap])page[el.dataset.tap]({type:'tap',currentTarget:{dataset:{...el.dataset}}})});
 let pointer=false;const touch=e=>({changedTouches:[{clientX:e.clientX,clientY:e.clientY}]});
 document.addEventListener('pointerdown',e=>{if(!e.target.closest('#runner-canvas'))return;pointer=true;page.onTouchStart(touch(e))});
 document.addEventListener('pointermove',e=>{if(pointer)page.onTouchMove(touch(e))});
 document.addEventListener('pointerup',e=>{if(pointer)page.onTouchEnd(touch(e));pointer=false});
 document.addEventListener('pointercancel',()=>{page.onTouchCancel();pointer=false});
-document.addEventListener('keydown',e=>{const action={ArrowLeft:'left',ArrowRight:'right',ArrowUp:'jump',ArrowDown:'slide',' ':'jump'}[e.key];if(action){e.preventDefault();page.command(action)}if(e.key==='Escape'){page.data.phase==='running'?page.onPause():page.onResume()}});
+document.addEventListener('keydown',e=>{const action={ArrowLeft:'left',ArrowRight:'right',ArrowUp:'jump',ArrowDown:'slide',' ':'jump',b:'board'}[e.key];if(action){e.preventDefault();page.command(action)}if(e.key==='Escape'){page.data.phase==='running'?page.onPause():page.onResume()}});
 document.addEventListener('visibilitychange',()=>document.hidden?page.onHide():page.onShow());
 window.addEventListener('resize',()=>page.onResize());window.addEventListener('beforeunload',()=>page.onUnload());
 `
@@ -123,7 +133,7 @@ window.addEventListener('resize',()=>page.onResize());window.addEventListener('b
   if (!stationBody.includes('metro-train-button')) throw Error('Station train was not rendered by the real WXML template')
   fs.writeFileSync(path.join(output, 'station.html'), documentHTML('地铁站 · 点击列车试玩', stationBody, townStyles, '<script>document.querySelector(".metro-train-button").onclick=()=>location.href="run.html";document.querySelector(".building-footer button").onclick=()=>location.href="town.html"</script>'))
   page.onUnload()
-  fs.writeFileSync(path.join(output, 'index.html'), '<!doctype html><html lang="zh-CN"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>地铁站预览</title><style>body{font:16px system-ui;max-width:600px;margin:40px auto;padding:24px}li{margin:18px 0}</style><h1>地铁站与星光环线</h1><p>实际 WXML/WXSS 编译结果，跑酷使用产品同一套逻辑。站台数据为本地演示，不连接业务接口。可用按钮、滑动或方向键试玩。</p><ul><li><a href="station.html">进入地铁站，点击列车</a></li><li><a href="run.html">直接试玩跑酷</a></li><li><a href="run.html?state=paused">暂停画面</a></li><li><a href="run.html?state=over">结算画面</a></li><li><a href="run.html?state=locked">未建造</a></li><li><a href="run.html?state=error">网络失败</a></li><li><a href="town.html">小镇地图</a></li></ul></html>')
+  fs.writeFileSync(path.join(output, 'index.html'), '<!doctype html><html lang="zh-CN"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>地铁站预览</title><style>body{font:16px system-ui;max-width:600px;margin:40px auto;padding:24px}li{margin:18px 0}</style><h1>地铁站与星光环线</h1><p>实际 WXML/WXSS 编译结果，跑酷使用产品同一套逻辑。站台数据为本地演示，不连接业务接口。可用按钮、滑动或方向键试玩。</p><ul><li><a href="station.html">进入地铁站，点击列车</a></li><li><a href="run.html">直接试玩跑酷</a></li><li><a href="run.html?state=shop">星光币商店（演示余额）</a></li><li><a href="run.html?state=paused">暂停画面</a></li><li><a href="run.html?state=over">结算画面</a></li><li><a href="run.html?state=locked">未建造</a></li><li><a href="run.html?state=error">网络失败</a></li><li><a href="town.html">小镇地图</a></li></ul></html>')
   console.log('Compiled station + runner WXML/WXSS; interactive preview: ' + output)
 }
 

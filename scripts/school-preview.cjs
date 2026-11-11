@@ -48,6 +48,7 @@ function states() {
   const wxApi = { getStorageSync: key => storage[key], setStorageSync: (key, value) => { storage[key] = value }, nextTick: fn => fn(), pageScrollTo() {} }
   const noop = () => {}
   const definition = createClassroomPage(wxApi, { createAudio: () => ({ play: noop, stop: noop }),
+    loadCoursebook: success => success(),
     createRewards: () => ({ begin: () => ({}), answer: noop, complete: noop, refresh: noop, stop: noop }),
     createPad: (_, __, state) => ({ init: () => state({ canvasReady: true }), reset: noop, suspend: noop, destroy: noop, end: noop }) })
   const page = { ...definition, data: clone(definition.data), setData(patch, done) { Object.assign(this.data, patch); if (done) done() } }
@@ -91,6 +92,13 @@ function states() {
     summaryRows: [{ mode: 'arithmetic', name: '数字口算', total: 4, correct: 4 }, { mode: 'compare', name: '比大小', total: 2, correct: 2 }, { mode: 'missing', name: '算式补空', total: 2, correct: 2 }, { mode: 'story', name: '生活应用题', total: 2, correct: 2 }] }); save('28-reward-completed')
   page.setData({ roundRewardSettled: false, roundRewardBricks: 0, roundRewardCoins: 0, rewardPending: 1, rewardError: '网络刚才断开了，奖励还在等待确认。' }); save('29-reward-retry')
   page.setData({ rewardError: '', rewardPending: 0 }); page.onSubject(tap('english')); save('30-reward-capped')
+  page.setData(rewardPatch(statuses, 'math')); page.onSubject(tap('english')); save('31-photo-course-entry')
+  page.onPhotoCourses(); save('32-photo-course-library')
+  page.onOpenPhotoCourse({ currentTarget: { dataset: { id: 'unit-1' } } }); save('33-photo-course-card')
+  page.onCourseFlip(); save('34-photo-course-revealed')
+  page.onCourseMode({ currentTarget: { dataset: { mode: 'listening' } } }); page.onStartPhotoCourse(); save('35-photo-course-listening')
+  page.onBack(); page.openPhotoCourse('unit-4', 2); page.onCourseCard({ currentTarget: { dataset: { step: 1 } } }); page.onCourseCard({ currentTarget: { dataset: { step: 1 } } }); page.onCourseFlip(); save('36-photo-course-floors')
+  page.openPhotoCourse('kangaroo-story', 2); page.onCourseMode({ currentTarget: { dataset: { mode: 'spelling' } } }); page.onStartPhotoCourse(); save('37-photo-course-spelling')
   page.onUnload(); return scenes
 }
 function buildPreview() {
@@ -99,7 +107,7 @@ function buildPreview() {
   vm.runInContext(compile('wcc', [pageFile]), context)
   const render = context.$gwx(pageFile)
   if (typeof render !== 'function') throw Error('School WXML did not compile')
-  const css = ['miniapp/app.wxss', 'miniapp/school/pages/classroom/classroom.wxss'].map(file => browserCSS(compile('wcsc', [file]))).join('\n')
+  const css = ['miniapp/app.wxss', 'miniapp/school/pages/classroom/classroom.wxss'].map(file => browserCSS(compile('wcsc', file.endsWith('classroom.wxss') ? [file, 'miniapp/school/styles/photo-course.wxss'] : [file]))).join('\n')
   const scenes = states()
   const base = ':root{--rpx:calc(100vw / 750)}*{box-sizing:border-box}html,body{margin:0;background:#f6f0df}wx-view,wx-label{display:block}wx-text{display:inline}button,input,textarea{font:inherit;color:inherit}button{display:block;border:0;cursor:pointer}button:disabled{cursor:default}input{width:100%;outline:0}textarea{resize:none}canvas{touch-action:none}img{object-fit:contain}button:focus-visible{outline:3px solid #d2962a;outline-offset:2px}'
   for (const [name, state] of Object.entries(scenes)) {
@@ -126,6 +134,8 @@ if(canvas){
   fs.copyFileSync(path.join(root, 'scripts/school-lecture-preview.js'), path.join(output, 'lecture-preview.js'))
   fs.writeFileSync(path.join(output, 'lesson-player.js'), 'var lectureModule={exports:{}};\n(function(module,require){\n' + fs.readFileSync(path.join(root, 'miniapp/school/utils/lesson-player.js'), 'utf8') + '\n})(lectureModule,()=>({setSpeechActive(){}}));')
   fs.cpSync(path.join(root, 'miniapp/school/audio'), path.join(output, 'audio'), { recursive: true })
+  fs.cpSync(path.join(root, 'miniapp/coursebook'), path.join(output, 'coursebook'), { recursive: true })
+  fs.cpSync(path.join(root, 'miniapp/coursebook-voice'), path.join(output, 'coursebook-voice'), { recursive: true })
   fs.writeFileSync(path.join(output, 'states.json'), JSON.stringify(scenes, null, 2))
   fs.writeFileSync(path.join(output, 'index.html'), '<!doctype html><html lang="zh-CN"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>小镇学校预览</title><style>body{font:16px sans-serif;max-width:640px;margin:40px auto;padding:24px}li{margin:16px 0}a{color:#355b4c}</style><h1>小镇学校 · 真实模板预览</h1><p>来自实际小程序 WXML/WXSS。写字板和小讲播调用产品同一套逻辑，可写、可听、可暂停；其余按钮为布局展示。请用 320–430px 视口检查。</p><ul>' + Object.keys(scenes).map(name => '<li><a href="' + name + '.html">' + name + '</a></li>').join('') + '</ul></html>')
   console.log('Compiled school WXML/WXSS: ' + Object.keys(scenes).length + ' scenes → ' + output)

@@ -1,15 +1,16 @@
 <view wx:if="{{!roomSupported || roomSceneFailed}}" class="room-loading"><text>{{roomSceneFailed ? '立体房间暂时没打开' : '房间暂时没准备好'}}</text><button bindtap="{{roomSceneFailed ? 'onRoomSceneRetry' : 'loadResident'}}">再试一次</button></view>
 <block wx:else>
   <view class="room-heading"><text class="room-kicker">MY BLOCK HOME · Lv.{{roomLevel}}</text><text class="room-title">{{roomName}}</text><text class="room-subtitle">{{roomSize}} × {{roomSize}} 格 · {{roomSize * roomSize}} 格空间</text></view>
-  <view wx:if="{{roomCamera === 'first' && !roomEditing && !roomBagOpen && !roomTV}}" class="room-crosshair" aria-hidden="true">＋</view>
+  <view wx:if="{{roomCamera === 'first' && !roomEditing && !roomBagOpen && !natureBagOpen && !roomTV}}" class="room-crosshair" aria-hidden="true">＋</view>
   <view class="room-view-tools">
     <button class="room-view-mode" bindtap="onRoomPerspective" disabled="{{roomEditing}}">{{roomCamera === 'first' ? '第三人称' : '第一人称'}}</button>
-    <view class="room-view-pair"><button bindtap="onRoomCamera">{{roomCamera === 'overview' ? '跟随小人' : '全屋'}}</button><button bindtap="onRoomExterior" disabled="{{roomEditing}}">{{roomCamera === 'outside' ? '进屋' : '外观'}}</button></view>
-    <button class="room-door-control" bindtap="onRoomDoor" disabled="{{roomEditing}}">E · {{roomDoorOpen ? '关门' : '开门'}}</button>
+    <view wx:if="{{!natureExploring}}" class="room-view-pair"><button bindtap="onRoomCamera">{{roomCamera === 'overview' ? '跟随小人' : '全屋'}}</button><button bindtap="onRoomExterior" disabled="{{roomEditing}}">{{roomCamera === 'outside' ? '进屋' : '外观'}}</button></view>
+    <button wx:if="{{!natureExploring}}" class="room-door-control" bindtap="onRoomDoor" disabled="{{roomEditing}}">E · {{roomDoorOpen ? '关门' : '开门'}}</button>
+    <view wx:else class="room-view-pair"><button bindtap="onNatureLeave">{{natureReturnLabel}} ↗</button></view>
     <button wx:if="{{roomMouseAvailable}}" class="room-mouse-control" bindtap="onRoomMouseLook" disabled="{{roomEditing}}">鼠标视角 · {{roomMouseLook ? '开' : '关'}}</button>
     <view wx:if="{{roomCamera !== 'first'}}" class="room-zoom"><button data-scale="1.15" bindtap="onRoomZoom" aria-label="拉近视角">＋</button><button data-scale="0.87" bindtap="onRoomZoom" aria-label="拉远视角">−</button></view><button class="room-help-button" bindtap="onRoomHelp" aria-label="操作说明">?</button>
   </view>
-  <view wx:if="{{roomHelp}}" class="room-help"><text>W 前进 · S 后退 · A 左移 · D 右移</text><text>空格跳跃，可以边走边跳；手机点跳跃键。</text><text>鼠标移动转视角；Esc 暂停，M 开关。</text><text>手机拖动画面转视角，V 切换人称。</text><text>E 或点击木门开关，开门后能走到门廊。</text><text>点家具互动；小背包里选家具自由布置。</text></view>
+  <view wx:if="{{roomHelp}}" class="room-help"><text>W 前进 · S 后退 · A 左移 · D 右移</text><text>空格跳跃，可以边走边跳；手机点跳跃键。</text><text>鼠标移动转视角；Esc 暂停，M 开关。</text><text>手机拖动画面转视角，V 切换人称。</text><block wx:if="{{natureExploring}}"><text>E 或采集按钮：采原木、石块、沙和矿。</text><text>B 或材料背包：查看配方，到工坊旁合成。</text><text>石镐 → 铜镐，逐步探索更深处的矿物。</text><text>水从河道慢慢流过，走木桥就能过溪。</text></block><block wx:else><text>E 或点击木门开关，开门后能走到门廊。</text><text>点家具互动；小背包里选家具自由布置。</text></block></view>
   <view wx:if="{{roomBagOpen}}" class="room-backpack" catchtouchmove="onNoop">
     <view class="room-bag-top"><view><text class="room-bag-title">我的小背包</text><text class="room-bag-subtitle">{{roomInventory.length}} 件家具 · 点一下拿出来</text></view><button bindtap="onRoomBag" aria-label="收起小背包">×</button></view>
     <scroll-view class="room-bag-scroll" scroll-x="true"><view class="room-bag-items"><button wx:for="{{roomInventory}}" wx:key="id" data-id="{{item.id}}" bindtap="onRoomChoose" disabled="{{roomSaving}}"><image src="{{item.image}}" mode="aspectFit"/><text>{{item.name}}</text><text class="room-bag-state">{{item.placed ? '在房间里 · 可移动' : '拿出来摆放'}}</text></button><button class="room-bag-shop" bindtap="onGoMall"><text>＋</text><text>去商场逛逛</text></button></view></scroll-view>
@@ -31,8 +32,9 @@
       </view>
       <button wx:if="{{!roomEditing}}" class="room-jump {{roomJumping ? 'is-jumping' : ''}}" data-key="space" bindtouchstart="onRoomKeyStart" bindtouchend="onRoomKeyEnd" bindtouchcancel="onRoomKeyEnd" aria-label="空格跳跃"><text>↑</text><text>{{roomJumping ? '跳起来！' : '空格 · 跳跃'}}</text></button>
       <view wx:else class="room-save"><text>{{roomDirty ? '● 布置尚未保存' : '正在布置小家'}}</text><view><button class="room-cancel" bindtap="onRoomCancel" disabled="{{roomSaving}}">取消</button><button class="room-save-button" bindtap="onRoomSave" disabled="{{roomSaving}}" loading="{{roomSaving}}">{{roomSaving ? '保存中' : '保存布置'}}</button></view></view>
-      <button class="room-bag-button {{roomBagOpen ? 'bag-open' : ''}}" bindtap="onRoomBag" disabled="{{roomSaving}}" aria-label="打开家具小背包"><view class="backpack-icon"><view class="backpack-handle"/><view class="backpack-body"><view class="backpack-flap"/><view class="backpack-pocket"/></view><text wx:if="{{roomBagCount}}" class="backpack-count">{{roomBagCount}}</text></view><text>小背包</text></button>
+      <button class="room-bag-button {{roomBagOpen || natureBagOpen ? 'bag-open' : ''}}" bindtap="onRoomBag" disabled="{{roomSaving}}" aria-label="{{natureExploring ? '打开材料与合成背包' : '打开家具小背包'}}"><view class="backpack-icon"><view class="backpack-handle"/><view class="backpack-body"><view class="backpack-flap"/><view class="backpack-pocket"/></view><text wx:if="{{natureExploring ? natureItems.length : roomBagCount}}" class="backpack-count">{{natureExploring ? natureItems.length : roomBagCount}}</text></view><text>{{natureExploring ? '材料 · 合成' : '小背包'}}</text></button>
     </view>
   </view>
+  <include src="nature-world.wxml" />
 </block>
 <view wx:if="{{roomTV}}" class="nature-mask" bindtap="onRoomTVClose" catchtouchmove="onNoop"><view class="nature-sheet" catchtap="onNoop"><view class="nature-top"><text>自然频道 · {{roomNatureIndex + 1}} / 3</text><button bindtap="onRoomTVClose" aria-label="关闭电视画面">×</button></view><view class="nature-screen"><image src="{{roomNature.image}}" mode="aspectFit" /></view><view class="nature-name">{{roomNature.name}}</view><text class="nature-caption">{{roomNature.caption}}</text><view class="nature-actions"><button data-step="-1" bindtap="onRoomNature">← 上一张</button><button data-step="1" bindtap="onRoomNature">下一张 →</button></view><button class="nature-close" bindtap="onRoomTVClose">回到小家</button></view></view>

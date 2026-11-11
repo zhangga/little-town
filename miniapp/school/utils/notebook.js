@@ -1,7 +1,7 @@
 const { parseMaterial, subjectInfo } = require('./content')
 const LIMIT = 16
 let sequence = 0
-const empty = () => ({ lessons: [], totals: { chinese: 0, math: 0, english: 0 }, classroomHistory: [] })
+const empty = () => ({ lessons: [], totals: { chinese: 0, math: 0, english: 0 }, classroomHistory: [], courseProgress: {} })
 
 function createNotebook(wxApi, owner) {
   const key = 'school-notebook:v1:' + owner
@@ -12,6 +12,7 @@ function createNotebook(wxApi, owner) {
     if (!value || !Array.isArray(value.lessons) || !value.totals) throw Error('教材暂时没能读出来，请退出教室后重试。')
     const state = JSON.parse(JSON.stringify(value))
     if (!Array.isArray(state.classroomHistory)) state.classroomHistory = []
+    if (!state.courseProgress || typeof state.courseProgress !== 'object' || Array.isArray(state.courseProgress)) state.courseProgress = {}
     return state
   }
   function write(value) {
@@ -65,7 +66,14 @@ function createNotebook(wxApi, owner) {
     write(state)
     return state.classroomHistory
   }
-  return { read, saveLesson, removeLesson, record, recordClassroom }
+  function recordCourseAnswer(courseID, wordID) {
+    const state = read()
+    if (!state.courseProgress[courseID]) state.courseProgress[courseID] = {}
+    state.courseProgress[courseID][wordID] = true
+    write(state)
+    return state.courseProgress
+  }
+  return { read, saveLesson, removeLesson, record, recordClassroom, recordCourseAnswer }
 }
 
 module.exports = { createNotebook, LIMIT }

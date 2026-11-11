@@ -24,6 +24,7 @@ function harness(options = {}) {
     showModal(args) { args.success({ confirm: confirmDelete }) }, nextTick: fn => fn(), pageScrollTo() {}
   }
   const definition = createClassroomPage(wxApi, {
+    loadCoursebook: options.loadCoursebook || (success => success()),
     createRewards: options.createRewards || (() => ({ begin: () => ({}), answer() {}, complete() {}, refresh() {}, stop() {} })),
     api: options.api,
     createAudio: (_, state) => { audioState = state; return { play(word, slow) { audioCalls.push([word.word, slow]); state({ audioState: 'playing' }) }, stop() { audioCalls.push('stop'); state({ audioState: 'idle' }) } } },

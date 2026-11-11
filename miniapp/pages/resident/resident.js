@@ -44,7 +44,7 @@ Page(withTapSounds({
   onTab(e) {
     const tab = e.currentTarget.dataset.tab
     if (!['outfit', 'decoration', 'home', 'room'].includes(tab) || !this.data.state || this.data.busy) return
-    if (tab === 'room') { wx.navigateTo({ url: '/home/pages/room/room' }); return }
+    if (tab === 'room') { wx.navigateTo({ url: '/home/pages/world/world' }); return }
     this.setData({ tab, items: this.data.state.shop.filter(item => item.kind === tab) })
   },
   onEnterRoom() { this.onTab({ currentTarget: { dataset: { tab: 'room' } } }) },

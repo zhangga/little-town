@@ -1,0 +1,1427 @@
+{
+  "voice": "Samantha",
+  "rate": 155,
+  "format": "AAC mono 24 kbps; slow playback 0.75x",
+  "clips": {
+    "friday.m4a": {
+      "text": "Friday",
+      "signature": "87382dbdcda8bc93a4013df17bf092a037fb2d6611c52fca05520189d0eb5e9d",
+      "sha256": "01cb0854bdcf3082d980820d4591409f8f2845fc7af60f3b0d3c456e145925db",
+      "duration": 0.697,
+      "bytes": 6626
+    },
+    "monday.m4a": {
+      "text": "Monday",
+      "signature": "8fa8ad4ddd60359830fd8a27d9121668c38d6363832c40d5ed651acbe34e84d9",
+      "sha256": "4a4df0016aff4fcb72c5551c840b3830a7624c4414ae3fd7e29bfcb83bde40b4",
+      "duration": 0.581,
+      "bytes": 6527
+    },
+    "saturday.m4a": {
+      "text": "Saturday",
+      "signature": "d3e5b26a72c4db12ac2092a7e103c69076094b494df9acb7442e7a98405cd276",
+      "sha256": "e63a8e4dbf6fa58f1d6df9cb44e3281689bb0145d22295633263bf7c417df6be",
+      "duration": 0.766,
+      "bytes": 7080
+    },
+    "sunday.m4a": {
+      "text": "Sunday",
+      "signature": "f706daa077d5a58b132c4b9721b9c7fca7fcfc15f57892917ed5e88d3f4378db",
+      "sha256": "ca64050712e49ecd944ab073d98c104e25cd238fef80407305534d1c779d4227",
+      "duration": 0.65,
+      "bytes": 6825
+    },
+    "t-shirt.m4a": {
+      "text": "T-shirt",
+      "signature": "478f2c7a077dc3ef3040539a4a8eec282b17c952cabfa2bfd0ebc2ad5749bb0e",
+      "sha256": "a64e15f6938b792c835417c573b4ce194bc09f66643a6cd1361277ee865c1df0",
+      "duration": 0.673,
+      "bytes": 6360
+    },
+    "thursday.m4a": {
+      "text": "Thursday",
+      "signature": "a1a6c7fea5081eabbeab3fe3c6e23da201563c3a9b7da8a85b1ddc4c94924b01",
+      "sha256": "61f09ca3ed78be750f0cf81e1c39b7cec0a9187a7b67cff21c0c28f8a4ec597c",
+      "duration": 0.743,
+      "bytes": 7029
+    },
+    "tuesday.m4a": {
+      "text": "Tuesday",
+      "signature": "825eb818e7dd6a5aae7e5b6dccef7152816a98f49d60d9ad0d4bab866f60d149",
+      "sha256": "75e31b8541a19ee6507246373e082bcbf27b0174a89a4840c4ded05ce1db0932",
+      "duration": 0.697,
+      "bytes": 6670
+    },
+    "wednesday.m4a": {
+      "text": "Wednesday",
+      "signature": "ef3a1b940bd6a051d526fd6577776f84185ccf169ed72607be2a31b35f6809ee",
+      "sha256": "b86df19b6c8167fd2f1ccdbff1bd30cdfd3d967ecda62ae553a07a1cf5fbb038",
+      "duration": 0.697,
+      "bytes": 6887
+    },
+    "adventure.m4a": {
+      "text": "adventure",
+      "signature": "913671704892d281f08be5ea94411eee3f153fc66761c2f23037aa42f24a7c75",
+      "sha256": "5230b59092739c65c4a74787faa1362a10e8150d4f787385000de5ef7c589c87",
+      "duration": 0.813,
+      "bytes": 7037
+    },
+    "afraid.m4a": {
+      "text": "afraid",
+      "signature": "874a63ccf89c47958c077543228528ebb14259826807915a672f5589d899d6be",
+      "sha256": "1a62fc92d5b72c40fd87d806556791163e102094d04fd231631f6de8966e3c67",
+      "duration": 0.627,
+      "bytes": 6289
+    },
+    "amusement-park.m4a": {
+      "text": "amusement park",
+      "signature": "2b36307d41cce37a45e0be08037d737ed58553ab380a60e1284b24c1ef9659f8",
+      "sha256": "fa1e1ae3865f060eff7351608eaa8bef2c465d7b37a0b52fc02a3ab9ccd1259a",
+      "duration": 1.231,
+      "bytes": 8281
+    },
+    "around.m4a": {
+      "text": "around",
+      "signature": "16bbcc4d4bce9ef1f98525f9e361345a11ae5dc12ee3059289fae091ee45823a",
+      "sha256": "2bf3bee3537a77e25b8f2c94ad006f6963f842e98398ba639ed141e796f8fa8d",
+      "duration": 0.627,
+      "bytes": 6316
+    },
+    "asleep.m4a": {
+      "text": "asleep",
+      "signature": "6b6430a1e70591bb4d37d4ed5af30244f70aeece91c0b582fc09f2aabf6d70c1",
+      "sha256": "1529bfc99dca1122b5f89e1d5d6c2d406d62a5a7a4398a323a8e2402d6b45504",
+      "duration": 0.65,
+      "bytes": 6505
+    },
+    "aunt.m4a": {
+      "text": "aunt",
+      "signature": "a5f161bb82e1af6d0dea18d6dc44a2d1f223ce0397180bc7a452a67b90020247",
+      "sha256": "83b6630c7922d4183a59e886ed4fb1362cb07e1c1d3e6db40c66670e57d2c5eb",
+      "duration": 0.464,
+      "bytes": 6392
+    },
+    "balcony.m4a": {
+      "text": "balcony",
+      "signature": "9ff360b7c5aef4a313fea887220cd34349548d82cfb5bd3a463575b30836ac84",
+      "sha256": "ba2c5732b0844e9948939ce48f2d464b6389fa325a437ae574de9abfdc28443f",
+      "duration": 0.72,
+      "bytes": 6688
+    },
+    "basement.m4a": {
+      "text": "basement",
+      "signature": "570d2a94269e2982e113e20e6556c041a285a4f8bc54be62f3914f9b4e128763",
+      "sha256": "35e894ba047df6990601508296d730e06fbb56b0318ce111150aba07255c7eaa",
+      "duration": 0.673,
+      "bytes": 6499
+    },
+    "bat.m4a": {
+      "text": "bat",
+      "signature": "cc703c91e9408856928d711f7cc08ee0cbfe068e4cd2f9f4de38e430d8777af2",
+      "sha256": "2633db1b1cdf9b96732da2655f6cea7ae4a67496b253419d7ef89450615bad14",
+      "duration": 0.464,
+      "bytes": 6406
+    },
+    "bear.m4a": {
+      "text": "bear",
+      "signature": "dba3b781af240ab8d3a483ac4d1ec56ad3fecb118c9400377b735fb680617b93",
+      "sha256": "78f7fe819e7fb74af2d307337db37994f9d94dca23f33549efbc3df7516b5719",
+      "duration": 0.395,
+      "bytes": 6017
+    },
+    "beard.m4a": {
+      "text": "beard",
+      "signature": "7fd3daf0e4925cbfffa1820d5fae810e302101b4190063a5500ee186e61e9b7b",
+      "sha256": "166b5976371d3e75f132d43c9008da84ff9193aa06f48513aa87ffa50f93b6d3",
+      "duration": 0.464,
+      "bytes": 6353
+    },
+    "blind.m4a": {
+      "text": "blind",
+      "signature": "aa18b050a16d53f941fd3b5b540878e959e5c64ac64c11bb500ff0982ef21300",
+      "sha256": "569ff1d78e41963839c2bd21b0061d09a2520d9a34d141ccacf1dca1f806b9f4",
+      "duration": 0.627,
+      "bytes": 6755
+    },
+    "blond.m4a": {
+      "text": "blond",
+      "signature": "87205d4b91716116170142ad482ee5955ace6f5c392487e3bd9b34728b6c3c06",
+      "sha256": "4c31c62116656148feb467f93abf0617aa18d27df131226eeb3438f74dabc063",
+      "duration": 0.511,
+      "bytes": 6384
+    },
+    "blonde.m4a": {
+      "text": "blonde",
+      "signature": "ad903ad7d94b4851104deb27870d6ea066f477fc10fe9d357133171a03dd639b",
+      "sha256": "ca4739fece36cf473678a107adf246cb1c08527f0442eac3f1cdeaf08f1be2ab",
+      "duration": 0.511,
+      "bytes": 6384
+    },
+    "boil.m4a": {
+      "text": "boil",
+      "signature": "1a9b7ff4b5001d3c79d69939d8c5681d4e5d26a7e35107bcbcecd42a86a31008",
+      "sha256": "b19668aaf744f9dca199593b3cc194a4ab3b1626d6bfd6d493df64325a14fb81",
+      "duration": 0.511,
+      "bytes": 6327
+    },
+    "boots.m4a": {
+      "text": "boots",
+      "signature": "40ef5e1d0a48c7cd075dd506392d6e3f7f3c1d82756fc7ed1e7d1bb6c8884583",
+      "sha256": "e6fa8ba85999333f00fbb49795e0640b873a963e4954e2f1eab7c445f6c4372a",
+      "duration": 0.581,
+      "bytes": 6717
+    },
+    "boring.m4a": {
+      "text": "boring",
+      "signature": "5151e0a90cfb893bc752acdd22a646938f22c8ff0318b650cd6498b3d230435c",
+      "sha256": "4b78ab4320acbedc38e92b2793efad1c3599986a6b3f34503da2998b5810fc66",
+      "duration": 0.581,
+      "bytes": 6215
+    },
+    "bottle.m4a": {
+      "text": "bottle",
+      "signature": "d708508964307ac90a24f5220a00977e5ec4a8c16bef989ee6643f828a25e1ff",
+      "sha256": "a2d4b6bf878fea8e37de7a96e0ab1bbda857d779061d280c8f6802630ce68aa9",
+      "duration": 0.488,
+      "bytes": 6365
+    },
+    "bowl.m4a": {
+      "text": "bowl",
+      "signature": "a9ba4fd8503fb4675bd97570f9054c497005693d9eb13708fef79e179f704c0b",
+      "sha256": "ca81f2632b2b09632d92b72d8c23ec65b3f736cb228641e2ef5c7c899c749aee",
+      "duration": 0.418,
+      "bytes": 6098
+    },
+    "bus-station.m4a": {
+      "text": "bus station",
+      "signature": "c8441f660ada8bd9ee8320b458d21dab5a0bbef6dcca8d26bac16bb23ed04845",
+      "sha256": "d631899e5d0638497725a353b514492ae19a734e10636bb4b59176b2724c868c",
+      "duration": 0.929,
+      "bytes": 7491
+    },
+    "busy.m4a": {
+      "text": "busy",
+      "signature": "c01d9037703d6e387e32d2cfdad6d9364fc28bc8d0b0dbf55cf7f8c3f8a5c935",
+      "sha256": "97d5991227822785f92346c210e1a5ee7bc32f77cbe32618f2c76bc270bbe801",
+      "duration": 0.488,
+      "bytes": 5976
+    },
+    "cafe.m4a": {
+      "text": "cafe",
+      "signature": "60083ff55badec1c064f61d64fc104f04da23d5ffdd5ce772f185aeaa89c8b12",
+      "sha256": "676912cae249f12720879f8197d5bf06c34fd6881860e8c6506bcc23cebeb3eb",
+      "duration": 0.72,
+      "bytes": 6441
+    },
+    "cage.m4a": {
+      "text": "cage",
+      "signature": "9efc08ab4ca821b5cc5f74059de72117c943d5a1ee6c81e39eca308324974830",
+      "sha256": "2b88143b7c93ca763d30cc1716286ddc0df5c4ba3f6cfd245ed761784607efb5",
+      "duration": 0.673,
+      "bytes": 6594
+    },
+    "car-park.m4a": {
+      "text": "car park",
+      "signature": "f4c8f98864f2ddc98bb0418ba659bcdc6e6e875e241ab68667b403650e9ae748",
+      "sha256": "d380d79a5945855937f76c1777f1c028f3571b977b9095c49160447672619526",
+      "duration": 0.836,
+      "bytes": 6910
+    },
+    "carry.m4a": {
+      "text": "carry",
+      "signature": "c09f5e16b7dad8f59a708f1f31ae89c77e2d4b2e62e4e67956854bab9b982520",
+      "sha256": "d662ded46c1e47e67265b5beaa14cc945d9aba2f8603461da68e7b8ae2210539",
+      "duration": 0.511,
+      "bytes": 5631
+    },
+    "cheese.m4a": {
+      "text": "cheese",
+      "signature": "22721382ef033b20b9998b82124254baa65f21cd3240aa4800f4cd875774ae48",
+      "sha256": "4a76edbaa22ca6532fc54ac500529106fb9712a25cdc8816eaf1230912fb537e",
+      "duration": 0.604,
+      "bytes": 6422
+    },
+    "cinema.m4a": {
+      "text": "cinema",
+      "signature": "7b1d6e7b125352b7aaf74cdfb00f22befb2d44aa11a2ef054ebe05896a7b8e09",
+      "sha256": "0eebe2c8b9dfc5224ab7a94bbc6111cf4a49d995f359c43de7f460e5ff36438c",
+      "duration": 0.604,
+      "bytes": 6597
+    },
+    "city-center.m4a": {
+      "text": "city center",
+      "signature": "f1c1e34c5f573fb08a7caa56d94f478665c81a38f57fa15e77c1d6ae3060aebc",
+      "sha256": "63f711311a018e28f7f78556391a07783be8420caacc37621a633362dedac004",
+      "duration": 0.975,
+      "bytes": 7815
+    },
+    "city-centre.m4a": {
+      "text": "city centre",
+      "signature": "a8e3bf3912bc6fab1e193d51415b5202ba61a18b4048f7594e2143fb2dbe5202",
+      "sha256": "b06f9416cd03973c30160714261dc0200dedd3a6fabca307e2588400327fa731",
+      "duration": 0.975,
+      "bytes": 7815
+    },
+    "climb.m4a": {
+      "text": "climb",
+      "signature": "9b242153b53f25d668a56d074154dbf40912408774a8ed83eacfc9d72ce0f7e5",
+      "sha256": "9a160155dc9bd9132981a0735592acbda1790a135e1c8d49f83fcba1e51c6fba",
+      "duration": 0.72,
+      "bytes": 6760
+    },
+    "cloud.m4a": {
+      "text": "cloud",
+      "signature": "dc316653f0d21bbdb386a2ff6a77bc77ab4d500d471b50ae285e349e0d93ac52",
+      "sha256": "df0dd901831fb7a33a19f1bd01faf897c382b1b34fcfdbcfdc01571d459f9ade",
+      "duration": 0.604,
+      "bytes": 6612
+    },
+    "clown.m4a": {
+      "text": "clown",
+      "signature": "b29b583f1faa616886e7cb26876162529a6b48c2f6a88eef7428c44c8bc849c3",
+      "sha256": "3ce450575cf4b4c07a267abd6fd0f0d0fcf973f060b7323020f32d131b3725ad",
+      "duration": 0.673,
+      "bytes": 6519
+    },
+    "coat.m4a": {
+      "text": "coat",
+      "signature": "284be909de42af886f6c7f8ba56ac68510da76599822e28368d1198061afba03",
+      "sha256": "1b096d4a258afb3379ad4ca08425842ce394a0f2764751952865fb54dc95e1f1",
+      "duration": 0.581,
+      "bytes": 6357
+    },
+    "cold.m4a": {
+      "text": "cold",
+      "signature": "67a1c5bb78d2d145a4fc63adf7a4f591c38c70cf0de46780af0c44dc4d21a484",
+      "sha256": "36fe6e5740461c6b512cfdd3dea8e489e4760f66ff3f6afd3f1735acb98a7c57",
+      "duration": 0.604,
+      "bytes": 6535
+    },
+    "cook.m4a": {
+      "text": "cook",
+      "signature": "76b3bd407cbddfac66e2c95ef4d23bc03395b2c26b9807a1085e51177cb2d5f4",
+      "sha256": "a2687ede376f99dc41d1d369ad657faa68827bdb78aaed3b742ce241e0fab7de",
+      "duration": 0.534,
+      "bytes": 6348
+    },
+    "cousin.m4a": {
+      "text": "cousin",
+      "signature": "75de9b9347925f5c4030ecd07328cd1fe705ecf2453b93a9723cb7a55f0f5b62",
+      "sha256": "1f6383ddba4b359321107b9c4e401be2167615ee2b9a4808aca875c66b59007c",
+      "duration": 0.581,
+      "bytes": 6132
+    },
+    "cry.m4a": {
+      "text": "cry",
+      "signature": "9a6885e00279105a2e2c3d8edfc11fd4ccf6755d9dda451c9150ff05a9cca71c",
+      "sha256": "7f5f42dfcc614a5799e7e3df0ed5f6466ef8d913d365f63baca4127e8555198e",
+      "duration": 0.673,
+      "bytes": 6576
+    },
+    "cup.m4a": {
+      "text": "cup",
+      "signature": "8dcbdc1e81ebecd150a843ef16484bccea993504b7ab1ddd9b9d0af5dc1f6c1b",
+      "sha256": "ce7f64ada168a645b9a666e90acf6784d36162afa6a54e6a479323b7ccbfdcb6",
+      "duration": 0.581,
+      "bytes": 6372
+    },
+    "curly.m4a": {
+      "text": "curly",
+      "signature": "3fff4195a931c998d62402cd1a4d25b8e769a4feeab0d87e24d5df1aaf638baa",
+      "sha256": "0368e202616049cb90f0c43855d6914d6bf360ff7db94b0d00d793f871d8085a",
+      "duration": 0.534,
+      "bytes": 5908
+    },
+    "cut.m4a": {
+      "text": "cut",
+      "signature": "6462402d3f9c50e3f2e37125b7871ac8ddc7764ad5bc4c3529c4c1e5be7ead31",
+      "sha256": "88f7a1ecc341a5eb30268b4ab25f6a8dad17a4a238393131ba7d17ede28f7af2",
+      "duration": 0.581,
+      "bytes": 6331
+    },
+    "dangerous.m4a": {
+      "text": "dangerous",
+      "signature": "9e20dc35f53d995ae3828220573fe09a4ed09036c495271c7fc0903081042a38",
+      "sha256": "2b299c41719f90a0742bd0e282125559847453ce21c466d69080dc05519ce085",
+      "duration": 0.79,
+      "bytes": 6968
+    },
+    "daughter.m4a": {
+      "text": "daughter",
+      "signature": "e777272e1a6443c0eb95bf15b5d4646ea2c7b599e368ef7c154fff07d98880d4",
+      "sha256": "3e3a6c6c4455c41845b4e463eeca51350b61ae8cfe9491f03197d441e7308308",
+      "duration": 0.511,
+      "bytes": 5721
+    },
+    "dentist.m4a": {
+      "text": "dentist",
+      "signature": "8de2dc9648f83975a82d4b8c76cc0a8f71e197aef3f68e35c7aa008cf86c2bab",
+      "sha256": "be34813a1d6f7d78542526ed0bbd771c9b713a82381499f1f6f42e1445575a53",
+      "duration": 0.697,
+      "bytes": 6642
+    },
+    "difficult.m4a": {
+      "text": "difficult",
+      "signature": "f3e7a92b334cf1dc6d4e0b3f5f570496b25c6a9ef31822666e565c6ab19c44b0",
+      "sha256": "00164d1f8ac1ba954600288858efea37802670d1e7f3f4d1e4b23509be43eb8f",
+      "duration": 0.836,
+      "bytes": 7257
+    },
+    "doctor.m4a": {
+      "text": "doctor",
+      "signature": "dcfd042c551466a01cfa0db02ad01bde9a28c7897ce82a65558df268e65f6963",
+      "sha256": "26221f5cb9ea8dcc25b91c0c4e4ac0d84e829e7e9619bd25ca1ef0ca64e67f81",
+      "duration": 0.65,
+      "bytes": 6243
+    },
+    "dolphin.m4a": {
+      "text": "dolphin",
+      "signature": "81e17cf3b161bb7d1cee68b75be3203d8ef5dceaef78c1ec808f9ab61f56941f",
+      "sha256": "badbea839521bee4e600394410add7b68b1214422fd9275c42898e8e6709df52",
+      "duration": 0.697,
+      "bytes": 6309
+    },
+    "downstairs.m4a": {
+      "text": "downstairs",
+      "signature": "b6876253539b84016d459c4aaf4c696ec8ee705d9b138d3721bc44c2114990d7",
+      "sha256": "8b8bcbe128f2062d9595988d8d90f3b5321c52379a2dc197aaea448f9f66925f",
+      "duration": 0.929,
+      "bytes": 7184
+    },
+    "drop.m4a": {
+      "text": "drop",
+      "signature": "ade3fb393b911cc899397e03098d62b71a6c2857ab4d6f05e339d6e6fa6ba289",
+      "sha256": "f08ad7237355ddba7bd1f6361e682d291708a58094e4dab69e1541b533107acc",
+      "duration": 0.557,
+      "bytes": 6042
+    },
+    "easy.m4a": {
+      "text": "easy",
+      "signature": "376f140ce873a07f48eb3f2e1be6491402e5b522c4ff25df1efe75eb3ce74ec1",
+      "sha256": "ef55741f44ec18d731575de3b5c44e020f0e2d89ac436a35ca43d3691804599d",
+      "duration": 0.488,
+      "bytes": 5930
+    },
+    "elevator.m4a": {
+      "text": "elevator",
+      "signature": "dc2243d369980d685b6927f7bc8ca919cdacb1dc1b48c8491e0d13266792cea5",
+      "sha256": "37b0b333e042adb6730bf1b364574d43cc80141abb311f0e552996c577d1daa3",
+      "duration": 0.79,
+      "bytes": 6616
+    },
+    "email.m4a": {
+      "text": "email",
+      "signature": "56cf89f00217a70e86844cb58947f844732bf49a26a074cba0862c9e961db21e",
+      "sha256": "e0c9f1b976174b75748a0b624432d32d6aca114065658d2af639a4ccfa39ba24",
+      "duration": 0.604,
+      "bytes": 6115
+    },
+    "exciting.m4a": {
+      "text": "exciting",
+      "signature": "a071d425f4e2760ea2a3bb4bd0d397af331ca153413e91d0bcd35f10ad30c578",
+      "sha256": "e79478d215cd24d40752c84a2f020608a69d86929174bccfe818ab4328ed6a7a",
+      "duration": 0.79,
+      "bytes": 6724
+    },
+    "fair.m4a": {
+      "text": "fair",
+      "signature": "029ebc5435a664b64034feadbfbf0c7d64b1df2b2ad3a6cb74855b5c6c9f0b6f",
+      "sha256": "351bf570b9341dc36417fb2916ed0236d3b43b5a4036ba16f0c85f4dd743fc80",
+      "duration": 0.488,
+      "bytes": 5819
+    },
+    "fall.m4a": {
+      "text": "fall",
+      "signature": "6006553556b8607b296ff617581359d80f70bb5c8811899a30f5a0ff540fed7f",
+      "sha256": "fc304402d72d2ef246aae36fb8f3945028c0c0ed443c99c61960d4bab807e060",
+      "duration": 0.511,
+      "bytes": 6107
+    },
+    "farmer.m4a": {
+      "text": "farmer",
+      "signature": "f262b2e2fa2b29af6879e5bc07a57e7d85bbcdf672c83576c58c1b15674737af",
+      "sha256": "0d6ee8f90a2d0d31333d46933f2e30bd14e8da22f475deefc79e36091c82e7bc",
+      "duration": 0.604,
+      "bytes": 6414
+    },
+    "fat.m4a": {
+      "text": "fat",
+      "signature": "2e575ca69f8a634237a914e21855b12685b8b6d6fd80095dead0a8d193b7d2d5",
+      "sha256": "4a8786198fd81a68b34bee4972bb5cf9f653c43d28c822f463d95322b6b3a15c",
+      "duration": 0.534,
+      "bytes": 6285
+    },
+    "field.m4a": {
+      "text": "field",
+      "signature": "2018178b4b3a83ada45b3d7d1e98fdfd186bcdf0fd1457be573b35e64eba3d3e",
+      "sha256": "4429a4f48b1793c15b80b2d34d91d77f502bd6f398dd83dba2fdc91a829a1148",
+      "duration": 0.557,
+      "bytes": 6326
+    },
+    "film-star.m4a": {
+      "text": "film star",
+      "signature": "c4ddd743b6ce742cbe662eb697405e744c49dfe3270d25f348555096b9d2189e",
+      "sha256": "1b865ad783b4083a8a93fec9e041cd13c4a2d72980a0650507fec9282f0dae6b",
+      "duration": 0.882,
+      "bytes": 7363
+    },
+    "first-floor.m4a": {
+      "text": "first floor",
+      "signature": "dd7c098fb316dd5ff3ab32401fa203703dbcd5fc6ccd9013c40cf4c4e759df5d",
+      "sha256": "9cb35c94fa7eb0b37aa0f4a6f360543da723f9062d6107f3f5ce051cc863e48e",
+      "duration": 0.929,
+      "bytes": 7415
+    },
+    "fly.m4a": {
+      "text": "fly",
+      "signature": "997f60a68bac17cb2fa758b3cc5448b66b1360173c2f9f8360c39a673a71f191",
+      "sha256": "673d4819288de0e09dbda257fd9e282365fa4e5b03d04955df6ea2ee05988fab",
+      "duration": 0.627,
+      "bytes": 6436
+    },
+    "forest.m4a": {
+      "text": "forest",
+      "signature": "1caf617cee7fedb241d0686711edae89924335d867f0c88a3826901ef36f5673",
+      "sha256": "d66c12e029fb72386488bf36be98f826a47105bb0a709f48f081e6d496f00837",
+      "duration": 0.72,
+      "bytes": 6741
+    },
+    "frightened.m4a": {
+      "text": "frightened",
+      "signature": "2247b9d504e4ec2341198e70cd843fbd5a3ade7554291b808f86977a8d88590b",
+      "sha256": "1855b270d231551f5831c0f9bac3e25cfdde35e3f3e504d8035f19c35aea1e47",
+      "duration": 0.79,
+      "bytes": 7128
+    },
+    "fry.m4a": {
+      "text": "fry",
+      "signature": "d40d7a25ca28a65e2c1beaa62257cda6f256d7ac6239f720d0879dc519e95abc",
+      "sha256": "66de3c3813c6523ef5e9c3625700f8af6390b9b1117ca6c6edb48f623378fe4c",
+      "duration": 0.627,
+      "bytes": 6399
+    },
+    "funfair.m4a": {
+      "text": "funfair",
+      "signature": "4b96d67ba4de912bb4f806977cc4e0febf7e4da1e3204d8bb7c1914e6878a592",
+      "sha256": "a6bd146336e708f4f06efed869b82e54f5bf35786895d747bcd65a680798bc69",
+      "duration": 0.673,
+      "bytes": 6646
+    },
+    "get-dressed.m4a": {
+      "text": "get dressed",
+      "signature": "f952b4c9ea0a7a9e2e9e740dec2718f9ad9266d85b357c9dd3ec92aef517993b",
+      "sha256": "d8c249ab459187d7dff34ad90d77f9c2088d5c1117bd279050e8ec726dcc5502",
+      "duration": 0.836,
+      "bytes": 7083
+    },
+    "get-up.m4a": {
+      "text": "get up",
+      "signature": "abec82b42b8ab512351cf35f69b8a3bc694143c1cbb2b553942538ebcfdec1e3",
+      "sha256": "ec32f769211af4f3e576181b01eff0cc186751254e8eaa3a26dde8f1f135f52b",
+      "duration": 0.534,
+      "bytes": 5840
+    },
+    "glass.m4a": {
+      "text": "glass",
+      "signature": "dff9fb09ede328a4589ddad261b99d063cf6610ba86bce6f812d3d840f1da510",
+      "sha256": "45cfd44fb0245066812cdf658281f53dc088e385507cfc9cedeabdb1e341c1b5",
+      "duration": 0.627,
+      "bytes": 6347
+    },
+    "go-shopping.m4a": {
+      "text": "go shopping",
+      "signature": "26fb4ab0f0281f8cb1208b043fac30bc472dd47e60d4ea4d661d135c642b5c9a",
+      "sha256": "eef0815432770c5ee14cdf5e27104af456e087e4d6ae4409cac8314ab2438680",
+      "duration": 0.906,
+      "bytes": 7323
+    },
+    "go-skating.m4a": {
+      "text": "go skating",
+      "signature": "b0cf510d52468612dae2859d148f2f58162af2714d5de5f869036888f72e671d",
+      "sha256": "6f19fe5959efc22ede805d23853946f612f7430968aaec1327cd5c5067beb999",
+      "duration": 0.882,
+      "bytes": 7066
+    },
+    "goodbye.m4a": {
+      "text": "goodbye",
+      "signature": "fb155a398bb9482937e954a6e9ca4bc9ec3476acd58b032d0f128378ed069c97",
+      "sha256": "991bbd40cd8368258462ed5b3f1d48c4993562ce90f99cdacbbb5896fbaaffa6",
+      "duration": 0.673,
+      "bytes": 6463
+    },
+    "granddaughter.m4a": {
+      "text": "granddaughter",
+      "signature": "638f4da706da5f062d25615ff76128a8cfcf219e4e7c8f35ea45a7d0a7efc31e",
+      "sha256": "bbfea9d0ea943398cf412e8c521cc2df7378a998c2c54f40de2e2fece2833f4e",
+      "duration": 0.766,
+      "bytes": 6580
+    },
+    "grandparents.m4a": {
+      "text": "grandparents",
+      "signature": "76659591db788269ced8d67d1ef80ed7132c325f7bdc19c3181b8d0f6db2ac88",
+      "sha256": "627bc637b4d4288bfa8e7b7829e114207bd5cc63215c8ae77f6db8eb9416ec9f",
+      "duration": 1.045,
+      "bytes": 7587
+    },
+    "grandson.m4a": {
+      "text": "grandson",
+      "signature": "da7912861c7e8236f216fff8ee481713cad43e3fda722bfe81b60a751ede8515",
+      "sha256": "fd80552a5fa96385923a833ea5ba69a9a987c54ef70bc24cc250da871e9de6c0",
+      "duration": 0.906,
+      "bytes": 7033
+    },
+    "grass.m4a": {
+      "text": "grass",
+      "signature": "4d4090b5cf54751ab309324c3918535fbf0a8da0c178bc592a07330c8ca1ff28",
+      "sha256": "c8e43dbc3640567fb16fbf6c68796179773c833bd93daa53b46be18281669e6c",
+      "duration": 0.627,
+      "bytes": 6215
+    },
+    "ground.m4a": {
+      "text": "ground",
+      "signature": "506748a8bebdf12d1e3d1a4f946ef31bae3b342871007bbf14c7639a114a9c23",
+      "sha256": "4a4d9f0773d8e0a5d9d90d112ae26c5426a2b8054c9dac7fda833efd657ae33b",
+      "duration": 0.627,
+      "bytes": 6152
+    },
+    "ground-floor.m4a": {
+      "text": "ground floor",
+      "signature": "f77de74c1c3229bc8489051096c35216f5b4ce78672f9e73f570222ba9281bda",
+      "sha256": "3eca643bf4ccb9e40110d2b2155b1fb72ed2b43086454c9460426308289049cf",
+      "duration": 0.906,
+      "bytes": 6854
+    },
+    "have-a-shower.m4a": {
+      "text": "have a shower",
+      "signature": "dc357d52519689a7399280ceeae52412ebe648676a8e09a52a3e0486896dc49b",
+      "sha256": "de209214188128395a77e23f11766b6f407d0e35860b3a392bc8b4705d168cf4",
+      "duration": 0.882,
+      "bytes": 7409
+    },
+    "have-breakfast.m4a": {
+      "text": "have breakfast",
+      "signature": "39fa4bb91c00d137ddedf21cad261648abf20ff33107b57e0123d3b56215945b",
+      "sha256": "81d48bff739ad2d7eeca09d22e289313bc2bd0125322705c462646402431611d",
+      "duration": 1.068,
+      "bytes": 8215
+    },
+    "hide.m4a": {
+      "text": "hide",
+      "signature": "5b7dc9757c7f7b04013eaf8f21cbf8c5bc49f5699375002afa90c2f2587195d3",
+      "sha256": "0d397aa297955849495b9104b87bd44c369267cdfd8230899299e864005915cf",
+      "duration": 0.511,
+      "bytes": 6353
+    },
+    "hold-my-tail.m4a": {
+      "text": "hold my tail",
+      "signature": "bf95244b58ae05b40a3e64e48fbb0160808ca1a2ce6540822f62bff19e1dc535",
+      "sha256": "3ac9a77ace5786fc8b84557d0f9c1a3c3594bb8d0d29e0ef6467767e63547deb",
+      "duration": 1.068,
+      "bytes": 7939
+    },
+    "hospital.m4a": {
+      "text": "hospital",
+      "signature": "3623edb168ccee97fef36db7ca2e4e7e5a3f58c974c1220032f20c199ec22a05",
+      "sha256": "fa03077501f0806d2a8ee15cf06ba3d817c55996a9c150bc0919671201c274f6",
+      "duration": 0.743,
+      "bytes": 7090
+    },
+    "hot.m4a": {
+      "text": "hot",
+      "signature": "772615096f8b64376fd1583aaaa77ed96b3d47dfc6519b9bdd4ec5bc5820292f",
+      "sha256": "4ddad4d4e19423a5e77d96d6e226363ec34f23870bc98b64a9cb9689ba021a20",
+      "duration": 0.488,
+      "bytes": 6223
+    },
+    "hungry.m4a": {
+      "text": "hungry",
+      "signature": "4987aa41bc51983d9ca8adf280f5018fbcb1b6e6bae07f49a8eba1de8c1d55bd",
+      "sha256": "37a474540ffe6f0d48d4327896c1f55a86ea0a1146b59aea1b17401a0a6455ea",
+      "duration": 0.604,
+      "bytes": 6501
+    },
+    "inside.m4a": {
+      "text": "inside",
+      "signature": "8aef1000cadd87541cde7d6b459e03e658ebbd7026700c205b52eb484d913149",
+      "sha256": "4b84a2e2bcae68ff55f8a6978229bf7ceb579d4333b7d2304588927fb4be6ee8",
+      "duration": 0.697,
+      "bytes": 6636
+    },
+    "joey.m4a": {
+      "text": "joey",
+      "signature": "32bf42d54bd85d3d7ab423c9f926a47ac75234a02a8652feb5cd42268f53c857",
+      "sha256": "26986fed083419f9ba91b276930f331fc6dd76607000910ed6e3e8c56a047932",
+      "duration": 0.511,
+      "bytes": 5804
+    },
+    "jump.m4a": {
+      "text": "jump",
+      "signature": "d1b3dd37025770310bcdcd95ceb84f52da073143a3e6fdc0f19326d59fbcc3c5",
+      "sha256": "4ec261d6e8cfef48499dbeb3c7387929933e069bb40a6ac2b1e64bddc2dc2610",
+      "duration": 0.581,
+      "bytes": 6081
+    },
+    "kangaroo.m4a": {
+      "text": "kangaroo",
+      "signature": "0eee718ead084e92e32fd8dbb7156946f019d66a06d559698445698dfb3db1ba",
+      "sha256": "42ea13294068f0070f7c3798fb71b4c66cfff43163ad335eb7728d35bd0a3eba",
+      "duration": 0.766,
+      "bytes": 6644
+    },
+    "kind.m4a": {
+      "text": "kind",
+      "signature": "9c1c19363bbd5fffd1e897b44dcde87305e8aec39d2debd1b9299a8e56aba04b",
+      "sha256": "bf936fdb1220177af14f13a81d8404f132065fdb6c3f280e7eeb2d5f912fd264",
+      "duration": 0.673,
+      "bytes": 6641
+    },
+    "lake.m4a": {
+      "text": "lake",
+      "signature": "47de9c6ed198e260d617582a09dc66f8d50490c314c487b0026680ea29ae9e98",
+      "sha256": "9bc3accfc70c8ce8c00cc26151dff13df42c78c38b307a638acbdccc0c234124",
+      "duration": 0.464,
+      "bytes": 6235
+    },
+    "leaf.m4a": {
+      "text": "leaf",
+      "signature": "5946a0861e444c2da6a4f03f235d1dae8fdfaa62165af5a40a0f90abed7637de",
+      "sha256": "51b69d406a9c754c7f5791c3834639c632c1aadef76f8dae69153c8a88684be4",
+      "duration": 0.511,
+      "bytes": 6355
+    },
+    "leaves.m4a": {
+      "text": "leaves",
+      "signature": "b3e20db6c1e6b57673371815c8fe5e846998a3a16ff3a5b2c2a8bef3c8a35db1",
+      "sha256": "09dec1816768a2b177408e870fbd5445fe9c33dd3842a814b669d834a6bbe10e",
+      "duration": 0.604,
+      "bytes": 6712
+    },
+    "library.m4a": {
+      "text": "library",
+      "signature": "076b500a5b1b8f8be3e9df21741d765aba8c661d3460ffe39b052bb1c0297ef4",
+      "sha256": "7888ee569421d717172813c9d859250a27df54a977ab094c0e9468556a0ca7e9",
+      "duration": 0.766,
+      "bytes": 6991
+    },
+    "lift.m4a": {
+      "text": "lift",
+      "signature": "5537134c853e809a01c154e1f9f21af3620ef458ec88892d09d338f77671f14a",
+      "sha256": "8b7c4652c6105e2937339ffd9e2888c3d1909f07211da7748b4f540001a78ebd",
+      "duration": 0.488,
+      "bytes": 6205
+    },
+    "light.m4a": {
+      "text": "light",
+      "signature": "25bb851768b23deee7f5f96622654ebf2c89782f9d1ae501aff68d722f272636",
+      "sha256": "dbf2c4b93f396bcaacec09f7c80ef6d87b2acaf72c09bc3200decdab96598daf",
+      "duration": 0.464,
+      "bytes": 6206
+    },
+    "lion.m4a": {
+      "text": "lion",
+      "signature": "41381c0faa53e8d58b1476f74ae838d15534976a9f2e305c88a151e7e563eadb",
+      "sha256": "28411cf12606a18e7f0d48a5c5f39ef1c9f6fa9a917e1ca2ac3f623e2e15f9aa",
+      "duration": 0.534,
+      "bytes": 6323
+    },
+    "listen-to-a-cd.m4a": {
+      "text": "listen to a CD",
+      "signature": "aef02a7601cc16e92af80bee04cc7f7fc7ad127c50e8206412d31b9d821806f2",
+      "sha256": "98fae9f690164b270dfe875ace6fe366254fe3a6c418936884dd1df5df9befcf",
+      "duration": 1.277,
+      "bytes": 8853
+    },
+    "listen-to-music.m4a": {
+      "text": "listen to music",
+      "signature": "8b40104c5d8c1ddcc324cd22c6fa33a471f68e7750bdf59811e16ffbce27f840",
+      "sha256": "125eefa43303786169aa6e810edc7da654d66754a9f9b7cb18666e0edbd1a56f",
+      "duration": 1.184,
+      "bytes": 8615
+    },
+    "lose.m4a": {
+      "text": "lose",
+      "signature": "d3db8aba542fc451bd182b71f0d3b77e452edeab9c7524187384836283c31356",
+      "sha256": "6677bdb04310fc62ca150b916b8d6cbda193791ef34f6cbc2827610b1809c3b2",
+      "duration": 0.534,
+      "bytes": 6484
+    },
+    "map.m4a": {
+      "text": "map",
+      "signature": "6c3c6b99b229205eced488163d971edba4ef74502686fe545ddb002b0eac9a39",
+      "sha256": "4b86e4ed6e24ba5034cb7bbea0175ebfc76840df00279388f5770a2ada855952",
+      "duration": 0.464,
+      "bytes": 6171
+    },
+    "market.m4a": {
+      "text": "market",
+      "signature": "d4a954c00b8471cf2286ff6ff0b7dd4b571fd7ec70beab227beb61c2d64e2d09",
+      "sha256": "4b6f632fb0cdf550784c268fb4773c902e9d1db54cd82aa59a53ef2cec0564a8",
+      "duration": 0.604,
+      "bytes": 6711
+    },
+    "mountain.m4a": {
+      "text": "mountain",
+      "signature": "9c48f831e88a35932ffddbacbb66c67e4528dc71d63faac3dfb7980bc16392d0",
+      "sha256": "f6afcd653c93e41ca450c48c05124a59108fbb6fb436aa2cb03f71ab30ae5a76",
+      "duration": 0.627,
+      "bytes": 6657
+    },
+    "moustache.m4a": {
+      "text": "moustache",
+      "signature": "b91e75560c5ee0b56e14ea1dc5e5059cef3e7a04c57bf77428e3148ea8aa1995",
+      "sha256": "7202d5794de9eaf07eae602b51efcae0415055f2b1e8481f07c0150d72d44053",
+      "duration": 0.906,
+      "bytes": 7546
+    },
+    "move.m4a": {
+      "text": "move",
+      "signature": "f09118792f254747c74bf1af0b69228e437ce22dcdb822fb15f85f0ef2ecb53a",
+      "sha256": "a8e682e6af5521bdc0a0a0de9523dae9c27ab3830138ee5a534ad84e5046f3bb",
+      "duration": 0.464,
+      "bytes": 6014
+    },
+    "movie-star.m4a": {
+      "text": "movie star",
+      "signature": "9cad8a724ccdffdda9b2f5a728c9fe9969ecf5b103dd122fbb683ec37977070c",
+      "sha256": "15939faa880e3f47f3175bc304b8e3d10bf90402f3e855736457f9b318d8e0d7",
+      "duration": 0.882,
+      "bytes": 7504
+    },
+    "movie-theater.m4a": {
+      "text": "movie theater",
+      "signature": "e47cb3824ed59c9686934eaadd26df6af59639dc6b8ff5308245453083dceaee",
+      "sha256": "85ee72a2dd23af78b27ee60f171b3c42a7d03c85b9b3c5caca6a20113d2fe85f",
+      "duration": 0.952,
+      "bytes": 7548
+    },
+    "mummy-kangaroo.m4a": {
+      "text": "mummy kangaroo",
+      "signature": "eea01c0fd183a0fbb1fda581d16f41fcb56ecb51d174d3dbed9bb51ef2a42b95",
+      "sha256": "61dfb03b10d8fcccf0604a8b54740a9045a803d91fc7f90c68148fd20823458e",
+      "duration": 1.091,
+      "bytes": 8056
+    },
+    "mustache.m4a": {
+      "text": "mustache",
+      "signature": "a268045857f9a85847f30f3a7b406c3026cd5dffeded0752e0373f41bba7b04f",
+      "sha256": "9c2ef18abe2fb9e86c2b4882d9ef07de705f11241c0b8b57b76bee5e0390e91f",
+      "duration": 0.813,
+      "bytes": 7302
+    },
+    "nurse.m4a": {
+      "text": "nurse",
+      "signature": "79d7a4b9ba397913d98c0f0722a5a54c6cb5f06511478aafdb4cfded07f411c0",
+      "sha256": "8bdbe28e6eb24b9a93f829a0d3a40570a864a7a6878004773f01470d60b04680",
+      "duration": 0.534,
+      "bytes": 6452
+    },
+    "outside.m4a": {
+      "text": "outside",
+      "signature": "d871de124beb5896d69fdda85e8b801cd0470e1b20b6cc1139d1e5bae3ab287f",
+      "sha256": "e713ca24a6f5d3599c839982b7bf67be702df4e47dd705d8cecbe5665236499f",
+      "duration": 0.743,
+      "bytes": 6770
+    },
+    "panda.m4a": {
+      "text": "panda",
+      "signature": "661b330569a1f2ae20fb741692ebabef716cca99e508185f8428d10ea8065119",
+      "sha256": "b3f832f2b8746aa639361b5b637d3a543c14368c188a4e1dd63ed625830eeddb",
+      "duration": 0.534,
+      "bytes": 6545
+    },
+    "parents.m4a": {
+      "text": "parents",
+      "signature": "0d8be25e4f990ad7e8154b6ac228acff448b092c45d4f63b4a79eb0f38cf1e93",
+      "sha256": "a64d83bb69a9d5da1b03b3148d7f4e215f38536be235ec2614d97b304ccafd58",
+      "duration": 0.673,
+      "bytes": 7028
+    },
+    "parking-lot.m4a": {
+      "text": "parking lot",
+      "signature": "a194aec4a0fee5b482f36bff4c514da46599f59241bca1297541a5bb2d105c1b",
+      "sha256": "5bd6bbd1046d4c58c37edd810c4048866492eb8f2c2b2fbeadb1ed54d2708b3a",
+      "duration": 0.906,
+      "bytes": 7503
+    },
+    "parrot.m4a": {
+      "text": "parrot",
+      "signature": "a66d2465cba967a2ae6e7b3100da63852487678677dbcc7ec7c098a81a98e165",
+      "sha256": "945e7e01cb0f8e852f9c19b7ec23a9cd021a1788ded267ccb04f467fde72c111",
+      "duration": 0.581,
+      "bytes": 6430
+    },
+    "pasta.m4a": {
+      "text": "pasta",
+      "signature": "8503bd3edccb253037f98ff874756a1f92f5af0458971aea3d5ec36d7ec64280",
+      "sha256": "c87bae7a287421b0d3f3bc1c3c0db74bf9ab21531b76494f453f37adffba307e",
+      "duration": 0.604,
+      "bytes": 6706
+    },
+    "penguin.m4a": {
+      "text": "penguin",
+      "signature": "69a83e1d8fc05616d53c232b38965ac3773552c272edcd490883aa6df539657c",
+      "sha256": "09592f5d93b2625cd2640d8ccc5c694d9eb343e0f9feec528c95733109c9f1ba",
+      "duration": 0.697,
+      "bytes": 6794
+    },
+    "pirate.m4a": {
+      "text": "pirate",
+      "signature": "dcf854a88925fe3fae40e34beff0f0820aa43c845e5d4973643d449910dd3274",
+      "sha256": "c02eb0300278c655b566ad99fc6c5de33b1102abdae78f3172d374db9d194a45",
+      "duration": 0.604,
+      "bytes": 6362
+    },
+    "plate.m4a": {
+      "text": "plate",
+      "signature": "89196ba9d5e02c1599f5d7ea417ef8970723f263deb09022df140254e80194ca",
+      "sha256": "36688eabbc368e99bb11a5a5262c737b1056d620d638b0e1ea8b4e0a135d55a1",
+      "duration": 0.488,
+      "bytes": 6338
+    },
+    "pop-star.m4a": {
+      "text": "pop star",
+      "signature": "a0758d919f9036c9706dd9bd632b75957db9282cd4c28415d3f9deb07c8cd958",
+      "sha256": "59fcca7bfa2ebb3840fbde3f5e912665195886eabc440354b6a5ecf7dcea2541",
+      "duration": 0.813,
+      "bytes": 7434
+    },
+    "pouch.m4a": {
+      "text": "pouch",
+      "signature": "1d18335b104084c2184fb1796e5b1ea310e49a728884433646e2389e4a58a8a1",
+      "sha256": "d352a8a8090e0bbe8cc88a180a4949ef57b513d95a7e9cdc9048ad594a0f6fe8",
+      "duration": 0.581,
+      "bytes": 6603
+    },
+    "present.m4a": {
+      "text": "present",
+      "signature": "50f621c870b7340d34f33f9d6290139ad7558083943cd96b0669c48db455f2ac",
+      "sha256": "8c2a9e1ec9720c11fc02bd3163707ecf5d9ad2a7a9cad402ac24b6b70cb90392",
+      "duration": 0.581,
+      "bytes": 6605
+    },
+    "put-on.m4a": {
+      "text": "put on",
+      "signature": "36c621e6350f834d1fa3dee4cd0b4f63b7f2099eac9951790ced6ddb756f0187",
+      "sha256": "b2dec1aeeef6b9e0984a8278483c3d5c02c191c8c44d9c5a1050c5a374d14fb1",
+      "duration": 0.65,
+      "bytes": 6581
+    },
+    "rabbit.m4a": {
+      "text": "rabbit",
+      "signature": "9c36565403e388da7fbcdbfcff883e4045b768683565f286f4157f1bcadad3b1",
+      "sha256": "141e3ecb68734880710292075f14f17c86253850c5f499e0e9987e26244ee1ca",
+      "duration": 0.581,
+      "bytes": 6513
+    },
+    "rain.m4a": {
+      "text": "rain",
+      "signature": "5dd6388732f5895826732bc4b5e8ee5a47804ce981b4324eb0908ea72669909d",
+      "sha256": "eb8dfa26bc790607a1ff1b788e7a656a980b86065408ac66c080c1aba2150336",
+      "duration": 0.464,
+      "bytes": 5962
+    },
+    "rainbow.m4a": {
+      "text": "rainbow",
+      "signature": "e0fb5386c1834bd1eb4b8197e5e0c41a80bf9667a9332ae545847857b49825cb",
+      "sha256": "26ee377ce825ea40d9deff43ad867499950f0da4c72c361e3e3c958216833bdf",
+      "duration": 0.627,
+      "bytes": 6534
+    },
+    "read-a-comic.m4a": {
+      "text": "read a comic",
+      "signature": "c571dd23cb38e94bdb341368ac2c608c46e2cd8cbc50e4c40a3f1b10ce6cf5d0",
+      "sha256": "269e71887a6786a9df5f664ee463f3705e204b0f9bae915d608ee557ee2343ab",
+      "duration": 0.906,
+      "bytes": 7483
+    },
+    "read-a-comic-book.m4a": {
+      "text": "read a comic book",
+      "signature": "2339b7157441f0174d4e84852d5efd15a0699585053cad2859ac910cb893db6a",
+      "sha256": "08ad4f5b795bf1cc6e1c06a203e848ca2a5f55fcfd586e7df51411d145cd14cb",
+      "duration": 1.184,
+      "bytes": 8335
+    },
+    "ride.m4a": {
+      "text": "ride",
+      "signature": "366b77af6c343097509c43d9b7c2b1f9ce3ac5ac6ee070e726134ec974963714",
+      "sha256": "c3522724c6e971a108773969e2340b051d142f0dd838a8d19f6243cee4c460d0",
+      "duration": 0.488,
+      "bytes": 6232
+    },
+    "river.m4a": {
+      "text": "river",
+      "signature": "89a3d1c89b7328bce0e420972954cb6d7871a2564fa63719f58f03683be2b389",
+      "sha256": "10057616411f082370cea3ac3bd133523034f59ef96ed717492ad29e8a7b8c9d",
+      "duration": 0.464,
+      "bytes": 5982
+    },
+    "road.m4a": {
+      "text": "road",
+      "signature": "7519c64a9206e2ae64028830da0f844607160b4c9aa348eb3933d6758a75ba9e",
+      "sha256": "71cfdef6918436200009fdc98d3aa0567a1b208c6172a67ebf7151c1474f2465",
+      "duration": 0.464,
+      "bytes": 6125
+    },
+    "rock.m4a": {
+      "text": "rock",
+      "signature": "e3e7f80161997cdc2c52a82abf661f8602216654a0da414d43406f14868aa3a7",
+      "sha256": "f19feae21614916435c96f1e935800d31d0ddab2f60d0c40b252a0086f8a8e2b",
+      "duration": 0.488,
+      "bytes": 6172
+    },
+    "roof.m4a": {
+      "text": "roof",
+      "signature": "5b86360ab8debc75f1b675e92da99f4aad6c2213c35633e2054fa9588d71cc2d",
+      "sha256": "3258f1bb099aaa60367ed81a37476d46a4411f7916e716656b10f8a58b52c502",
+      "duration": 0.511,
+      "bytes": 6135
+    },
+    "round.m4a": {
+      "text": "round",
+      "signature": "65899d5b30bbf359fd6b1546516b685e91c0c4951f924fe3bb10da5c9206671f",
+      "sha256": "ce7c4fa6314b2a1709469f36affe02613a615e9acc5206ad50dbfa37c53da013",
+      "duration": 0.534,
+      "bytes": 6386
+    },
+    "run.m4a": {
+      "text": "run",
+      "signature": "9c92a1d150a1f6fb92574e7a1acafac1c97f49ec283be2a8f8e6627890815579",
+      "sha256": "8930ec2b42407c96e8859ae22f21c91169b43eb5bec491963d9106efbb1cea07",
+      "duration": 0.488,
+      "bytes": 6099
+    },
+    "salad.m4a": {
+      "text": "salad",
+      "signature": "ab6621054f333d69c84286b2e7084c4a95e31e7d49d2093b08e15e1dcb9de736",
+      "sha256": "87708c3923a45bd6811d8e80319a38fbabe5828ead33372f6d58e7f2da2e1409",
+      "duration": 0.604,
+      "bytes": 6731
+    },
+    "sandwich.m4a": {
+      "text": "sandwich",
+      "signature": "39061517a8c1e64b9dccdf10a78dff06bd80df3c66820ee7a967860911b4281c",
+      "sha256": "abc10477d5cded940e98eb7161174792b679a1307ffcd79df94d595efd8967b1",
+      "duration": 0.882,
+      "bytes": 7682
+    },
+    "scarf.m4a": {
+      "text": "scarf",
+      "signature": "f6b04a7c2d36e5dfd5fbb49d6aeeb05b4a7dbf454fd9df5389c6cb19f5893dce",
+      "sha256": "b4a2d230f9e1a6ae4fa7434f8e7012b25d8d8bda4937ec9187905650adec4ea5",
+      "duration": 0.72,
+      "bytes": 6920
+    },
+    "second-floor.m4a": {
+      "text": "second floor",
+      "signature": "3c566969e859f12b4f0374cd2c713552c33684948da9ec1c6b33006cbbc03fd6",
+      "sha256": "238ddc5a55bf8fce495c85ba0e655cc0bd3e10e03be046752a88a17a4785ec06",
+      "duration": 1.022,
+      "bytes": 7762
+    },
+    "shopping-center.m4a": {
+      "text": "shopping center",
+      "signature": "4cb63a6aa53042c0c62b92b921adbf7fbec6b9a3482321de94c2d8b48793fcfa",
+      "sha256": "2a1afddaf19d4ef4597316151408d78b2022d904a5968cb9785dc57ffe3644ec",
+      "duration": 1.161,
+      "bytes": 8274
+    },
+    "shopping-centre.m4a": {
+      "text": "shopping centre",
+      "signature": "8d84ae84d5f473128a62cf16bad24336841222cbd62b8625ac4b4a9cc41cd827",
+      "sha256": "35cd1c301a857d4ba78e4ec71973b11c06659bd42600a1f211237a77bee1332a",
+      "duration": 1.161,
+      "bytes": 8274
+    },
+    "short.m4a": {
+      "text": "short",
+      "signature": "6f079ce6eaa98fc14975b7ad98b2557a44fcc533d44e82e7c16c3bb6f5df023c",
+      "sha256": "d906b252212e4cf5ae5533ed272067a023942f17cfd4703d4596a04227e86ed2",
+      "duration": 0.581,
+      "bytes": 6103
+    },
+    "shorts.m4a": {
+      "text": "shorts",
+      "signature": "d5e38809595ff35949145c5db5935a5f086c22ed9acbc6c595738fa2dec0d347",
+      "sha256": "65ac7f8a15c4bd7725977c41b99c4d11fe189327168790920c56e2ab36c87618",
+      "duration": 0.72,
+      "bytes": 6574
+    },
+    "snow.m4a": {
+      "text": "snow",
+      "signature": "e83918098aaa4c13aef8a72355ce33f2d055d7468450d4539130bed7a7d3d0af",
+      "sha256": "9235c65995ef9ac807a224801a7959ae36a3005dc4c739f837214113697032c3",
+      "duration": 0.627,
+      "bytes": 6594
+    },
+    "son.m4a": {
+      "text": "son",
+      "signature": "4c14e65884cb0be944156b63fd51902d72730c25e6c2ee04862a72964d588296",
+      "sha256": "6043085b09d3ad06497ecd40b43284e34be840d34684d12382f7e41d6ba69e9d",
+      "duration": 0.604,
+      "bytes": 6465
+    },
+    "soup.m4a": {
+      "text": "soup",
+      "signature": "24a6978bed7db27f11f94acbf80989b70b084eb30accab799d55b87304d51e4c",
+      "sha256": "38cd76019ef89197298e111571f2a235f7f72649a3f231e8e832c1a8396dc3f0",
+      "duration": 0.534,
+      "bytes": 6394
+    },
+    "sports-center.m4a": {
+      "text": "sports center",
+      "signature": "a28364746be2f852fdf2bc271d225e460afdd9cdb98d9dc49f91d927730b1990",
+      "sha256": "6a1f2bc06290f1d6952dfc1bb6725073dde0eb485f0d19b0300ff4e3c3292b23",
+      "duration": 1.045,
+      "bytes": 8126
+    },
+    "sports-centre.m4a": {
+      "text": "sports centre",
+      "signature": "523dc32ee57ca42463463630c08747a45fdf85c5c9119d13da69c16f92505901",
+      "sha256": "c36daf7c50fc88fcfad9d12d36ae4be082a8eba7ac3425c79e570ada0ed40e03",
+      "duration": 1.045,
+      "bytes": 8126
+    },
+    "square.m4a": {
+      "text": "square",
+      "signature": "060f1e381472e081defe07560e4beab8befe412b0cd2668b01f20672d003a5eb",
+      "sha256": "49797ee68bea1217676f8493accdcd59ee93ec6efdddea0195ea9aa638627098",
+      "duration": 0.627,
+      "bytes": 6766
+    },
+    "stairs.m4a": {
+      "text": "stairs",
+      "signature": "de7d08f395e7bb33d31be1c2e657d88c2300280e27c7ff822d665e2841d94198",
+      "sha256": "2d2f1975dca6bd00c68df2c61b2843870b8d9c234e9b64fb6e351a90e5777eaf",
+      "duration": 0.697,
+      "bytes": 6965
+    },
+    "station.m4a": {
+      "text": "station",
+      "signature": "546fc11783d34e9062d1838cf1c83ba68e452500e3815d6a92c862ff032d2c12",
+      "sha256": "aa4aaaddee919150dfbe542dcd308936872adc16e7e3340918002fa987958477",
+      "duration": 0.766,
+      "bytes": 7161
+    },
+    "straight.m4a": {
+      "text": "straight",
+      "signature": "9375288a6ba425e2fb97a6f1a9fbfd53c5d2c66c7a12b7e2388fb2336fd4d5e0",
+      "sha256": "1dd18762495f1d41a69b61f2204720d0906d3881599d1acd7673d4fe6bd72f5c",
+      "duration": 0.65,
+      "bytes": 6871
+    },
+    "sunny.m4a": {
+      "text": "sunny",
+      "signature": "cf9ab227dc800e88820c0d17a3534ed785ef82045c6f6a1ea7c63b778661997a",
+      "sha256": "40586fbf808dba1179d90b09d408ff08fc2e1d21a555a79734c3300c93421612",
+      "duration": 0.557,
+      "bytes": 6488
+    },
+    "supermarket.m4a": {
+      "text": "supermarket",
+      "signature": "b7f54540332d387ea857910d698046b9850c7448e9cae38405b24736b7fbe58c",
+      "sha256": "c2b09f557e091c9c560c7d76d3cf5267151ddb3495de72f8adbdc3850198db4f",
+      "duration": 1.022,
+      "bytes": 7896
+    },
+    "surprised.m4a": {
+      "text": "surprised",
+      "signature": "48fd53fbc4f2f47aa227a91406c7f1a1117b110016a156a4cfb2992c5434bdbb",
+      "sha256": "318e82699c1c265e43f258cb04568574842b9dbc40226e62370563d1f00bdfdf",
+      "duration": 0.929,
+      "bytes": 7606
+    },
+    "sweater.m4a": {
+      "text": "sweater",
+      "signature": "059106238222d3f4ac742a35c341e5aee9dcdc9acd3738b57f672b449caece3d",
+      "sha256": "8fd4a03b4e933a10cd41c401dc839d2d46ffc7d3acab38e3ba0272d65416a75f",
+      "duration": 0.604,
+      "bytes": 6587
+    },
+    "swimming-pool.m4a": {
+      "text": "swimming pool",
+      "signature": "41825c3a86df913d004c5044e7d80b0656eaa7845c253eac124c32233d4dae87",
+      "sha256": "1920f822c70b58ddda461209609899945abedfaf89128f774410beb452d1101e",
+      "duration": 0.929,
+      "bytes": 7484
+    },
+    "take-a-shower.m4a": {
+      "text": "take a shower",
+      "signature": "d2f126fa1cf2e6774aef7be76a15c24023f9645c4821d0275abf67187b770c81",
+      "sha256": "bd821c6142bdb05dd709f6c453bd841481121ad3e9d85c0051766a1dd06354f6",
+      "duration": 0.929,
+      "bytes": 7317
+    },
+    "take-off.m4a": {
+      "text": "take off",
+      "signature": "382280a9fa478d8d0e5b20aeeb9133594c8fb4989393fcfd6e5d603c705d02e3",
+      "sha256": "705d0fea775bd6e45fdc7d58ffb310e0b9ccf83b4d4679af601e0f33e6fd2c78",
+      "duration": 0.79,
+      "bytes": 6760
+    },
+    "tall.m4a": {
+      "text": "tall",
+      "signature": "25b8d4cd46a73757e0bc942992bcd9d56469bb92f140cb81a9c51251c81c538c",
+      "sha256": "5c6b74f916f714efcc41d48b6cde37127b7fdea0d2333d0626fff040bdbf18d1",
+      "duration": 0.557,
+      "bytes": 5967
+    },
+    "text.m4a": {
+      "text": "text",
+      "signature": "976c9f818308ebdf4146fb28d652699dc3d7488e76f563f0c3d96eca62a26d58",
+      "sha256": "780796225d2677fd7a75acf85117330cfd3f5bcadac304bd773c21461a71cc75",
+      "duration": 0.79,
+      "bytes": 6791
+    },
+    "thin.m4a": {
+      "text": "thin",
+      "signature": "bec794d58d53cc43f95db863b40b95ef46a538e5e68674f6d5993658b07f3d7f",
+      "sha256": "21704cf79930ab2fd8519ecbc71e62e4c35787e679d58e116cd55b62fee4c4a5",
+      "duration": 0.464,
+      "bytes": 5815
+    },
+    "third-floor.m4a": {
+      "text": "third floor",
+      "signature": "75ff5b51764b9350feb97ea35954e884c60ee00f54190338ec8201fabd3f8c50",
+      "sha256": "05740e7a10e79da46909fab6d966587854fb7cf73e720e228430b0d294992710",
+      "duration": 0.859,
+      "bytes": 7191
+    },
+    "thirsty.m4a": {
+      "text": "thirsty",
+      "signature": "0e94e4fa6be0b9783a740d07275477e58e103dde3f9353365be36b008975e504",
+      "sha256": "c23922e6d2a4ad8b216964d35f68483781b83d7105c85b5351ae2b868d466f3a",
+      "duration": 0.697,
+      "bytes": 6865
+    },
+    "ticket.m4a": {
+      "text": "ticket",
+      "signature": "09bffedce7255454e64b6e835015a14fb8688c70681455a025bca757284bf4eb",
+      "sha256": "90aebdad91afd1cf412a7754e84fdd68361482c8890bf0971968d2df8b1d1d96",
+      "duration": 0.581,
+      "bytes": 6140
+    },
+    "tired.m4a": {
+      "text": "tired",
+      "signature": "f26f6ba949408ddca6e24fbe96d3de9089ee3c7cd222132cde11731f166d4bbb",
+      "sha256": "8095e7c32678349c46b224588cdaf9f9d25c5916094ab0a73e273baac44c8e97",
+      "duration": 0.743,
+      "bytes": 6497
+    },
+    "toothbrush.m4a": {
+      "text": "toothbrush",
+      "signature": "f79c4b53aa7e5fe5d2ba1291c4d2b6fc46c7f89e17f1dc973a6a9499cd7c2f50",
+      "sha256": "dffbf5a62b929120cb8a3c68ef7535896dc518c825478380d2b1fdcd1b52164b",
+      "duration": 0.882,
+      "bytes": 7293
+    },
+    "toothpaste.m4a": {
+      "text": "toothpaste",
+      "signature": "bfa73d3e143e51a17b9c0315a2422fc1a264bd9d3234c22f9745dfd261ae3a5e",
+      "sha256": "67c143af681066584f8dccdecfd0943d18dddd7dfd7996d53b3854f661b06da6",
+      "duration": 0.952,
+      "bytes": 7497
+    },
+    "towel.m4a": {
+      "text": "towel",
+      "signature": "73a0c077283014c01c951ad0f2895cbc19a34bae20a4fb55672011d6d22db9e9",
+      "sha256": "70891e286da0e69dfade969d79f7499ebf6d3ef37fddea2ab77e29b92aa2958d",
+      "duration": 0.557,
+      "bytes": 6015
+    },
+    "tractor.m4a": {
+      "text": "tractor",
+      "signature": "42d3f306c05b96677bd985a3e5dc73696a37d425ad4158f6ab939e12d2fae3e0",
+      "sha256": "90d2d60ca5bb0737d6b0b5be14baac036e1d4a65cee3981072c98c303b437c9a",
+      "duration": 0.697,
+      "bytes": 6537
+    },
+    "travel.m4a": {
+      "text": "travel",
+      "signature": "1767482b56d0750d4ba4403c195a38deba3422e4068649e04dee9427bd49a81b",
+      "sha256": "11b1631a58054d5f63e13ad9330aa721f1c35b63160e6aba69005a39b94677bb",
+      "duration": 0.581,
+      "bytes": 6182
+    },
+    "treasure.m4a": {
+      "text": "treasure",
+      "signature": "a742d85c40346dc67e1a9aa53eb39d4b9ee2386f890d8471d15934ea508fe8c5",
+      "sha256": "b3d6d47731a31ded7dbde01f9424e944ba9a65f5669600d599d263005b8c3121",
+      "duration": 0.581,
+      "bytes": 6154
+    },
+    "tree.m4a": {
+      "text": "tree",
+      "signature": "77c389766ed29d571f5493d07374c9bdab8f47025d1a64268416e5c686cde6c2",
+      "sha256": "d5f4b6328347a6982811e603a80f756d192b6664b0ed86cbbf39db55b91b3aa6",
+      "duration": 0.511,
+      "bytes": 5856
+    },
+    "trip.m4a": {
+      "text": "trip",
+      "signature": "3a90ee082bea5a9705fb25662eae478a8b6b7d698e12a70708554b9282d1788c",
+      "sha256": "ca45cbec1d22ee9e6fa2ea26e4d02cb325e4fd64952eb5abcac977968553ac2c",
+      "duration": 0.557,
+      "bytes": 6011
+    },
+    "uncle.m4a": {
+      "text": "uncle",
+      "signature": "a597b1d776e7f244f34f98c76e58110563a87c52b6d2e91abc472476cec43f88",
+      "sha256": "8dbeaf504be3e5740dde506a93c957e67cac0c4ecee318abea60b3b065ed5b58",
+      "duration": 0.604,
+      "bytes": 6214
+    },
+    "upstairs.m4a": {
+      "text": "upstairs",
+      "signature": "189b0a0ba52b7fab9c3746199106e8c9aa40067a38ec3e01edce5fa52dbed74c",
+      "sha256": "f561e9e357f1e0922b7302a3a1e71d9ac37e9cc7fdd2940e5af9fa8209af7915",
+      "duration": 0.813,
+      "bytes": 7158
+    },
+    "vegetables.m4a": {
+      "text": "vegetables",
+      "signature": "54cd3235a7de2493e56ab761bf6dc15d8b3c0b82e6e387da5b8cbf09e1b73943",
+      "sha256": "60b99487c20c6c0d4c899aa7ea9038fde80d99d9c068ca64bc629eaa0493da22",
+      "duration": 0.906,
+      "bytes": 7483
+    },
+    "wake-up.m4a": {
+      "text": "wake up",
+      "signature": "d9ebb95c2ae6cc7b840fe14bb0a069972343bb16a240048957fb9647bb9604e3",
+      "sha256": "29d821b38de0a234b9fa17d879e54a7fb3119e6541792714f6672fee2c26664e",
+      "duration": 0.627,
+      "bytes": 6690
+    },
+    "walk.m4a": {
+      "text": "walk",
+      "signature": "9afa401d35ed9b1f9c1096b9cde7b7be9044e6e48fd7259e83a86ff036444a2c",
+      "sha256": "67372f9a6da2941023e641ebac2eb5c458631e9a2de71d025500dd61d0af5278",
+      "duration": 0.534,
+      "bytes": 6084
+    },
+    "wash.m4a": {
+      "text": "wash",
+      "signature": "ed622877a4547339ed8ed3a16fcfbb87d1dcc01c654dedba9f1839f715329a66",
+      "sha256": "d9aa4946bad3a2a42743a105d1e60b5b10fba3565f923eaa7f4d3be845d9b8bf",
+      "duration": 0.604,
+      "bytes": 6485
+    },
+    "watch-a-dvd.m4a": {
+      "text": "watch a DVD",
+      "signature": "8667ee2df40f91221765fa5e5de626673056684ec671f0782eadcae6375497d2",
+      "sha256": "e25be32c5c869aa57b5e7ebd2be92c71eacd8050116b8bfb9ed3caeba023f9fd",
+      "duration": 1.115,
+      "bytes": 8451
+    },
+    "watch-a-film.m4a": {
+      "text": "watch a film",
+      "signature": "9eac12ba0a2393d5ec59644f44fd55843650269e69092c0ed7e4b7e8e91ccad5",
+      "sha256": "b69c96507a5db6f1917b800435fea8cda24a7e6598f6230e0c861934413533a0",
+      "duration": 0.929,
+      "bytes": 7576
+    },
+    "watch-a-movie.m4a": {
+      "text": "watch a movie",
+      "signature": "95249907d63c960698e781178a1275773ffa34bfbf990ab0716e03235be249f3",
+      "sha256": "f58c21a58f65644fbb77f14c8978edd237c8d4f18c8bebc19464da80583e5e0e",
+      "duration": 0.929,
+      "bytes": 7581
+    },
+    "whale.m4a": {
+      "text": "whale",
+      "signature": "d400f729aed131f8a7bf32459a9c6ca9a6f0d9081c9e47c7fbd33942b5996de0",
+      "sha256": "6ac92eeb3586ad9dd4d51abde1a7379d7f5e3a052b077c4b74e060fad408c034",
+      "duration": 0.511,
+      "bytes": 6204
+    },
+    "windy.m4a": {
+      "text": "windy",
+      "signature": "16917d02487421b1db36eb897866a56571d0df4c5fe1ec06bce8ebbf8625d08f",
+      "sha256": "0310df46afd4e4d053c16709f19119504b3c71c10b2e0d0b5aff23ff984adb5d",
+      "duration": 0.534,
+      "bytes": 6401
+    },
+    "wombat.m4a": {
+      "text": "wombat",
+      "signature": "3034ec9c11c6d4e1728acfea0db4752d52588093950aa5db3f4127487834f440",
+      "sha256": "3f8a85f017cd2b04e43c3e60ea225693ff7fa112f08b31db09fee05e6b94f087",
+      "duration": 0.697,
+      "bytes": 6713
+    },
+    "world.m4a": {
+      "text": "world",
+      "signature": "ed0a0898efba62515971983412519c9edebdb03ccbb50f6bb6a4704931cb5c9f",
+      "sha256": "d0be96ca202219c26a82e4b2a5ed04b8518c16e4a5eceb8779213a9f5656d479",
+      "duration": 0.534,
+      "bytes": 6157
+    },
+    "write-an-email.m4a": {
+      "text": "write an email",
+      "signature": "373e837f3d334a1d4d1e744c91f0036d1fd7792ca8229153d5320dc3184e2e11",
+      "sha256": "f193708b661179f5304a7c9316ca1062aa43387f3452892b9ab07706fedaac5c",
+      "duration": 1.068,
+      "bytes": 7808
+    }
+  },
+  "photos": {
+    "unit-1": {
+      "source": "20261108-182524.512-9.jpg",
+      "sourceSha256": "a9bcc29b688f9f1c691378044149cab383fef8aab1e54389dce60ccb615f86d8",
+      "sha256": "2b2ca8d29caeb81c8cc45ca950eb3cbfdf7d4ff1c1e1ea9c8a4d011d0d090ddc",
+      "bytes": 136299
+    },
+    "unit-2": {
+      "source": "20261108-182524.512-10.jpg",
+      "sourceSha256": "e31fe4388b300d14e0df3ab93c7362536797eafb50a77629d460588a770fe585",
+      "sha256": "bca99ee8985d4999a047da999f27456d7729b462c20e1bdd87d88a53df10d7a2",
+      "bytes": 117183
+    },
+    "unit-3": {
+      "source": "20261108-182524.512-6.jpg",
+      "sourceSha256": "cb1a5f8364784671de16c8bbe25df98c5e5dc7554dfffa031be1651d91b25013",
+      "sha256": "41d6dc6a8f35ba5b16294fa9e6514def54b04ab06d3ff77bab76fc78e679463c",
+      "bytes": 116515
+    },
+    "unit-4": {
+      "source": "20261108-182524.512-7.jpg",
+      "sourceSha256": "a24d4d90406a39e6a6de1f4617267e85904925c7f95edaff5194696455e91de7",
+      "sha256": "c63861594014c348d75f94569bcb2f4c526edb87a92e06acec04cce315d6d5a2",
+      "bytes": 142394
+    },
+    "unit-5": {
+      "source": "20261108-182524.512-5.jpg",
+      "sourceSha256": "a30a9a7e6e87fd9fe8255f22230e78b49b1129810fd660b4fadcef6278edf749",
+      "sha256": "f995976a26c4e35a39adfddd668d13d3aeacffa06931ae368101d4198aaec600",
+      "bytes": 116975
+    },
+    "unit-6": {
+      "source": "20261108-182524.512-8.jpg",
+      "sourceSha256": "4c43568724be65ffb1d7a486ff4beac1fcd7d86e4774e78c59b25f3c46c25ba3",
+      "sha256": "7bdd5bda6024c563d8a4a18556e291c84177445fccf81334731e3a1c7baf3a97",
+      "bytes": 97832
+    },
+    "unit-7": {
+      "source": "20261108-182524.512-1.jpg",
+      "sourceSha256": "7b07b5a4569628e9757ad421e0fdc5a9b86a0a59466e2b010625d8420c41991b",
+      "sha256": "d1c1f1871598629da0b3d9f5d41459eca2d59eddc4c718d091e804b0b0d50176",
+      "bytes": 102651
+    },
+    "unit-8": {
+      "source": "20261108-182524.512-2.jpg",
+      "sourceSha256": "ce704087b2b0fb1e7c4e2a22236b331bb7a42714c3a15bad66d996b57917bb67",
+      "sha256": "e8293d62463fb2ce28e314cc7ba199a741011ac49a008f8d780ffb4639d17d5f",
+      "bytes": 135795
+    },
+    "unit-9": {
+      "source": "20261108-182524.512-4.jpg",
+      "sourceSha256": "c5b94a2b46c4978f78fbcdacf368c539d0dfecc9a1230db085b5ab2648cd2eff",
+      "sha256": "5cc30f1701ad9b1dabc58957b27ff4147eab3e9f1a498efd11f8fcf0b6ce5d6f",
+      "bytes": 123777
+    },
+    "kangaroo-story": {
+      "source": "20261108-182524.512-3.jpg",
+      "sourceSha256": "1873ca76b84a4ab891aa4e9083d7492ec6c97ad781a4ebfbe807dfd3656e4383",
+      "sha256": "5ff855076fa90fae42aaee67e193e0f0a76ac71268e5c9da9fb7feeadeedd53b",
+      "bytes": 177007
+    }
+  }
+}

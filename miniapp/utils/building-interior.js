@@ -45,6 +45,11 @@ function createBuildingInterior(api, wxApi, showError, clock = { setTimeout: (fn
       this._subwayNavigating = true
       wxApi.navigateTo({ url: '/subway/pages/run/run', complete: () => { this._subwayNavigating = false } })
     },
+    onOpenSubwayShop() {
+      if (this._disposed || !this.data.sceneActive || this.data.lifeBusy || this.data.refreshing || !this.data.selected || this.data.selected.name !== '商店') return
+      this.stopActivityClock()
+      wxApi.navigateTo({ url: '/subway/pages/run/run?shop=1' })
+    },
     onOpenBentoKitchen() {
       if (this.data.lifeBusy || this.data.refreshing || !this.data.selected || this.data.selected.name !== '餐厅') return
       this.stopActivityClock()

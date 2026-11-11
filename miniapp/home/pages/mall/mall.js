@@ -69,8 +69,8 @@ Page(withTapSounds({
     if (this.data.busy) return
     wx.setStorageSync('homeRoomRequested', this.data.selected && this.data.selected.owned ? this.data.selected.id : true)
     const pages = typeof getCurrentPages === 'function' ? getCurrentPages() : []
-    if (pages.length > 1 && pages[pages.length - 2].route === 'home/pages/room/room') wx.navigateBack()
-    else wx.redirectTo({ url: '/home/pages/room/room' })
+    if (pages.length > 1 && ['home/pages/world/world', 'home/pages/room/room'].includes(pages[pages.length - 2].route)) wx.navigateBack()
+    else wx.redirectTo({ url: '/home/pages/world/world' })
   },
   onBuildMall() { if (!this.data.busy) wx.switchTab({ url: '/pages/build/build' }) }
 }))

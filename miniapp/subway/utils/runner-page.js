@@ -17,7 +17,7 @@ function createRunnerPage(api, wxApi, options = {}) {
     data: {
       phase: 'loading', canvasReady: false, canvasError: '', error: '',
       score: 0, distance: 0, stars: 0, coins: 0, runTokens: 0, boards: 1, boardSeconds: 0, magnetSeconds: 0, chaseSeconds: 0, chaseLabel: '安全距离', pace: '城市站台',
-      economy: null, economyBusy: false, economyError: '', pendingReward: false, awarded: null, shopOpen: false, shopMessage: '',
+      economy: null, economyBusy: false, economyError: '', pendingReward: false, pendingPurchase: null, awarded: null, shopOpen: false, shopMessage: '',
       hint: '左右换道 · 上跳下滑 · 列车要绕开', best: 0, newRecord: false, recordSaveFailed: false
     },
     onLoad(query = {}) {
@@ -69,7 +69,7 @@ function createRunnerPage(api, wxApi, options = {}) {
         const saved = wxApi.getStorageSync('subwayRecord:v1:' + owner)
         if (saved && Number.isSafeInteger(saved.best) && saved.best >= 0) best = saved.best
       } catch (_) {}
-      this.setData(Object.assign(runView(this._run), { phase: token ? 'loading' : 'login', best, error: '', newRecord: false, recordSaveFailed: false }))
+      this.setData(Object.assign(runView(this._run), { phase: token ? 'loading' : 'login', best, error: '', newRecord: false, recordSaveFailed: false, economy: null, economyBusy: false, economyError: '', pendingReward: false, pendingPurchase: null, awarded: null, shopOpen: false, shopMessage: '' }))
       this.drawFrame()
       if (!token) return Promise.resolve()
       const loading = Promise.resolve().then(() => api.get('/buildings/my-town')).then(async state => {
@@ -124,10 +124,15 @@ function createRunnerPage(api, wxApi, options = {}) {
     },
     applyEconomy(state) {
       this.setData({ economy: state, best: Math.max(this.data.best, state.best || 0) })
+      this.syncPurchase()
+    },
+    syncPurchase() {
+      const pending = this._economy.pending().purchase
+      this.setData({ pendingPurchase: pending && this.data.economy ? this.data.economy.items.find(item => item.id === pending.item_id) || null : null })
     },
     checkpoint() {
-      try { if (this._economy && this._sessionID) this._economy.checkpoint(this._run, this._sessionID) }
-      catch (_) { if (!this._disposed) this.setData({ economyError: '本局记录还没存好，请保持页面并重试结算' }) }
+      try { if (this._economy && this._sessionID) this._economy.checkpoint(this._run, this._sessionID); return true }
+      catch (_) { if (!this._disposed) this.setData({ economyError: '本局记录还没存好，请保持页面并重试结算' }); return false }
     },
     async onStart() {
       if (!this.current() || !this._visible || !this._owned || !this.data.canvasReady || this.data.economyBusy || !['ready', 'over'].includes(this.data.phase)) return
@@ -151,13 +156,14 @@ function createRunnerPage(api, wxApi, options = {}) {
     async onSettle() {
       if (!this.current() || this.data.economyBusy) return
       const owner = this._owner, token = this._token
-      this.checkpoint()
+      if (!this.checkpoint()) { this.setData({ pendingReward: true }); return false }
       this.setData({ economyBusy: true, economyError: '' })
       try {
         const state = await this._economy.settle()
         if (!this.current(owner, token)) return
         this._sessionID = null; this.applyEconomy(state)
         this.setData({ pendingReward: false, awarded: state.run ? state.run.awarded : null })
+        return true
       } catch (err) { if (this.current(owner, token)) this.setData({ pendingReward: true, economyError: err.message }) }
       finally { if (this.current(owner, token)) this.setData({ economyBusy: false }) }
     },
@@ -167,8 +173,9 @@ function createRunnerPage(api, wxApi, options = {}) {
         if (res.confirm && this.current()) { this._economy.discard(); this._sessionID = null; this.setData({ pendingReward: false, economyError: '' }) }
       } })
     },
-    onOpenShop() { this.onPause(); this.setData({ shopOpen: true, shopMessage: '' }) },
+    onOpenShop() { if (!this.current() || !this.data.economy) return; this.onPause(); this.setData({ shopOpen: true, shopMessage: '' }); this.syncPurchase() },
     onCloseShop() { this.setData({ shopOpen: false }) },
+    onRetryPurchase() { if (this.data.pendingPurchase) return this.onShopItem({ currentTarget: { dataset: { id: this.data.pendingPurchase.id } } }) },
     async onShopItem(event) {
       if (!this.current() || this.data.economyBusy || !this.data.economy) return
       const item = this.data.economy.items.find(i => i.id === event.currentTarget.dataset.id)
@@ -182,7 +189,7 @@ function createRunnerPage(api, wxApi, options = {}) {
         this.applyEconomy(state); this._run.skin = state.equipped
         this.setData({ shopMessage: item.kind === 'exchange' ? '兑换成功，已存入小镇钱包' : '滑板已装备，下一程一起出发' })
       } catch (err) { if (this.current(owner, token)) this.setData({ economyError: err.message }) }
-      finally { if (this.current(owner, token)) this.setData({ economyBusy: false }) }
+      finally { if (this.current(owner, token)) { this.setData({ economyBusy: false }); this.syncPurchase() } }
     },
     startLoop() {
       this.stopLoop()
@@ -268,8 +275,10 @@ function createRunnerPage(api, wxApi, options = {}) {
     },
     async onBack() {
       if (this.data.economyBusy) return
-      this.onPause(); this.checkpoint(); this.saveRecord()
+      const owner = this._owner, token = this._token
+      this.onPause(); if (!this.checkpoint()) return; this.saveRecord()
       if (this._sessionID) await this.onSettle()
+      if (!this.current(owner, token)) return
       wxApi.navigateBack({ fail: () => wxApi.switchTab({ url: '/pages/index/index' }) })
     }
   }

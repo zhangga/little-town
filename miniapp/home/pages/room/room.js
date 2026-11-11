@@ -7,7 +7,7 @@ const { createRoomScenePage } = require('../../utils/home-room-scene-page')
 
 Page(withTapSounds(Object.assign({}, createHomeRoom(api, wx, showError), createRoomScenePage(wx), {
   data: Object.assign({}, roomData, { loading: true, failed: false, state: null, busy: false, tab: 'room' }),
-  onLoad() { if (!wx.getStorageSync('token')) wx.redirectTo({ url: '/pages/login/login' }) },
+  onLoad(options = {}) { this._openNatureRequest=options.nature==='1';this._natureViaWorld=this._openNatureRequest;if(this._natureViaWorld)this.setData({natureReturnLabel:'回方块世界'});if (!wx.getStorageSync('token')) wx.redirectTo({ url: '/pages/login/login' }) },
   onShow() {
     this._visible = true
     this.bindRoomKeyboard()

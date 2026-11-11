@@ -1,7 +1,9 @@
 const { nature, actions, presentFurniture } = require('./home-room')
 const space = require('./home-space')
+const {natureData,createNaturePage}=require('./nature-page')
 const movementHint = 'WASD 走动 · 空格跳跃 · 鼠标或拖动转视角。'
 const roomData = {
+  ...natureData,
   roomSupported:false,roomEditing:false,roomDirty:false,roomVersion:0,roomDraft:[],roomFurniture:[],roomInventory:[],
   roomSelected:'',roomRotation:0,roomAngle:0,roomSelectionName:'',roomActor:null,roomMessage:movementHint,
   roomJumping:false,roomMouseLook:true,roomMouseAvailable:false,
@@ -10,35 +12,41 @@ const roomData = {
 }
 function createHomeRoom(api, wxApi, showError) {
   return {
+    ...createNaturePage(wxApi),
     roomGeometry() {return Object.assign({},this.data.state&&this.data.state.room,{doorOpen:this.data.roomDoorOpen,porch:true})},
     syncRoom(state) {
       if(!state.room||!Array.isArray(state.furniture)){this.setData({roomSupported:false});return}
       const geometry=space.dimensions(state.room)
+      if(this.data.natureExploring&&geometry.size!==this.data.roomSize)this.onNatureReturn()
       const patch={roomSupported:true,roomSize:geometry.size,roomLevel:geometry.level,roomName:state.home.name||'橡木小家'}
       if(!this.data.roomEditing){patch.roomDraft=state.room.layout.map(p=>space.normalize(p,state.furniture));patch.roomVersion=state.room.version}
       this.setData(patch)
-      if(!this._actor||!space.canWalk(this._actor,this.data.roomDraft,state.furniture,this.roomGeometry()))this._actor={...geometry.entry,angle:Math.PI,moving:false,pose:''}
+      if(!this._actor||(!this.data.natureExploring&&!space.canWalk(this._actor,this.data.roomDraft,state.furniture,this.roomGeometry())))this._actor={...geometry.entry,angle:Math.PI,moving:false,pose:''}
       this.setData({roomActor:{...this._actor}});this.refreshRoom()
+      this.loadNatureWorld()
     },
     refreshRoom() {
       if(!this.data.state)return
       const catalog=presentFurniture(this.data.state.furniture,this.data.state.wallet,this.data.roomDraft)
       this.setData({roomInventory:catalog.filter(i=>i.owned),roomBagCount:catalog.filter(i=>i.owned&&!i.placed).length,roomFurniture:this.data.roomDraft.map(p=>({...catalog.find(i=>i.id===p.id),...p}))})
       if(this._scene){this._scene.setHouse(this.roomGeometry());this._scene.setDoor(this.data.roomDoorOpen);this._scene.clearPreview();this._scene.setLayout(this.data.roomDraft);this._scene.setActor(this._actor);this._scene.setSelected(this.data.roomSelected);this._scene.setOutfit(this.data.state.resident.outfit_id);this._scene.setNature(this.data.roomNature.image);this._scene.setLamp(this.data.roomLamp);this._scene.setFire(this.data.roomFire);if(this._candidate)this.previewRoomPlacement(this._candidate)}
+      if(this._scene&&this._scene.setNatureInventory&&this._natureState)this._scene.setNatureInventory(this._natureState.inventory)
     },
     stopRoomWalk() {
       this.leaveRoomSeat()
-      this._walkPath=null;this._walkDone=null;this._heldKeys=new Set();this._doorKeyHeld=false;this._viewKeyHeld=false;this._jumpHeld=false;this._mouseKeyHeld=false;this._roomPointer=null
+      this._walkPath=null;this._walkDone=null;this._heldKeys=new Set();this._doorKeyHeld=false;this._viewKeyHeld=false;this._jumpHeld=false;this._mouseKeyHeld=false;this._natureBagKey=false;this._roomPointer=null
       this._jumpVelocity=0
       if(this._actor&&this._actor.airborne)Object.assign(this._actor,{elevation:0,airborne:false})
       if(this._actor){this._actor.moving=false;this._actor.pose=''}
       if(!this._disposed){this.setData({roomKeys:{},roomJumping:false,roomActor:this._actor?{...this._actor}:null});if(this._scene)this._scene.setActor(this._actor)}
     },
     onRoomBag() {
+      if(this.data.natureExploring){this.onNatureBag();return}
       if(this.data.roomSaving||this.data.busy)return
       this.stopRoomWalk();this.setData({roomBagOpen:!this.data.roomBagOpen,roomHelp:false})
     },
     onRoomEdit() {
+      if(this.data.natureExploring)return
       if(this.data.busy||this.data.roomSaving||!this.data.roomSupported)return
       if(!this.data.roomEditing)this._playCamera=this.data.roomCamera
       this.stopRoomWalk();this.setData({roomEditing:true,roomAction:'',roomTV:false});if(this.data.roomCamera!=='overview'){this.setData({roomCamera:'overview'});if(this._scene)this._scene.setMode('overview')}
@@ -122,6 +130,7 @@ function createHomeRoom(api, wxApi, showError) {
       } finally {if(!this._disposed)this.setData({roomSaving:false,busy:false})}
     },
     onRoomFloor(point) {
+      if(this.data.natureExploring){this.onNatureInteract();return}
       if(this.data.busy||!this.data.roomSupported||!point)return
       if(this.data.roomEditing){
         if(!this._candidate){this.setData({roomMessage:'打开底部小背包，选一件家具。'});return}
@@ -136,15 +145,16 @@ function createHomeRoom(api, wxApi, showError) {
       this.setData({roomAction:'',roomMessage:'慢慢走，家里的一切都属于你。'})
     },
     setRoomKey(key,down) {
+      if(key==='b'&&this.data.natureExploring){if(!down){this._natureBagKey=false;return}if(!this._natureBagKey){this.onNatureBag();this._natureBagKey=true}return}
       if(key==='space'){if(!down){this._jumpHeld=false;return}if(!this._jumpHeld){this._jumpHeld=true;this.onRoomJump()}return}
       if(key==='escape'){if(down&&this._visible){this.stopRoomWalk();this.setData({roomMouseLook:false,roomMessage:'鼠标视角已暂停，按 M 或点右上角按钮继续。'})}return}
       if(key==='m'){if(!down){this._mouseKeyHeld=false;return}if(!this._mouseKeyHeld&&this._visible){this._mouseKeyHeld=true;this.onRoomMouseLook()}return}
-      if(key==='v'){if(!down){this._viewKeyHeld=false;return}if(!this._viewKeyHeld&&this._visible&&!this.data.roomEditing&&!this.data.roomTV&&!this.data.roomBagOpen){this.onRoomPerspective();this._viewKeyHeld=true}return}
-      if(key==='e'){if(!down){this._doorKeyHeld=false;return}if(!this._doorKeyHeld&&this._visible){this.onRoomDoor();this._doorKeyHeld=true}return}
+      if(key==='v'){if(!down){this._viewKeyHeld=false;return}if(!this._viewKeyHeld&&this._visible&&!this.data.roomEditing&&!this.data.roomTV&&!this.data.roomBagOpen&&!this.data.natureBagOpen){this.onRoomPerspective();this._viewKeyHeld=true}return}
+      if(key==='e'){if(!down){this._doorKeyHeld=false;return}if(!this._doorKeyHeld&&this._visible){if(this.data.natureExploring)this.onNatureInteract();else this.onRoomDoor();this._doorKeyHeld=true}return}
       if(!['w','a','s','d'].includes(key))return
       if(!this._heldKeys)this._heldKeys=new Set()
       if(!down){this._heldKeys.delete(key);if(!this._disposed)this.setData({['roomKeys.'+key]:false});return}
-      if(!this._visible||this.data.roomEditing||this.data.roomBagOpen||this.data.roomTV||this.data.busy)return
+      if(!this._visible||this.data.roomEditing||this.data.roomBagOpen||this.data.natureBagOpen||this.data.roomTV||this.data.busy)return
       this.leaveRoomSeat()
       this._walkPath=null;this._walkDone=null;this._heldKeys.add(key)
       if(this._actor)this._actor.pose=''
@@ -153,7 +163,7 @@ function createHomeRoom(api, wxApi, showError) {
     onRoomKeyStart(e) {this.setRoomKey(e.currentTarget.dataset.key,true)},
     onRoomKeyEnd(e) {this.setRoomKey(e.currentTarget.dataset.key,false)},
     onRoomJump() {
-      if(!this._visible||!this._actor||this._actor.airborne||!this.data.roomSupported||this.data.roomEditing||this.data.roomBagOpen||this.data.roomTV||this.data.busy)return
+      if(!this._visible||!this._actor||this._actor.airborne||!this.data.roomSupported||this.data.roomEditing||this.data.roomBagOpen||this.data.natureBagOpen||this.data.roomTV||this.data.busy)return
       this.leaveRoomSeat();this._walkPath=null;this._walkDone=null;this._jumpVelocity=4.8
       Object.assign(this._actor,{elevation:0,airborne:true,pose:''})
       this.setData({roomJumping:true,roomAction:'',roomActor:{...this._actor}})
@@ -165,7 +175,8 @@ function createHomeRoom(api, wxApi, showError) {
       this.setData({roomMouseAvailable:true,roomMouseLook:!this.data.roomMouseLook,roomMessage:this.data.roomMouseLook?'鼠标视角已暂停，仍可拖动画面转动。':'鼠标移进房间即可转动视角，Esc 暂停。'})
     },
     tickRoom(dt) {
-      if(!this._visible||!this._actor||this.data.roomEditing||this.data.roomBagOpen||this.data.roomTV||this.data.busy)return
+      if(!this._visible||!this._actor||this.data.roomEditing||this.data.roomBagOpen||this.data.natureBagOpen||this.data.roomTV||this.data.busy)return
+      if(this.data.natureExploring){this.tickNature(dt);return}
       const held=this._heldKeys||new Set(),before={...this._actor}
       if(this._actor.airborne){
         this._actor.elevation=Math.max(0,this._actor.elevation+this._jumpVelocity*dt-8*dt*dt)
@@ -190,6 +201,7 @@ function createHomeRoom(api, wxApi, showError) {
       if(before.moving!==this._actor.moving||before.airborne!==this._actor.airborne)this.setData({roomActor:{...this._actor}})
     },
     onRoomFurniture(e) {
+      if(this.data.natureExploring){this.onNatureInteract();return}
       if(this.data.busy)return
       if(this.data.roomEditing){this.onRoomChoose(e);return}
       const id=e.currentTarget.dataset.id,placed=this.data.roomDraft.find(p=>p.id===id)
@@ -214,6 +226,7 @@ function createHomeRoom(api, wxApi, showError) {
       this.setData({roomCamera:mode});if(this._scene)this._scene.setMode(mode)
     },
     onRoomDoor() {
+      if(this.data.natureExploring){this.onNatureInteract();return}
       if(this.data.roomEditing||this.data.roomBagOpen||this.data.roomTV||this.data.busy||!this._actor)return
       const {size,doorWidth,entry}=space.dimensions(this.roomGeometry())
       if(this.data.roomDoorOpen&&Math.abs(this._actor.x-entry.x)<doorWidth/2+.2&&Math.abs(this._actor.y-size)<.35){this.setData({roomMessage:'先从门口走开一点，再关门。'});return}

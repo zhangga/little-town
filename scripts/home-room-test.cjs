@@ -121,7 +121,7 @@ test('mall purchase uses authoritative prices, handles rapid taps, and returns o
   h.page.onSelectFurniture(tap({id:'sofa'}));const pending=h.page.onBuyFurniture();h.page.onBuyFurniture();h.page.onCloseFurniture()
   assert.equal(h.calls.length,1);assert.deepEqual(h.calls[0].body,{item_id:'sofa'});assert.equal(h.page.data.selected.id,'sofa')
   finish();await pending;assert.equal(h.savedWallet.coins,40);assert.equal(h.page.data.selected.owned,true)
-  h.page.onGoHome();assert.equal(h.storage.homeRoomRequested,'sofa');assert.deepEqual(h.navigation,['/home/pages/room/room'])
+  h.page.onGoHome();assert.equal(h.storage.homeRoomRequested,'sofa');assert.deepEqual(h.navigation,['/home/pages/world/world'])
 })
 test('locked mall and insufficient funds route without spending; ambiguous purchases only read back',async()=>{
   const s=fixture();s.mall_available=false;const locked=await mallHarness({server:s});locked.page.onSelectFurniture(tap({id:'tv'}));await locked.page.onBuyFurniture();assert.equal(locked.calls.length,0);assert.deepEqual(locked.navigation,['/pages/build/build'])

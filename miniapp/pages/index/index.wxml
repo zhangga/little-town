@@ -109,6 +109,7 @@
         <view id="{{activitySession ? 'building-session-top' : 'building-lobby-top'}}" class="building-header"><view class="building-header-art"><template is="voxel" data="{{sprite: selected.sprite}}" /></view><view><text class="building-kicker">{{selected.interior.kicker}}</text><view class="detail-title">{{selected.icon}} {{selected.displayName || selected.name}}</view><text class="building-wallet">口袋里有 {{town.coins}} 金币</text></view></view>
         <template wx:if="{{activitySession}}" is="building-session" data="{{session: activitySession, selected, sceneActive, lifeBusy}}" />
         <block wx:else>
+        <view wx:if="{{selected.isMall}}" class="mall-entry"><view><view>星光币兑换柜台</view><text>跑酷收集星光币，换小镇金币、砖块和滑板外观。</text><button bindtap="onOpenSubwayShop" disabled="{{lifeBusy || refreshing}}">去星光商店 →</button></view></view>
         <view wx:if="{{selected.isMall}}" class="mall-entry"><view class="mall-entry-art"><template is="voxel" data="{{sprite: selected.sprite}}" /></view><view><view>二楼 · 家具生活馆</view><text>沙发、床、电视…把喜欢的带回家。</text><button bindtap="onOpenMall" disabled="{{lifeBusy || refreshing}}">去挑家具 →</button></view></view>
         <block wx:if="{{selected.isShop}}">
           <view class="interior-section-title"><view>{{selected.name === '餐厅' ? '肚子饿了？吃点热乎的' : '喝点水，吃点东西'}}</view><text>买好就吃喝</text></view>

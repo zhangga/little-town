@@ -1,0 +1,56 @@
+.school-page .photo-course-entry { display: flex; align-items: center; gap: 22rpx; width: 100%; margin-bottom: 26rpx; padding: 28rpx 24rpx; border: 2rpx solid #9cad8c; border-radius: 8rpx 24rpx 24rpx 8rpx; background: #e5ecd7; color: #3d5942; text-align: left; box-shadow: 0 6rpx 0 #c5cfb0; }
+.course-entry-mark { display: flex; flex-direction: column; align-items: center; justify-content: center; width: 72rpx; height: 100rpx; flex-shrink: 0; background: #506f56; color: #fff5d9; border-left: 8rpx solid #8ca17b; border-radius: 3rpx 9rpx 9rpx 3rpx; font-family: "Kaiti SC", "KaiTi", serif; font-size: 34rpx; line-height: 1.25; transform: rotate(-5deg); }
+.course-entry-copy { flex: 1; min-width: 0; }
+.course-eyebrow { display: block; color: #8c7955; font-size: 20rpx; letter-spacing: 1rpx; font-weight: 500; }
+.course-entry-copy > view { display: flex; justify-content: space-between; gap: 8rpx; margin: 8rpx 0; font-size: 32rpx; font-weight: 800; }
+.course-entry-copy > text:last-child { display: block; font-size: 21rpx; font-weight: 400; line-height: 1.7; color: #65755b; }
+.course-library-heading { padding: 8rpx 0 20rpx; }
+.course-library-heading > view:nth-child(2), .course-detail-heading > view { margin: 12rpx 0; font-family: "Kaiti SC", "KaiTi", serif; font-size: 42rpx; font-weight: 800; color: #465b42; }
+.course-library-heading > text { display: block; font-size: 25rpx; color: #84775f; line-height: 1.8; }
+.school-page .photo-course-row { display: flex; align-items: center; gap: 24rpx; width: 100%; padding: 28rpx 22rpx; margin-top: 18rpx; border: 2rpx solid #d3c8a8; border-radius: 6rpx 20rpx 20rpx 6rpx; background: #fffcf2; color: #455d47; text-align: left; box-shadow: 0 4rpx 0 #e5dcc2; }
+.course-spine { display: flex; align-items: center; justify-content: center; width: 74rpx; height: 104rpx; flex-shrink: 0; border-left: 7rpx solid #c4c9a6; border-radius: 3rpx 8rpx 8rpx 3rpx; background: #e3e7cf; color: #64805b; font-family: "Kaiti SC", "KaiTi", serif; font-size: 40rpx; }
+.photo-course-row:nth-child(3n) .course-spine { background: #eddbb7; color: #9a7244; border-color: #c8af7c; }
+.photo-course-row:nth-child(3n + 1) .course-spine { background: #dce7df; color: #54796d; border-color: #a7c0b0; }
+.course-row-copy { flex: 1; min-width: 0; }
+.course-row-copy > view:nth-child(2) { margin: 8rpx 0 4rpx; font-size: 30rpx; font-weight: 800; }
+.course-english-title { display: block; font-family: Georgia, serif; font-size: 24rpx; font-weight: 400; color: #968368; overflow-wrap: anywhere; line-height: 1.6; }
+.course-progress-track { height: 5rpx; background: #e9e3cf; margin-top: 16rpx; border-radius: 5rpx; overflow: hidden; }
+.course-progress-track > view { height: 100%; background: #7a9566; }
+.course-progress-caption { display: block; margin-top: 8rpx; font-size: 20rpx; color: #938365; font-weight: 400; }
+.course-row-arrow { font-size: 31rpx; color: #a38d62; }
+.course-batches { display: flex; flex-wrap: wrap; gap: 12rpx; margin: 28rpx 0; }
+.course-batches > button { flex: 1; min-width: 100rpx; padding: 17rpx 8rpx; background: #ece5d0; border: 2rpx solid #d4c8a7; border-radius: 12rpx; font-size: 24rpx; color: #8b795a; }
+.course-batches > button > text { display: block; margin-top: 4rpx; font-size: 20rpx; font-weight: 400; }
+.school-page .course-chip-active { background: #dbe7cc; border-color: #8eaa79; color: #405f3a; }
+.vocab-card { padding: 28rpx 26rpx 16rpx; border: 2rpx solid #cfc4a5; border-top: 9rpx solid #80936b; border-radius: 8rpx 8rpx 20rpx 20rpx; background: #fffcf2; box-shadow: 0 7rpx 0 #e6dfc9, 0 11rpx 0 #d8d1b9; }
+.vocab-card-top { display: flex; justify-content: space-between; gap: 12rpx; color: #9b8966; font-size: 22rpx; }
+.vocab-card-top > text:last-child { font-family: Georgia, serif; letter-spacing: 2rpx; }
+.vocab-card-word { display: flex; align-items: center; justify-content: center; min-height: 190rpx; padding: 30rpx 0 18rpx; font-family: Georgia, serif; font-size: 55rpx; line-height: 1.45; text-align: center; color: #3b5e4c; overflow-wrap: anywhere; }
+.school-page .vocab-flip { padding: 18rpx; background: #f4eedb; color: #8b784e; border: 2rpx dashed #c7b894; border-radius: 10rpx; font-size: 24rpx; }
+.vocab-card-meaning { margin-top: 20rpx; padding: 12rpx 8rpx; text-align: center; }
+.vocab-card-meaning > view { font-size: 34rpx; color: #806443; font-weight: 700; }
+.vocab-card-meaning > text { display: block; margin-top: 12rpx; font-size: 23rpx; color: #8c7e61; line-height: 1.8; overflow-wrap: anywhere; }
+.vocab-audio-row { display: flex; gap: 16rpx; margin: 24rpx 0 12rpx; }
+.vocab-audio-row > button { flex: 1; padding: 20rpx 8rpx; color: #476b55; background: #e6edde; border-radius: 12rpx; font-size: 26rpx; }
+.vocab-alias-audio { display: flex; flex-wrap: wrap; gap: 12rpx; }
+.vocab-alias-audio > button { max-width: 100%; min-height: 78rpx; padding: 16rpx; font-family: Georgia, serif; font-size: 24rpx; background: #f2ead3; color: #8e7649; overflow-wrap: anywhere; }
+.vocab-card-navigation { display: flex; justify-content: space-between; gap: 24rpx; margin-top: 20rpx; padding-top: 10rpx; border-top: 2rpx solid #e9e0c8; }
+.vocab-card-navigation > button { flex: 1; padding: 22rpx 8rpx; font-size: 24rpx; color: #7c795d; background: transparent; }
+.school-page .vocab-card button[disabled] { opacity: .45; }
+.vocab-audio-error { display: block; font-size: 23rpx; line-height: 1.7; color: #9b6241; margin: 16rpx 0; }
+.course-study-note { margin: 38rpx 0 30rpx; padding: 22rpx; border-left: 5rpx solid #c6b57f; background: #eee6cf; color: #82704c; font-size: 24rpx; line-height: 1.85; }
+.course-study-note > text { font-size: 21rpx; font-weight: 700; letter-spacing: 2rpx; }
+.course-study-note > view { margin-top: 8rpx; }
+.course-study-note > button { min-height: 80rpx; margin-top: 12rpx; padding: 16rpx 0; background: transparent; color: #557052; text-align: left; font-size: 24rpx; }
+.course-practice-heading { display: flex; align-items: center; justify-content: space-between; gap: 14rpx; margin-top: 32rpx; }
+.course-practice-heading > view { font-size: 29rpx; font-weight: 800; }
+.course-practice-heading > text { font-size: 22rpx; color: #8d7d5f; }
+.course-mode-options { display: flex; gap: 12rpx; margin-top: 22rpx; }
+.course-mode-options > button { flex: 1; min-width: 0; padding: 22rpx 6rpx; border: 2rpx solid #cbbd98; border-radius: 12rpx; background: #f4eedb; color: #89734b; font-size: 25rpx; }
+.course-mode-note { min-height: 80rpx; padding: 18rpx 2rpx; font-size: 23rpx; color: #8b7c60; line-height: 1.8; }
+.course-media-status { padding: 24rpx; margin-top: 22rpx; background: #e8e7d7; color: #7c7659; border-radius: 14rpx; font-size: 24rpx; line-height: 1.8; }
+.course-media-status > button { min-height: 80rpx; padding: 18rpx 0; background: transparent; text-align: left; color: #4b7152; font-size: 25rpx; }
+.school-page .photo-course-material-entry { width: 100%; padding: 24rpx; margin: 24rpx 0; background: #e1e9d2; border: 2rpx solid #b8c6a2; border-radius: 14rpx; color: #466044; text-align: left; }
+.photo-course-material-entry > view { display: flex; justify-content: space-between; gap: 16rpx; font-size: 28rpx; font-weight: 800; }
+.photo-course-material-entry > view > text, .photo-course-material-entry > text { font-size: 22rpx; font-weight: 400; }
+.photo-course-material-entry > text { display: block; margin-top: 8rpx; color: #7f8768; }

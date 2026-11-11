@@ -30,6 +30,40 @@
 
 讲稿和板书位于 `school/data/mini-lessons.js`，语音文件随 school 分包提供，不需要第三方 TTS 服务或密钥。修改文稿后运行 `python3 scripts/generate-school-audio.py`，脚本使用 macOS `say`（Tingting）与 `afconvert` 生成 AAC/M4A；讲稿指纹变化时只重建对应音频。`school/audio/manifest.json` 记录音频时长、体积与校验和。`project.config.json` 显式保留音频目录，避免动态路径被未使用资源过滤删除。
 
+### 已整理的照片英语课本（2026-11-08）
+
+重新编译后，从「学习 → 英语 → 照片英语课本」进入，也可以从学校里的「我的教材 → 照片英语课本」打开。十张照片已人工核对录入，直接可学，无需再手抄或导入后端词库。
+
+| 课本页 | 内容 | 词卡数 |
+| --- | --- | --- |
+| Unit 1 | A day on the farm · 农场的一天 | 18 |
+| Unit 2 | My week · 我的一周 | 15 |
+| Unit 3 | Party time! · 派对时间 | 21 |
+| Unit 4 | The family at home · 家里的家人 | 21 |
+| Unit 5 | Animal world · 动物世界 | 20 |
+| Unit 6 | Our world · 天气与穿衣 | 16 |
+| Unit 7 | Let's cook! · 一起做饭 | 19 |
+| Unit 8 | Around town · 逛逛小镇 | 20 |
+| Unit 9 | A big change · 大大的变化 | 18 |
+| 袋鼠故事 | 照片中可见的核心词汇 | 14 |
+
+合计 **182 张词卡**。每组最多五词，最后一组按实际词数显示。可以翻卡看中文、听常速或 0.75 倍速发音、听并列形式的读音，再选择「认词选义」「听音选义」「自己拼写」。本次包含 **194 段不同英文形式的合成读音**，使用 Samantha 英语语音，不是课本原版录音。
+
+- `leaf / leaves`、`have / take a shower`、`lift / elevator`、`read a comic / comic book` 等并列形式保留在同一张词卡；拼写接受完整的任一形式，忽略大小写和多余空格。常见英美拼写也接受。选择题会排除同义形式和英美楼层词互相成为干扰项。
+- 楼层按同一实际楼层解释：英式 `ground / first / second floor` 对应美式 `first / second / third floor`，单元旁注说明区别。
+- 原图的 `cloud` 标为“多云”、`windy` 标为“风”，这里分别解释为“云”“有风的”；`ride` 配摩天轮图，词卡解释为游乐设施。`fair / light` 表示浅色头发，与 `blonde / blond` 的金黄色头发区分。原图副本完整保留，可随时对照；袋鼠故事只录入可见核心词汇，没有补写缺失的故事正文。
+- 翻卡、听读不发奖励。三种答题沿用英语课堂答题和每日目标奖励，错题巩固不重复发奖；可在结算后继续下一组。已练词数按回答过的不同词卡计算，答错也算练过，不表示已掌握。
+- 已练词数按后端和账号隔离，保存在本机教材本，不占用自选教材的 16 份名额。它不进入原英语闯关的间隔复习或家长统计，也不提供跨设备进度同步。
+
+课程数据在 `miniapp/school/data/photo-english.js`。原图副本和录音分别放在 `coursebook`、`coursebook-voice` 资源分包；打开课本时异步加载，每包均小于 2 MiB，并通过 `project.config.json` 保留动态引用的资源。资源加载失败仍可读文字、认词和拼写，可手动重试照片与读音。来源目录里的原照片不作修改。
+
+```bash
+python3 scripts/generate-photo-english.py --source-dir '/path/to/飞书20261108-182523'
+node --test scripts/photo-english-test.cjs
+```
+
+生成脚本使用 macOS `sips` 校正横向照片、生成最长边 1280px 的 JPEG 副本，使用 `say` 和 `afconvert` 生成单声道 AAC。`coursebook/manifest.json` 记录来源照片与副本的指纹，以及每段读音的指纹、时长和体积；未变化的录音会跳过。仅修改词汇时可省略 `--source-dir`，沿用已有照片。
+
 ### 添加拍照教材
 
 1. 打开「我的教材 → 添加一份教材」，在上方选择科目。
@@ -60,11 +94,11 @@
 ### 验证学校功能
 
 ```bash
-node --test scripts/school-test.cjs scripts/school-lessons-test.cjs scripts/school-rewards-test.cjs scripts/learning-test.cjs scripts/page-loading-test.cjs scripts/town-shop-test.cjs scripts/building-interior-test.cjs scripts/sound-page-test.cjs
+node --test scripts/photo-english-test.cjs scripts/school-test.cjs scripts/school-lessons-test.cjs scripts/school-rewards-test.cjs scripts/learning-test.cjs scripts/page-loading-test.cjs scripts/town-shop-test.cjs scripts/building-interior-test.cjs scripts/sound-page-test.cjs
 node scripts/school-preview.cjs
 ```
 
-`school-preview.cjs` 使用微信开发者工具自带 WXML/WXSS 编译器生成 30 个真实模板场景，保存在 `output/school-preview/`。直接打开其中的 HTML，或使用 `--serve 9434`。写字板和小讲播播放器运行产品同一套逻辑；其余按钮用于布局展示，完整流程由页面控制器测试覆盖。已检查 320px、390px 窄屏，验证画笔、撤销、清空，以及真实 AAC 音频播放、暂停、继续、慢速和切换步骤；36 段音频均通过本机解码检查。尚需在微信手机端验证触摸、相机/相册权限、照片持久保存、实际扬声器音质及音频中断行为。
+`school-preview.cjs` 使用微信开发者工具自带 WXML/WXSS 编译器生成 37 个真实模板场景（含照片课本目录、词卡、听音、拼写及英美楼层），保存在 `output/school-preview/`。直接打开其中的 HTML，或使用 `--serve 9434`。写字板和小讲播播放器运行产品同一套逻辑；其余按钮用于布局展示，完整流程由页面控制器测试覆盖。已检查 320px、390px 窄屏，验证画笔、撤销、清空，以及真实 AAC 音频播放、暂停、继续、慢速和切换步骤；36 段音频均通过本机解码检查。尚需在微信手机端验证触摸、相机/相册权限、照片持久保存、实际扬声器音质及音频中断行为。
 
 ## 课本词库
 

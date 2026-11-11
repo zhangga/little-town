@@ -18,7 +18,9 @@
 
 新增卫浴、娱乐分类，合计 24 款家具。新增料理台 85、浴缸 85、洗漱台 45、马桶 30、钢琴 120、街机 95、鱼缸 70、壁炉 90、室内泳池 180、跑步机 75、台球桌 140、转角沙发 100 金币；这些家具都有对应三维模型、背包图和免费互动。大型家具需要足够空间，购买本身不要求达到指定房屋等级。
 
-屋内生活使用原生 WebGL 三维场景，保留橡木地板、奶油墙面、木梁和积木人物风格。房间占满页面，衣橱／庭院／升级入口缩在上方，小人与家具是主要内容。默认第三人称跟随小人，点击“第一人称”或按 V 切到眼睛高度，显示手臂和准星；再次点击或按 V 回到第三人称。拖动空白处转动视角，第三人称可用双指或 ＋／− 缩放。“全屋”适合查看布局，“外观”可查看完整房屋。
+屋内生活使用原生 WebGL 三维场景，保留橡木地板、奶油墙面、木梁和积木人物风格。房间占满页面，衣橱／庭院／升级入口缩在上方，小人与家具是主要内容。默认第三人称跟随小人，点击“第一人称”或按 V 切到眼睛高度，显示手臂和准星；再次点击或按 V 回到第三人称。电脑在房间画面内移动鼠标即可转向，无需按住；Esc 暂停鼠标视角，M 或右上角按钮开关。手机仍可拖动转向，第三人称可用双指或 ＋／− 缩放。“全屋”适合查看布局，“外观”可查看完整房屋；这两种查看模式保留拖动转向。
+
+按空格或底部跳跃键起跳，可以同时使用 WASD。第一人称眼睛高度随跳跃升降，第三人称有腾空姿势和落地；单次跳跃最高约 0.72 格、约 0.6 秒，落地后才能再次起跳，长按空格不会自动连跳。空中仍检查原有墙面、木门和家具占地，不会穿过障碍。打开背包、编辑家具、看电视、页面隐藏时停止跳跃和走动；鼠标经过按钮或面板时暂停转向，返回画面从当前位置继续，避免突然转动。跳跃、视角和鼠标开关均为本地操作，不修改布局或消耗资源。
 
 门为两格高的橡木方块门，点击门、右上角按钮或按 E 开关；高等级别墅使用双开门。关闭时会挡住人物，开门后能走到门廊再进屋；人物站在门槛上时不允许关门。门口永久留出通道，无法摆家具。别墅为一个连续大空间，带挑高中庭、玻璃顶和屋顶阁楼造型，暂不提供楼层切换。
 
@@ -32,7 +34,9 @@
 
 电脑键盘接口需要微信基础库 3.6.0，项目调试配置已同步调整；旧运行环境仍有触摸 WASD。官方依据：[键盘接口](https://developers.weixin.qq.com/miniprogram/dev/api/device/keyboard/wx.onKeyDown.html)、[官方 Three.js 适配项目](https://github.com/wechat-miniprogram/threejs-miniprogram)。模型没有外部网络依赖。
 
-验证：`node --test scripts/home-room-test.cjs scripts/home-space-test.cjs scripts/home-villa-test.cjs scripts/resident-test.cjs` 覆盖购买回家、背包、连续坐标、任意旋转、碰撞、寻路、按键释放、人称切换、门口通行、生命周期、家具互动与保存恢复。前后端共享 `backend/internal/services/testdata/home-space.json` 验证几何规则；真实 MySQL 集成测试检查五级升级扣款、旧编辑版本、扩建后的布局、所有权与账号隔离。`node scripts/home-space-preview.cjs` 提供真实 WXML/WXSS + 控制器 + WebGL 的交互预览（示例账号），`scripts/home-space-browser-check.cjs` 和 `scripts/home-villa-browser-check.cjs` 用浏览器事件验证人称、走动、门、五种房屋、24 款家具、拖放、旋转、保存回读、环视和响应布局；这不代替微信真机验收。
+验证：`node --test scripts/home-room-test.cjs scripts/home-space-test.cjs scripts/home-villa-test.cjs scripts/home-controls-test.cjs scripts/resident-test.cjs` 覆盖购买回家、背包、连续坐标、任意旋转、碰撞、寻路、按键释放、跳跃与落地、鼠标转向、人称切换、门口通行、生命周期、家具互动与保存恢复。前后端共享 `backend/internal/services/testdata/home-space.json` 验证几何规则；真实 MySQL 集成测试检查五级升级扣款、旧编辑版本、扩建后的布局、所有权与账号隔离。`node scripts/home-space-preview.cjs` 提供真实 WXML/WXSS + 控制器 + WebGL 的交互预览（示例账号），`scripts/home-space-browser-check.cjs`、`scripts/home-villa-browser-check.cjs` 和 `scripts/home-controls-browser-check.cjs` 用浏览器事件验证人称、跳跃、鼠标移动、走动、门、五种房屋、24 款家具、拖放、旋转、保存回读、环视和响应布局；这不代替微信真机验收。
+
+鼠标事件使用页面原生 `bindpointermove`，从 `event.detail` 读取 `pointerType/clientX/clientY/buttons`，不使用小游戏专属鼠标接口。已核对本机微信基础库 3.17.4 的 `WAWebview.js`，桌面 `pointermove` 在未按下鼠标时也会转发；当前浏览器验收按相同字段进入同一页面处理函数，未做 PC 微信客户端验收。鼠标能力不可用的运行环境仍可拖动转向。
 
 ## 成长规则
 

@@ -1,11 +1,11 @@
 // Browser bridge for manual / Playwright checks; never shipped in the miniapp.
 const {roomData,createHomeRoom}=requireFile('miniapp/home/utils/home-room-page.js')
-const {createRoomScenePage}=requireFile('miniapp/home/utils/home-room-scene-page.js')
+const {createRoomScenePage,keyboardKey}=requireFile('miniapp/home/utils/home-room-scene-page.js')
 const {createHomeScene}=requireFile('miniapp/home/utils/home-scene.js')
 const renderWXML=$gwx('miniapp/home/pages/room/room.wxml'),app=document.querySelector('#app')
 const clone=value=>JSON.parse(JSON.stringify(value))
 let server=clone(window.ROOM_FIXTURE),canvas,renderPending=false,sliding=false
-const keyboard={},wxApi={navigateTo(){window.lastNavigation='mall'},onKeyDown:fn=>keyboard.down=fn,onKeyUp:fn=>keyboard.up=fn,offKeyDown:()=>delete keyboard.down,offKeyUp:()=>delete keyboard.up}
+const keyboard={},wxApi={getStorageSync:key=>key==='userInfo'?{id:'preview'}:key==='apiBackend'?'preview':JSON.parse(localStorage.getItem(key)||'null'),setStorageSync:(key,value)=>localStorage.setItem(key,JSON.stringify(value)),navigateTo(){window.lastNavigation='mall'},onKeyDown:fn=>keyboard.down=fn,onKeyUp:fn=>keyboard.up=fn,offKeyDown:()=>delete keyboard.down,offKeyUp:()=>delete keyboard.up}
 const api={get:async()=>clone(server),put:async(url,body)=>{server.room={...server.room,layout:clone(body.layout),version:server.room.version+1};localStorage.setItem('home-space-qa',JSON.stringify(server));return clone(server)}}
 if(new URLSearchParams(location.search).has('saved')){try{server=JSON.parse(localStorage.getItem('home-space-qa'))||server}catch(_){}}
 const page=window.roomPage={...createHomeRoom(api,wxApi,console.error),...createRoomScenePage(wxApi),_visible:true,
@@ -35,13 +35,15 @@ function makeNode(node){
 function drawUI(){if(sliding)return;const tree=makeNode(renderWXML(page.data,{})),existing=app.querySelector('.home-page');if(!existing){app.replaceChildren(tree);return}const next=tree.firstChild;existing.className=next.className;for(const child of [...existing.childNodes])if(child!==canvas)child.remove();for(const child of [...next.childNodes])if(child.nodeType!==8)existing.appendChild(child)}
 function invoke(el,name,detail){const fn=el.dataset[name];if(fn&&page[fn])return page[fn]({type:name==='bindtap'?'tap':name,currentTarget:{dataset:el.dataset},detail:detail||{}})}
 app.addEventListener('click',e=>{let el=e.target;while(el&&el!==app){if(el.dataset?.catchtap){invoke(el,'catchtap');break}if(el.dataset?.bindtap){invoke(el,'bindtap');break}el=el.parentElement}})
-let heldTouchKey=''
-app.addEventListener('pointerdown',e=>{const b=e.target.closest('button[data-key]');if(b){heldTouchKey=b.dataset.key;page.onRoomKeyStart({currentTarget:{dataset:{key:heldTouchKey}}})}})
-window.addEventListener('pointerup',()=>{if(heldTouchKey){page.onRoomKeyEnd({currentTarget:{dataset:{key:heldTouchKey}}});heldTouchKey=''}})
-window.addEventListener('pointercancel',()=>{heldTouchKey='';page.stopRoomWalk()})
-window.addEventListener('keydown',e=>{if(['w','a','s','d','W','A','S','D','e','E','v','V','F5'].includes(e.key)){e.preventDefault();keyboard.down?.(e)}})
+const heldTouchKeys=new Map()
+app.addEventListener('pointerdown',e=>{const b=e.target.closest('button[data-key]');if(b){heldTouchKeys.set(e.pointerId,b.dataset.key);page.onRoomKeyStart({currentTarget:{dataset:{key:b.dataset.key}}})}})
+window.addEventListener('pointerup',e=>{const key=heldTouchKeys.get(e.pointerId);if(key){page.onRoomKeyEnd({currentTarget:{dataset:{key}}});heldTouchKeys.delete(e.pointerId)}})
+window.addEventListener('pointercancel',()=>{heldTouchKeys.clear();page.stopRoomWalk()})
+window.addEventListener('keydown',e=>{if(['w','a','s','d','e','v','b','space','escape','m'].includes(keyboardKey(e))){e.preventDefault();keyboard.down?.(e)}})
 window.addEventListener('keyup',e=>keyboard.up?.(e))
-window.addEventListener('blur',()=>page.pauseRoomScene());window.addEventListener('focus',()=>{page.bindRoomKeyboard();page._scene?.start()})
+window.addEventListener('blur',()=>{page._visible=false;page.pauseRoomScene()});window.addEventListener('focus',()=>{page._visible=true;page.bindRoomKeyboard();page._scene?.start()})
+app.addEventListener('pointermove',e=>{const root=e.target.closest('.home-page'),fn=root?.dataset.bindpointermove;if(fn&&page[fn])page[fn]({target:{id:e.target.id},detail:{pointerType:e.pointerType,clientX:e.clientX,clientY:e.clientY,buttons:e.buttons}})})
+app.addEventListener('mouseleave',()=>page.onRoomPointerLeave())
 page.syncRoom(server);drawUI()
 page._canvasRect=canvas.getBoundingClientRect()
 page._scene=createHomeScene(canvas,innerWidth,innerHeight,{pixelRatio:devicePixelRatio,catalog:server.furniture,room:server.room,outfit:server.resident.outfit_id,onFrame:dt=>page.tickRoom(dt),assetPath:p=>'/miniapp'+p})
@@ -52,4 +54,4 @@ canvas.addEventListener('pointerdown',e=>{pointer=true;canvas.setPointerCapture(
 canvas.addEventListener('pointermove',e=>{if(pointer)page.onRoomTouchMove(ev(e))})
 canvas.addEventListener('pointerup',e=>{if(pointer)page.onRoomTouchEnd(ev(e));pointer=false})
 canvas.addEventListener('pointercancel',()=>{pointer=false;page.onRoomTouchCancel()})
-window.addEventListener('resize',()=>{page._canvasRect=canvas.getBoundingClientRect();page._scene.resize(innerWidth,innerHeight,devicePixelRatio)})
+window.addEventListener('resize',()=>{page.onRoomPointerLeave();page._canvasRect=canvas.getBoundingClientRect();page._scene.resize(innerWidth,innerHeight,devicePixelRatio)})

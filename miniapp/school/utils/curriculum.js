@@ -75,7 +75,11 @@ function normalizeQuestion(subject, item) {
   const mode = item.mode || DEFAULT_MODE[subject]
   const question = Object.assign({}, item, { mode, modeName: (MODES[subject].find(m => m.id === mode) || MODES[subject][0]).name,
     kind: item.kind || (subject === 'chinese' ? 'writing' : subject === 'math' ? 'number' : 'spell') })
-  if (subject === 'english' && item.word) Object.assign(question, enrichWord(item))
+  if (subject === 'english' && item.word) {
+    Object.assign(question, enrichWord(item))
+    // 照片课本自带读音，不能被基础词库同名词的音频路径覆盖。
+    if (item.audio) Object.assign(question, { audio: item.audio, slowAudio: item.slowAudio || '', audioPackage: item.audioPackage || '' })
+  }
   question.topicID = mode
   if (!question.hint) question.hint = { chinese: '先看清题目，再轻声读一读。', math: '先想数量怎么变化，再选择合适的方法。', english: '先想一想意思，也可以再听一次发音。' }[subject]
   if (!question.explanation) question.explanation = subject === 'math' ? mathExplanation(question) : subject === 'chinese'

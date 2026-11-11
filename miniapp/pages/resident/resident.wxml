@@ -7,7 +7,7 @@
     <view wx:if="{{tab !== 'room'}}" class="resident-hero">
       <view class="resident-sky"><view class="resident-cloud" /><text class="home-tag">{{state.home.name}} · Lv.{{state.home.level}}</text></view>
       <view class="resident-ground" />
-      <button class="resident-house" bindtap="onEnterRoom" aria-label="进入立体小家"><template is="resident-art" data="{{art: state.homeArt}}" /><text class="house-enter">进屋走走 ↗</text></button>
+      <button class="resident-house" bindtap="onEnterRoom" aria-label="进入第一人称方块世界"><template is="resident-art" data="{{art: state.homeArt}}" /><text class="house-enter">进入世界 ↗</text></button>
       <view wx:if="{{state.gardenArt}}" class="resident-garden"><template is="resident-art" data="{{art: state.gardenArt}}" /></view>
       <button class="resident-character {{waving ? 'waving' : ''}}" bindtap="onWave" aria-label="和小镇长打招呼"><template is="resident-art" data="{{art: state.characterArt}}" /></button>
       <view class="resident-bubble">{{waving ? '一起把小镇慢慢建起来！' : '欢迎来我的小家玩'}}</view>
@@ -22,7 +22,7 @@
       <view class="resident-xp-row"><text>{{state.resident.xp_needed ? '再积累 ' + (state.resident.xp_needed - state.resident.xp_current) + ' 成长，就能获得新称号' : '你已经是小镇守护者啦'}}</text><text>{{state.resident.xp_needed ? state.resident.xp_current + ' / ' + state.resident.xp_needed : '最高等级'}}</text></view>
       <view class="resident-meter"><view style="width: {{state.xpPercent}}%;" /></view>
     </view>
-    <view class="resident-tabs"><button class="{{tab === 'outfit' ? 'active' : ''}}" data-tab="outfit" bindtap="onTab">我的衣橱</button><button class="{{tab === 'decoration' ? 'active' : ''}}" data-tab="decoration" bindtap="onTab">庭院装饰</button><button class="{{tab === 'home' ? 'active' : ''}}" data-tab="home" bindtap="onTab">小屋升级</button><button class="{{tab === 'room' ? 'active' : ''}}" data-tab="room" bindtap="onTab">屋内生活</button></view>
+    <view class="resident-tabs"><button class="{{tab === 'outfit' ? 'active' : ''}}" data-tab="outfit" bindtap="onTab">我的衣橱</button><button class="{{tab === 'decoration' ? 'active' : ''}}" data-tab="decoration" bindtap="onTab">庭院装饰</button><button class="{{tab === 'home' ? 'active' : ''}}" data-tab="home" bindtap="onTab">小屋升级</button><button class="{{tab === 'room' ? 'active' : ''}}" data-tab="room" bindtap="onTab">方块世界</button></view>
     <block wx:if="{{tab !== 'home'}}">
       <view class="resident-section-note">{{tab === 'outfit' ? '挑一套喜欢的衣服，先试试看' : '用一点小装饰，让这里更像你的家'}}</view>
       <view class="resident-grid"><button wx:for="{{items}}" wx:key="id" class="resident-item {{item.equipped ? 'equipped' : ''}}" data-id="{{item.id}}" bindtap="onSelect">

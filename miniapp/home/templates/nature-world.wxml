@@ -1,0 +1,24 @@
+<button wx:if="{{!natureExploring && !roomEditing && !roomBagOpen}}" class="nature-invitation" bindtap="onNatureExplore" disabled="{{!roomSceneReady}}"><text class="nature-invitation-icon">⌁</text><view><text>去林溪探索 ↗</text><text>风、慢溪与藏着晶石的矿洞</text></view></button>
+<block wx:if="{{natureExploring}}">
+  <view class="nature-heading"><text class="nature-eyebrow">A LITTLE WILDERNESS</text><text class="nature-title">林溪秘境</text><text class="nature-location"><text class="nature-live-dot">●</text> {{natureRegion}} · 微风</text></view>
+  <view class="nature-guide"><text>工坊在左前方，沿石板路可到矿洞。</text><text>过木桥，去溪水另一边看看。</text></view>
+  <view wx:if="{{!natureBagOpen && !roomHelp}}" class="nature-nearby">
+    <text class="nature-tool">{{natureTool}}</text>
+    <button bindtap="onNatureInteract" disabled="{{natureTarget.cooldown > 0 || roomJumping}}"><text>{{natureTarget ? (natureTarget.id === 'bench' ? 'E · 打开工坊' : (natureTarget.locked ? '需要更好的镐 · ' : 'E · 采集 ') + natureTarget.name) : '靠近材料 · E 采集'}}</text><text wx:if="{{natureTarget.cooldown}}">恢复中 · {{natureTarget.cooldown}} 秒</text><text wx:elif="{{natureTarget.hits}}">{{natureTarget.progress}} / {{natureTarget.hits}}</text></button>
+  </view>
+  <view wx:if="{{natureBagOpen}}" class="nature-crafting-mask" catchtouchmove="onNoop">
+    <view class="nature-crafting">
+      <view class="nature-craft-header"><view><text class="nature-eyebrow">THE RIVERSIDE WORKSHOP</text><text class="nature-craft-title">溪边手作</text></view><button bindtap="onNatureBag" aria-label="关闭合成背包">×</button></view>
+      <view class="nature-craft-tabs"><button class="{{natureBagTab === 'recipes' ? 'selected' : ''}}" data-id="recipes" bindtap="onNatureBagTab">合成图鉴 <text>10</text></button><button class="{{natureBagTab === 'materials' ? 'selected' : ''}}" data-id="materials" bindtap="onNatureBagTab">材料背包 <text>{{natureItems.length}}</text></button></view>
+      <text class="nature-bench-note">{{natureAtBench ? '就在工坊旁，可以开始合成。成品会自动陈列。' : '先关闭背包，走到左前方的木工桌旁再合成。'}}</text>
+      <scroll-view wx:if="{{natureBagTab === 'recipes'}}" class="nature-craft-scroll" scroll-y="true">
+        <view wx:for="{{natureRecipes}}" wx:key="id" class="nature-recipe">
+          <view class="nature-recipe-info"><view class="nature-recipe-name"><view class="nature-material-swatch" style="background:{{item.color}}"/><text>{{item.name}} <text class="nature-recipe-quantity">×{{item.count}}</text></text><text wx:if="{{item.owned}}" class="nature-owned">已拥有</text></view><text class="nature-recipe-description">{{item.description}}</text><view class="nature-ingredients"><text wx:for="{{item.ingredients}}" wx:for-item="ingredient" wx:key="id" class="{{ingredient.enough ? 'enough' : 'missing'}}">{{ingredient.name}} {{ingredient.have}}/{{ingredient.need}}</text></view></view>
+          <button class="nature-craft-button" data-id="{{item.id}}" bindtap="onNatureCraft" disabled="{{!item.ready || !natureAtBench}}">合成</button>
+        </view>
+      </scroll-view>
+      <scroll-view wx:else class="nature-craft-scroll" scroll-y="true"><view wx:if="{{!natureItems.length}}" class="nature-empty"><text>把沿途的小发现装进口袋</text><text>先找门前的倒木，或石板路边的石块。</text></view><view wx:else class="nature-material-grid"><view wx:for="{{natureItems}}" wx:key="id" class="nature-material"><view class="nature-material-swatch" style="background:{{item.color}}"/><text>{{item.name}}</text><text>× {{item.count}}</text></view></view></scroll-view>
+      <view class="nature-craft-footer"><text class="{{natureSaveError ? 'nature-storage-error' : ''}}">{{natureSaveError ? '本机存档失败，本次材料未扣除' : '探索收藏 · 按账号保存在这台设备'}}</text><text>{{roomMessage}}</text></view>
+    </view>
+  </view>
+</block>

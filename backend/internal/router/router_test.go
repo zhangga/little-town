@@ -102,3 +102,23 @@ func TestRestaurantRoutesRequireLogin(t *testing.T) {
 		}
 	}
 }
+
+func TestSubwayRoutesRequireLogin(t *testing.T) {
+	r := SetupRouter(nil, &config.Config{})
+	for _, suffix := range []string{"", "/start", "/finish", "/purchase", "/equip"} {
+		method := "POST"
+		if suffix == "" {
+			method = "GET"
+		}
+		path := "/api/v1/subway" + suffix
+		for _, token := range []string{"", "Bearer forged-jwt"} {
+			req := httptest.NewRequest(method, path, strings.NewReader(`{}`))
+			req.Header.Set("Authorization", token)
+			res := httptest.NewRecorder()
+			r.ServeHTTP(res, req)
+			if res.Code != 401 {
+				t.Fatalf("%s: got %d, want 401", path, res.Code)
+			}
+		}
+	}
+}

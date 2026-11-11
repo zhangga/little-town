@@ -14,6 +14,7 @@ function createEconomy(api, wx, owner, current) {
       if (read().finish) throw Error('上一程还未结算，请先领取星光币')
       startID = startID || requestID()
       const state = await api.post('/subway/start', { request_id: startID })
+      check()
       if (!state.run || !state.run.run_id) throw Error('出发记录没能确认，请重试')
       startID = ''
       return state
@@ -39,7 +40,18 @@ function createEconomy(api, wx, owner, current) {
       if (pending.purchase && pending.purchase.item_id !== itemID) throw Error('先完成上次购买，再选择新商品')
       if (!pending.purchase) { pending.purchase = { item_id: itemID, request_id: requestID() }; write(pending) }
       const receipt = pending.purchase
-      const state = await api.post('/subway/purchase', receipt)
+      let state
+      try { state = await api.post('/subway/purchase', receipt) }
+      catch (error) {
+        // A business rejection rolls back the transaction. Only an unknown
+        // network/server outcome needs the same receipt on the next attempt.
+        check()
+        if (error.statusCode === 400) {
+          const latest = read()
+          if (latest.purchase && latest.purchase.request_id === receipt.request_id) { delete latest.purchase; write(latest) }
+        }
+        throw error
+      }
       check(); const latest = read()
       if (latest.purchase && latest.purchase.request_id === receipt.request_id) { delete latest.purchase; write(latest) }
       return state

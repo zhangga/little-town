@@ -66,11 +66,13 @@ MySQL 使用独立的 `little-town-mysqldata` 数据卷。原 PostgreSQL 容器�
 
 ## 地铁站与跑酷预览
 
-`node scripts/subway-preview.cjs --serve 9436` 编译实际站台和跑酷 WXML/WXSS，并运行产品的游戏逻辑、Canvas 绘制和页面控制器。打开 `http://127.0.0.1:9436/output/subway-preview/index.html`，可以从站台点击列车试玩，也可查看暂停、结算、未建造和网络失败状态。支持鼠标按钮、触摸滑动和预览用方向键。演示使用本地站台数据，不调用业务后端；输出目录已忽略。
+`node scripts/subway-preview.cjs --serve 9436` 编译实际站台和跑酷 WXML/WXSS，并运行产品的游戏逻辑、Canvas 绘制和页面控制器。打开 `http://127.0.0.1:9436/output/subway-preview/index.html`，可以从站台点击列车试玩，也可查看暂停、结算、未建造和网络失败状态。支持鼠标按钮、触摸滑动和预览用方向键。演示使用 `subway-fixture.cjs` 的本地站台与商店数据，初始演示余额 240，刷新后保留在浏览器，不调用业务后端；输出目录已忽略。
 
-`node --test scripts/subway-test.cjs` 覆盖换道、跳跃/下滑判定、星星计分、随机障碍可通行性、不同帧率、重玩、后台暂停、页面退出、拥有建筑校验、账号隔离与保存失败。地铁站插画源文件是 `scripts/art/subway-station.svg`，发布素材是 `miniapp/images/town/subway-station.png`。
+`node --test scripts/subway-test.cjs` 覆盖换道、跳跃/下滑、两次绊倒追捕、滑板保护、弹跳板、磁铁吸币、随机障碍通行性、不同帧率、重玩、后台暂停、账号隔离、断网后结算/购买恢复和存储失败。地铁站插画源文件是 `scripts/art/subway-station.svg`，发布素材是 `miniapp/images/town/subway-station.png`。
 
-启动预览后，运行 `node scripts/subway-browser-check.cjs`（需安装 `agent-browser`），使用真实鼠标按下、松开检查四个控制按钮，覆盖 HUD 刷新期间的点击、长按以及暂停/继续。微信端还需检查开始、暂停和结算卡片：原生 Canvas 会遮挡普通 view，所以只在奔跑时显示；初始化从 `.run-stage` 读取尺寸，滑动手势只绑定画布，不绑定菜单按钮的父容器。
+启动预览后，运行 `node scripts/subway-browser-check.cjs`（需安装 `agent-browser`），使用真实鼠标按下、松开检查五个控制按钮，在 375×812 和 320×568 下覆盖 HUD 刷新期间的点击、长按、画布滑动、暂停/继续、商店兑换/装备、抓捕、结算和重玩。微信端还需检查开始、暂停和结算卡片：原生 Canvas 会遮挡普通 view，所以只在奔跑／抓捕动画时显示；初始化从 `.run-stage` 读取尺寸，滑动手势只绑定画布，不绑定菜单按钮的父容器。
+
+跑酷后端：`cd backend && go test ./...`。设置 `MYSQL_TEST_DB=littletown_test_subway`（只能是专用测试库）及本机 `DB_*` 环境后，运行 `go test -count=1 -run TestSubway ./internal/services ./internal/router` 验证并发幂等、账号隔离、单局/每日上限、跨天重试、原子兑换和登录鉴权。
 
 ## 前置要求
 
@@ -91,10 +93,26 @@ ports:
 
 ## 立体小家交互预览
 
-`node scripts/home-space-preview.cjs 9435` 编译实际 WXML/WXSS，启动 `http://127.0.0.1:9435/output/home-preview/space.html`。预览使用真实屋内控制器、碰撞规则与 WebGL 模型，示例账号拥有全部家具；`?level=2` 至 `?level=5` 分别预览各级住宅，第五级摆有全部 24 款家具。保存写入浏览器本地存储，带 `?saved=1` 可检查重新进入后的布局。WASD 走动，V 切换第一／第三人称，E 开关木门。预览不连接用户账号或扣金币。
+`node scripts/home-space-preview.cjs 9435` 编译实际 WXML/WXSS，启动 `http://127.0.0.1:9435/output/home-preview/space.html`。预览使用真实屋内控制器、碰撞规则与 WebGL 模型，示例账号拥有全部家具；`?level=2` 至 `?level=5` 分别预览各级住宅，第五级摆有全部 24 款家具。保存写入浏览器本地存储，带 `?saved=1` 可检查重新进入后的布局。WASD 走动，空格跳跃，鼠标在画面中直接移动转向，Esc 暂停鼠标视角，M 开关，V 切换第一／第三人称，E 开关木门。预览不连接用户账号或扣金币。
 
 `node scripts/home-space-preview.cjs --build` 仅重新生成预览文件。编译器默认使用 macOS 微信开发者工具，其他位置通过 `WECHAT_COMPILER_DIR` 指定。浏览器交互检查执行 `node scripts/home-space-browser-check.cjs`，需 Node 环境可解析 Playwright（可通过 `NODE_PATH` 指定已有依赖），并已启动预览服务；`HOME_PREVIEW_URL` 和 `CHROME_PATH` 可覆盖默认地址与 Chrome 路径。截图保存在 `output/home-preview/space-*-final.png`。
 
 扩建、木门与人称检查：`node scripts/home-villa-browser-check.cjs`，验证开门后经过门廊、站在门槛不能关门、五种真实空间大小、第一／第三人称，以及全部家具与背包缩略图。截图保存在 `output/home-preview/villa-*-final.png`。完成场景修改后，`node scripts/render-home-model-assets.cjs` 将实际模型渲染为新增家具和四／五级住宅 PNG；加 `--homes` 仅更新住宅，需要预览服务、Playwright 和 Sharp。
 
-纯逻辑测试：`node --test scripts/home-room-test.cjs scripts/home-space-test.cjs scripts/home-villa-test.cjs scripts/resident-test.cjs`。后端服务测试包含与前端共用的连续坐标／任意旋转碰撞用例；`TestResidentMySQLLifecycle` 检查升级扣款、版本冲突和扩建后布局的实际数据库保存与重新读取。
+跳跃与鼠标检查：`node scripts/home-controls-browser-check.cjs`，实际发送空格、WASD、V、Esc、M 和未按下鼠标的移动，验证两种人称下的升降、边走边跳、落地、防止自动连跳、背包打开时不转向、屏幕跳跃键，以及 320／390／768 宽度布局。截图在 `output/home-preview/controls-*-jump.png`。
+
+纯逻辑测试：`node --test scripts/home-room-test.cjs scripts/home-space-test.cjs scripts/home-villa-test.cjs scripts/home-controls-test.cjs scripts/resident-test.cjs`。后端服务测试包含与前端共用的连续坐标／任意旋转碰撞用例；`TestResidentMySQLLifecycle` 检查升级扣款、版本冲突和扩建后布局的实际数据库保存与重新读取。
+
+## 林溪光影、矿物与合成预览
+
+同一个小家预览中点「去林溪探索」，可检查树叶和树影随风摇动、弯曲慢溪、木桥、暖光矿洞，以及 10 种材料与 10 张合成配方。方块沙盒里也有「林溪」入口。按 E 采集、B 打开材料与配方，在溪边木工桌旁合成，玻璃、白玻璃、银镜和晶簇会陈列到展示台；银镜会映出走动的人物和身后的景物。
+
+`node --test scripts/nature-world-test.cjs` 验证工具升级、采集合成、资源可到达、河道和洞壁碰撞、存档隔离与失败恢复；`node scripts/nature-world-browser-check.cjs` 验证真实键盘、WebGL 动画、制作到存档回读、镜面和 320／390／768 宽度。浏览器依赖和 URL 配置与上面的立体小家脚本相同。截图在 `output/home-preview/nature-*-final.png`；存档边界和玩法说明见 [林溪秘境](../docs/nature-world.md)。
+
+## 第一人称方块世界预览
+
+`node scripts/sandbox-preview.cjs 9437` 编译默认方块世界页面的实际 WXML/WXSS，在 `http://127.0.0.1:9437/output/home-preview/sandbox.html` 运行实际世界规则、控制器和 WebGL 网格。默认示例为三级住宅；`?level=1` 至 `?level=5` 检查占地和真实楼层，`?reset=1` 重置浏览器预览存档。示例家具只用于演示，不访问真实账号或金币。
+
+`node --test scripts/sandbox-test.cjs` 检查楼梯、碰撞、材料扣除、门、家具所有权、星门往返和存档。预览服务启动后，运行 `node scripts/sandbox-browser-check.cjs`，通过已安装的 `agent-browser` 检查真实触控方向键、挖树合成、放置方块、家具搬放、新房图纸、异世界往返、重新载入，以及 320／390／768 宽度；可用 `SANDBOX_PREVIEW_URL` 指定地址。截图保存到 `output/home-preview/sandbox-*.png`，玩法与存档边界见 [方块世界](../docs/voxel-world.md)。
+
+全世界自然效果：`node --test scripts/sandbox-nature-test.cjs` 检查世界矿脉、涉水与上岸、真实材料合成、白玻璃和镜子的放置/回收/朝向存档，以及林溪成品转移的失败重试。启动同一个预览后，运行 `SANDBOX_PREVIEW_URL=http://127.0.0.1:9437/output/home-preview/sandbox.html node scripts/sandbox-nature-browser-check.cjs`，检查实际 WebGL 风与水的像素变化、世界矿洞采集、合成与回家布置、两个方向的角色倒影、最多两面实时镜子的预算、维度切换和三种屏幕尺寸。截图及结果为 `output/home-preview/world-nature-*`。

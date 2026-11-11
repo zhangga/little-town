@@ -1,3 +1,4 @@
+@import "../../styles/photo-course.wxss";
 page { background: #f6f0df; color: #344236; }
 .school-page { min-height: 100vh; padding-bottom: calc(44rpx + env(safe-area-inset-bottom)); font-family: "PingFang SC", "Microsoft YaHei", sans-serif; }
 .school-page button { margin: 0; border-radius: 14rpx; font-size: 26rpx; line-height: 1.5; font-weight: 700; }

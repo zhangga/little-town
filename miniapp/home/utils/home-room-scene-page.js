@@ -2,7 +2,7 @@ const { createHomeScene } = require('./home-scene')
 function keyboardKey(event) {
   if(!event)return ''
   if(event.altKey===true||event.altKey==='true'||event.ctrlKey||event.metaKey)return ''
-  return ({KeyW:'w',KeyA:'a',KeyS:'s',KeyD:'d',KeyE:'e',KeyV:'v',KeyM:'m',Space:'space',Escape:'escape',F5:'v'})[event.code]||({' ':'space',Spacebar:'space',Esc:'escape'})[event.key]||String(event.key||'').toLowerCase()
+  return ({KeyW:'w',KeyA:'a',KeyS:'s',KeyD:'d',KeyE:'e',KeyV:'v',KeyB:'b',KeyM:'m',Space:'space',Escape:'escape',F5:'v'})[event.code]||({' ':'space',Spacebar:'space',Esc:'escape'})[event.key]||String(event.key||'').toLowerCase()
 }
 function createRoomScenePage(wxApi) {
   return {
@@ -18,8 +18,9 @@ function createRoomScenePage(wxApi) {
           const info=wxApi.getWindowInfo?wxApi.getWindowInfo():wxApi.getSystemInfoSync()
           this._canvasRect=result
           this._scene=createHomeScene(result.node,result.width,result.height,{pixelRatio:info.pixelRatio,catalog:this.data.state.furniture,room:this.data.state.room,outfit:this.data.state.resident.outfit_id,onFrame:dt=>this.tickRoom(dt),onError:()=>{this.stopRoomWalk();if(!this._disposed)this.setData({roomSceneFailed:true,roomSceneReady:false})}})
-          this.refreshRoom();this._scene.setMode(this.data.roomCamera);this._scene.start()
+          this.refreshRoom();this._scene.setExploring(this.data.natureExploring);this._scene.setMode(this.data.roomCamera);this._scene.start()
           this.setData({roomSceneReady:true,roomSceneFailed:false})
+          if(this._openNatureRequest){this._openNatureRequest=false;this.onNatureExplore()}
           if(this._candidate)this.previewRoomPlacement(this._candidate)
         }catch(err){if(this._scene)this._scene.dispose();this._scene=null;this.setData({roomSceneFailed:true,roomSceneReady:false})}
       })
@@ -39,9 +40,10 @@ function createRoomScenePage(wxApi) {
       if(this._keyboardUp&&wxApi.offKeyUp)wxApi.offKeyUp(this._keyboardUp)
       this._keyboardDown=null;this._keyboardUp=null
     },
-    pauseRoomScene() {this.stopRoomWalk();this.unbindRoomKeyboard();this._gesture=null;if(this._scene)this._scene.stop()},
+    pauseRoomScene() {this.stopRoomWalk();if(this.saveNatureCheckpoint)this.saveNatureCheckpoint();this.unbindRoomKeyboard();this._gesture=null;if(this._scene)this._scene.stop()},
     disposeRoomScene() {this.pauseRoomScene();if(this._scene)this._scene.dispose();this._scene=null},
     resizeRoomScene() {
+      this._roomPointer=null
       if(!this._scene||!wxApi.createSelectorQuery)return
       wxApi.createSelectorQuery().in(this).select('#home-space').boundingClientRect(rect=>{
         if(!rect||!this._scene)return
@@ -59,7 +61,7 @@ function createRoomScenePage(wxApi) {
       if(detail.pointerType!=='mouse')return
       if(!this.data.roomMouseAvailable&&this._visible)this.setData({roomMouseAvailable:true})
       const overRoom=e.target&&e.target.id==='home-space'
-      if(!overRoom||!this._visible||!this._scene||!this.data.roomMouseLook||this.data.roomEditing||this.data.roomBagOpen||this.data.roomTV||this.data.roomHelp||this.data.busy||this._gesture||detail.buttons||!['first','close'].includes(this.data.roomCamera)){this._roomPointer=null;return}
+      if(!overRoom||!this._visible||!this._scene||!this.data.roomMouseLook||this.data.roomEditing||this.data.roomBagOpen||this.data.natureBagOpen||this.data.roomTV||this.data.roomHelp||this.data.busy||this._gesture||detail.buttons||!['first','close'].includes(this.data.roomCamera)){this._roomPointer=null;return}
       if(!Number.isFinite(detail.clientX)||!Number.isFinite(detail.clientY)){this._roomPointer=null;return}
       const previous=this._roomPointer
       this._roomPointer={x:detail.clientX,y:detail.clientY}
@@ -70,7 +72,7 @@ function createRoomScenePage(wxApi) {
       this._scene.orbit(dx,dy)
     },
     onRoomTouchStart(e) {
-      if(!this._scene||this.data.busy||this.data.roomBagOpen||this.data.roomTV||!e.touches.length)return
+      if(!this._scene||this.data.busy||this.data.roomBagOpen||this.data.natureBagOpen||this.data.roomTV||!e.touches.length)return
       this._roomPointer=null
       const p=this.roomTouchPoint(e.touches[0]),hit=this._scene.hit(p.x,p.y)
       this._gesture={start:p,last:p,id:hit.id,time:Date.now(),moved:false,pinch:false}

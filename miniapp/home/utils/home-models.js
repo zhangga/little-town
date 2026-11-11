@@ -1,11 +1,14 @@
 const { createBuilding } = require('./home-building')
 const { buildExtraFurniture } = require('./home-furniture-extra')
 // Small, editable oak-and-voxel models. All dimensions share the placement footprint.
-function createModels(T) {
+function createModels(T, options = {}) {
   const materials = new Map(), cube = new T.BoxGeometry(1,1,1)
   const C = { oak:0xb98751, edge:0x805435, light:0xe3bd86, cream:0xf6e8cb, green:0x81976c, dark:0x34483c, leaf:0x658b48, clay:0xba7956, blue:0x8eafb3 }
   function material(color) {
-    if(!materials.has(color))materials.set(color,new T.MeshLambertMaterial({color}))
+    if(!materials.has(color)){
+      const tint=new T.Color(color);if(options.linearColors)tint.convertSRGBToLinear()
+      materials.set(color,options.physical?new T.MeshStandardMaterial({color:tint,roughness:.82,metalness:0}):new T.MeshLambertMaterial({color:tint}))
+    }
     return materials.get(color)
   }
   function box(g,x,y,z,w,h,d,color) {
